@@ -1,0 +1,11 @@
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSaveTimeout": 5000,
+  "editor.formatOnSave": true,
+  "files.associations": {
+    "*.erb": "erb"
+  },
+  "[ruby]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

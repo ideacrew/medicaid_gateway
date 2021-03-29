@@ -1,0 +1,81 @@
+version: "3.4"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./.docker/development/Dockerfile
+      args:
+        RUBY_VERSION: "2.7.2"
+        BUNDLER_VERSION_OVERRIDE: "2.2.14"
+    image: medicaid_gateway_dev:0.3.0
+    links:
+      - db
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/medicaid_gateway:cached
+      - rails_cache:/medicaid_gateway/tmp/cache
+      - bundle:/bundle
+      - node_modules:/medicaid_gateway/node_modules
+      - packs:/medicaid_gateway/public/packs
+    environment:
+      - ACTION_MAILER_HOST=${ACTION_MAILER_HOST:-localhost}
+      - AMQP_HOST=""
+      - AMQP_PASSWORD=${AMQP_PASSWORD:-guest}
+      - AMQP_PORT=""
+      - AMQP_URL=${RABBITMQ_URL:-amqp://guest:guest@amqp:5672}
+      - AMQP_VERSION=""
+      - AMQP_USERNAME=${AMQP_USERNAME:-guest}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-AKIA123456789}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-AbcD987654321}
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - AWS_S3_ROOT_NAMESPACE=${AWS_S3_ROOT_NAMESPACE:-root_bucket}
+      - AWS_BUCKET_ROOT_NAMESPACE=${AWS_BUCKET_ROOT_NAMESPACE:-root_bucket}
+      - AWS_CONNECT_INSTANCE_ID=${AWS_CONNECT_INSTANCE_ID:-123456789}
+      - AWS_CONNECT_INSTANCE_URL=${AWS_CONNECT_INSTANCE_URL:-http://localhost}
+      - BLIND_INDEX_MASTER_KEY=ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+      - DB_DATABASE=dcas_journal_development
+      - DB_HOST=db
+      - DB_PORT=27017
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres_local
+      - FIN_SVC_PRIVATE_KEY=""
+      - FIN_SVC_API_SECRET=""
+      - INTERFACE="0.0.0.0"
+      - QB_CLIENT_ID=${QB_CLIENT_ID:-1234567890}
+      - QB_CLIENT_SECRET=${QB_CLIENT_SECRET:-1234567890}
+      - QB_REALM_ID=${QB_REALM_ID:-1234567890}
+      - RAILS_ENV=${RAILS_ENV:-development}
+      - SFTP_HOST=""
+      - SFTP_PORT=""
+      - SMTP_DOMAIN=${SMTP_DOMAIN:-ideacrew.com}
+      - SMTP_HOST=${SMTP_HOST:-localhost}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-password}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USERNAME=${SMTP_USERNAME:-username}
+      - SNS_HOST=""
+      - SNS_PORT=""
+      - WF_BILLER_KEY=${WF_API_KEY:-1234567890}
+      - WF_API_SECRET=${WF_API_KEY:-1234567890}
+      - WF_PRIVATE_KEY=${WF_API_KEY:-1234567890}
+    tmpfs:
+      - /tmp
+    command: bash -c "rm -f tmp/pids/server.pid && mkdir -p tmp/pids && yarn install --check-files && bundle install && bundle exec puma -C config/puma.rb"
+    depends_on:
+      - db
+  db:
+    image: mongo:4.2
+    volumes:
+      - mongodb:/data/db
+      - mongodb_config:/data/configdb
+    ports:
+      - 27017:27017
+
+volumes:
+  bundle:
+  rails_cache:
+  node_modules:
+  packs:
+  mongodb:
+  mongodb_config:
