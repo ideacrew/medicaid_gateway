@@ -6,6 +6,9 @@ jobs:
     runs-on: ubuntu-16.04
     steps:
       - uses: actions/checkout@v2
+      - uses: wbari/start-mongoDB@v0.2
+        with:
+          mongoDBVersion: '4.2'
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
@@ -13,9 +16,9 @@ jobs:
         uses: actions/cache@v1
         with:
           path: vendor/bundle
-          key: ${{ runner.os }}-aca_entities-gems-${{ hashFiles('**/Gemfile.lock') }}
+          key: ${{ runner.os }}-medicaid_gateway-gems-${{ hashFiles('**/Gemfile.lock') }}
           restore-keys: |
-            ${{ runner.os }}-aca_entities-gems-${{ hashFiles('**/Gemfile.lock') }}
+            ${{ runner.os }}-medicaid_gateway-gems-${{ hashFiles('**/Gemfile.lock') }}
       - name: bundle install
         run: |
           bundle config path vendor/bundle

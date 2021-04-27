@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
@@ -34,7 +36,7 @@ gem 'mongoid',             '~> 7.2.1'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-    gem 'factory_bot_rails'
+  gem 'factory_bot_rails'
   gem 'pry-byebug'
   gem 'rspec-rails',            '~> 4.0'
   gem 'shoulda-matchers',       '~> 3'
@@ -42,6 +44,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'rubocop', '~> 1.13.0'
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
   gem 'web-console', '>= 4.1.0'
   # Display performance information such as SQL time and flame graphs for each request in your browser.

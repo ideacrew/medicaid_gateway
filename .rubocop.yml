@@ -64,6 +64,12 @@ Style/BlockComments:
 Style/EachWithObject:
   Enabled: false
 
+Style/Documentation:
+  Enabled: true
+  Exclude:
+    - "app/helpers/application_helper.rb"
+    - "config/application.rb"
+
 Style/EmptyLiteral:
   Enabled: false
 
