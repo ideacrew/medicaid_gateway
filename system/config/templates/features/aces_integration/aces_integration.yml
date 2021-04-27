@@ -1,0 +1,11 @@
+---
+registry:
+  - namespace:
+    - :medicaid_gateway
+    - :aces_integration
+    features:
+      - key: :aces_connection
+        is_enabled: true
+        settings:
+          - key: :aces_endpoint_root
+            item: <%= ENV['ACES_ENDPOINT_ROOT'] %>

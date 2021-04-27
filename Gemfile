@@ -25,12 +25,7 @@ gem 'jbuilder', '~> 2.7'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
 
-gem 'dry-matcher',          '~> 0.8'
-gem 'dry-monads',           '~> 1.3'
-gem 'dry-struct',           '~> 1.3'
-gem 'dry-transaction'
-gem 'dry-types',            '~> 1.4'
-gem 'dry-validation',       '~> 1.6'
+gem 'resource_registry',  git:  'https://github.com/ideacrew/resource_registry.git', branch: 'trunk'
 gem 'mongoid',             '~> 7.2.1'
 
 group :development, :test do
