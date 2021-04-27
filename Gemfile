@@ -27,6 +27,7 @@ gem 'bootsnap', '>= 1.4.4', require: false
 
 gem 'resource_registry',  git:  'https://github.com/ideacrew/resource_registry.git', branch: 'trunk'
 gem 'mongoid',             '~> 7.2.1'
+gem "faraday", "~> 0.17.3"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
