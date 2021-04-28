@@ -16,12 +16,14 @@ describe Aces::BuildAccountTransferRequest, "given a payload, with missing setti
   it "fails if username setting is unset" do
     allow(feature_ns).to receive(:setting).with(:aces_atp_service_username).and_return(nil)
     expect(result.success?).to be_falsey
+    expect(result.failure).to eq "Failed to find setting: :aces_connection, :aces_atp_service_username"
   end
 
   it "fails if password setting is unset" do
     allow(feature_ns).to receive(:setting).with(:aces_atp_service_username).and_return(setting)
     allow(feature_ns).to receive(:setting).with(:aces_atp_service_password).and_return(nil)
     expect(result.success?).to be_falsey
+    expect(result.failure).to eq "Failed to find setting: :aces_connection, :aces_atp_service_password"
   end
 end
 
