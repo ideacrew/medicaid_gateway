@@ -8,5 +8,11 @@ module Aces
     transform_keys(&:to_sym)
 
     attribute :header, Types.Nominal(::Aces::SoapAuthorizationHeader)
+
+    # This exists currently for the purpose of connectivity testing - it is an
+    # opaque XML payload.  It will become a full-fledged aca_entities object
+    # once the aca_entities AccountTransferRequest object is complete and
+    # serializable as XML.
+    attribute :raw_body, Types::String
   end
 end

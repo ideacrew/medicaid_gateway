@@ -1,7 +1,6 @@
 ---
 title: Receiving Data from ACES
-date: 2021-04-27T12:12:25-05:00
-draft: false
+
 ---
 
 ACES transmits outbound data using the CMS Account Transfer Protocol over SOAP.
