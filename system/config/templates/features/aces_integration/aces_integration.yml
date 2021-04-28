@@ -13,3 +13,7 @@ registry:
             item: <%= ENV['ACES_ATP_SERVICE_USERNAME'] %>
           - key: :aces_atp_service_password
             item: <%= ENV['ACES_ATP_SERVICE_PASSWORD'] %>
+          - key: :aces_atp_caller_username
+            item: <%= ENV['ACES_ATP_CALLER_USERNAME'] %>
+          - key: :aces_atp_caller_password
+            item: <%= ENV['ACES_ATP_CALLER_PASSWORD'] %>
