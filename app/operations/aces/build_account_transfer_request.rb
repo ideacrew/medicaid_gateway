@@ -4,7 +4,7 @@ require 'dry/monads'
 require 'dry/monads/do'
 
 module Aces
-  # Create an account transfer request, including security information, 
+  # Create an account transfer request, including security information,
   # from an ACES payload.  Right now the payload is a string, it will
   # become a 'proper' aca_entities object once that is implemented.
   class BuildAccountTransferRequest
@@ -13,11 +13,11 @@ module Aces
     # @param [String] payload
     # @return [Dry::Result<Aces::AccountTransferRequest>]
     def call(payload)
-      username = yield get_username
-      password = yield get_password
+      username = yield read_username_setting
+      password = yield read_password_setting
       nonce = yield generate_nonce
       created = yield generate_created
-      Success(build_request(username,password,nonce,created,payload))
+      Success(build_request(username, password, nonce, created, payload))
     end
 
     protected
@@ -30,24 +30,24 @@ module Aces
       payload
     )
       Aces::AccountTransferRequest.new({
-        header: Aces::SoapAuthorizationHeader.new({
-          username: username,
-          password: password,
-          nonce: nonce,
-          created: created
-        }),
-        raw_body: payload
-      })
+                                         header: Aces::SoapAuthorizationHeader.new({
+                                                                                     username: username,
+                                                                                     password: password,
+                                                                                     nonce: nonce,
+                                                                                     created: created
+                                                                                   }),
+                                         raw_body: payload
+                                       })
     end
 
-    def get_username
+    def read_username_setting
       result = Try do
         MedicaidGatewayRegistry[:aces_connection].setting(:aces_atp_service_username).item
       end
       result.or(Failure("Failed to find setting: :aces_connection, :aces_atp_service_username"))
     end
 
-    def get_password
+    def read_password_setting
       result = Try do
         MedicaidGatewayRegistry[:aces_connection].setting(:aces_atp_service_password).item
       end

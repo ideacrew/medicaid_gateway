@@ -33,7 +33,7 @@ describe Aces::SubmitAccountTransferPayload, "given an encoded payload, and comp
     allow(MedicaidGatewayRegistry).to receive(:[]).with(:aces_connection).and_return(feature_ns)
   end
 
-  it "fails when the request fails" do    
+  it "fails when the request fails" do
     expect(result.success?).not_to be_truthy
   end
 end
