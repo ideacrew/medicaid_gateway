@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-describe Aces::ProcessAtpSoapRequest, "given a soap envelope" do
+describe Aces::ProcessAtpSoapRequest, "given a soap envelope with an invalid xml payload" do
   let(:body) { StringIO.new(raw_xml) }
   let(:raw_xml) do
     <<-XMLCODE
@@ -28,19 +28,17 @@ describe Aces::ProcessAtpSoapRequest, "given a soap envelope" do
 
   let(:operation) { Aces::ProcessAtpSoapRequest.new }
   let(:result) { operation.call(body) }
-  let(:header_validator) do
-    instance_double(
-      ::Soap::ValidateUsernametokenSecurityHeader
-    )
-  end
+  let(:feature_ns) { double }
+  let(:username_setting) { double(item: "SOME_SOAP_USER") }
+  let(:password_setting) { double(item: "SOME SOAP PASSWORD") }
 
   before :each do
-    allow(Nokogiri).to receive(:XML).with(body).and_return(document)
-    allow(::Soap::ValidateUsernametokenSecurityHeader).to receive(:new).and_return(header_validator)
-    allow(header_validator).to receive(:call).with(document).and_return(Dry::Monads::Result::Success.new(:ok))
+    allow(MedicaidGatewayRegistry).to receive(:[]).with(:aces_connection).and_return(feature_ns)
+    allow(feature_ns).to receive(:setting).with(:aces_atp_caller_username).and_return(username_setting)
+    allow(feature_ns).to receive(:setting).with(:aces_atp_caller_password).and_return(password_setting)
   end
 
-  it "is successful" do
+  it "succedes, as it returns xml" do
     expect(result.success?).to be_truthy
   end
 end

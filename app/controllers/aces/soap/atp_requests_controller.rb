@@ -14,7 +14,7 @@ module Aces
       def service
         result = ProcessAtpSoapRequest.new.call(request.body)
         if result.success?
-          head 200
+          render inline: result.value!, status: 200, content_type: "application/soap+xml"
         else
           case result.failure
           when :unknown_user, :invalid_password, :security_header_unreadable
