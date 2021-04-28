@@ -6,7 +6,12 @@ Rails.application.routes.draw do
     resource :publishing_connectivity_tests, only: [:new, :create]
 
     namespace :soap do
-      resource :atp_requests, only: [:create]
+      resource :atp_requests, only: [] do
+        collection do 
+          get 'wsdl'
+          post 'service'
+        end
+      end
     end
   end
 end
