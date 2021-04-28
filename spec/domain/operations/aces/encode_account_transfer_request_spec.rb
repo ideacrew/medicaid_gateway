@@ -56,7 +56,7 @@ describe Aces::EncodeAccountTransferRequest, "given an Aces::AccountTransferRequ
         "//soap:Header/wsse:Security/wsse:UsernameToken/wsse:Password",
         xml_ns
       ).text
-    ).to eq "A Password"
+    ).to eq "424sUL51NUqp97Jz5LX6bnuVMpY="
   end
 
   it "encodes the nonce" do
@@ -66,7 +66,7 @@ describe Aces::EncodeAccountTransferRequest, "given an Aces::AccountTransferRequ
         "//soap:Header/wsse:Security/wsse:UsernameToken/wsse:Nonce",
         xml_ns
       ).text
-    ).to eq "A Nonce"
+    ).to eq "QSBOb25jZQ=="
   end
 
   it "encodes the created value" do

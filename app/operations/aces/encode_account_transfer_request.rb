@@ -11,7 +11,7 @@ module Aces
     send(:include, Dry::Monads[:result, :do])
 
     # @param [Aces::AccountTransferRequest] request
-    # @return [Dry::Result]
+    # @return [Dry::Result<String>]
     def call(request)
       encode_soap_envelope(request)
     end
@@ -32,10 +32,10 @@ module Aces
                 ut[:wsse].Username request_header.username
                 ut[:wsse].Password({
                   "Type" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText"
-                  }, request_header.password)
+                  }, encode_password(request_header.password, request_header.nonce, request_header.created ))
                 ut[:wsse].Nonce({
                     "EncodingType" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary"
-                  }, request_header.nonce)
+                  }, encode_nonce(request_header.nonce))
                 ut[:wsu].Created request_header.created
             end
         end
@@ -56,6 +56,14 @@ module Aces
         end
       end
       Success(builder.to_xml)
+    end
+
+    def encode_nonce(nonce)
+      Base64.strict_encode64(nonce)
+    end
+
+    def encode_password(password, nonce, created_at)
+      Digest::SHA1.base64digest(nonce + created_at + password)
     end
   end
 end
