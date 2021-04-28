@@ -44,6 +44,8 @@ coverage
 
 *.swp
 
+/doc/
+
 # Make sure no PII is accidently commited
 # add w/ git add --force if actually docs
 *.csv

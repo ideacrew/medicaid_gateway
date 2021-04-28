@@ -1,0 +1,6 @@
+<H1>Execute a New Publishing Connectivity Test</H1>
+
+<%= form_with url: aces_publishing_connectivity_tests_path do |form| %>
+  <%= form.text_area :payload %>
+  <%= form.submit "Test" %>
+<% end %>

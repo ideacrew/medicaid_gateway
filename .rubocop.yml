@@ -6,6 +6,7 @@ AllCops:
   Exclude:
     - "bin/**/*"
     - "vendor/**/*"
+    - "node_modules/**/*"
 
 Layout/EmptyLineAfterGuardClause:
   Enabled: false
