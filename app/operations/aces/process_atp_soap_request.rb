@@ -8,15 +8,15 @@ module Aces
     XML_NS = {
       "atp" => "http://at.dsh.cms.gov/exchange/1.0",
       "soap" => "http://www.w3.org/2003/05/soap-envelope"
-    }
+    }.freeze
 
     # @param [IO] body the body of the request
     # @return [Dry::Result]
     def call(body)
       parsed_payload = yield parse_xml(body)
-      validation_result = yield validate_soap_header(parsed_payload)
+      _validation_result = yield validate_soap_header(parsed_payload)
       body_node = yield extract_top_body_node(parsed_payload)
-      string_payload = yield convert_to_document_string(body_node)
+      _string_payload = yield convert_to_document_string(body_node)
       Success(:ok)
     end
 

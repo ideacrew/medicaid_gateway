@@ -9,7 +9,7 @@ module Soap
       "wsse" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
       "wsu" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd",
       "soap" => "http://www.w3.org/2003/05/soap-envelope"
-    }
+    }.freeze
 
     # @param [Nokogiri::Document] document the SOAP envelope
     # @return [Dry::Result]
@@ -25,8 +25,8 @@ module Soap
     def extract_security_parameters(document)
       read_values = Try do
         username_token_element = document.at_xpath(
-                    "//soap:Header/wsse:Security/wsse:UsernameToken",
-                    XML_NS
+          "//soap:Header/wsse:Security/wsse:UsernameToken",
+          XML_NS
         )
         username = username_token_element.at_xpath("./wsse:Username", XML_NS).text
         digested_password = username_token_element.at_xpath("./wsse:Password", XML_NS).text

@@ -7,7 +7,7 @@ Rails.application.routes.draw do
 
     namespace :soap do
       resource :atp_requests, only: [] do
-        collection do 
+        collection do
           get 'wsdl'
           post 'service'
         end

@@ -2,6 +2,8 @@
 
 module Aces
   module Soap
+    # Accepts and processes requests to OpenHBX that originate from the ACES
+    # system.
     class AtpRequestsController < ApplicationController
       skip_before_action :verify_authenticity_token, only: [:wsdl, :service]
 
@@ -15,18 +17,12 @@ module Aces
           head 200
         else
           case result.failure
-          when :unknown_user
+          when :unknown_user, :invalid_password, :security_header_unreadable
             head 401
-          when :invalid_password
-            head 401
-          when :security_header_unreadable
-            head 401
-          when :xml_parse_failed
-            head 400
-          when :missing_body_node
+          when :xml_parse_failed, :missing_body_node
             head 400
           else
-            head 400
+            head 500
           end
         end
       end
