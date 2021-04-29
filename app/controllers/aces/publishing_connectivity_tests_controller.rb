@@ -8,7 +8,7 @@ module Aces
 
     def create
       payload = params.require("payload")
-      @result = Aces::SubmitAccountTransferPayload.new.call(payload)
+      @result = Aces::PublishRawPayload.new.call(payload)
       render "created"
     end
   end
