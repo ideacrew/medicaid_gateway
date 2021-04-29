@@ -7,6 +7,8 @@ AllCops:
     - "bin/**/*"
     - "vendor/**/*"
     - "node_modules/**/*"
+    - "config/deploy.rb"
+    - "config/deploy/**/*"
 
 Layout/EmptyLineAfterGuardClause:
   Enabled: false
