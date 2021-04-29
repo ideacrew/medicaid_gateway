@@ -11,7 +11,7 @@ describe Aces::ProcessAtpSoapRequest, "given a soap envelope with an invalid xml
        <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
           <wsse:UsernameToken wsu:Id="UsernameToken-73590BD4745C9F3F7814189343300461">
              <wsse:Username>SOME_SOAP_USER</wsse:Username>
-             <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">N2UXDZfzqDS67pauESB40IhFt+Y=</wsse:Password>
+             <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">SOME SOAP PASSWORD</wsse:Password>
              <wsse:Nonce EncodingType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary">aaa</wsse:Nonce>
              <wsu:Created>2014-12-18T20:25:30.037Z</wsu:Created>
           </wsse:UsernameToken>

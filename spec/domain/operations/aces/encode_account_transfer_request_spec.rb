@@ -49,14 +49,14 @@ describe Aces::EncodeAccountTransferRequest, "given an Aces::AccountTransferRequ
     ).to eq "A Username"
   end
 
-  it "encodes the password" do
+  it "encodes the password literally" do
     document = Nokogiri::XML(result.value!)
     expect(
       document.at_xpath(
         "//soap:Header/wsse:Security/wsse:UsernameToken/wsse:Password",
         xml_ns
       ).text
-    ).to eq "424sUL51NUqp97Jz5LX6bnuVMpY="
+    ).to eq "A Password"
   end
 
   it "encodes the nonce" do

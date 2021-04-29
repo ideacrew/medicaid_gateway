@@ -63,7 +63,9 @@ module Aces
     end
 
     def encode_password(password, nonce, created_at)
-      Digest::SHA1.base64digest(nonce + created_at + password)
+      # Digest::SHA1.base64digest(nonce + created_at + password)
+      # Configure for password digest later.  Right now they use raw passwordtext.
+      password
     end
   end
 end

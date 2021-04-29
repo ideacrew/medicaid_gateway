@@ -32,12 +32,18 @@ module Soap
         digested_password = username_token_element.at_xpath("./wsse:Password", XML_NS).text
         b64_nonce = username_token_element.at_xpath("./wsse:Nonce", XML_NS).text
         created = username_token_element.at_xpath("./wsu:Created", XML_NS).text
+        digest_attribute = username_token_element.at_xpath("./wsse:Password", XML_NS)["Type"].to_s
+        is_digest = (
+          "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest" == 
+            digest_attribute
+        )
         binary_nonce = Base64.decode64(b64_nonce)
         {
           username: username,
           created: created,
           binary_nonce: binary_nonce,
-          digested_password: digested_password
+          password_value: digested_password,
+          is_digest: is_digest
         }
       end
       read_values.or(Failure(:security_header_unreadable))
@@ -63,12 +69,16 @@ module Soap
       password
     )
       return Failure(:unknown_user) if username != security_parameters[:username].strip
-      sha_value = Digest::SHA1.base64digest(
-        security_parameters[:binary_nonce] +
-        security_parameters[:created] +
-        password
-      )
-      (sha_value == security_parameters[:digested_password]) ? Success(:ok) : Failure(:invalid_password)
+      if security_parameters[:is_digest]
+        sha_value = Digest::SHA1.base64digest(
+          security_parameters[:binary_nonce] +
+          security_parameters[:created] +
+          password
+        )
+        (sha_value == security_parameters[:password_value]) ? Success(:ok) : Failure(:invalid_password)
+      else
+        (password == security_parameters[:password_value]) ? Success(:ok) : Failure(:invalid_password)
+      end
     end
   end
 end
