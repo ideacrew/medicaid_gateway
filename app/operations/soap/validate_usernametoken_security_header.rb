@@ -34,8 +34,7 @@ module Soap
         created = username_token_element.at_xpath("./wsu:Created", XML_NS).text
         digest_attribute = username_token_element.at_xpath("./wsse:Password", XML_NS)["Type"].to_s
         is_digest = (
-          "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest" == 
-            digest_attribute
+          digest_attribute == "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest"
         )
         binary_nonce = Base64.decode64(b64_nonce)
         {
