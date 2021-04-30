@@ -26,6 +26,7 @@ module Aces
       parse_result = Try do
         Nokogiri::XML(body)
       end
+      return Failure(:xml_parse_failed) if parse_result.success? && parse_result.value!.blank?
       parse_result.or(Failure(:xml_parse_failed))
     end
 
@@ -37,6 +38,7 @@ module Aces
       result = Try do
         document.at_xpath("//soap:Envelope/soap:Body/atp:AccountTransferRequest", XML_NS)
       end
+      return Failure(:missing_body_node) if result.success? && result.value!.blank?
       result.or(Failure(:missing_body_node))
     end
 
