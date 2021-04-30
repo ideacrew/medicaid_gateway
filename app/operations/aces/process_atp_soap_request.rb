@@ -53,7 +53,12 @@ module Aces
     def serialize_response_body(validation_result)
       builder = Nokogiri::XML::Builder.new do |xml|
         xml[:soap].Envelope({ "xmlns:soap" => "http://www.w3.org/2003/05/soap-envelope" }) do |envelope|
-          envelope[:soap].Body do |soap_body|
+          envelope[:soap].Body({
+            "xmlns:exch" => "http://at.dsh.cms.gov/exchange/1.0",
+            "xmlns:ext" => "http://at.dsh.cms.gov/extension/1.0",
+            "xmlns:hix" => "http://hix.cms.gov/0.1/hix-core",
+            "ext:atVersion" => "2.3"
+          }) do |soap_body|
             encode_validation_result(soap_body, validation_result)
           end
         end
@@ -62,15 +67,8 @@ module Aces
     end
 
     def encode_validation_result(soap_body, validation_result)
-      soap_body[:exch].AccountTransferResponse({
-                                                 "xmlns:exch" => "http://at.dsh.cms.gov/exchange/1.0",
-                                                 "xmlns:ext" => "http://at.dsh.cms.gov/extension/1.0",
-                                                 "xmlns:hix" => "http://hix.cms.gov/0.1/hix-core",
-                                                 "ext:atVersion" => "2.3"
-                                               }) do |atr|
-        atr[:ext].ResponseMetaData do |rmd|
-          encode_response_codes_and_description(rmd, validation_result)
-        end
+      soap_body[:ext].ResponseMetaData do |rmd|
+        encode_response_codes_and_description(rmd, validation_result)
       end
     end
 
