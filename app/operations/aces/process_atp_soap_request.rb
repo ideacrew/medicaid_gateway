@@ -66,9 +66,9 @@ module Aces
                                                  "xmlns:exch" => "http://at.dsh.cms.gov/exchange/1.0",
                                                  "xmlns:ext" => "http://at.dsh.cms.gov/extension/1.0",
                                                  "xmlns:hix" => "http://hix.cms.gov/0.1/hix-core",
-                                                 "ext:atVersion" => "2.4"
+                                                 "ext:atVersionText" => "2.4"
                                                }) do |atr|
-        atr[:ext].ResponseMetaData do |rmd|
+        atr[:ext].ResponseMetadata do |rmd|
           encode_response_codes_and_description(rmd, validation_result)
         end
       end
