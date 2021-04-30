@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       resource :atp_requests, only: [] do
         collection do
           get 'wsdl'
+          post 'wsdl'
           post 'service'
         end
       end
