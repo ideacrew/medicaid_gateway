@@ -17,8 +17,7 @@ module Aces
       _validation_result = yield validate_soap_header(parsed_payload)
       body_node = yield extract_top_body_node(parsed_payload)
       string_payload = yield convert_to_document_string(body_node)
-      #serialize_response_body(validate_document(string_payload))
-      serialize_response_body(Success(:ok))
+      serialize_response_body(validate_document(string_payload))
     end
 
     protected
@@ -44,7 +43,7 @@ module Aces
     end
 
     def convert_to_document_string(body_node)
-      Success(body_node.to_xml)
+      Success(body_node.canonicalize)
     end
 
     def validate_document(document)
