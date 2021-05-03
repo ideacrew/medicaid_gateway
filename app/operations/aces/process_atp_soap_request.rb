@@ -14,7 +14,7 @@ module Aces
     # @return [Dry::Result]
     def call(body)
       parsed_payload = yield parse_xml(body)
-      _validation_result = yield validate_soap_header(parsed_payload)
+      # _validation_result = yield validate_soap_header(parsed_payload)
       body_node = yield extract_top_body_node(parsed_payload)
       string_payload = yield convert_to_document_string(body_node)
       serialize_response_body(validate_document(string_payload))
