@@ -33,3 +33,11 @@ jobs:
       - name: Run yard
         run: bundle exec yard && cp -rf ./doc ./hugo/static/
       - run: cd hugo && npm install && hugo --minify
+      - uses: nelonoel/branch-name@v1.0.1
+      - uses: jakejarvis/s3-sync-action@master
+        env:
+          AWS_S3_BUCKET: ${{ secrets.YARD_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.YARD_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.YARD_SECRET_ACCESS_KEY }}
+          SOURCE_DIR: hugo/public
+          DEST_DIR: ${{ env.BRANCH_NAME }}
