@@ -31,3 +31,17 @@ In the below examples, any XML elements mentioned are identified using namespace
       1. The payload `AccountTransferRequest/TransferHeader/TransferActivity/ActivityIdentification/IdentificationID` element
       2. The payload `AccountTransferRequest/InsuranceApplication/ReferralActivity/ActivityIdentification/IdentificationID` element
 
+## General Flow
+
+We accept data from ACES in the `Aces::Soap::AtpRequestsController`.
+
+It contains two endpoints, with corresponding controller methods:
+1. `wsdl` - a GET endpoint which exposes the service definition of the endpoint
+2. `service` - a POST endpoint where ACES sends the data
+
+The service endpoint currently performes the following tasks:
+1. Validation of the SOAP security header
+2. XML Validation of the body payload against the schemas for the data (currently located in `artifacts/aces`)
+3. Recording the sent and response payloads
+
+**Right now the endpoint service does not parse nor submit the data we receive from ACES to anywhere else, it just stores it in the database as opaque XML**.
