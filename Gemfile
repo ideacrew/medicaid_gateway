@@ -5,6 +5,11 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 # ruby '2.7.2'
 
+# Mount the Engines
+gem 'mitc_service', path: 'components/mitc_service'
+
+gem 'aca_entities',  git:  'https://github.com/ideacrew/aca_entities.git', branch: 'trunk'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.3'
 # Use Puma as the app server
@@ -28,6 +33,8 @@ gem 'bootsnap', '>= 1.4.4', require: false
 gem 'resource_registry',  git:  'https://github.com/ideacrew/resource_registry.git', branch: 'trunk'
 gem 'mongoid',             '~> 7.2.1'
 gem "faraday", "~> 0.17.3"
+gem 'typhoeus'
+gem 'mime-types'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
