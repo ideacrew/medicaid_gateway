@@ -8,7 +8,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 # Mount the Engines
 gem 'mitc_service', path: 'components/mitc_service'
 
-gem 'aca_entities',  git:  'https://github.com/ideacrew/aca_entities.git', branch: 'trunk'
+gem 'aca_entities',  git:  'https://github.com/ideacrew/aca_entities.git', branch: 'release_0.2.2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.3'
@@ -35,6 +35,7 @@ gem 'mongoid',             '~> 7.2.1'
 gem "faraday", "~> 0.17.3"
 gem 'typhoeus'
 gem 'mime-types'
+gem 'httparty',            '~> 0.16'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
