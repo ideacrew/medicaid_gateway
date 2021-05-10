@@ -95,4 +95,7 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+  if (ENV['TEST_ENV_NUMBER'].nil?) && (config.instance_variable_get("@files_or_directories_to_run") == ["spec"])
+    config.pattern = "spec/**/*_spec.rb,components/mitc_service/spec/**/*_spec.rb"
+  end
 end
