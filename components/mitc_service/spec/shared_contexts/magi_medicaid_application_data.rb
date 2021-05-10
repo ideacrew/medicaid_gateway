@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# If you want to make any changes below data, please make sure you also update the mitc_response accordingly.
+# If you want to make any changes to below data, please make sure you also update the mitc_response accordingly.
 RSpec.shared_context 'setup magi_medicaid application with two applicants', :shared_context => :metadata do
   let(:name) { { first_name: 'first', last_name: 'last' } }
   let(:name2) { { first_name: 'spouse', last_name: 'last' } }
@@ -266,7 +266,7 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
 
   let(:mitc_households) do
     [{ household_id: '1',
-      people: person_references }]
+       people: person_references }]
   end
 
   let(:tax_return_hash) do
@@ -288,16 +288,17 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
   # mitc_response does not contain any PII.
   let(:mitc_response) do
     { :"Determination Date" => Date.today.to_s,
-      :Applicants=>
+      :Applicants =>
        [{ :"Person ID" => 95,
-          :"Medicaid Household" => { :People=>[95, 96], :MAGI=>662, :"MAGI as Percentage of FPL" => 3, :Size=>2 },
+          :"Medicaid Household" => { :People => [95, 96], :MAGI => 662, :"MAGI as Percentage of FPL" => 3, :Size => 2 },
           :"Medicaid Eligible" => "N",
           :"CHIP Eligible" => "N",
           :"Ineligibility Reason" => ["Applicant did not meet residency requirements"],
           :"Non-MAGI Referral" => "Y",
-          :"CHIP Ineligibility Reason" => ["Applicant did not meet residency requirements", "Applicant did not meet the requirements for any CHIP category"],
+          :"CHIP Ineligibility Reason" => ["Applicant did not meet residency requirements",
+                                           "Applicant did not meet the requirements for any CHIP category"],
           :Category => "Child Category",
-          :"Category Threshold" => 38498,
+          :"Category Threshold" => 38_498,
           :"CHIP Category" => "None",
           :"CHIP Category Threshold" => 0,
           :Determinations =>
@@ -349,9 +350,10 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
           :"CHIP Eligible" => "N",
           :"Ineligibility Reason" => ["Applicant did not meet residency requirements"],
           :"Non-MAGI Referral" => "Y",
-          :"CHIP Ineligibility Reason" => ["Applicant did not meet residency requirements", "Applicant did not meet the requirements for any CHIP category"],
+          :"CHIP Ineligibility Reason" => ["Applicant did not meet residency requirements",
+                                           "Applicant did not meet the requirements for any CHIP category"],
           :Category => "Child Category",
-          :"Category Threshold" => 38498,
+          :"Category Threshold" => 38_498,
           :"CHIP Category" => "None",
           :"CHIP Category Threshold" => 0,
           :Determinations =>
@@ -395,7 +397,7 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
                                        :"Ineligibility Code" => 109,
                                        :"Ineligibility Reason" => "Applicant does not meet the eligibility criteria for emergency Medicaid" },
             :"Refugee Medical Assistance" => { :Indicator => "X" },
-            :"APTC Referral" => { :Indicator => "Y" }},
+            :"APTC Referral" => { :Indicator => "Y" } },
           :"Other Outputs" => { :"Qualified Children List" => [] } }] }
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "lib/mitc_service/version"
 
 Gem::Specification.new do |spec|
@@ -9,6 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary     = "MitcService integrates with MAGI in the Cloud Application"
   spec.description = "MitcService integrates with MAGI in the Cloud Application"
   spec.license     = "MIT"
+  spec.required_ruby_version = '2.7.2'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.

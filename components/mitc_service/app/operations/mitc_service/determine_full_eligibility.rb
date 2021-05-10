@@ -4,6 +4,7 @@ require 'dry/monads'
 require 'dry/monads/do'
 
 module MitcService
+  # This class is for detemining the full eligibility for a given MagiMedicaidApplication
   class DetermineFullEligibility
     include Dry::Monads[:result, :do]
 
@@ -12,7 +13,8 @@ module MitcService
     # @return [Dry::Monads::Result]
     def call(params)
       # 1. init_magi_medicaid_application.
-      #   Operation(::AcaEntities::MagiMedicaid::Operations::InitializeApplication) that takes CV3 MagiMedicaidApplication payload as input and returns ::AcaEntities::MagiMedicaid::Application
+      #   Operation(::AcaEntities::MagiMedicaid::Operations::InitializeApplication) that takes
+      #     CV3 MagiMedicaidApplication payload as input and returns ::AcaEntities::MagiMedicaid::Application
       # 2. magi_medicaid_application_with_determination
       #   a) Transform mm_application to mitc_request_payload
       #     ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload
@@ -24,7 +26,7 @@ module MitcService
       #   ::AddAptcCsrDetermination
 
       mm_application = yield init_magi_medicaid_application(params)
-      mm_app_with_determination = yield determine_mitc_eligibility(mm_application)
+      _mm_app_with_determination = yield determine_mitc_eligibility(mm_application)
       Success({})
     end
 

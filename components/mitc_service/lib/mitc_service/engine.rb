@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 module MitcService
+  # MitcService::Engine
   class Engine < ::Rails::Engine
     isolate_namespace MitcService
 

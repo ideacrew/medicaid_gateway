@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "boot"
 
 require "rails"
@@ -21,6 +23,7 @@ Bundler.require(*Rails.groups)
 require "mitc_service"
 
 module Dummy
+  # Dummy Application
   class Application < Rails::Application
     config.load_defaults Rails::VERSION::STRING.to_f
 
