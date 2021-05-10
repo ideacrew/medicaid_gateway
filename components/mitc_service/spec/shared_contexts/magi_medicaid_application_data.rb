@@ -287,7 +287,7 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
   # mitc_response is the actual response from MitC for the above magi_medicaid_application.
   # mitc_response does not contain any PII.
   let(:mitc_response) do
-    { :"Determination Date" => "2021-05-07",
+    { :"Determination Date" => Date.today.to_s,
       :Applicants=>
        [{ :"Person ID" => 95,
           :"Medicaid Household" => { :People=>[95, 96], :MAGI=>662, :"MAGI as Percentage of FPL" => 3, :Size=>2 },

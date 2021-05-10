@@ -29,3 +29,32 @@ jobs:
       - name: run tests
         run: |
           bundle exec rspec
+  mitc_service:
+    runs-on: ubuntu-16.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: wbari/start-mongoDB@v0.2
+        with:
+          mongoDBVersion: '4.2'
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+      - name: Cache Gems
+        uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-medicaid_gateway-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-medicaid_gateway-gems-${{ hashFiles('**/Gemfile.lock') }}
+      - name: bundle install
+        run: |
+          bundle config path vendor/bundle
+          bundle install
+          cd components/mitc_service
+          bundle config path ../../vendor/bundle
+          bundle install
+      - name: run tests
+        run: |
+          echo
+          cd components/mitc_service
+          bundle exec rspec

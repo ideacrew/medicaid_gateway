@@ -10,6 +10,10 @@ RSpec.describe ::MitcService::DetermineFullEligibility do
     expect(subject.respond_to?(:call)).to be_truthy
   end
 
+  before do
+    allow(HTTParty).to receive(:post).and_return(mitc_response)
+  end
+
   context 'with MagiMedicaidApplication hash' do
     before do
       @result = subject.call(magi_medicaid_application)
