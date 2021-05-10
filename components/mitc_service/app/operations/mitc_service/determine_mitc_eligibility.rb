@@ -43,14 +43,14 @@ module MitcService
     end
 
     def call_magi_in_the_cloud(mitc_request_payload)
-      # ::MitcService::CallMagiInTheCloud.new.call(mitc_request_payload)
-      Success({})
+      # TODO: We should be storing the Response from MitC as it is into MedicaidGateway's DB.
+      ::MitcService::CallMagiInTheCloud.new.call(mitc_request_payload)
     end
 
     def add_mitc_determination_to_mm_application(mm_application, mitc_response_payload)
-      # ::MitcService::AddMitcDeterminationToApplication.new.call({ magi_medicaid_application: mm_application,
-      #                                                             mitc_response: mitc_response_payload })
-      Success({})
+      ::MitcService::AddMitcDeterminationToApplication.new.call({ magi_medicaid_application: mm_application,
+                                                                  mitc_response: mitc_response_payload })
+      Success(mm_application)
     end
   end
 end

@@ -23,11 +23,14 @@ module MitcService
     private
 
     def call_magi_in_the_cloud(mitc_request_payload)
-      response = ::HTTParty.post("http://localhost:3000/determinations/eval",
+      # TODO: Fix below URL
+      # TODO: Also we want to remove HTTParty and use Typheous.
+      # We want to add functionality exponentional backoff.
+      response = ::HTTParty.post('URL here',
         :body => mitc_request_payload.to_json,
         :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'} )
       Success(response)
-    rescue Exception => e
+    rescue StandardError => e
       # TODO: Log the error
       if mitc_request_payload[:'Name'].present?
         # Rails.logger.error { "MitCIntegrationError: for magi_medicaid_application with hbx_id: #{mitc_request_payload[:'Name']} with mitc_request_payload: #{mitc_request_payload}, error: #{e.backtrace}" }

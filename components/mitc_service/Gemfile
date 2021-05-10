@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
@@ -6,6 +8,9 @@ gemspec
 
 # To use a debugger
 # gem 'byebug', group: [:development, :test]
+
+gem 'aca_entities', git:  'https://github.com/ideacrew/aca_entities.git', branch: 'release_0.2.2'
+gem 'httparty', '~> 0.16'
 
 group :development, :test do
   gem "rspec-rails"

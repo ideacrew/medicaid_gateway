@@ -31,6 +31,7 @@ module MitcService
     private
 
     def init_magi_medicaid_application(params)
+      # TODO: We should be storing the Request from MagiMedicaidEngine of EA as it is into MedicaidGateway's DB.
       ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(params)
     end
 
