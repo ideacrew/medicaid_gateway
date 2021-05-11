@@ -23,9 +23,9 @@ module MitcService
       mm_application = yield validate_mm_application(magi_medicaid_application)
       mitc_request_payload = yield transform_mm_app_to_mitc_request_payload(mm_application)
       mitc_response_payload = yield call_magi_in_the_cloud(mitc_request_payload)
-      _mm_app_with_mitc_determination = yield add_mitc_determination_to_mm_application(mm_application, mitc_response_payload)
+      mm_app_with_mitc_determination = yield add_mitc_determination_to_mm_application(mm_application, mitc_response_payload)
 
-      Success(mitc_response_payload)
+      Success(mm_app_with_mitc_determination)
     end
 
     private
