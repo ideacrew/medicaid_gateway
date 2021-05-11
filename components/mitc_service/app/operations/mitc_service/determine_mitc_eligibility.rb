@@ -34,7 +34,7 @@ module MitcService
       if magi_medicaid_application.is_a?(::AcaEntities::MagiMedicaid::Application)
         Success(magi_medicaid_application)
       else
-        Failure("Invalid Application, given value is not a ::AcaEntities::MagiMedicaid::Application, input_value:#{magi_medicaid_application}")
+        Failure("Invalid Application, given value is not a ::AcaEntities::MagiMedicaid::Application, input_value: #{magi_medicaid_application}")
       end
     end
 
@@ -50,7 +50,6 @@ module MitcService
     def add_mitc_determination_to_mm_application(mm_application, mitc_response_payload)
       ::MitcService::AddMitcDeterminationToApplication.new.call({ magi_medicaid_application: mm_application,
                                                                   mitc_response: mitc_response_payload })
-      Success(mm_application)
     end
   end
 end
