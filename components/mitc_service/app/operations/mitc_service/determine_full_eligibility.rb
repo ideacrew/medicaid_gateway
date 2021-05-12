@@ -26,8 +26,10 @@ module MitcService
       #   ::AddAptcCsrDetermination
 
       mm_application = yield init_magi_medicaid_application(params)
-      _mm_app_with_determination = yield determine_mitc_eligibility(mm_application)
-      Success({})
+      mm_app_with_mitc_determination = yield determine_mitc_eligibility(mm_application)
+      mm_app_with_full_determination = yield determine_full_eligibility(mm_app_with_mitc_determination)
+
+      Success(mm_app_with_full_determination)
     end
 
     private
@@ -39,6 +41,18 @@ module MitcService
 
     def determine_mitc_eligibility(mm_application)
       ::MitcService::DetermineMitcEligibility.new.call(mm_application)
+    end
+
+    def determine_full_eligibility(mm_application)
+      @result_mm_application ||= mm_application
+      mm_application.tax_households.each do |mm_thh|
+        result = ::MitcService::AddAptcCsrOtherDetermination.new.call({ magi_medicaid_application: @result_mm_application,
+                                                                        magi_medicaid_tax_household: mm_thh })
+        return result if result.failure?
+        @result_mm_application = result.success
+      end
+
+      Success(@result_mm_application)
     end
   end
 end
