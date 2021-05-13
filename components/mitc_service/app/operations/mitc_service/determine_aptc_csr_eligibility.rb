@@ -8,7 +8,7 @@ module MitcService
   # for each TaxHousehold of MagiMedicaidApplication and returns
   # MagiMedicaidApplication with added determinations
   # This class is PRIVATE to ::MitcService::DetermineFullEligibility
-  class AddAptcCsrOtherDetermination
+  class DetermineAptcCsrEligibility
     include Dry::Monads[:result, :do]
 
     # @param [Hash] opts The options to add APTC, CSR and additional determinations

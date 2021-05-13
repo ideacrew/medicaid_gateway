@@ -124,7 +124,7 @@ module MitcService
     def calculate_fpl(params)
       @mm_application = params[:magi_medicaid_application]
       @mm_thh = params[:magi_medicaid_tax_household]
-      thh_income = @mm_thh.tax_household_income
+      thh_income = @mm_thh.annual_tax_household_income
 
       # TODO: From where will we get the FPL information?
       # fpl_hash = ::AcaEntities::MagiMedicaid::Db::FederalPovertyLevelSeed.detect do |fpl|

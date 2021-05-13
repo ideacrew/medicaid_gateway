@@ -256,7 +256,7 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
       csr: 73,
       is_insurance_assistance_eligible: 'Yes',
       tax_household_members: [tax_household_member, tax_household_member2],
-      tax_household_income: 40_000.00 }
+      annual_tax_household_income: 80_000.00 }
   end
 
   let(:magi_medicaid_applicants) { [applicant_hash, applicant2_hash] }

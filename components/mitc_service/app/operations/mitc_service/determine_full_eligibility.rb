@@ -46,8 +46,8 @@ module MitcService
     def determine_full_eligibility(mm_application)
       @result_mm_application ||= mm_application
       mm_application.tax_households.each do |mm_thh|
-        result = ::MitcService::AddAptcCsrOtherDetermination.new.call({ magi_medicaid_application: @result_mm_application,
-                                                                        magi_medicaid_tax_household: mm_thh })
+        result = ::MitcService::DetermineAptcCsrEligibility.new.call({ magi_medicaid_application: @result_mm_application,
+                                                                       magi_medicaid_tax_household: mm_thh })
         return result if result.failure?
         @result_mm_application = result.success
       end

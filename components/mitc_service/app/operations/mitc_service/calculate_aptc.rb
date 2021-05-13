@@ -65,8 +65,8 @@ module MitcService
       @mm_application = params[:magi_medicaid_application]
       @qualified_members = params[:qualified_members]
 
-      if @mm_thh.tax_household_income.blank?
-        return Failure("Unable to calculate expected contribution as tax_household_income: #{@mm_thh.tax_household_income}")
+      if @mm_thh.annual_tax_household_income.blank?
+        return Failure("Unable to calculate expected contribution as annual_tax_household_income: #{@mm_thh.annual_tax_household_income}")
       end
 
       applicable_percentage = if @fpl < 133 || (@fpl >= 133 && @fpl < 150)
@@ -83,7 +83,7 @@ module MitcService
                                 8.5
                               end
 
-      Success((@mm_thh.tax_household_income * applicable_percentage) / 100)
+      Success((@mm_thh.annual_tax_household_income * applicable_percentage) / 100)
     end
     # rubocop:enable Metrics/CyclomaticComplexity
   end
