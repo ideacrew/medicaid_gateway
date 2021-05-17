@@ -14,22 +14,6 @@ module AptcCsr
     # @return [Dry::Result]
     # Returns a hash: { magi_medicaid_application: AcaEntities::MagiMedicaid::Application, aptc_household: AptcCsr::AptcHousehold }
     def call(params)
-      # params = { magi_medicaid_application: magi_medicaid_application,
-      #            magi_medicaid_tax_household: magi_medicaid_tax_household }
-      # 1. Check for Medicaid eligibility
-      #  aptc_household = yield calculate_thh_size(params)
-      #  aptc_household = yield calculate_annual_income(aptc_household)
-      #  aptc_household = yield calculate_fpl(aptc_household)
-      #  aptc_household = yield compare_with_medicaid_fpl_levels(aptc_household)
-      # 2. Calculate FPL for APTC and CSR determination
-      #  Already done in method calculate_fpl i.e. fpl_data
-      # 3. Divide annual income by 100% of 2020 FPL for the household size
-      #  Already done in method calculate_fpl i.e. the returned fpl_percentage
-      # 4. Calculate expected contribution
-      #  Identify expected contribution bracket
-      #  Calculate exact expected contribution percentage
-      #  Calculate the expected contribution
-
       aptc_household = yield check_for_medicaid_eligibility(params)
       aptc_household = yield compute_aptc_and_csr(aptc_household)
       aptc_household_entity = yield init_aptc_household(aptc_household)

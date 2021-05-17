@@ -117,6 +117,7 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
       family_member_reference: family_member_reference,
       person_hbx_id: '95',
       is_required_to_file_taxes: true,
+      tax_filer_kind: 'tax_filer',
       is_joint_tax_filing: false,
       is_claimed_as_tax_dependent: false,
       claimed_as_tax_dependent_by: nil,
@@ -162,6 +163,7 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
       family_member_reference: family_member2_reference,
       person_hbx_id: '96',
       is_required_to_file_taxes: true,
+      tax_filer_kind: 'tax_filer',
       is_joint_tax_filing: true,
       is_claimed_as_tax_dependent: false,
       claimed_as_tax_dependent_by: applicant_reference,
@@ -254,6 +256,7 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
   let(:tax_hh) do
     { max_aptc: 100.56,
       csr: 73,
+      hbx_id: '12345',
       is_insurance_assistance_eligible: 'Yes',
       tax_household_members: [tax_household_member, tax_household_member2],
       annual_tax_household_income: 80_000.00 }
@@ -274,11 +277,18 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
     { filers: person_references, dependents: [] }
   end
 
+  let(:relationships) do
+    [{ kind: 'spouse', applicant_reference: applicant_reference, relative_reference: applicant2_reference },
+     { kind: 'spouse', applicant_reference: applicant2_reference, relative_reference: applicant_reference }]
+  end
+
   let(:magi_medicaid_application) do
     { us_state: 'DC',
       hbx_id: '200000123',
       family_reference: family_reference,
       assistance_year: Date.today.year,
+      aptc_effective_date: Date.today,
+      relationships: relationships,
       applicants: magi_medicaid_applicants,
       tax_households: [tax_hh],
       mitc_households: mitc_households,

@@ -26,5 +26,9 @@ RSpec.describe ::MitcService::DetermineFullEligibility do
     it 'should return success' do
       expect(@result).to be_success
     end
+
+    it 'should return success with MagiMedicaidApplication' do
+      expect(@result.success).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
   end
 end
