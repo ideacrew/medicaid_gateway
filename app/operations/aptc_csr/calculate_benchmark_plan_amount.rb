@@ -29,6 +29,7 @@ module AptcCsr
       aptc_household[:members].detect { |aptc_mem| aptc_mem[:member_identifier].to_s == member_identifier.to_s }
     end
 
+    # rubocop:disable Metrics/MethodLength
     def determine_eligible_members_with_benchmark_amounts(params)
       @aptc_household = params[:aptc_household]
       @tax_household = params[:tax_household]
@@ -65,6 +66,7 @@ module AptcCsr
       @aptc_household[:total_benchmark_plan_monthly_premium_amount] = total_monthly_benchmark
       Success(@aptc_household)
     end
+    # rubocop:enable Metrics/MethodLength
 
     def applicant_rel_with_premiums(members)
       members.inject([]) do |mem_hashes, thhm|
