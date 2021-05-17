@@ -136,7 +136,6 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
       has_insurance: false,
       has_state_health_benefit: false,
       had_prior_insurance: false,
-      age_of_applicant: 20,
       hours_worked_per_week: 0,
       is_subject_to_five_year_bar: false,
       is_five_year_bar_met: false,
@@ -144,7 +143,9 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
       is_refugee: false,
       addresses: addresses,
       is_temporarily_out_of_state: false,
+      age_of_applicant: 45,
       is_claimed_as_dependent_by_non_applicant: false,
+      slcsp_premium: 496.02,
       mitc_relationships: applicant1_mitc_relationships,
       mitc_income: mitc_income }
   end
@@ -182,7 +183,6 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
       has_insurance: false,
       has_state_health_benefit: false,
       had_prior_insurance: false,
-      age_of_applicant: 20,
       hours_worked_per_week: 0,
       is_subject_to_five_year_bar: false,
       is_five_year_bar_met: false,
@@ -190,7 +190,9 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
       is_refugee: false,
       addresses: addresses,
       is_temporarily_out_of_state: false,
+      age_of_applicant: 43,
       is_claimed_as_dependent_by_non_applicant: false,
+      slcsp_premium: 459.48,
       mitc_relationships: applicant2_mitc_relationships,
       mitc_income: mitc_income }
   end
@@ -258,8 +260,7 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
       csr: 73,
       hbx_id: '12345',
       is_insurance_assistance_eligible: 'Yes',
-      tax_household_members: [tax_household_member, tax_household_member2],
-      annual_tax_household_income: 80_000.00 }
+      tax_household_members: [tax_household_member, tax_household_member2] }
   end
 
   let(:magi_medicaid_applicants) { [applicant_hash, applicant2_hash] }
