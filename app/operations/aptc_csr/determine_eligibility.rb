@@ -48,14 +48,16 @@ module AptcCsr
                                                         application: @mm_application })
     end
 
-    def init_aptc_household(aptc_household)
-      ::AptcCsr::InitAptcHousehold.new.call(aptc_household)
-    end
-
     def compute_aptc_and_csr(aptc_household)
+      return Success(aptc_household) if aptc_household[:are_all_members_medicaid_eligible]
+
       ::AptcCsr::ComputeAptcAndCsr.new.call({ tax_household: @mm_tax_household,
                                               aptc_household: aptc_household,
                                               application: @mm_application })
+    end
+
+    def init_aptc_household(aptc_household)
+      ::AptcCsr::InitAptcHousehold.new.call(aptc_household)
     end
 
     def add_determination_to_application(aptc_household)
@@ -66,10 +68,14 @@ module AptcCsr
         thh[:csr] = aptc_household.csr_percentage
         thh[:tax_household_members].each do |thhm|
           ped = thhm[:product_eligibility_determination]
-          matching_member = aptc_household.aptc_calculation_members.detect do |member|
-            member.member_identifier.to_s == thhm[:applicant_reference][:person_hbx_id]
+          if aptc_household.are_all_members_medicaid_eligible
+            ped[:is_ia_eligible] = false
+          else
+            aptc_hh_membr = aptc_household.members.detect do |aptc_mem|
+              aptc_mem.member_identifier.to_s == thhm[:applicant_reference][:person_hbx_id].to_s
+            end
+            ped[:is_ia_eligible] = aptc_hh_membr[:aptc_eligible]
           end
-          ped[:is_ia_eligible] = matching_member.present?
         end
       end
 

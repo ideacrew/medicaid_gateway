@@ -14,6 +14,22 @@ module AptcCsr
     # @return [Dry::Result]
     # Returns a hash: { magi_medicaid_application: AcaEntities::MagiMedicaid::Application, aptc_household: AptcCsr::AptcHousehold }
     def call(params)
+      # params = { magi_medicaid_application: magi_medicaid_application,
+      #            magi_medicaid_tax_household: magi_medicaid_tax_household }
+      # 1. Check for Medicaid eligibility
+      #  aptc_household = yield calculate_thh_size(params)
+      #  aptc_household = yield calculate_annual_income(aptc_household)
+      #  aptc_household = yield calculate_fpl(aptc_household)
+      #  aptc_household = yield compare_with_medicaid_fpl_levels(aptc_household)
+      # 2. Calculate FPL for APTC and CSR determination
+      #  Already done in method calculate_fpl i.e. fpl_data
+      # 3. Divide annual income by 100% of 2020 FPL for the household size
+      #  Already done in method calculate_fpl i.e. the returned fpl_percentage
+      # 4. Calculate expected contribution
+      #  Identify expected contribution bracket
+      #  Calculate exact expected contribution percentage
+      #  Calculate the expected contribution
+
       aptc_household = yield check_for_medicaid_eligibility(params)
       aptc_household = yield compute_aptc_and_csr(aptc_household)
       aptc_household_entity = yield init_aptc_household(aptc_household)
@@ -32,14 +48,16 @@ module AptcCsr
                                                         application: @mm_application })
     end
 
-    def init_aptc_household(aptc_household)
-      ::AptcCsr::InitAptcHousehold.new.call(aptc_household)
-    end
-
     def compute_aptc_and_csr(aptc_household)
+      return Success(aptc_household) if aptc_household[:are_all_members_medicaid_eligible]
+
       ::AptcCsr::ComputeAptcAndCsr.new.call({ tax_household: @mm_tax_household,
                                               aptc_household: aptc_household,
                                               application: @mm_application })
+    end
+
+    def init_aptc_household(aptc_household)
+      ::AptcCsr::InitAptcHousehold.new.call(aptc_household)
     end
 
     def add_determination_to_application(aptc_household)
@@ -50,10 +68,14 @@ module AptcCsr
         thh[:csr] = aptc_household.csr_percentage
         thh[:tax_household_members].each do |thhm|
           ped = thhm[:product_eligibility_determination]
-          matching_member = aptc_household.aptc_calculation_members.detect do |member|
-            member.member_identifier.to_s == thhm[:applicant_reference][:person_hbx_id]
+          if aptc_household.are_all_members_medicaid_eligible
+            ped[:is_ia_eligible] = false
+          else
+            aptc_hh_membr = aptc_household.members.detect do |aptc_mem|
+              aptc_mem.member_identifier.to_s == thhm[:applicant_reference][:person_hbx_id].to_s
+            end
+            ped[:is_ia_eligible] = aptc_hh_membr[:aptc_eligible]
           end
-          ped[:is_ia_eligible] = matching_member.present?
         end
       end
 

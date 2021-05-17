@@ -4,7 +4,7 @@ require 'dry/monads'
 require 'dry/monads/do'
 
 module AptcCsr
-  # This Operation is to initialize AptcHouseholdEntity
+  # This operation is to initialize AptcHousehold
   class InitAptcHousehold
     include Dry::Monads[:result, :do]
 

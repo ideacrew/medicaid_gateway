@@ -17,7 +17,6 @@ module AptcCsr
       required(:is_applicant).filled(:bool)
       optional(:is_mec_eligible).maybe(:bool)
       optional(:benchmark_plan_monthly_premium_amount).maybe(Types::Money)
-      # optional(:expected_contribution).maybe(Types::Money)
       optional(:aptc_eligible).maybe(:bool)
     end
   end

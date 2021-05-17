@@ -8,6 +8,12 @@ module AptcCsr
   class CalculateBenchmarkPlanAmount
     include Dry::Monads[:result, :do]
 
+    # @param [Hash] opts The options to calculate benchmark_plan_amount
+    # @option opts [Hash] :aptc_household(params of ::AptcCsr::AptcHouseholdContract)
+    # @option opts [AcaEntities::MagiMedicaid::TaxHoushold] :magi_medicaid_tax_household
+    # @option opts [AcaEntities::MagiMedicaid::Application] :magi_medicaid_application(includes MAGI Medicaid Deteminations)
+    # @return [Dry::Result]
+    # This class is PRIVATE. Can only be called from ::AptcCsr::ComputeAptcAndCsr
     def call(params)
       # { aptc_household: aptc_household,
       #   tax_household: @mm_tax_household,
@@ -19,14 +25,25 @@ module AptcCsr
 
     private
 
+    def matching_aptc_member(aptc_household, member_identifier)
+      aptc_household[:members].detect { |aptc_mem| aptc_mem[:member_identifier].to_s == member_identifier.to_s }
+    end
+
     def determine_eligible_members_with_benchmark_amounts(params)
       @aptc_household = params[:aptc_household]
       @tax_household = params[:tax_household]
       @application = params[:application]
 
-      members = @tax_household.tax_household_members.select do |thhm|
+      members = @tax_household.tax_household_members.inject([]) do |membrs, thhm|
         applicant = mm_applicant_by_ref(thhm.applicant_reference.person_hbx_id)
-        applicant_eligible_for_aptc?(applicant)
+        aptc_membr = matching_aptc_member(aptc_household, member_identifier)
+        if applicant_eligible_for_aptc?(applicant)
+          membrs << thhm
+          aptc_membr[:aptc_eligible] = true
+        else
+          aptc_membr[:aptc_eligible] = false
+        end
+        membrs
       end
 
       thhms_hashes = applicant_rel_with_premiums(members)
@@ -64,16 +81,14 @@ module AptcCsr
       end
     end
 
-    # TODO: fix below
-    def applicant_member_premium(_applicant)
-      BigDecimal('496.02')
+    def applicant_member_premium(applicant)
+      applicant.slcsp_premium
     end
 
     def applicant_eligible_for_aptc?(applicant)
       applicant.is_applying_coverage &&
         !enrolled_or_eligible_for_mecs?(applicant) &&
-        !eligible_but_does_not_plan_to_enroll?(applicant) &&
-        true
+        !eligible_but_does_not_plan_to_enroll?(applicant)
     end
 
     # TODO: fix below
@@ -92,3 +107,9 @@ module AptcCsr
     end
   end
 end
+
+# Pending Tasks:
+#   1. Fix Rules to check for APTC eligibility
+#   2. Do we have any other rules which we need to configure?
+#   3. Do we have to configure the child count?
+#      Will the child count differ between states?

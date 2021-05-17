@@ -8,6 +8,11 @@ module AptcCsr
   class CheckForMedicaidEligibility
     include Dry::Monads[:result, :do]
 
+    # @param [Hash] opts The options to check for MedicaidEligibility
+    # @option opts [AcaEntities::MagiMedicaid::TaxHoushold] :magi_medicaid_tax_household
+    # @option opts [AcaEntities::MagiMedicaid::Application] :magi_medicaid_application(includes MAGI Medicaid Deteminations)
+    # @return [Dry::Result]
+    # This class is PRIVATE. Can only be called from AptcCsr::DetermineEligibility
     def call(params)
       # { tax_household: @tax_household,
       #   application: @application }
@@ -25,7 +30,7 @@ module AptcCsr
       @application = params[:application]
       @tax_household = params[:tax_household]
 
-      aptc_members = @tax_household.tax_household_members.inject([]) do |members, thhm|
+      thhms = @tax_household.tax_household_members.inject([]) do |members, thhm|
         applicant = applicant_by_reference(thhm.applicant_reference.person_hbx_id)
         members << { member_identifier: thhm.applicant_reference.person_hbx_id,
                      household_count: 1 + child_count(applicant),
@@ -34,9 +39,9 @@ module AptcCsr
         members
       end
       aptc_household = {
-        members: aptc_members,
+        members: thhms,
         assistance_year: @application.assistance_year,
-        total_household_count: aptc_members.inject(0) { |sum, hash| sum + hash[:household_count] }
+        total_household_count: thhms.inject(0) { |sum, hash| sum + hash[:household_count] }
       }
       Success(aptc_household)
     end
@@ -89,8 +94,18 @@ module AptcCsr
                                        ((aptc_household[:total_household_count] - 1) * fpl_data[:annual_per_person_amount])
       fpl = aptc_household[:annual_tax_household_income].div(total_annual_poverty_guideline, 2) * 100
 
+      aptc_household[:fpl] = fpl_params(fpl_data, aptc_household)
       aptc_household[:fpl_percent] = fpl
       Success(aptc_household)
+    end
+
+    def fpl_params(fpl_data, aptc_household)
+      input_data = { state_code: @application.us_state,
+                     household_size: aptc_household[:total_household_count],
+                     medicaid_year: @application.assistance_year,
+                     annual_poverty_guideline: fpl_data[:annual_poverty_guideline],
+                     annual_per_person_amount: fpl_data[:annual_per_person_amount] }
+      ::AcaEntities::Operations::MagiMedicaid::CreateFederalPovertyLevel.new.call(input_data).success.to_h
     end
 
     def compare_with_medicaid_fpl_levels(aptc_household)
@@ -110,6 +125,7 @@ module AptcCsr
       end
 
       aptc_household[:are_all_members_medicaid_eligible] = !compare_result
+      aptc_household[:is_aptc_calculated] = compare_result
       Success(aptc_household)
     end
 
@@ -119,6 +135,9 @@ module AptcCsr
       end
       [mec.first, mec.second[:medicaid_fpl_percentage]]
     end
-
   end
 end
+
+# Pending Tasks:
+#   1. calculate_annual_income
+#   2. Check with Sarah about finding the correct FPL(Open Enrollment)

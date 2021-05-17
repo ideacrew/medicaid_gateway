@@ -56,3 +56,7 @@ module MitcService
     end
   end
 end
+
+# Pending Tasks:
+#   1. Store magi_medicaid_request_payload, mitc_request_payload, mitc_response_payload and magi_medicaid_request_payload
+#   2. Log all Failure moands for finding failure cases.

@@ -43,3 +43,7 @@ module MitcService
     end
   end
 end
+
+# Pending Tasks:
+#   1. Use typhoeus instead of HTTParty for integrating with MiTC.
+#   2. Log all Failure moands for finding failure cases.

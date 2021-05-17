@@ -82,3 +82,7 @@ module AptcCsr
     end
   end
 end
+
+# Pending Tasks:
+#   1. Any configuration for calculate_expected_contribution?
+#   2. Any configuration for calculate_csr fpl_percentage range?
