@@ -34,51 +34,53 @@ module AptcCsr
       @aptc_household = params[:aptc_household]
       @tax_household = params[:tax_household]
       @application = params[:application]
+      non_medicaid_members = @aptc_household[:members].reject do |membr|
+        membr[:medicaid_eligible]
+      end
 
-      members = @tax_household.tax_household_members.inject([]) do |membrs, thhm|
-        applicant = mm_applicant_by_ref(thhm.applicant_reference.person_hbx_id)
-        aptc_membr = matching_aptc_member(aptc_household, member_identifier)
+      aptc_members = non_medicaid_members.inject([]) do |membrs, non_medicaid_mmbr|
+        applicant = mm_applicant_by_ref(non_medicaid_mmbr[:member_identifier])
         if applicant_eligible_for_aptc?(applicant)
-          membrs << thhm
-          aptc_membr[:aptc_eligible] = true
+          membrs << non_medicaid_mmbr
+          non_medicaid_mmbr[:aptc_eligible] = true
         else
-          aptc_membr[:aptc_eligible] = false
+          non_medicaid_mmbr[:aptc_eligible] = false
         end
         membrs
       end
 
-      thhms_hashes = applicant_rel_with_premiums(members)
+      thhms_hashes = applicant_rel_with_premiums(aptc_members)
       child_thhms = thhms_hashes.select { |thhm| thhm[:relationship_kind_to_primary] == 'child' }
-      eligible_members =
-        if child_thhms.count > 3
-          eligible_children = child_thhms.sort_by { |k| k[:member_premium] }.last(3)
-          eligible_members = eligible_children
-          thhms_hashes.select do |thhm|
-            eligible_members << thhm unless child_thhms[:member_identifier].include?(thhm[:member_identifier])
-          end
-        else
-          eligible_members = thhms_hashes
+
+      if child_thhms.count > 3
+        eligible_children = child_thhms.sort_by { |k| k[:member_premium] }.last(3)
+        eligible_aptc_members = eligible_children
+        thhms_hashes.select do |thhm|
+          eligible_aptc_members << thhm unless child_thhms[:member_identifier].include?(thhm[:member_identifier])
         end
-      total_monthly_benchmark = eligible_members.inject(0) do |total, thhm_hash|
+      else
+        eligible_aptc_members = thhms_hashes
+      end
+
+      total_monthly_benchmark = eligible_aptc_members.inject(0) do |total, thhm_hash|
         total + thhm_hash[:member_premium]
       end
-      @aptc_household[:aptc_calculation_members] = eligible_members
+      @aptc_household[:aptc_calculation_members] = eligible_aptc_members
       @aptc_household[:total_benchmark_plan_monthly_premium_amount] = total_monthly_benchmark
       Success(@aptc_household)
     end
     # rubocop:enable Metrics/MethodLength
 
-    def applicant_rel_with_premiums(members)
-      members.inject([]) do |mem_hashes, thhm|
-        aptc_member = @aptc_household[:members].detect { |member| member[:member_identifier] == thhm.applicant_reference.person_hbx_id }
-        applicant = mm_applicant_by_ref(thhm.applicant_reference.person_hbx_id)
+    def applicant_rel_with_premiums(aptc_members)
+      aptc_members.inject([]) do |mem_hashes, aptc_mmbr|
+        applicant = mm_applicant_by_ref(aptc_mmbr[:member_identifier])
         primary = @application.primary_applicant
         rel_kind = @application.relationship_kind(applicant, primary)
         member_premium = applicant_member_premium(applicant)
         mem_hashes << { member_identifier: applicant.person_hbx_id,
                         relationship_kind_to_primary: rel_kind,
                         member_premium: member_premium }
-        aptc_member[:benchmark_plan_monthly_premium_amount] = member_premium
+        aptc_mmbr[:benchmark_plan_monthly_premium_amount] = member_premium
         mem_hashes
       end
     end

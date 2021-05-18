@@ -59,4 +59,5 @@ end
 
 # Pending Tasks:
 #   1. Store magi_medicaid_request_payload, mitc_request_payload, mitc_response_payload and magi_medicaid_request_payload
-#   2. Log all Failure moands for finding failure cases.
+#   2. Send out an event.
+#   3. Log all Failure moands for finding failure cases.

@@ -11,8 +11,7 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
       is_veteran_or_active_military: false }
   end
   let(:attestation) do
-    { is_disabled: false,
-      is_self_attested_blind: false,
+    { is_self_attested_blind: false,
       is_self_attested_disabled: true,
       is_incarcerated: false }
   end
@@ -56,7 +55,7 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
       county: '',
       county_name: '',
       state: 'DC',
-      zip: '12345',
+      zip: '20001',
       country_name: 'USA',
       validation_status: 'ValidMatch',
       lives_outside_state_temporarily: false,
@@ -72,7 +71,7 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
       county: '',
       county_name: '',
       state: 'DC',
-      zip: '12345',
+      zip: '20001',
       country_name: 'USA',
       validation_status: 'ValidMatch',
       lives_outside_state_temporarily: true,
@@ -213,7 +212,7 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
   end
 
   let(:product_eligibility_determination) do
-    { is_ia_eligible: true,
+    { is_ia_eligible: false,
       is_medicaid_chip_eligible: false,
       is_non_magi_medicaid_eligible: false,
       is_totally_ineligible: false,
@@ -232,7 +231,7 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
   end
 
   let(:product_eligibility_determination2) do
-    { is_ia_eligible: true,
+    { is_ia_eligible: false,
       is_medicaid_chip_eligible: false,
       is_non_magi_medicaid_eligible: false,
       is_totally_ineligible: false,

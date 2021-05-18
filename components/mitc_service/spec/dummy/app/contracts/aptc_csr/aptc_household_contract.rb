@@ -11,7 +11,7 @@ module AptcCsr
       required(:total_household_count).filled(:integer)
       required(:annual_tax_household_income).filled(Types::Money)
       required(:are_all_members_medicaid_eligible).filled(:bool)
-      required(:is_aptc_calculated).filled(:bool)
+      optional(:is_aptc_calculated).maybe(:bool)
       optional(:maximum_aptc_amount).maybe(Types::Money)
       optional(:total_expected_contribution_amount).maybe(Types::Money)
       optional(:total_benchmark_plan_monthly_premium_amount).maybe(Types::Money)

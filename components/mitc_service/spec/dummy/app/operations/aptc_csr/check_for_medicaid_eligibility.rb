@@ -59,15 +59,31 @@ module AptcCsr
     end
 
     def calculate_annual_income(aptc_household)
-      # Compute Annual TaxHouseholdIncome here instead of MagiMedicaidEngine.
-      # income = @tax_household.annual_tax_household_income
-      # if income.present?
-      #   Success(income)
-      # else
-      #   Failure("No annual_tax_household_income: #{income}, for given application with hbx_id: #{@application.hbx_id}")
-      # end
-      aptc_household[:annual_tax_household_income] = BigDecimal('20_000.00')
+      aptc_household[:members].each do |aptc_membr|
+        aptc_membr[:annual_household_income_contribution] = annual_income(aptc_membr)
+      end
+      aptc_household[:annual_tax_household_income] =
+        aptc_household[:members].inject(0) {|total, member| total + member[:annual_household_income_contribution]}
       Success(aptc_household)
+    end
+
+    def annual_income(aptc_membr)
+      applicant = applicant_by_reference(aptc_membr[:member_identifier])
+      return BigDecimal('0') if applicant.incomes.blank?
+
+      current_incomes = applicant.incomes.select do |income|
+        income.start_on.year == @application.assistance_year
+      end
+      member_total_income = current_incomes.inject(0) do |total_annual_income, income|
+        annual_income = case income.frequency_kind.downcase
+                        when 'biweekly'
+                          income.amount * 26
+                        else
+                          income.amount
+                        end
+        total_annual_income + annual_income
+      end
+      BigDecimal(member_total_income.to_s)
     end
 
     def calculate_fpl(aptc_household)
@@ -92,7 +108,7 @@ module AptcCsr
       end
       total_annual_poverty_guideline = fpl_data[:annual_poverty_guideline] +
                                        ((aptc_household[:total_household_count] - 1) * fpl_data[:annual_per_person_amount])
-      fpl = aptc_household[:annual_tax_household_income].div(total_annual_poverty_guideline, 2) * 100
+      fpl = aptc_household[:annual_tax_household_income].div(total_annual_poverty_guideline, 3) * 100
 
       aptc_household[:fpl] = fpl_params(fpl_data, aptc_household)
       aptc_household[:fpl_percent] = fpl
@@ -113,19 +129,17 @@ module AptcCsr
         appli_identifier = thhm.applicant_reference.person_hbx_id
         mec, medicaid_fpl = medicaid_eligibility_category_and_fpl(thhm.product_eligibility_determination.magi_medicaid_category)
         aptc_household[:members].each do |aptc_member|
-          if aptc_member[:member_identifier] == appli_identifier
-            aptc_member.merge!({ medicaid_eligibility_category: mec,
-                                 medicaid_fpl: medicaid_fpl })
-          end
+          next unless aptc_member[:member_identifier] == appli_identifier
+          medicaid_eligible = medicaid_fpl >= aptc_household[:fpl_percent]
+          # Do we want to populate MedicaidEligibility in MedicaidGateway Engine?
+          aptc_member.merge!({ medicaid_eligibility_category: mec,
+                               medicaid_fpl: medicaid_fpl,
+                               medicaid_eligible: medicaid_eligible,
+                               aptc_eligible: medicaid_eligible ? false : nil })
         end
       end
 
-      compare_result = aptc_household[:members].any? do |member|
-        aptc_household[:fpl_percent] > member[:medicaid_fpl]
-      end
-
-      aptc_household[:are_all_members_medicaid_eligible] = !compare_result
-      aptc_household[:is_aptc_calculated] = compare_result
+      aptc_household[:are_all_members_medicaid_eligible] = aptc_household[:members].all? { |mem| mem[:medicaid_eligible] }
       Success(aptc_household)
     end
 
@@ -140,4 +154,6 @@ end
 
 # Pending Tasks:
 #   1. calculate_annual_income
-#   2. Check with Sarah about finding the correct FPL(Open Enrollment)
+#   2. Do we want to populate MedicaidEligibility in MedicaidGateway Engine?
+#   3. Check with Sarah about finding the correct FPL(Open Enrollment)
+#   4. Fix the annual_income

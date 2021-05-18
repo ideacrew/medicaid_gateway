@@ -31,20 +31,19 @@ module AptcCsr
       fpl_percentage = aptc_household[:fpl_percent]
 
       applicable_percentage =
-        if fpl_percentage < 133 || (fpl_percentage >= 133 && fpl_percentage < 150)
-          BigDecimal('0')
+        if fpl_percentage < 133
+          BigDecimal('2.07')
+        elsif fpl_percentage >= 133 && fpl_percentage < 150
+          ((fpl_percentage - BigDecimal('133')) / BigDecimal('1.04')) + BigDecimal('3.10')
         elsif fpl_percentage >= 150 && fpl_percentage < 200
-          ((fpl_percentage - BigDecimal('150')) / BigDecimal('50')) * BigDecimal('2')
+          (((fpl_percentage - BigDecimal('150')) / BigDecimal('50')) * BigDecimal('2.38')) + BigDecimal('4.14')
         elsif fpl_percentage >= 200 && fpl_percentage < 250
-          (((fpl_percentage - BigDecimal('200')) / BigDecimal('50')) * BigDecimal('2')) + BigDecimal('2')
+          (((fpl_percentage - BigDecimal('200')) / BigDecimal('50')) * BigDecimal('1.81')) + BigDecimal('6.52')
         elsif fpl_percentage >= 250 && fpl_percentage < 300
-          (((fpl_percentage - BigDecimal('250')) / BigDecimal('50')) * BigDecimal('2')) + BigDecimal('4')
+          (((fpl_percentage - BigDecimal('250')) / BigDecimal('50')) * BigDecimal('1.50')) + BigDecimal('8.33')
         elsif fpl_percentage >= 300 && fpl_percentage < 400
-          (((fpl_percentage - BigDecimal('300')) / BigDecimal('100')) * BigDecimal('2.5')) + BigDecimal('6')
-        else
-          BigDecimal('8.5')
-        end.floor(2)
-
+          BigDecimal('9.83')
+        end.div(BigDecimal('100'), 3)
       expected_contribution = aptc_household[:annual_tax_household_income] * applicable_percentage
       aptc_household[:total_expected_contribution_amount] = expected_contribution
       Success(aptc_household)
@@ -62,7 +61,8 @@ module AptcCsr
       total_contribution_amount = aptc_household[:total_expected_contribution_amount]
       compared_result = total_benchmark_amount - total_contribution_amount
       aptc = (compared_result > 0) ? (compared_result / 12) : 0
-      aptc_household[:maximum_aptc_amount] = aptc
+      aptc_household[:maximum_aptc_amount] = aptc.round
+      aptc_household[:is_aptc_calculated] = true
       Success(aptc_household)
     end
 

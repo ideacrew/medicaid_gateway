@@ -69,12 +69,14 @@ module AptcCsr
         thh[:tax_household_members].each do |thhm|
           ped = thhm[:product_eligibility_determination]
           if aptc_household.are_all_members_medicaid_eligible
+            thh[:is_insurance_assistance_eligible] = 'No'
             ped[:is_ia_eligible] = false
           else
+            thh[:is_insurance_assistance_eligible] = 'Yes'
             aptc_hh_membr = aptc_household.members.detect do |aptc_mem|
               aptc_mem.member_identifier.to_s == thhm[:applicant_reference][:person_hbx_id].to_s
             end
-            ped[:is_ia_eligible] = aptc_hh_membr[:aptc_eligible]
+            ped[:is_ia_eligible] = aptc_hh_membr.aptc_eligible
           end
         end
       end

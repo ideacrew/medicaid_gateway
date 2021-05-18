@@ -18,6 +18,7 @@ module AptcCsr
       optional(:is_mec_eligible).maybe(:bool)
       optional(:benchmark_plan_monthly_premium_amount).maybe(Types::Money)
       optional(:aptc_eligible).maybe(:bool)
+      required(:medicaid_eligible).filled(:bool)
     end
   end
 end

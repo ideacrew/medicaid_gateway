@@ -15,5 +15,6 @@ module AptcCsr
     attribute :benchmark_plan_monthly_premium_amount, Types::Money.optional.meta(omittable: true)
     # attribute :expected_contribution, Types::Money.optional.meta(omittable: true)
     attribute :aptc_eligible, Types::Bool.optional.meta(omittable: true)
+    attribute :medicaid_eligible, Types::Bool
   end
 end

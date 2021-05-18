@@ -51,27 +51,27 @@ module Types
   MedicaidEligibilityCategoriesMap = {
     adult_group_category: {
       mitc_key: 'adult_group',
-      medicaid_fpl_percentage: 215
+      medicaid_fpl_percentage: BigDecimal('215')
     },
     parent_caretaker_category: {
       mitc_key: 'parent_caretaker',
-      medicaid_fpl_percentage: 221
+      medicaid_fpl_percentage: BigDecimal('221')
     },
     pregnancy_category: {
       mitc_key: 'pregnancy',
-      medicaid_fpl_percentage: 324
+      medicaid_fpl_percentage: BigDecimal('324')
     },
     child_category: {
       mitc_key: 'child',
-      medicaid_fpl_percentage: 221
+      medicaid_fpl_percentage: BigDecimal('324')
     },
     optional_targeted_low_income_child: {
       mitc_key: 'optional_targeted_low_income_child',
-      medicaid_fpl_percentage: 324
+      medicaid_fpl_percentage: BigDecimal('221')
     },
     income_medicaid_eligible: {
       mitc_key: 'income_medicaid_eligible',
-      medicaid_fpl_percentage: 324
+      medicaid_fpl_percentage: BigDecimal('324')
     }
   }.freeze
 
