@@ -127,4 +127,20 @@ module Types
       annual_per_person_amount: BigDecimal(4_540.to_s)
     }
   ].freeze
+
+  # Use ResourceRegistry to configure these values
+  IncomeThresholds = [
+    {
+      2020 => {
+        earned_income: BigDecimal('12_400'),
+        unearned_income: BigDecimal('1_100')
+      }
+    },
+    {
+      2021 => {
+        earned_income: BigDecimal('12_400'),
+        unearned_income: BigDecimal('1_100')
+      }
+    }
+  ].freeze
 end

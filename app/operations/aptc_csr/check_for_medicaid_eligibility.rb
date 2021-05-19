@@ -59,31 +59,11 @@ module AptcCsr
     end
 
     def calculate_annual_income(aptc_household)
-      aptc_household[:members].each do |aptc_membr|
-        aptc_membr[:annual_household_income_contribution] = annual_income(aptc_membr)
-      end
-      aptc_household[:annual_tax_household_income] =
-        aptc_household[:members].inject(0) {|total, member| total + member[:annual_household_income_contribution]}
-      Success(aptc_household)
-    end
-
-    def annual_income(aptc_membr)
-      applicant = applicant_by_reference(aptc_membr[:member_identifier])
-      return BigDecimal('0') if applicant.incomes.blank?
-
-      current_incomes = applicant.incomes.select do |income|
-        income.start_on.year == @application.assistance_year
-      end
-      member_total_income = current_incomes.inject(0) do |total_annual_income, income|
-        annual_income = case income.frequency_kind.downcase
-                        when 'biweekly'
-                          income.amount * 26
-                        else
-                          income.amount
-                        end
-        total_annual_income + annual_income
-      end
-      BigDecimal(member_total_income.to_s)
+      ::AptcCsr::CalculateTaxHouseholdIncome.new.call({
+        application: @application,
+        tax_household: @tax_household,
+        aptc_household: aptc_household
+      })
     end
 
     def calculate_fpl(aptc_household)
