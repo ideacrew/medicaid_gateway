@@ -59,11 +59,9 @@ module AptcCsr
     end
 
     def calculate_annual_income(aptc_household)
-      ::AptcCsr::CalculateTaxHouseholdIncome.new.call({
-        application: @application,
-        tax_household: @tax_household,
-        aptc_household: aptc_household
-      })
+      ::AptcCsr::CalculateTaxHouseholdIncome.new.call({ application: @application,
+                                                        tax_household: @tax_household,
+                                                        aptc_household: aptc_household })
     end
 
     def calculate_fpl(aptc_household)

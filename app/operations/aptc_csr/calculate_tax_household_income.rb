@@ -38,7 +38,7 @@ module AptcCsr
         member_identifier = thhm.applicant_reference.person_hbx_id
         applicant = applicant_by_reference(member_identifier)
         member = matching_aptc_member(@aptc_household, member_identifier)
-        member[:annual_household_income_contribution] = calculate_member_income(applicant, thhm, income_threshold)
+        member[:annual_household_income_contribution] = calculate_member_income(applicant, income_threshold)
       end
       @aptc_household[:annual_tax_household_income] =
         @aptc_household[:members].inject(0) {|total, member| total + member[:annual_household_income_contribution]}
@@ -46,7 +46,7 @@ module AptcCsr
       Success(@aptc_household)
     end
 
-    def calculate_member_income(applicant, thhm, income_threshold)
+    def calculate_member_income(applicant, income_threshold)
       return BigDecimal('0') unless applicant.incomes.present?
       applicant.incomes.inject(BigDecimal('0')) do |annual_total, income|
         annual_total + eligible_earned_annual_income(applicant, income, income_threshold)
@@ -74,6 +74,7 @@ module AptcCsr
       ((income_end_date.yday - income_start_date.yday + 1) * income_per_day).round(2)
     end
 
+    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
     def calculate_income_per_day(income)
       no_of_days = @assistance_year_end.yday
       annual_amnt = case income.frequency_kind.downcase
@@ -107,6 +108,7 @@ module AptcCsr
       income_per_day = annual_amnt / no_of_days
       BigDecimal(income_per_day.to_s)
     end
+    # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength
 
     def calculate_start_date(income)
       if income.start_on >= @assistance_year_start
@@ -144,5 +146,4 @@ module AptcCsr
 end
 
 # Questions:
-#   1. How can I know if a tax dependent's Income does not meet the IRS thresholds to also have to file a tax return?
-#   2. Verify the annual_income_calculation
+#   1. Verify the annual_income_calculation
