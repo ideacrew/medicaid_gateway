@@ -35,8 +35,7 @@ class AtpBusinessRulesValidationProxy
   end
 
   def run_validation(data)
-    data_size = data.bytesize
-    packet_size = [data_size].pack("l>*")
+    packet_size = [data.bytesize].pack("l>*")
 
     @writer.write(packet_size)
     @writer.write(data)
@@ -50,6 +49,7 @@ class AtpBusinessRulesValidationProxy
     first_readable_array = readable.detect { |item| !item.empty? }
     if first_readable_array.first.fileno == @error_reader.fileno
       read = first_readable_array.first.read_nonblock(2**16)
+      Rails.logger.error { "Validator Crashed:\n#{read}" }
       reconnect!
       raise StandardError, read
     end
@@ -58,7 +58,6 @@ class AtpBusinessRulesValidationProxy
     read_size = packet_response_size.unpack1("L>*")
     read_buff = @reader.read(read_size)
     pid_status = Process.waitpid(@pid, Process::WNOHANG)
-    # Whoops, we crashed it.
     unless pid_status.nil?
       reconnect!
       raise StandardError, "process crashed!"

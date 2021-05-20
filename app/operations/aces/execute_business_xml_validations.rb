@@ -23,9 +23,13 @@ module Aces
     protected
 
     def execute_validator(payload)
-      Try do
+      attempt = Try do
         AtpBusinessRulesValidationProxy.run_validation(payload)
-      end.or(Failure(:validator_crashed))
+      end
+      attempt.or do |e|
+        Rails.logger.error { "Error During Validator Run:\n#{e.inspect}" }
+        Failure(:validator_crashed)
+      end
     end
 
     def parse_result(result_string)
