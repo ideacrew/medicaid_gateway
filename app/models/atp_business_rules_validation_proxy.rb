@@ -31,6 +31,7 @@ class AtpBusinessRulesValidationProxy
       :out => @write_from_validator,
       :err => @errors_from_validator
     )
+    Process.detach(@pid)
   end
 
   def run_validation(data)
