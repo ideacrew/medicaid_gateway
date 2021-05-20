@@ -17,10 +17,20 @@ module Aces
       _validation_result = yield validate_soap_header(parsed_payload)
       body_node = yield extract_top_body_node(parsed_payload)
       string_payload = yield convert_to_document_string(body_node)
-      serialize_response_body(validate_document(string_payload))
+      run_validations_and_serialize(string_payload)
     end
 
     protected
+
+    def run_validations_and_serialize(string_payload)
+      schema_result = validate_document(string_payload)
+      return serialize_response_body(schema_result) unless schema_result.success?
+      serialize_response_body(run_business_validations(string_payload))
+    end
+
+    def run_business_validations(string_payload)
+      Aces::ExecuteBusinessXmlValidations.new.call(string_payload)
+    end
 
     def parse_xml(body)
       parse_result = Try do
@@ -88,8 +98,16 @@ module Aces
     end
 
     def encode_validation_failure(validation_failure)
-      error_messages = validation_failure.map(&:to_s)
-      (["Payload Failed XML Schema Validation:"] + error_messages).join("\n")
+      case validation_failure
+      when AtpBusinessRuleFailure
+        error_messages = validation_failure.failed_assertions.map do |fa|
+          ["Location:\n", fa.location, "\n\nText:\n", fa.text, "\n\n"].join
+        end
+        (["Message Failed Business Validation:"] + error_messages).join("\n")
+      else
+        error_messages = validation_failure.map(&:to_s)
+        (["Payload Failed XML Schema Validation:"] + error_messages).join("\n")
+      end
     end
   end
 end
