@@ -44,23 +44,23 @@ class AtpBusinessRulesValidationProxy
     readable = IO.select([@reader, @error_reader], [], [@error_reader], 10)
     unless readable
       reconnect!
-      raise StandardError.new("process timeout!")
+      raise StandardError, "process timeout!"
     end
     first_readable_array = readable.detect { |item| !item.empty? }
     if first_readable_array.first.fileno == @error_reader.fileno
       read = first_readable_array.first.read_nonblock(2**16)
       reconnect!
-      raise StandardError.new(read)
+      raise StandardError, read
     end
 
     packet_response_size = @reader.read(4)
-    read_size = packet_response_size.unpack("L>*").first
+    read_size = packet_response_size.unpack1("L>*")
     read_buff = @reader.read(read_size)
     pid_status = Process.waitpid(@pid, Process::WNOHANG)
     # Whoops, we crashed it.
-    if pid_status != nil
+    unless pid_status.nil?
       reconnect!
-      raise StandardError.new("process crashed!")
+      raise StandardError, "process crashed!"
     end
     read_buff
   end

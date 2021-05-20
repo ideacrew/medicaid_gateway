@@ -34,6 +34,6 @@ describe Aces::ExecuteBusinessXmlValidations, "given a payload with an empty bod
   it "returns the errors" do
     result = subject.call(payload)
     failure_object = result.failure
-    expect(failure_object.kind_of?(Aces::AtpBusinessRuleFailure)).to be_truthy
+    expect(failure_object.is_a?(Aces::AtpBusinessRuleFailure)).to be_truthy
   end
 end

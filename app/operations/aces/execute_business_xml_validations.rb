@@ -10,7 +10,7 @@ module Aces
 
     XML_NS = {
       svrl: "http://purl.oclc.org/dsdl/svrl"
-    }
+    }.freeze
 
     # @param [String] payload
     # @return [Dry::Result]
@@ -44,11 +44,11 @@ module Aces
         location = node.at_xpath("@location").content
         message = node.at_xpath("svrl:text").content
         AtpFailedBusinessAssertion.new({
-          location: location,
-          text: message
-        })
+                                         location: location,
+                                         text: message
+                                       })
       end
-      Failure(AtpBusinessRuleFailure.new({failed_assertions: error_objects}))
+      Failure(AtpBusinessRuleFailure.new({ failed_assertions: error_objects }))
     end
   end
 end

@@ -45,5 +45,5 @@ pidfile ENV.fetch("PIDFILE", "tmp/pids/server.pid")
 plugin :tmp_restart
 
 on_worker_boot do
-  AtpBusinessRulesValidationProxy.reconnect!  
+  AtpBusinessRulesValidationProxy.reconnect!
 end
