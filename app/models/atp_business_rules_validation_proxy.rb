@@ -3,6 +3,9 @@
 # Proxies to a shelled-out java validator for the schematron rules.
 # Nokogiri is based on libxml2 - which currently doesn't support the needed
 # protocols for schematron.
+#
+# The jar itself lives in lib/atp_validator-0.1.0-jar-with-dependencies.jar.
+# The repository for the code is: https://github.com/ideacrew/atp_validator
 class AtpBusinessRulesValidationProxy
   include Singleton
 
