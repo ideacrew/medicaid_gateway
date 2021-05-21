@@ -35,13 +35,19 @@ class AtpBusinessRulesValidationProxy
     # Process.detatch(@pid)
   end
 
-  def check_process_death
-    pid_status = Process.waitpid(@pid, Process::WNOHANG)
-    return unless pid_status
+  def check_process_death(stage = "boot")
+    pid_status = nil
+    begin
+      pid_status = Process.waitpid(@pid, Process::WNOHANG)
+      return unless pid_status
+    rescue Errno::ECHILD
+      pid_status = -1
+    end
     read_death_data = @error_reader.read_nonblock(2**16)
     Rails.logger.error do
-      "Process died during boot: #{@pid}\n#{read_death_data}"
+      "Process died during #{stage}: #{@pid}\n#{read_death_data}"
     end
+    pid_status
   end
 
   def run_validation(data)
@@ -67,7 +73,7 @@ class AtpBusinessRulesValidationProxy
     packet_response_size = @reader.read(4)
     read_size = packet_response_size.unpack1("L>*")
     read_buff = @reader.read(read_size)
-    pid_status = Process.waitpid(@pid, Process::WNOHANG)
+    pid_status = check_process_death("run")
     unless pid_status.nil?
       reconnect!
       raise StandardError, "process crashed!"
