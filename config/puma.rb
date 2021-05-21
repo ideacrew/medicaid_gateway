@@ -45,5 +45,6 @@ pidfile ENV.fetch("PIDFILE", "tmp/pids/server.pid")
 plugin :tmp_restart
 
 on_worker_boot do
+  Rails.logger.info { "Rebooting Validation Proxy for worker" }
   AtpBusinessRulesValidationProxy.reconnect!
 end
