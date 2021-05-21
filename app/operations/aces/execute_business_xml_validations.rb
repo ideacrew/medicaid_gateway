@@ -27,7 +27,7 @@ module Aces
         AtpBusinessRulesValidationProxy.run_validation(payload)
       end
       attempt.or do |e|
-        Rails.logger.error { "Error During Validator Run:\n#{e.inspect}" }
+        Rails.logger.error { "Error During Validator Run:\n#{e.inspect}\n" + e.backtrace.join("\n") }
         Failure(:validator_crashed)
       end
     end
