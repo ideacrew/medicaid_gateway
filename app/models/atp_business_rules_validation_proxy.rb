@@ -29,10 +29,13 @@ class AtpBusinessRulesValidationProxy
       chdir: WORKING_DIRECTORY,
       :in => @read_into_validator,
       :out => @write_from_validator,
-      :err => @errors_from_validator
+      :err => @errors_from_validator,
+      @error_reader.fileno => :close,
+      @reader.fileno => :close,
+      @writer.fileno => :close
     )
     check_process_death
-    # Process.detatch(@pid)
+    Process.detach(@pid)
   end
 
   def check_process_death(stage = "boot")
