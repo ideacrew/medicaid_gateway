@@ -34,8 +34,12 @@ class AtpBusinessRulesValidationProxy
       @reader.fileno => :close,
       @writer.fileno => :close
     )
-    check_process_death
     Process.detach(@pid)
+    @write_from_validator.close
+    @read_into_validator.close
+    @errors_from_validator.close
+    check_process_death
+    @pid
   end
 
   def check_process_death(stage = "boot")
@@ -84,16 +88,19 @@ class AtpBusinessRulesValidationProxy
     read_buff
   end
 
+  # rubocop:disable Lint/SuppressedException
   def reconnect!
-    return if @pid.blank?
-    @reader.close
-    @writer.close
-    @write_from_validator.close
-    @read_into_validator.close
-    @error_reader.close
-    @errors_from_validator.close
-    Process.kill(9, @pid)
-    Process.waitpid(@pid)
+    unless @pid.blank?
+      @reader.close
+      @writer.close
+      @error_reader.close
+      Process.kill(9, @pid)
+      begin
+        Process.waitpid(@pid)
+      rescue Errno::ECHILD
+      end
+    end
     boot_port_process
   end
+  # rubocop:enable Lint/SuppressedException
 end
