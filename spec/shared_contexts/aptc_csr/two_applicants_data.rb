@@ -91,7 +91,8 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants tiffan
       is_temporarily_out_of_state: false,
       age_of_applicant: 45,
       is_claimed_as_dependent_by_non_applicant: false,
-      slcsp_premium: 496.02 }
+      slcsp_premium: 496.02,
+      lcsp_premium: 430.48 }
   end
 
   let(:thomas) do
@@ -135,7 +136,8 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants tiffan
       is_temporarily_out_of_state: false,
       age_of_applicant: 13,
       is_claimed_as_dependent_by_non_applicant: false,
-      slcsp_premium: 274.68 }
+      slcsp_premium: 274.68,
+      lcsp_premium: 230.48 }
   end
 
   let(:applicant_reference) do

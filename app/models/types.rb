@@ -143,4 +143,17 @@ module Types
       }
     }
   ].freeze
+
+  # Use ResourceRegistry to configure below
+  AffordabilityThresholds = [
+    { 2020 => BigDecimal('9.83') },
+    { 2021 => BigDecimal('9.83') }
+  ].freeze
+
+  CsrKind = Types::Coercible::String.enum('0',
+                                          '73',
+                                          '87',
+                                          '94',
+                                          '100',
+                                          'limited')
 end

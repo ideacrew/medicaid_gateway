@@ -23,7 +23,6 @@ module AptcCsr
 
     private
 
-    # rubocop:disable Metrics/CyclomaticComplexity
     def calculate_expected_contribution(params)
       @tax_household = params[:tax_household]
       @application = params[:application]
@@ -31,24 +30,24 @@ module AptcCsr
       fpl_percentage = aptc_household[:fpl_percent]
 
       applicable_percentage =
-        if fpl_percentage < 133
-          BigDecimal('2.07')
-        elsif fpl_percentage >= 133 && fpl_percentage < 150
-          ((fpl_percentage - BigDecimal('133')) / BigDecimal('1.04')) + BigDecimal('3.10')
+        if fpl_percentage < 150
+          BigDecimal('0')
         elsif fpl_percentage >= 150 && fpl_percentage < 200
-          (((fpl_percentage - BigDecimal('150')) / BigDecimal('50')) * BigDecimal('2.38')) + BigDecimal('4.14')
+          ((fpl_percentage - BigDecimal('150')) / BigDecimal('50')) * BigDecimal('2')
         elsif fpl_percentage >= 200 && fpl_percentage < 250
-          (((fpl_percentage - BigDecimal('200')) / BigDecimal('50')) * BigDecimal('1.81')) + BigDecimal('6.52')
+          (((fpl_percentage - BigDecimal('200')) / BigDecimal('50')) * BigDecimal('2')) + BigDecimal('2')
         elsif fpl_percentage >= 250 && fpl_percentage < 300
-          (((fpl_percentage - BigDecimal('250')) / BigDecimal('50')) * BigDecimal('1.50')) + BigDecimal('8.33')
+          (((fpl_percentage - BigDecimal('250')) / BigDecimal('50')) * BigDecimal('2')) + BigDecimal('4')
         elsif fpl_percentage >= 300 && fpl_percentage < 400
-          BigDecimal('9.83')
+          (((fpl_percentage - BigDecimal('300')) / BigDecimal('100')) * BigDecimal('2.5')) + BigDecimal('6')
+        else
+          # covers 400 and above
+          BigDecimal('8.5')
         end.div(BigDecimal('100'), 3)
       expected_contribution = aptc_household[:annual_tax_household_income] * applicable_percentage
       aptc_household[:total_expected_contribution_amount] = expected_contribution
       Success(aptc_household)
     end
-    # rubocop:enable Metrics/CyclomaticComplexity
 
     def calculate_benchmark_plan_amount(aptc_household)
       ::AptcCsr::CalculateBenchmarkPlanAmount.new.call({ aptc_household: aptc_household,
@@ -60,26 +59,67 @@ module AptcCsr
       total_benchmark_amount = aptc_household[:total_benchmark_plan_monthly_premium_amount] * 12
       total_contribution_amount = aptc_household[:total_expected_contribution_amount]
       compared_result = total_benchmark_amount - total_contribution_amount
-      aptc = (compared_result > 0) ? (compared_result / 12) : 0
+      aptc =
+        if compared_result > 0
+          correct_aptc_if_qsehra(compared_result, aptc_household) / 12
+        else
+          BigDecimal('0')
+        end
       aptc_household[:maximum_aptc_amount] = aptc.round
       aptc_household[:is_aptc_calculated] = true
       Success(aptc_household)
     end
 
+    def correct_aptc_if_qsehra(compared_result, aptc_household)
+      amounts = monthly_qsehra_amounts(aptc_household)
+      return compared_result if amounts.blank?
+      corrected_aptc = compared_result - amounts.sum
+      corrected_aptc > 0 ? corrected_aptc : BigDecimal('0')
+    end
+
+    # TODO: Verify with Sarah if we want to check qsehra for all members or only for APTC eligible members?
+    def monthly_qsehra_amounts(aptc_household)
+      aptc_household[:members].inject(BigDecimal('0')) do |total, member|
+        applicant = applicant_by_reference(member.member_identifier)
+        total + applicant.monthly_qsehra_amount
+      end
+    end
+
+    def applicant_by_reference(person_hbx_id)
+      @application.applicants.detect do |applicant|
+        applicant.person_hbx_id.to_s == person_hbx_id.to_s
+      end
+    end
+
     def calculate_csr(aptc_household)
-      fpl_percentage = aptc_household[:fpl_percent]
-      aptc_household[:csr_percentage] = if fpl_percentage <= 150
-                                          94
-                                        elsif fpl_percentage > 150 && fpl_percentage <= 200
-                                          87
-                                        elsif fpl_percentage > 200 && fpl_percentage <= 250
-                                          73
-                                        else
-                                          0
-                                        end
+      aptc_household[:members].each do |member|
+        next member if member[:csr_eligible] == false
+        applicant = applicant_by_reference(member.member_identifier)
+        fpl_level = aptc_household[:fpl_percent]
+        csr = find_csr(applicant, fpl_level)
+        member[:csr] = csr
+      end
 
       Success(aptc_household)
     end
+
+    # rubocop:disable Style/IfInsideElse
+    def find_csr(applicant, fpl_level)
+      if applicant.attested_for_aian?
+        (fpl_level <= 300.0) ? '100' : 'limited'
+      else
+        if fpl_level <= 150
+          '94'
+        elsif fpl_level > 150 && fpl_level <= 200
+          '87'
+        elsif fpl_level > 200 && fpl_level <= 250
+          '73'
+        else
+          '0'
+        end
+      end
+    end
+    # rubocop:enable Style/IfInsideElse
   end
 end
 

@@ -31,6 +31,7 @@ module AptcCsr
       #  Calculate the expected contribution
 
       aptc_household = yield check_for_medicaid_eligibility(params)
+      aptc_household = yield determine_eligible_members(aptc_household)
       aptc_household = yield compute_aptc_and_csr(aptc_household)
       aptc_household_entity = yield init_aptc_household(aptc_household)
       result = yield add_determination_to_application(aptc_household_entity)
@@ -48,8 +49,15 @@ module AptcCsr
                                                         application: @mm_application })
     end
 
+    def determine_eligible_members(aptc_household)
+      ::AptcCsr::DetermineEligibleMembers.new.call({ tax_household: @mm_tax_household,
+                                                     aptc_household: aptc_household,
+                                                     application: @mm_application })
+    end
+
     def compute_aptc_and_csr(aptc_household)
-      return Success(aptc_household) if aptc_household[:are_all_members_medicaid_eligible]
+      # TODO: Do not compute aptc and csr values if all members are ineligible for aptc/csr
+      # return Success(aptc_household) if aptc_household[:are_all_members_medicaid_eligible]
 
       ::AptcCsr::ComputeAptcAndCsr.new.call({ tax_household: @mm_tax_household,
                                               aptc_household: aptc_household,
@@ -65,19 +73,17 @@ module AptcCsr
       mm_application_hash[:tax_households].each do |thh|
         next unless thh[:hbx_id].to_s == @mm_tax_household.hbx_id.to_s
         thh[:max_aptc] = aptc_household.maximum_aptc_amount
-        thh[:csr] = aptc_household.csr_percentage
+        thh[:is_insurance_assistance_eligible] =
+          aptc_household.aptc_calculation_members.present? ? 'Yes' : 'No'
+
         thh[:tax_household_members].each do |thhm|
           ped = thhm[:product_eligibility_determination]
-          if aptc_household.are_all_members_medicaid_eligible
-            thh[:is_insurance_assistance_eligible] = 'No'
-            ped[:is_ia_eligible] = false
-          else
-            thh[:is_insurance_assistance_eligible] = 'Yes'
-            aptc_hh_membr = aptc_household.members.detect do |aptc_mem|
-              aptc_mem.member_identifier.to_s == thhm[:applicant_reference][:person_hbx_id].to_s
-            end
-            ped[:is_ia_eligible] = aptc_hh_membr.aptc_eligible
+          aptc_hh_membr = aptc_household.members.detect do |aptc_mem|
+            aptc_mem.member_identifier.to_s == thhm[:applicant_reference][:person_hbx_id].to_s
           end
+          ped[:is_ia_eligible] = aptc_hh_membr.aptc_eligible
+          ped[:is_csr_eligible] = aptc_hh_membr.csr_eligible
+          ped[:csr] = aptc_hh_membr.csr
         end
       end
 

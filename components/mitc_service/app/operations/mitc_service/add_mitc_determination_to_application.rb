@@ -70,7 +70,9 @@ module MitcService
       mitc_applicants = mitc_response[:applicants]
       mm_app_hash[:tax_households].each do |mm_thh|
         mm_thh[:tax_household_members].each do |mm_thhm|
-          mitc_applicant = mitc_applicant_by_person_id(mitc_applicants, mitc_response[:applicants].first[:person_id])
+          member_identifier = mm_thhm[:applicant_reference][:person_hbx_id]
+          mitc_applicant = mitc_applicant_by_person_id(mitc_applicants, member_identifier)
+          next mm_thhm if mitc_applicant.blank?
           ped_attrs = { magi_medicaid_monthly_household_income: mitc_applicant[:medicaid_household][:magi_income],
                         medicaid_household_size: mitc_applicant[:medicaid_household][:size],
                         magi_as_percentage_of_fpl: mitc_applicant[:medicaid_household][:magi_as_percentage_of_fpl],
