@@ -31,7 +31,17 @@ class AtpBusinessRulesValidationProxy
       :out => @write_from_validator,
       :err => @errors_from_validator
     )
-    # Process.detach(@pid)
+    check_process_death
+    # Process.detatch(@pid)
+  end
+
+  def check_process_death
+    pid_status = Process.waitpid(@pid, Process::WNOHANG)
+    return unless pid_status
+    read_death_data = @error_reader.read_nonblock(2**16)
+    Rails.logger.error do
+      "Process died during boot: #{@pid}\n#{read_death_data}"
+    end
   end
 
   def run_validation(data)
