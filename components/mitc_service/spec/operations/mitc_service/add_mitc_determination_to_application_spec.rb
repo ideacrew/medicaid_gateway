@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require "#{MitcService::Engine.root}/spec/shared_contexts/magi_medicaid_application_data.rb"
+require "#{Rails.root}/spec/shared_contexts/eligibilities/magi_medicaid_application_data.rb"
 
 RSpec.describe ::MitcService::AddMitcDeterminationToApplication do
   include_context 'setup magi_medicaid application with two applicants'
