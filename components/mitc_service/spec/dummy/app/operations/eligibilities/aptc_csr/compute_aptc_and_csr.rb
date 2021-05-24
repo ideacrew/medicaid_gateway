@@ -72,16 +72,20 @@ module Eligibilities
       end
 
       def correct_aptc_if_qsehra(compared_result, aptc_household)
-        amounts = monthly_qsehra_amounts(aptc_household)
-        return compared_result if amounts.blank?
-        corrected_aptc = compared_result - amounts.sum
+        amount = total_monthly_qsehra_amount(aptc_household)
+        return compared_result if amount.zero?
+
+        corrected_aptc = compared_result - amount
         corrected_aptc > 0 ? corrected_aptc : BigDecimal('0')
       end
 
-      # TODO: Verify with Sarah if we want to check qsehra for all members or only for APTC eligible members?
-      def monthly_qsehra_amounts(aptc_household)
-        aptc_household[:members].inject(BigDecimal('0')) do |total, member|
-          applicant = applicant_by_reference(member.member_identifier)
+      # Check qsehra for APTC eligible members only
+      def total_monthly_qsehra_amount(aptc_household)
+        aptc_eligible_members = aptc_household[:members].select do |member|
+          member[:aptc_eligible] == true
+        end
+        aptc_eligible_members.inject(BigDecimal('0')) do |total, member|
+          applicant = applicant_by_reference(member[:member_identifier])
           total + applicant.monthly_qsehra_amount
         end
       end
@@ -95,7 +99,7 @@ module Eligibilities
       def calculate_csr(aptc_household)
         aptc_household[:members].each do |member|
           next member if member[:csr_eligible] == false
-          applicant = applicant_by_reference(member.member_identifier)
+          applicant = applicant_by_reference(member[:member_identifier])
           fpl_level = aptc_household[:fpl_percent]
           csr = find_csr(applicant, fpl_level)
           member[:csr] = csr

@@ -122,6 +122,7 @@ RSpec.shared_context 'cms ME simple_scenarios test_case_a', :shared_context => :
       is_claimed_as_dependent_by_non_applicant: false,
       slcsp_premium: 496.02,
       lcsp_premium: 430.48,
+      is_homeless: false,
       mitc_relationships: dwayne_mitc_relationships,
       mitc_income: mitc_income }
   end
@@ -181,6 +182,7 @@ RSpec.shared_context 'cms ME simple_scenarios test_case_a', :shared_context => :
       is_claimed_as_dependent_by_non_applicant: false,
       slcsp_premium: 274.68,
       lcsp_premium: 230.48,
+      is_homeless: false,
       mitc_relationships: betty_mitc_relationships,
       mitc_income: mitc2_income }
   end

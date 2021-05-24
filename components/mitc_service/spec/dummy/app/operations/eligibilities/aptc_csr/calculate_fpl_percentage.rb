@@ -45,21 +45,9 @@ module Eligibilities
         Success([fpl_data, aptc_household])
       end
 
+      # FplYear is always previous year irrespective of when the User is applying for assistance
       def find_fpl_year
-        # aptc_effective_date    assistance_year        aptc     medicaid
-        #   2020/11/1               2020               2020       2020
-        #   2021/1/15               2021               2020       2020
-        #   2021/2/1                2021               2020       2021
-
-        # TODO: Check with Sarah related to OE/15th month of rule.
-        assistance_year = @application.assistance_year
-        start_date = Date.new(assistance_year, 11, 1)
-        end_of_year = start_date.end_of_year
-        if (start_date..end_of_year).cover?(@application.aptc_effective_date)
-          assistance_year
-        else
-          assistance_year - 1
-        end
+        @application.assistance_year - 1
       end
 
       def init_fpl_entity(fpl_data, aptc_household)

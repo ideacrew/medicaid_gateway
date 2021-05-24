@@ -30,7 +30,7 @@ module Eligibilities
       end
 
       def determine_who_qualifies_for_aptc_csr(affordability_threshold)
-        if any_missing_incomes?
+        if any_income_questions_unanswered?
           update_all_members_as_ineligible
         else
           @affordability_threshold = affordability_threshold
@@ -58,10 +58,16 @@ module Eligibilities
         end
       end
 
-      def any_missing_incomes?
+      # Check if all applying members answered income driver questions.
+      def any_income_questions_unanswered?
         @tax_household.tax_household_members.any? do |thhm|
           applicant = applicant_by_reference(thhm.applicant_reference.person_hbx_id)
-          applicant.incomes.blank?
+          next applicant unless applicant.is_applying_coverage
+
+          [applicant.has_job_income,
+           applicant.has_self_employment_income,
+           applicant.has_unemployment_income,
+           applicant.has_other_income].any?(&:blank?)
         end
       end
 
@@ -129,9 +135,21 @@ module Eligibilities
         end
       end
 
-      # TODO
-      def state_resident?(_applicant)
-        true
+      def state_resident?(applicant)
+        residential_address_in_state?(applicant) ||
+          applicant.is_homeless ||
+          temporarily_absent?(applicant)
+      end
+
+      def residential_address_in_state?(applicant)
+        hme_address = applicant.home_address
+        return false if hme_address.blank?
+
+        hme_address.state == @application.us_state
+      end
+
+      def temporarily_absent?(applicant)
+        applicant.is_temporarily_out_of_state
       end
 
       def tax_filing?(applicant)
@@ -140,6 +158,7 @@ module Eligibilities
 
       # TODO
       def medicaid_or_chip_check?
+        # Check the doc and dependent on new functionality
         true
       end
 

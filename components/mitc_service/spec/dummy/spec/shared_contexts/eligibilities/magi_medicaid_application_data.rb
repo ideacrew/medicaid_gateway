@@ -146,6 +146,7 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
       is_claimed_as_dependent_by_non_applicant: false,
       slcsp_premium: 496.02,
       lcsp_premium: 430.48,
+      is_homeless: false,
       mitc_relationships: applicant1_mitc_relationships,
       mitc_income: mitc_income }
   end
@@ -194,6 +195,7 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
       is_claimed_as_dependent_by_non_applicant: false,
       slcsp_premium: 459.48,
       lcsp_premium: 430.48,
+      is_homeless: false,
       mitc_relationships: applicant2_mitc_relationships,
       mitc_income: mitc_income }
   end
