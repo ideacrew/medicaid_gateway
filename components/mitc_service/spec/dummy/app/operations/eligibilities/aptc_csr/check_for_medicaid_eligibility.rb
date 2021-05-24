@@ -34,9 +34,9 @@ module Eligibilities
         thhms = @tax_household.tax_household_members.inject([]) do |members, thhm|
           applicant = applicant_by_reference(thhm.applicant_reference.person_hbx_id)
           members << { member_identifier: thhm.applicant_reference.person_hbx_id,
-                      household_count: BigDecimal('1'),
-                      tax_filer_status: applicant.tax_filer_kind,
-                      is_applicant: applicant.is_applying_coverage }
+                       household_count: BigDecimal('1'),
+                       tax_filer_status: applicant.tax_filer_kind,
+                       is_applicant: applicant.is_applying_coverage }
           members
         end
         aptc_household = {
@@ -55,14 +55,14 @@ module Eligibilities
 
       def calculate_annual_income(aptc_household)
         ::Eligibilities::AptcCsr::CalculateTaxHouseholdIncome.new.call({ application: @application,
-                                                          tax_household: @tax_household,
-                                                          aptc_household: aptc_household })
+                                                                         tax_household: @tax_household,
+                                                                         aptc_household: aptc_household })
       end
 
       def calculate_fpl(aptc_household)
         ::Eligibilities::AptcCsr::CalculateFplPercentage.new.call({ application: @application,
-                                                    tax_household: @tax_household,
-                                                    aptc_household: aptc_household })
+                                                                    tax_household: @tax_household,
+                                                                    aptc_household: aptc_household })
       end
 
       # def compare_with_medicaid_fpl_levels(aptc_household)

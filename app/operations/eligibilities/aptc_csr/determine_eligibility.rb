@@ -47,13 +47,13 @@ module Eligibilities
         @mm_tax_household = params[:magi_medicaid_tax_household]
 
         ::Eligibilities::AptcCsr::CheckForMedicaidEligibility.new.call({ tax_household: @mm_tax_household,
-                                                          application: @mm_application })
+                                                                         application: @mm_application })
       end
 
       def determine_eligible_members(aptc_household)
         ::Eligibilities::AptcCsr::DetermineEligibleMembers.new.call({ tax_household: @mm_tax_household,
-                                                      aptc_household: aptc_household,
-                                                      application: @mm_application })
+                                                                      aptc_household: aptc_household,
+                                                                      application: @mm_application })
       end
 
       def compute_aptc_and_csr(aptc_household)
@@ -61,8 +61,8 @@ module Eligibilities
         # return Success(aptc_household) if aptc_household[:are_all_members_medicaid_eligible]
 
         ::Eligibilities::AptcCsr::ComputeAptcAndCsr.new.call({ tax_household: @mm_tax_household,
-                                                aptc_household: aptc_household,
-                                                application: @mm_application })
+                                                               aptc_household: aptc_household,
+                                                               application: @mm_application })
       end
 
       def init_aptc_household(aptc_household)

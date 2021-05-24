@@ -39,7 +39,7 @@ module Eligibilities
           fpl_hash[:medicaid_year] == fpl_year
         end
         total_annual_poverty_guideline = fpl_data[:annual_poverty_guideline] +
-                                        ((aptc_household[:total_household_count] - 1) * fpl_data[:annual_per_person_amount])
+                                         ((aptc_household[:total_household_count] - 1) * fpl_data[:annual_per_person_amount])
         fpl_percent = aptc_household[:annual_tax_household_income].div(total_annual_poverty_guideline, 0) * 100
         aptc_household[:fpl_percent] = fpl_percent.floor(2)
         Success([fpl_data, aptc_household])
@@ -64,10 +64,10 @@ module Eligibilities
 
       def init_fpl_entity(fpl_data, aptc_household)
         input_data = { state_code: @application.us_state,
-                      household_size: aptc_household[:total_household_count],
-                      medicaid_year: @application.assistance_year,
-                      annual_poverty_guideline: fpl_data[:annual_poverty_guideline],
-                      annual_per_person_amount: fpl_data[:annual_per_person_amount] }
+                       household_size: aptc_household[:total_household_count],
+                       medicaid_year: @application.assistance_year,
+                       annual_poverty_guideline: fpl_data[:annual_poverty_guideline],
+                       annual_per_person_amount: fpl_data[:annual_per_person_amount] }
         ::AcaEntities::Operations::MagiMedicaid::CreateFederalPovertyLevel.new.call(input_data)
       end
 

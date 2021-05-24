@@ -52,8 +52,8 @@ module Eligibilities
 
       def calculate_benchmark_plan_amount(aptc_household)
         ::Eligibilities::AptcCsr::CalculateBenchmarkPlanAmount.new.call({ aptc_household: aptc_household,
-                                                          tax_household: @tax_household,
-                                                          application: @application })
+                                                                          tax_household: @tax_household,
+                                                                          application: @application })
       end
 
       def calculate_aptc(aptc_household)
