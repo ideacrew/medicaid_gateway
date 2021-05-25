@@ -23,5 +23,16 @@ module AptcCsr
 
       required(:eligibility_date).filled(:date)
     end
+
+    rule(:members).each do |index:|
+      if key? && value
+        if value.is_a?(Hash)
+          result = MemberContract.new.call(value)
+          key([:members, index]).failure(text: 'invalid member', error: result.errors.to_h) if result&.failure?
+        else
+          key([:members, index]).failure(text: 'invalid members. Expected a hash.')
+        end
+      end
+    end
   end
 end

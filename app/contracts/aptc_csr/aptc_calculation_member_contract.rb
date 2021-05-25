@@ -12,6 +12,7 @@ module AptcCsr
     # @return [Dry::Monads::Result]
     params do
       required(:member_identifier).filled(:string)
+      # self is also allowed as one of the types
       required(:relationship_kind_to_primary).filled(:string)
       # required(:age_of_applicant).filled(:integer)
       required(:member_premium).filled(Types::Money)

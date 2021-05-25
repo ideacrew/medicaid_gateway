@@ -9,7 +9,6 @@ module AptcCsr
     attribute :annual_household_income_contribution, Types::Money.optional.meta(omittable: true)
     attribute :tax_filer_status, Types::TaxFilerKind
     attribute :is_applicant, Types::Bool
-    attribute :is_mec_eligible, Types::Bool.optional.meta(omittable: true)
     attribute :benchmark_plan_monthly_premium_amount, Types::Money.optional.meta(omittable: true)
 
     attribute :aptc_eligible, Types::Bool.optional.meta(omittable: true)
