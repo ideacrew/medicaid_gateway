@@ -100,7 +100,7 @@ class AtpBusinessRulesValidationProxy
       Process.kill(9, @pid)
       begin
         Process.waitpid(@pid)
-      rescue Errno::ECHILD
+      rescue Errno::ECHILD, Errno::ESRCH
       end
     end
     boot_port_process
