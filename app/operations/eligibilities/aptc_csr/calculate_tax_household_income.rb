@@ -159,6 +159,3 @@ module Eligibilities
     end
   end
 end
-
-# Questions:
-#   1. Verify the annual_income_calculation

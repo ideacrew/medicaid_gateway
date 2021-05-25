@@ -30,20 +30,6 @@ module Eligibilities
         @aptc_household = params[:aptc_household]
         @tax_household = params[:tax_household]
         @application = params[:application]
-        # non_medicaid_members = @aptc_household[:members].reject do |membr|
-        #   membr[:medicaid_eligible]
-        # end
-
-        # aptc_members = non_medicaid_members.inject([]) do |membrs, non_medicaid_mmbr|
-        #   applicant = mm_applicant_by_ref(non_medicaid_mmbr[:member_identifier])
-        #   if applicant_eligible_for_aptc?(applicant)
-        #     membrs << non_medicaid_mmbr
-        #     non_medicaid_mmbr[:aptc_eligible] = true
-        #   else
-        #     non_medicaid_mmbr[:aptc_eligible] = false
-        #   end
-        #   membrs
-        # end
 
         aptc_members = @aptc_household[:members].select { |mbr| mbr[:aptc_eligible] }
         thhms_hashes = applicant_rel_with_premiums(aptc_members)
@@ -82,9 +68,6 @@ module Eligibilities
         end
       end
 
-      # TODO: Check to see of Applicant needs to have
-      # two separate fields for :slcsp_premium as
-      # :health_only_slcsp_premium and :health_and_dental_slcsp_premium
       def applicant_member_premium(applicant)
         applicant.slcsp_premium
       end

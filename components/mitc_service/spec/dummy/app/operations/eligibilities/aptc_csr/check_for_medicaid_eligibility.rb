@@ -20,7 +20,6 @@ module Eligibilities
         aptc_household = yield calculate_thh_size(params)
         aptc_household = yield calculate_annual_income(aptc_household)
         aptc_household = yield calculate_fpl(aptc_household)
-        # aptc_household = yield compare_with_medicaid_fpl_levels(aptc_household)
 
         Success(aptc_household)
       end
@@ -64,38 +63,9 @@ module Eligibilities
                                                                     tax_household: @tax_household,
                                                                     aptc_household: aptc_household })
       end
-
-      # def compare_with_medicaid_fpl_levels(aptc_household)
-      #   @tax_household.tax_household_members.each do |thhm|
-      #     appli_identifier = thhm.applicant_reference.person_hbx_id
-      #     mec, medicaid_fpl = medicaid_eligibility_category_and_fpl(thhm.product_eligibility_determination.magi_medicaid_category)
-      #     aptc_household[:members].each do |aptc_member|
-      #       next unless aptc_member[:member_identifier] == appli_identifier
-      #       medicaid_eligible = medicaid_fpl >= aptc_household[:fpl_percent]
-      #       # Do we want to populate MedicaidEligibility in MedicaidGateway Engine?
-      #       aptc_member.merge!({ medicaid_eligibility_category: mec,
-      #                            medicaid_fpl: medicaid_fpl,
-      #                            medicaid_eligible: medicaid_eligible,
-      #                            aptc_eligible: medicaid_eligible ? false : nil })
-      #     end
-      #   end
-
-      #   aptc_household[:are_all_members_medicaid_eligible] = aptc_household[:members].all? { |mem| mem[:medicaid_eligible] }
-      #   Success(aptc_household)
-      # end
-
-      # def medicaid_eligibility_category_and_fpl(value)
-      #   mec = Types::MedicaidEligibilityCategoriesMap.detect do |_mec_key, mec_value|
-      #     mec_value[:mitc_key] == value
-      #   end
-      #   [mec.first, mec.second[:medicaid_fpl_percentage]]
-      # end
     end
   end
 end
 
-# Pending Tasks:
-#   1. calculate_annual_income
-#   2. Do we want to populate MedicaidEligibility in MedicaidGateway Engine?
-#   3. Check with Sarah about finding the correct FPL(Open Enrollment)
-#   4. Fix the annual_income
+# TODO
+#   1. Fix the Operation's name
