@@ -97,8 +97,8 @@ class AtpBusinessRulesValidationProxy
       @reader.close
       @writer.close
       @error_reader.close
-      Process.kill(9, @pid)
       begin
+        Process.kill(9, @pid)
         Process.waitpid(@pid)
       rescue Errno::ECHILD, Errno::ESRCH
       end
