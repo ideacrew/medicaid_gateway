@@ -13,7 +13,8 @@ module AptcCsr
     attribute :benchmark_plan_monthly_premium_amount, Types::Money.optional.meta(omittable: true)
 
     attribute :aptc_eligible, Types::Bool.optional.meta(omittable: true)
-    attribute :medicaid_eligible, Types::Bool.optional.meta(omittable: true)
+    attribute :totally_ineligible, Types::Bool.optional.meta(omittable: true)
+    attribute :uqhp_eligible, Types::Bool.optional.meta(omittable: true)
     attribute :csr_eligible, Types::Bool.optional.meta(omittable: true)
 
     attribute :csr, Types::CsrKind.optional.meta(omittable: true)

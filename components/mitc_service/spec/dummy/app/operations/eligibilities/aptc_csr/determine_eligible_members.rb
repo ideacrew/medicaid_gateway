@@ -31,7 +31,7 @@ module Eligibilities
 
       def determine_who_qualifies_for_aptc_csr(affordability_threshold)
         if any_income_questions_unanswered?
-          update_all_members_as_ineligible
+          update_all_members_as_aptc_ineligible
         else
           @affordability_threshold = affordability_threshold
           @tax_household.tax_household_members.each do |thhm|
@@ -49,7 +49,7 @@ module Eligibilities
         Success(@aptc_household)
       end
 
-      def update_all_members_as_ineligible
+      def update_all_members_as_aptc_ineligible
         @tax_household.tax_household_members.each do |thhm|
           member_identifier = thhm.applicant_reference.person_hbx_id
           aptc_hh_member = matching_aptc_member(member_identifier)
@@ -131,7 +131,7 @@ module Eligibilities
             spouse_member[:csr_eligible] = false
           end
         when 'family'
-          update_all_members_as_ineligible
+          update_all_members_as_aptc_ineligible
         end
       end
 

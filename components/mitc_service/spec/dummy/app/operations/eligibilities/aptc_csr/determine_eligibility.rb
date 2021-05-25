@@ -21,6 +21,7 @@ module Eligibilities
         aptc_household = yield check_for_medicaid_eligibility(params)
         aptc_household = yield determine_eligible_members(aptc_household)
         aptc_household = yield compute_aptc_and_csr(aptc_household)
+        aptc_household = yield determine_other_eligibilities(aptc_household)
         aptc_household_entity = yield init_aptc_household(aptc_household)
         result = yield add_determination_to_application(aptc_household_entity)
 
@@ -44,12 +45,18 @@ module Eligibilities
       end
 
       def compute_aptc_and_csr(aptc_household)
-        # TODO: Do not compute aptc and csr values if all members are ineligible for aptc/csr
-        # return Success(aptc_household) if aptc_household[:are_all_members_medicaid_eligible]
+        # Do not compute aptc and csr values if all members are ineligible for aptc/csr
+        return Success(aptc_household) if aptc_household[:aptc_calculation_members].blank?
 
         ::Eligibilities::AptcCsr::ComputeAptcAndCsr.new.call({ tax_household: @mm_tax_household,
                                                                aptc_household: aptc_household,
                                                                application: @mm_application })
+      end
+
+      def determine_other_eligibilities(aptc_household)
+        ::Eligibilities::AptcCsr::DetermineOtherEligibilities.new.call({ tax_household: @mm_tax_household,
+                                                                         aptc_household: aptc_household,
+                                                                         application: @mm_application })
       end
 
       def init_aptc_household(aptc_household)
@@ -69,6 +76,8 @@ module Eligibilities
             aptc_hh_membr = aptc_household.members.detect do |aptc_mem|
               aptc_mem.member_identifier.to_s == thhm[:applicant_reference][:person_hbx_id].to_s
             end
+            ped[:is_totally_ineligible] = aptc_hh_membr.totally_ineligible
+            ped[:is_uqhp_eligible] = aptc_hh_membr.uqhp_eligible
             ped[:is_ia_eligible] = aptc_hh_membr.aptc_eligible
             ped[:is_csr_eligible] = aptc_hh_membr.csr_eligible
             ped[:csr] = aptc_hh_membr.csr

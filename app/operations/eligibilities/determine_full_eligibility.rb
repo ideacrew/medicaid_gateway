@@ -46,6 +46,9 @@ module Eligibilities
     def determine_full_eligibility(mm_application)
       @result_mm_application ||= mm_application
       mm_application.tax_households.each do |mm_thh|
+        # Do not determine APTC/CSR if all members are eligible for magi_medicaid/medicaid_chip eligible
+        next mm_thh if all_members_are_medicaid_eligible?(mm_thh)
+
         result = ::Eligibilities::AptcCsr::DetermineEligibility.new.call({ magi_medicaid_application: @result_mm_application,
                                                                            magi_medicaid_tax_household: mm_thh })
         return result if result.failure?
@@ -53,6 +56,13 @@ module Eligibilities
       end
 
       Success(@result_mm_application)
+    end
+
+    def all_members_are_medicaid_eligible?(mm_thh)
+      mm_thh.tax_household_members.all? do |thhm|
+        ped = thhm.product_eligibility_determination
+        ped.is_medicaid_chip_eligible || ped.is_magi_medicaid
+      end
     end
   end
 end

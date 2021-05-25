@@ -38,10 +38,16 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility do
       @result = subject.call(input_application)
       @application = @result.success
       @thh = @application.tax_households.first
+      @dwayne_ped = @thh.tax_household_members.detect do |thhm|
+        thhm.applicant_reference.person_hbx_id == dwayne[:person_hbx_id]
+      end.product_eligibility_determination
+      @betty_ped = @thh.tax_household_members.detect do |thhm|
+        thhm.applicant_reference.person_hbx_id == betty[:person_hbx_id]
+      end.product_eligibility_determination
     end
 
     it 'should not return any APTC for given TaxHousehold' do
-      expect(@thh.max_aptc).to be_zero
+      expect(@thh.max_aptc).to be_nil
     end
 
     it 'should not return any Aptc determination for TaxHouseholdMembers' do
@@ -94,20 +100,14 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility do
       end
     end
 
-    it 'should return is_eligible_for_non_magi_reasons determination for dwayne' do
-      dwayne_ped = @thh.tax_household_members.detect do |thhm|
-        thhm.applicant_reference.person_hbx_id == dwayne[:person_hbx_id]
-      end.product_eligibility_determination
-
-      expect(dwayne_ped.is_eligible_for_non_magi_reasons).to eq(true)
+    it 'dwayne is eligible for both is_eligible_for_non_magi_reasons & uqhp_eligible' do
+      expect(@dwayne_ped.is_eligible_for_non_magi_reasons).to eq(true)
+      expect(@dwayne_ped.is_uqhp_eligible).to eq(true)
     end
 
-    it 'should not return is_eligible_for_non_magi_reasons determination for betty' do
-      dwayne_ped = @thh.tax_household_members.detect do |thhm|
-        thhm.applicant_reference.person_hbx_id == betty[:person_hbx_id]
-      end.product_eligibility_determination
-
-      expect(dwayne_ped.is_eligible_for_non_magi_reasons).not_to eq(true)
+    it 'betty is not eligible for both is_eligible_for_non_magi_reasons & uqhp_eligible' do
+      expect(@betty_ped.is_eligible_for_non_magi_reasons).not_to eq(true)
+      expect(@betty_ped.is_uqhp_eligible).not_to eq(true)
     end
   end
 
@@ -115,72 +115,42 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility do
     include_context 'cms ME simple_scenarios test_case_c'
 
     before do
-      # allow(HTTParty).to receive(:post).and_return(mitc_response)
-      @result = subject.call(input_application)
-      @application = @result.success
-      # @thh = @application.tax_households.first
+      allow(HTTParty).to receive(:post).and_return(mitc_response)
+      @thh = subject.call(input_application).success.tax_households.first
+      @aisha_ped = @thh.tax_household_members.first.product_eligibility_determination
     end
 
-    # it 'should not return any APTC for given TaxHousehold' do
-    #   expect(@thh.max_aptc).to be_zero
-    # end
+    it 'should not return any APTC for given TaxHousehold' do
+      expect(@thh.max_aptc).to be_nil
+    end
 
-    # it 'should not return any Aptc determination for TaxHouseholdMembers' do
-    #   @thh.tax_household_members.each do |thhm|
-    #     ped = thhm.product_eligibility_determination
-    #     expect(ped.is_ia_eligible).not_to eq(true)
-    #   end
-    # end
+    it 'should not return any Aptc determination for aisha' do
+      expect(@aisha_ped.is_ia_eligible).not_to eq(true)
+    end
 
-    # it 'should not return any MedicaidChip determination for TaxHouseholdMembers' do
-    #   @thh.tax_household_members.each do |thhm|
-    #     ped = thhm.product_eligibility_determination
-    #     expect(ped.is_medicaid_chip_eligible).not_to eq(true)
-    #   end
-    # end
+    it 'should not return any MedicaidChip determination for aisha' do
+      expect(@aisha_ped.is_medicaid_chip_eligible).not_to eq(true)
+    end
 
-    # it 'should not return any eligibility for NonMagiReasons for TaxHouseholdMembers' do
-    #   @thh.tax_household_members.each do |thhm|
-    #     ped = thhm.product_eligibility_determination
-    #     expect(ped.is_eligible_for_non_magi_reasons).not_to eq(true)
-    #   end
-    # end
+    it 'should not return any eligibility for NonMagiReasons for aisha' do
+      expect(@aisha_ped.is_eligible_for_non_magi_reasons).not_to eq(true)
+    end
 
-    # it 'should not return any TotallyIneligible determination for TaxHouseholdMembers' do
-    #   @thh.tax_household_members.each do |thhm|
-    #     ped = thhm.product_eligibility_determination
-    #     expect(ped.is_totally_ineligible).not_to eq(true)
-    #   end
-    # end
+    it 'should not return any TotallyIneligible determination for aisha' do
+      expect(@aisha_ped.is_totally_ineligible).not_to eq(true)
+    end
 
-    # it 'should not return any WithoutAssistance determination for TaxHouseholdMembers' do
-    #   @thh.tax_household_members.each do |thhm|
-    #     ped = thhm.product_eligibility_determination
-    #     expect(ped.is_without_assistance).not_to eq(true)
-    #   end
-    # end
+    it 'should only return MagiMedicaid determination for aisha' do
+      expect(@aisha_ped.is_magi_medicaid).to eq(true)
+    end
 
-    # it 'should not return any MagiMedicaid determination for TaxHouseholdMembers' do
-    #   @thh.tax_household_members.each do |thhm|
-    #     ped = thhm.product_eligibility_determination
-    #     expect(ped.is_magi_medicaid).not_to eq(true)
-    #   end
-    # end
+    it 'should not return any Csr determination for aisha' do
+      expect(@aisha_ped.is_csr_eligible).not_to eq(true)
+      expect(@aisha_ped.csr).to be_nil
+    end
 
-    # it 'should not return any Csr determination for TaxHouseholdMembers' do
-    #   @thh.tax_household_members.each do |thhm|
-    #     ped = thhm.product_eligibility_determination
-    #     expect(ped.is_csr_eligible).not_to eq(true)
-    #     expect(ped.csr).to be_nil
-    #   end
-    # end
-
-    # it 'should return true for is_magi_medicaid determination for aisha' do
-    #   aisha_ped = @thh.tax_household_members.detect do |thhm|
-    #     thhm.applicant_reference.person_hbx_id == aisha[:person_hbx_id]
-    #   end.product_eligibility_determination
-
-    #   expect(aisha_ped.is_magi_medicaid).to eq(true)
-    # end
+    it 'should not return determination for is_magi_medicaid determination' do
+      expect(@aisha_ped.is_magi_medicaid).to eq(true)
+    end
   end
 end
