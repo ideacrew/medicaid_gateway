@@ -105,8 +105,7 @@ RSpec.shared_context 'cms ME simple_scenarios test_case_c', :shared_context => :
       is_temporarily_out_of_state: false,
       age_of_applicant: 33,
       is_claimed_as_dependent_by_non_applicant: false,
-      slcsp_premium: 496.02,
-      lcsp_premium: 430.48,
+      benchmark_premium: { monthly_slcsp_premium: 496.02, monthly_lcsp_premium: 430.48 },
       is_homeless: false,
       mitc_relationships: [],
       mitc_income: mitc_income }
@@ -159,6 +158,7 @@ RSpec.shared_context 'cms ME simple_scenarios test_case_c', :shared_context => :
 
   let(:app_params) do
     { us_state: 'DC',
+      oe_start_on: Date.new(Date.today.year, 11, 1),
       hbx_id: '200000123',
       family_reference: { hbx_id: '10011' },
       assistance_year: Date.today.year,

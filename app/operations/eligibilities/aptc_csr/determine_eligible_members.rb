@@ -72,20 +72,22 @@ module Eligibilities
       end
 
       def member_eligible_for_aptc_csr?(applicant)
+        ped = find_matching_ped(applicant.person_hbx_id)
+
         applicant.is_applying_coverage &&
           state_resident?(applicant) &&
           !applicant.incarcerated? &&
           applicant.lawfully_present_in_us? &&
           tax_filing?(applicant) &&
-          medicaid_or_chip_check? &&
-          !enrolled_in_other_coverage? &&
-          !eligible_for_other_coverage? &&
-          esi_affordable?(applicant) &&
-          ichra_affordable?(applicant) &&
-          qsehra_affordable?(applicant)
+          medicaid_or_chip_check?(applicant, ped) &&
+          !enrolled_in_other_coverage?(applicant) &&
+          !eligible_for_other_coverage?(applicant) &&
+          all_esi_affordable?(applicant) &&
+          all_ichra_affordable?(applicant) &&
+          all_qsehra_affordable?(applicant)
       end
 
-      def esi_affordable?(applicant)
+      def all_esi_affordable?(applicant)
         return true unless applicant.has_eligible_health_coverage
         esi_benefits = eligible_benefit_esis
         return true if esis.blank?
@@ -98,7 +100,7 @@ module Eligibilities
       def esi_rules_satisfied?(esi_benefit)
         esi_benefit.is_esi_mec_met &&
           waiting_period_rule_satisfied?(esi_benefit) &&
-          determine_affordability(applicant, esi_benefit)
+          determine_esi_benefit_affordability(applicant, esi_benefit)
       end
 
       def waiting_period_rule_satisfied?(esi_benefit)
@@ -106,7 +108,7 @@ module Eligibilities
         esi_benefit.start_on <= @aptc_household[:eligibility_date]
       end
 
-      def determine_affordability(applicant, esi_benefit)
+      def determine_esi_benefit_affordability(applicant, esi_benefit)
         employee_only_premium_amnt = esi_benefit.annual_employee_cost
         employee_premium_as_percent = employee_only_premium_amnt / @aptc_household[:annual_tax_household_income]
         return true if employee_premium_as_percent > @affordability_threshold
@@ -157,19 +159,41 @@ module Eligibilities
       end
 
       # TODO
-      def medicaid_or_chip_check?
-        # Check the doc and dependent on new functionality
+      def medicaid_or_chip_check?(applicant, ped)
         true
+        # medicaid_eligibility = ped.is_magi_medicaid || ped.is_medicaid_chip_eligible
+        # # returns true if they are ineligible for magi_medicaid or medicaid_chip
+        # return true unless medicaid_eligibility
       end
 
-      # TODO
-      def enrolled_in_other_coverage?
-        false
+      def enrolled_in_other_coverage?(applicant)
+        applicant.benefits.select do |benefit|
+          benefit.status == 'is_enrolled' &&
+            ['medicaid', 'child_health_insurance_plan',
+             'medicare', 'tricare', 'employer_sponsored_insurance',
+             'health_reimbursement_arrangement', 'cobra',
+             'retiree_health_benefits', 'veterans_administration_health_benefits',
+             'peace_corps_health_benefits'].include?(benefit.kind) &&
+            benefit_coverage_covers?(benefit)
+        end
       end
 
-      # TODO
-      def eligible_for_other_coverage?
-        false
+      def eligible_for_other_coverage?(applicant)
+        applicant.benefits.select do |benefit|
+          benefit.status == 'is_eligible' &&
+            ['medicaid', 'child_health_insurance_plan',
+             'medicare', 'tricare', 'retiree_health_benefits',
+             'veterans_administration_health_benefits',
+             'peace_corps_health_benefits'].include?(benefit.kind) &&
+            benefit_coverage_covers?(benefit)
+        end
+      end
+
+      def benefit_coverage_covers?(benefit)
+        eligibility_date = @aptc_household.eligibility_date
+        start_on = benefit.start_on
+        end_on = benefit.end_on || eligibility_date.end_of_year
+        (start_on..end_on).cover? eligibility_date
       end
 
       def eligible_tax_filer?(applicant)
@@ -187,14 +211,38 @@ module Eligibilities
         claiming_applicant.incomes.present?
       end
 
-      # TODO
-      def ichra_affordable?(_applicant)
-        true
+      def all_ichra_affordable?(applicant)
+        monthly_premium = applicant.monthly_lcsp_premium
+
+        applicant.ichra_benefits.all? do |benefit|
+          ichra_benefit_affordable?(ichra_benefit, monthly_premium)
+        end
       end
 
-      # TODO
-      def qsehra_affordable?(_applicant)
-        true
+      def ichra_benefit_affordable?(ichra_benefit, monthly_premium)
+        employee_premium_amnt = ichra_benefit.annual_employee_cost
+        net_premium = (monthly_premium * 12) - employee_premium_amnt
+        net_premium_percent = net_premium / @aptc_household.annual_tax_household_income
+        return true if employee_premium_as_percent > @affordability_threshold
+        update_all_members_as_aptc_ineligible
+        false
+      end
+
+      def all_qsehra_affordable?(applicant)
+        monthly_premium = applicant.monthly_slcsp_premium
+
+        applicant.qsehra_benefits.all? do |benefit|
+          qsehra_benefit_affordable?(qsehra_benefit, monthly_premium)
+        end
+      end
+
+      def qsehra_benefit_affordable?(qsehra_benefit, monthly_premium)
+        employee_premium_amnt = qsehra_benefit.annual_employee_cost
+        net_premium = (monthly_premium * 12) - employee_premium_amnt
+        net_premium_percent = net_premium / @aptc_household.annual_tax_household_income
+        return true if employee_premium_as_percent > @affordability_threshold
+        update_all_members_as_aptc_ineligible
+        false
       end
 
       def applicant_by_reference(person_hbx_id)
@@ -206,9 +254,19 @@ module Eligibilities
       def matching_aptc_member(member_identifier)
         @aptc_household[:members].detect { |aptc_mem| aptc_mem[:member_identifier].to_s == member_identifier.to_s }
       end
+
+      def find_matching_ped(member_identifier)
+        @tax_household.tax_household_members.detect do |thhm|
+          thhm.applicant_reference.person_hbx_id.to_s == member_identifier.to_s
+        end&.product_eligibility_determination
+      end
     end
   end
 end
 
 # TODO
-#   1. Fix the TODOs above
+#   1. medicaid_or_chip_check
+
+# Questions:
+# 1. Medicaid/CHIP eligible - MitC determination override for the case where member is eligible for medicaid
+# 2.

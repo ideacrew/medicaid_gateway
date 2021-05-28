@@ -48,12 +48,11 @@ module Eligibilities
         Success(@aptc_household)
       end
 
-      # TODO: Get below verified by Sarah
       def calculate_eligibility_date
         current_date = Date.today
-        oe_start_date = Date.new(current_date.year, 11, 1)
-        end_of_year = oe_start_date.end_of_year
-        if (oe_start_date..end_of_year).cover?(current_date)
+        oe_start_on = @application.oe_start_on
+        end_of_year = oe_start_on.end_of_year
+        if (oe_start_on..end_of_year).cover?(current_date)
           end_of_year.next_day
         else
           current_date.next_month.beginning_of_month

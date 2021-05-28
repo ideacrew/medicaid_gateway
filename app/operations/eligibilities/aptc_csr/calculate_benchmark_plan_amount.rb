@@ -69,7 +69,7 @@ module Eligibilities
       end
 
       def applicant_member_premium(applicant)
-        applicant.slcsp_premium
+        applicant.monthly_slcsp_premium
       end
 
       def applicant_by_reference(person_hbx_id)
