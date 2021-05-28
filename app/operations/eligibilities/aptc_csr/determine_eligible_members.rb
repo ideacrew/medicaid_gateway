@@ -6,6 +6,7 @@ require 'dry/monads/do'
 module Eligibilities
   module AptcCsr
     # This Operation is to compute the APTC and CSR values for a given TaxHousehold
+    # rubocop:disable Metrics/ClassLength
     class DetermineEligibleMembers
       include Dry::Monads[:result, :do]
 
@@ -159,7 +160,7 @@ module Eligibilities
       end
 
       # TODO
-      def medicaid_or_chip_check?(applicant, ped)
+      def medicaid_or_chip_check?(_applicant, _ped)
         true
         # medicaid_eligibility = ped.is_magi_medicaid || ped.is_medicaid_chip_eligible
         # # returns true if they are ineligible for magi_medicaid or medicaid_chip
@@ -214,7 +215,7 @@ module Eligibilities
       def all_ichra_affordable?(applicant)
         monthly_premium = applicant.monthly_lcsp_premium
 
-        applicant.ichra_benefits.all? do |benefit|
+        applicant.ichra_benefits.all? do |ichra_benefit|
           ichra_benefit_affordable?(ichra_benefit, monthly_premium)
         end
       end
@@ -223,7 +224,7 @@ module Eligibilities
         employee_premium_amnt = ichra_benefit.annual_employee_cost
         net_premium = (monthly_premium * 12) - employee_premium_amnt
         net_premium_percent = net_premium / @aptc_household.annual_tax_household_income
-        return true if employee_premium_as_percent > @affordability_threshold
+        return true if net_premium_percent > @affordability_threshold
         update_all_members_as_aptc_ineligible
         false
       end
@@ -231,7 +232,7 @@ module Eligibilities
       def all_qsehra_affordable?(applicant)
         monthly_premium = applicant.monthly_slcsp_premium
 
-        applicant.qsehra_benefits.all? do |benefit|
+        applicant.qsehra_benefits.all? do |qsehra_benefit|
           qsehra_benefit_affordable?(qsehra_benefit, monthly_premium)
         end
       end
@@ -240,7 +241,7 @@ module Eligibilities
         employee_premium_amnt = qsehra_benefit.annual_employee_cost
         net_premium = (monthly_premium * 12) - employee_premium_amnt
         net_premium_percent = net_premium / @aptc_household.annual_tax_household_income
-        return true if employee_premium_as_percent > @affordability_threshold
+        return true if net_premium_percent > @affordability_threshold
         update_all_members_as_aptc_ineligible
         false
       end
@@ -261,6 +262,7 @@ module Eligibilities
         end&.product_eligibility_determination
       end
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end
 
