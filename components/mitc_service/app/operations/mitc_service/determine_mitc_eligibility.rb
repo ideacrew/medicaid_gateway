@@ -6,6 +6,7 @@ require 'dry/monads/do'
 module MitcService
   # DO NOT USE this operation, the AcaEntities::MagiMedicaid::Transformers::IapTo::Mitc has some mocked attributes
   # This class takes MagiMedicaidApplication as input and returns MagiMedicaidApplication with added MitcDetermination
+  # This class is PRIVATE
   class DetermineMitcEligibility
     include Dry::Monads[:result, :do]
 

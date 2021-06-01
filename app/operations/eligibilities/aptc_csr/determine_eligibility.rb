@@ -46,11 +46,17 @@ module Eligibilities
 
       def compute_aptc_and_csr(aptc_household)
         # Do not compute aptc and csr values if all members are ineligible for aptc/csr
-        return Success(aptc_household) if aptc_household[:aptc_calculation_members].blank?
+        return Success(aptc_household) if all_members_are_ineligible_for_aptc_csr?(aptc_household)
 
         ::Eligibilities::AptcCsr::ComputeAptcAndCsr.new.call({ tax_household: @mm_tax_household,
                                                                aptc_household: aptc_household,
                                                                application: @mm_application })
+      end
+
+      def all_members_are_ineligible_for_aptc_csr?(aptc_household)
+        aptc_household[:members].all? do |member|
+          member[:aptc_eligible] == false
+        end
       end
 
       def determine_other_eligibilities(aptc_household)
@@ -92,6 +98,3 @@ module Eligibilities
     end
   end
 end
-
-# TODO
-# 1. Add check to skip APTC/CSR computation if there are no eligible members

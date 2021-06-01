@@ -30,6 +30,7 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility do
     end
   end
 
+  # Dwayne is UQHP eligible and eligible for non_magi_reasons
   context 'cms simle test_case_a' do
     include_context 'cms ME simple_scenarios test_case_a'
 
@@ -111,6 +112,7 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility do
     end
   end
 
+  # Aisha is MagiMedicaid eligible
   context 'cms simle test_case_c' do
     include_context 'cms ME simple_scenarios test_case_c'
 
@@ -151,6 +153,52 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility do
 
     it 'should not return determination for is_magi_medicaid determination' do
       expect(@aisha_ped.is_magi_medicaid).to eq(true)
+    end
+  end
+
+  # Gerald is APTC and CSR eligible
+  context 'cms simle test_case_d' do
+    include_context 'cms ME simple_scenarios test_case_d'
+
+    before do
+      allow(HTTParty).to receive(:post).and_return(mitc_response)
+      result = subject.call(input_application)
+      @thh = result.success.tax_households.first
+      @gerald_ped = @thh.tax_household_members.first.product_eligibility_determination
+    end
+
+    it 'should return any APTC for given TaxHousehold' do
+      expect(@thh.max_aptc).to eq(496.00)
+      expect(@thh.max_aptc).not_to be_nil
+    end
+
+    it 'should return any Aptc determination for gerald' do
+      expect(@gerald_ped.is_ia_eligible).to eq(true)
+    end
+
+    it 'should not return any MedicaidChip determination for gerald' do
+      expect(@gerald_ped.is_medicaid_chip_eligible).not_to eq(true)
+    end
+
+    it 'should not return any eligibility for NonMagiReasons for gerald' do
+      expect(@gerald_ped.is_eligible_for_non_magi_reasons).not_to eq(true)
+    end
+
+    it 'should not return any TotallyIneligible determination for gerald' do
+      expect(@gerald_ped.is_totally_ineligible).not_to eq(true)
+    end
+
+    it 'should not return MagiMedicaid determination for gerald' do
+      expect(@gerald_ped.is_magi_medicaid).not_to eq(true)
+    end
+
+    it 'should not return UQHP determination for gerald' do
+      expect(@gerald_ped.is_uqhp_eligible).not_to eq(true)
+    end
+
+    it 'should return any Csr determination for gerald' do
+      expect(@gerald_ped.is_csr_eligible).to eq(true)
+      expect(@gerald_ped.csr).to eq('94')
     end
   end
 end

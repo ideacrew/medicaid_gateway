@@ -71,6 +71,7 @@ module MitcService
       mm_app_hash[:tax_households].each do |mm_thh|
         mm_thh[:tax_household_members].each do |mm_thhm|
           member_identifier = mm_thhm[:applicant_reference][:person_hbx_id]
+          next mm_thhm if bypass_mitc_determination?(mm_app_hash, member_identifier)
           mitc_applicant = mitc_applicant_by_person_id(mitc_applicants, member_identifier)
           next mm_thhm if mitc_applicant.blank?
           ped_attrs = { magi_medicaid_monthly_household_income: mitc_applicant[:medicaid_household][:magi_income],
@@ -89,6 +90,39 @@ module MitcService
 
           mm_thhm[:product_eligibility_determination].merge!(ped_attrs)
         end
+      end
+    end
+
+    def bypass_mitc_determination?(mm_app_hash, member_identifier)
+      mm_applicant = applicant_by_reference(mm_app_hash, member_identifier)
+      medicaid_and_chip = mm_applicant[:medicaid_and_chip]
+      return false if medicaid_and_chip.blank?
+      date_for_comparision = Date.today - 90.days
+      medicaid_or_chip_denial?(date_for_comparision, medicaid_and_chip) ||
+        medicaid_or_chip_termination?(date_for_comparision, medicaid_and_chip) ||
+        denial_due_to_immigration?(medicaid_and_chip)
+    end
+
+    def medicaid_or_chip_denial?(date_for_comparision, medicaid_and_chip)
+      medicaid_and_chip[:not_eligible_in_last_90_days] &&
+        medicaid_and_chip[:denied_on] &&
+        date_for_comparision < medicaid_and_chip[:denied_on]
+    end
+
+    def medicaid_or_chip_termination?(date_for_comparision, medicaid_and_chip)
+      medicaid_and_chip[:ended_as_change_in_eligibility] &&
+        !medicaid_and_chip[:hh_income_or_size_changed] &&
+        date_for_comparision < medicaid_and_chip[:medicaid_or_chip_coverage_end_date]
+    end
+
+    def denial_due_to_immigration?(medicaid_and_chip)
+      medicaid_and_chip[:ineligible_due_to_immigration_in_last_5_years] &&
+        !medicaid_and_chip[:immigration_status_changed_since_ineligibility]
+    end
+
+    def applicant_by_reference(mm_app_hash, member_identifier)
+      mm_app_hash[:applicants].detect do |applicant|
+        applicant[:person_hbx_id].to_s == member_identifier.to_s
       end
     end
 

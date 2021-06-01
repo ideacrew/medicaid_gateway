@@ -68,7 +68,7 @@ module Eligibilities
           [applicant.has_job_income,
            applicant.has_self_employment_income,
            applicant.has_unemployment_income,
-           applicant.has_other_income].any?(&:blank?)
+           applicant.has_other_income].any?(&:nil?)
         end
       end
 
@@ -80,7 +80,7 @@ module Eligibilities
           !applicant.incarcerated? &&
           applicant.lawfully_present_in_us? &&
           tax_filing?(applicant) &&
-          medicaid_or_chip_check?(applicant, ped) &&
+          medicaid_or_chip_check?(ped) &&
           !enrolled_in_other_coverage?(applicant) &&
           !eligible_for_other_coverage?(applicant) &&
           all_esi_affordable?(applicant) &&
@@ -159,15 +159,14 @@ module Eligibilities
         eligible_tax_filer?(applicant) || eligible_tax_dependent?(applicant)
       end
 
-      # TODO
-      def medicaid_or_chip_check?(_applicant, _ped)
-        true
-        # medicaid_eligibility = ped.is_magi_medicaid || ped.is_medicaid_chip_eligible
-        # # returns true if they are ineligible for magi_medicaid or medicaid_chip
-        # return true unless medicaid_eligibility
+      def medicaid_or_chip_check?(ped)
+        # Eligible for APTC if ineligble for magi_medicaid or medicaid_chip
+        !(ped.is_magi_medicaid || ped.is_medicaid_chip_eligible)
       end
 
       def enrolled_in_other_coverage?(applicant)
+        return false if applicant.benefits.blank?
+
         applicant.benefits.select do |benefit|
           benefit.status == 'is_enrolled' &&
             ['medicaid', 'child_health_insurance_plan',
@@ -180,6 +179,8 @@ module Eligibilities
       end
 
       def eligible_for_other_coverage?(applicant)
+        return false if applicant.benefits.blank?
+
         applicant.benefits.select do |benefit|
           benefit.status == 'is_eligible' &&
             ['medicaid', 'child_health_insurance_plan',
@@ -213,7 +214,7 @@ module Eligibilities
       end
 
       def all_ichra_affordable?(applicant)
-        monthly_premium = applicant.monthly_lcsp_premium
+        monthly_premium = applicant.benchmark_premium.monthly_lcsp_premium
 
         applicant.ichra_benefits.all? do |ichra_benefit|
           ichra_benefit_affordable?(ichra_benefit, monthly_premium)
@@ -230,7 +231,7 @@ module Eligibilities
       end
 
       def all_qsehra_affordable?(applicant)
-        monthly_premium = applicant.monthly_slcsp_premium
+        monthly_premium = applicant.benchmark_premium.monthly_lcsp_premium
 
         applicant.qsehra_benefits.all? do |qsehra_benefit|
           qsehra_benefit_affordable?(qsehra_benefit, monthly_premium)
@@ -265,10 +266,3 @@ module Eligibilities
     # rubocop:enable Metrics/ClassLength
   end
 end
-
-# TODO
-#   1. medicaid_or_chip_check
-
-# Questions:
-# 1. Medicaid/CHIP eligible - MitC determination override for the case where member is eligible for medicaid
-# 2.

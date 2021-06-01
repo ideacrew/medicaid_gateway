@@ -28,7 +28,8 @@ module MitcService
       # We want to add functionality exponentional backoff.
       response = ::HTTParty.post('URL here',
                                  :body => mitc_request_payload.to_json,
-                                 :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json' })
+                                 :headers => { 'Content-Type' => 'application/json',
+                                               'Accept' => 'application/json' })
       # http://localhost:3000/determinations/eval
       # JSON.parse(response.to_json ,:symbolize_names => true)
       Success(response)
