@@ -216,6 +216,7 @@ module Eligibilities
       def all_ichra_affordable?(applicant)
         monthly_premium = applicant.benchmark_premium.monthly_lcsp_premium
 
+        # TODO: Update ichra_benefits method correctly
         applicant.ichra_benefits.all? do |ichra_benefit|
           ichra_benefit_affordable?(ichra_benefit, monthly_premium)
         end
@@ -233,6 +234,7 @@ module Eligibilities
       def all_qsehra_affordable?(applicant)
         monthly_premium = applicant.benchmark_premium.monthly_lcsp_premium
 
+        # TODO: Update qsehra_benefits method correctly
         applicant.qsehra_benefits.all? do |qsehra_benefit|
           qsehra_benefit_affordable?(qsehra_benefit, monthly_premium)
         end
@@ -266,3 +268,7 @@ module Eligibilities
     # rubocop:enable Metrics/ClassLength
   end
 end
+
+# TODO
+#   1. Update ichra_benefits method correctly
+#   2. Update qsehra_benefits method correctly
