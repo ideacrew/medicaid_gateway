@@ -211,6 +211,11 @@ GEM
       kostya-sigar (~> 2.0.0)
       state_machines
       thor
+    factory_bot (6.2.0)
+      activesupport (>= 5.0.0)
+    factory_bot_rails (6.2.0)
+      factory_bot (~> 6.2.0)
+      railties (>= 5.0.0)
     faraday (0.17.4)
       multipart-post (>= 1.2, < 3)
     ffi (1.15.0)
@@ -406,6 +411,7 @@ DEPENDENCIES
   byebug
   capistrano-bundler (~> 1.1.2)
   eye (= 0.10.0)
+  factory_bot_rails (~> 6.2)
   faraday (~> 0.17.3)
   httparty (~> 0.16)
   jbuilder (~> 2.7)
