@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ::MagiMedicaid::Application, type: :model do
+RSpec.describe ::MagiMedicaid::Application, type: :model, dbclean: :after_each do
 
   context 'associations' do
     context 'embeds_many :aptc_households' do

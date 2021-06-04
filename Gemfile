@@ -60,6 +60,7 @@ group :development do
 end
 
 group :test do
+  gem 'database_cleaner', '~> 1.7'
   gem 'factory_bot_rails',  '~> 6.2'
 end
 
