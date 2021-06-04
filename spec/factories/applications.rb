@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :application, class: "::MagiMedicaid::Application" do
+  factory :application, class: "::Medicaid::Application" do
     sequence(:application_identifier) { |n| "10000#{n}" }
     application_request_payload { "{\"us_state\":\"DC\",\"hbx_id\":\"200000123\"}" }
     application_response_payload { "{\"us_state\":\"DC\",\"hbx_id\":\"200000123\"}" }

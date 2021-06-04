@@ -75,7 +75,7 @@ module Eligibilities
           next unless thh[:hbx_id].to_s == @mm_tax_household.hbx_id.to_s
           thh[:max_aptc] = aptc_household.maximum_aptc_amount
           thh[:is_insurance_assistance_eligible] =
-            aptc_household.aptc_calculation_members.present? ? 'Yes' : 'No'
+            aptc_household.benchmark_calculation_members.present? ? 'Yes' : 'No'
 
           thh[:tax_household_members].each do |thhm|
             ped = thhm[:product_eligibility_determination]

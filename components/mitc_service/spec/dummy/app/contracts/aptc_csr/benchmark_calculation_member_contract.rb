@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module AptcCsr
-  # Schema and validation rules for {AptcCsr::AptcCalculationMember}
-  class AptcCalculationMemberContract < Dry::Validation::Contract
+  # Schema and validation rules for {AptcCsr::BenchmarkCalculationMember}
+  class BenchmarkCalculationMemberContract < Dry::Validation::Contract
     # @!method call(opts)
     # @param [Hash] opts the parameters to validate using this contract
     # @option opts [String] :member_identifier required

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module MagiMedicaid
+module Medicaid
   # AptcHousehold is a one to one mapping to the TaxHousehold.
   # A set of applicants, grouped according to IRS and ACA rules,
   # who are considered a single unit when determining eligibility for
@@ -20,10 +20,10 @@ module MagiMedicaid
     field :fpl_percent, type: Float
     field :eligibility_date, type: Date
 
-    embeds_many :benchmark_calculation_members, class_name: '::MagiMedicaid::BenchmarkCalculationMember'
-    embeds_many :aptc_household_members, class_name: '::MagiMedicaid::AptcHouseholdMember'
+    embeds_many :benchmark_calculation_members, class_name: '::Medicaid::BenchmarkCalculationMember'
+    embeds_many :aptc_household_members, class_name: '::Medicaid::AptcHouseholdMember'
     accepts_nested_attributes_for :benchmark_calculation_members, :aptc_household_members
 
-    embedded_in :application, class_name: '::MagiMedicaid::Application'
+    embedded_in :application, class_name: '::Medicaid::Application'
   end
 end

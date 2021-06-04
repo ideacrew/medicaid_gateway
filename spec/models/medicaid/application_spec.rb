@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ::MagiMedicaid::Application, type: :model, dbclean: :after_each do
+RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
 
   context 'associations' do
     context 'embeds_many :aptc_households' do
@@ -35,7 +35,7 @@ RSpec.describe ::MagiMedicaid::Application, type: :model, dbclean: :after_each d
     end
 
     it 'should be findable' do
-      expect(described_class.find(@application.id)).to be_a(::MagiMedicaid::Application)
+      expect(described_class.find(@application.id)).to be_a(::Medicaid::Application)
     end
   end
 end

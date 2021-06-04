@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :aptc_household_member, class: "::MagiMedicaid::AptcHouseholdMember" do
+  factory :aptc_household_member, class: "::Medicaid::AptcHouseholdMember" do
     aptc_household
 
     sequence(:member_identifier) { |n| "20000#{n}" }

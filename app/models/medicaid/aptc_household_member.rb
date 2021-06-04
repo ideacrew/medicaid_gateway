@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module MagiMedicaid
+module Medicaid
   # Represents member of an AptcHousehold.
   # One to one mapping to TaxHousholdMember
   class AptcHouseholdMember
@@ -19,6 +19,6 @@ module MagiMedicaid
     field :csr_eligible, type: Boolean
     field :csr, type: String
 
-    embedded_in :aptc_household, class_name: '::MagiMedicaid::AptcHousehold'
+    embedded_in :aptc_household, class_name: '::Medicaid::AptcHousehold'
   end
 end

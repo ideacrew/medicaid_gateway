@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :aptc_household, class: "::MagiMedicaid::AptcHousehold" do
+  factory :aptc_household, class: "::Medicaid::AptcHousehold" do
     application
 
     total_household_count { 1 }

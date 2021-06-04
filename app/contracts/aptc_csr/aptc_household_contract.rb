@@ -18,7 +18,7 @@ module AptcCsr
       required(:assistance_year).filled(:integer)
       required(:fpl).filled(::AcaEntities::MagiMedicaid::Contracts::FederalPovertyLevelContract.params)
       required(:fpl_percent).filled(Types::Money)
-      optional(:aptc_calculation_members).array(AptcCalculationMemberContract.params)
+      optional(:benchmark_calculation_members).array(BenchmarkCalculationMemberContract.params)
       required(:members).array(MemberContract.params)
 
       required(:eligibility_date).filled(:date)

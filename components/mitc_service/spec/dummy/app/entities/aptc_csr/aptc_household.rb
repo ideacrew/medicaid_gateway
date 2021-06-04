@@ -14,7 +14,7 @@ module AptcCsr
     attribute :assistance_year, Types::Integer
     attribute :fpl, AcaEntities::MagiMedicaid::FederalPovertyLevel
     attribute :fpl_percent, Types::Money
-    attribute :aptc_calculation_members, Types::Array.of(AptcCalculationMember).optional.meta(omittable: true)
+    attribute :benchmark_calculation_members, Types::Array.of(BenchmarkCalculationMember).optional.meta(omittable: true)
     attribute :members, Types::Array.of(Member)
 
     attribute :eligibility_date, Types::Date

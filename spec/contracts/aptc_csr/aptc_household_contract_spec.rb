@@ -29,9 +29,9 @@ RSpec.describe ::AptcCsr::AptcHouseholdContract, dbclean: :around_each do
       assistance_year: Date.today.year,
       fpl: fpl,
       fpl_percent: 256.00,
-      aptc_calculation_members: [{ member_identifier: aptc_member[:member_identifier],
-                                   relationship_kind_to_primary: 'self',
-                                   member_premium: aptc_member[:benchmark_plan_monthly_premium_amount] }],
+      benchmark_calculation_members: [{ member_identifier: aptc_member[:member_identifier],
+                                        relationship_kind_to_primary: 'self',
+                                        member_premium: aptc_member[:benchmark_plan_monthly_premium_amount] }],
       members: [aptc_member],
       eligibility_date: Date.today.next_month.beginning_of_month }
   end

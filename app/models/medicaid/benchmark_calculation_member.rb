@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module MagiMedicaid
+module Medicaid
   # Represents member that is used in the benchmark calculation.
   class BenchmarkCalculationMember
     include Mongoid::Document
@@ -10,6 +10,6 @@ module MagiMedicaid
     field :relationship_kind_to_primary, type: String
     field :member_premium, type: Float
 
-    embedded_in :aptc_household, class_name: '::MagiMedicaid::AptcHousehold'
+    embedded_in :aptc_household, class_name: '::Medicaid::AptcHousehold'
   end
 end

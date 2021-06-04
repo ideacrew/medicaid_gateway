@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module MagiMedicaid
+module Medicaid
   # Application is a one to one mapping to the Incoming Application(EA's FinancialAssistance::Application).
   # Object to store request payloads, response payloads, and
   # aptc households.
@@ -17,7 +17,7 @@ module MagiMedicaid
     field :medicaid_request_payload, type: String
     field :medicaid_response_payload, type: String
 
-    embeds_many :aptc_households, class_name: '::MagiMedicaid::AptcHousehold'
+    embeds_many :aptc_households, class_name: '::Medicaid::AptcHousehold'
     accepts_nested_attributes_for :aptc_households
   end
 end

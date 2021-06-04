@@ -48,7 +48,7 @@ module Eligibilities
         total_monthly_benchmark = eligible_aptc_members.inject(BigDecimal('0')) do |total, thhm_hash|
           total + thhm_hash[:member_premium]
         end
-        @aptc_household[:aptc_calculation_members] = eligible_aptc_members
+        @aptc_household[:benchmark_calculation_members] = eligible_aptc_members
         @aptc_household[:total_benchmark_plan_monthly_premium_amount] = total_monthly_benchmark
         Success(@aptc_household)
       end

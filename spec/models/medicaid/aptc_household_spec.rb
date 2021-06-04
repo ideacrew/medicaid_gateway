@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ::MagiMedicaid::AptcHousehold, type: :model do
+RSpec.describe ::Medicaid::AptcHousehold, type: :model do
   context 'associations' do
     context 'embeds_many :benchmark_calculation_members' do
       before do
@@ -60,13 +60,13 @@ RSpec.describe ::MagiMedicaid::AptcHousehold, type: :model do
     let(:application) { FactoryBot.create(:application, :with_aptc_households) }
 
     before do
-      @aptc_household = MagiMedicaid::AptcHousehold.new(input_params)
+      @aptc_household = Medicaid::AptcHousehold.new(input_params)
       application.aptc_households << @aptc_household
       application.save!
     end
 
     it 'should be findable' do
-      expect(application.reload.aptc_households.find(@aptc_household.id)).to be_a(::MagiMedicaid::AptcHousehold)
+      expect(application.reload.aptc_households.find(@aptc_household.id)).to be_a(::Medicaid::AptcHousehold)
     end
   end
 end
