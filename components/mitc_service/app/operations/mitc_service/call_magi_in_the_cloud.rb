@@ -23,14 +23,9 @@ module MitcService
     private
 
     def call_magi_in_the_cloud(mitc_request_payload)
-      # TODO: refactor based on updates from event source
-      manager = EventSource::ConnectionManager.instance
-      connection = manager.connections_for(:http).first
-      channel = connection.channels[:'/determinations/eval']
-      publish_operation = channel.publish_operations[:'/determinations/eval']
-      publish_operation.call(mitc_request_payload.to_json)
+      publish(mitc_request_payload.to_json)
 
-      Success("Successfully sent request payload to mitc")
+      # Success("Successfully sent request payload to mitc")
     rescue StandardError => _e
       # TODO: Log the error
       if mitc_request_payload[:Name].present?
@@ -41,6 +36,15 @@ module MitcService
         # Rails.logger.error { "MitCIntegrationError: for mitc_request_payload: #{mitc_request_payload}, error: #{e.backtrace}" }
         Failure('Error getting a response from MitC for input mitc_request_payload')
       end
+    end
+
+    def publish(mitc_request_payload)
+      # TODO: refactor based on updates from event source
+      manager = EventSource::ConnectionManager.instance
+      connection = manager.connections_for(:http).first
+      channel = connection.channels[:'/determinations/eval']
+      publish_operation = channel.publish_operations[:'/determinations/eval']
+      publish_operation.call(mitc_request_payload)
     end
   end
 end
