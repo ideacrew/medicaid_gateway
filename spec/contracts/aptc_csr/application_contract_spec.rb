@@ -7,7 +7,7 @@ require 'aca_entities/magi_medicaid/contracts/federal_poverty_level_contract'
 require 'aca_entities/magi_medicaid/federal_poverty_level'
 require 'aca_entities/operations/magi_medicaid/create_federal_poverty_level'
 
-describe Applications::Create do
+describe AptcCsr::ApplicationContract do
   include_context 'setup magi_medicaid application with two applicants'
 
   let(:application_request_payload) do
@@ -28,10 +28,6 @@ describe Applications::Create do
     it 'should return success' do
       expect(@result).to be_success
     end
-
-    it 'should persisted the data' do
-      expect(@result.success.persisted?).to eq true
-    end
   end
 
   context 'with missing data ' do
@@ -44,8 +40,8 @@ describe Applications::Create do
       expect(@result).to be_failure
     end
 
-    it 'should not persisted the data and return error message' do
-      expect(@result.failure.errors(full: true).to_h.values.flatten).to eq ["application_identifier is missing"]
+    it 'should return error message' do
+      expect(@result.errors(full: true).to_h.values.flatten).to eq ["application_identifier is missing"]
     end
   end
 end
