@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require 'event_source'
 
 EventSource.configure do |config|
