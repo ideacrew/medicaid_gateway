@@ -120,4 +120,46 @@ RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_
       expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
     end
   end
+
+  context 'for failure' do
+    include_context 'cms ME simple_scenarios test_case_d'
+
+    let(:medicaid_request_payload) do
+      ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
+    end
+
+    context 'when connection is not available' do
+      before do
+        @result = subject.call(input_application)
+      end
+
+      it 'should return failure' do
+        expect(@result).to be_failure
+      end
+
+      it 'should return error message' do
+        msg = "Error getting a response from MitC for magi_medicaid_application with hbx_id: #{application_entity[:hbx_id]}"
+        expect(@result.failure).to eq(msg)
+      end
+    end
+
+    context 'when input is invalid' do
+      before do
+        allow(HTTParty).to receive(:post).and_return(mitc_response)
+        @result = subject.call({ test: "test" })
+        @application = @result.success
+      end
+
+      it 'should return failure' do
+        expect(@result).to be_failure
+      end
+
+      it 'should return error message' do
+        errors = @result.failure.errors(full: true).to_h.values.flatten
+        expect(errors).to include("family_reference is missing", "assistance_year is missing",
+                                  "aptc_effective_date is missing", "applicants is missing", "us_state is missing",
+                                  "hbx_id is missing", "oe_start_on is missing")
+      end
+    end
+  end
 end
