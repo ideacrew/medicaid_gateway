@@ -34,7 +34,7 @@ gem 'bootsnap', '>= 1.4.4', require: false
 
 gem 'resource_registry',  git:  'https://github.com/ideacrew/resource_registry.git', branch: 'trunk'
 gem 'mongoid',             '~> 7.2.1'
-gem "faraday", "~> 0.17.3"
+gem "faraday", "~> 1.4.1"
 gem 'typhoeus'
 gem 'mime-types'
 gem 'httparty',            '~> 0.16'
