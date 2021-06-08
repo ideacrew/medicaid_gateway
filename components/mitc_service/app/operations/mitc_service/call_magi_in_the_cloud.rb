@@ -25,7 +25,7 @@ module MitcService
     def call_magi_in_the_cloud(mitc_request_payload)
       publish(mitc_request_payload.to_json)
 
-      # Success("Successfully sent request payload to mitc")
+      Success("Successfully sent request payload to mitc")
     rescue StandardError => _e
       # TODO: Log the error
       if mitc_request_payload[:Name].present?

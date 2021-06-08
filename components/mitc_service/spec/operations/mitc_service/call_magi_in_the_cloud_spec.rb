@@ -11,9 +11,18 @@ RSpec.describe ::MitcService::CallMagiInTheCloud do
     ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(mm_app).success
   end
 
+  let(:manager) { double }
+  let(:connection) { double }
+  let(:channel) { double }
+  let(:publish_operation) { double }
+
   context 'with valid response from MitC service' do
     before do
-      allow(HTTParty).to receive(:post).and_return(mitc_response)
+      allow(EventSource::ConnectionManager).to receive(:instance).and_return(manager)
+      allow(manager).to receive(:connections_for).and_return([connection])
+      allow(connection).to receive(:channels).and_return({ :'/determinations/eval' => channel })
+      allow(channel).to receive(:publish_operations).and_return({ :'/determinations/eval' => publish_operation })
+      allow(publish_operation).to receive(:call).and_return(true)
       @result = subject.call(mitc_request_payload)
     end
 
@@ -24,7 +33,6 @@ RSpec.describe ::MitcService::CallMagiInTheCloud do
 
   context 'with bad response from MitC service' do
     before do
-      allow(HTTParty).to receive(:post).and_raise(Errno::ECONNREFUSED, 'Failed to open TCP connection')
       @result = subject.call(mitc_request_payload)
     end
 
