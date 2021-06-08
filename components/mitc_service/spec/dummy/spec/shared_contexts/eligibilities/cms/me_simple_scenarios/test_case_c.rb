@@ -159,7 +159,7 @@ RSpec.shared_context 'cms ME simple_scenarios test_case_c', :shared_context => :
   let(:app_params) do
     { us_state: 'DC',
       oe_start_on: Date.new(Date.today.year, 11, 1),
-      hbx_id: '200000123',
+      hbx_id: '200000125',
       family_reference: { hbx_id: '10011' },
       assistance_year: Date.today.year,
       aptc_effective_date: Date.today,

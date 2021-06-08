@@ -302,11 +302,6 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
     ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(magi_medicaid_application).success
   end
 
-  let(:mm_application_entity_with_mitc) do
-    allow(HTTParty).to receive(:post).and_return(mitc_response)
-    ::MitcService::DetermineMitcEligibility.new.call(mm_application_entity).success
-  end
-
   # mitc_response is the actual response from MitC for the above magi_medicaid_application.
   # mitc_response does not contain any PII.
   let(:mitc_response) do

@@ -16,7 +16,7 @@ module MitcService
     # @return [Dry::Monads::Result]
     def call(mm_application)
       mm_application = yield validate_mm_application(mm_application)
-      mitc_request_payload = yield transform_mm_app_to_mitc_request_payload(mm_application)
+      mitc_request_payload = yield generate_request_payload(mm_application)
       _message = yield publish_mitc_request_payload(mitc_request_payload)
 
       Success(mitc_request_payload)
@@ -32,11 +32,13 @@ module MitcService
       end
     end
 
-    def transform_mm_app_to_mitc_request_payload(mm_application)
+    # Transforms MagiMedicaid Application to Mitc Request Payload
+    def generate_request_payload(mm_application)
       ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(mm_application)
     end
 
     def publish_mitc_request_payload(mitc_request_payload)
+      # rename MitcService::CallMagiInTheCloud to MitcService::PublishRequestPayload
       ::MitcService::CallMagiInTheCloud.new.call(mitc_request_payload)
     end
   end

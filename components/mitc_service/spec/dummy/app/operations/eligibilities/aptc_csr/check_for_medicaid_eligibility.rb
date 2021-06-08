@@ -69,3 +69,6 @@ end
 
 # TODO
 #   1. Fix the Operation's name
+#     This Operation is to calculate THH size, AnnualIncome and Fpl values
+#     class CalculateThhSizeIncomeAndFpl
+#     class CalculateTaxHouseholdLevelValues
