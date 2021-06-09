@@ -41,7 +41,7 @@ describe AptcCsr::ApplicationContract do
     end
 
     it 'should return error message' do
-      expect(@result.errors(full: true).to_h.values.flatten).to eq ["application_identifier is missing"]
+      expect(@result.errors(full: true).to_h.values.flatten).to eq ["application_identifier is missing", "application_identifier must be a string"]
     end
   end
 end
