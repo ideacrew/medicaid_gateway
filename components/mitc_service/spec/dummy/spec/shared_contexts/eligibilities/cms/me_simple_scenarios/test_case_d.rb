@@ -23,7 +23,7 @@ RSpec.shared_context 'cms ME simple_scenarios test_case_d', :shared_context => :
   end
 
   let(:benchmark_premium) do
-    { lcsp_premiums: [{ member_identifier: '95', monthly_premium: 430.48 }],
+    { health_only_lcsp_premiums: [{ member_identifier: '95', monthly_premium: 430.48 }],
       health_only_slcsp_premiums: [{ member_identifier: '95', monthly_premium: 496.02 }] }
   end
 

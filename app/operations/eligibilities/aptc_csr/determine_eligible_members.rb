@@ -246,7 +246,7 @@ module Eligibilities
       end
 
       def monthly_lcsp_premium(applicant)
-        applicant.benchmark_premium.lcsp_premiums.detect do |member_premium|
+        applicant.benchmark_premium.health_only_lcsp_premiums.detect do |member_premium|
           next member_premium if member_premium[:member_identifier] != applicant.person_hbx_id.to_s
           member_premium[:monthly_premium]
         end

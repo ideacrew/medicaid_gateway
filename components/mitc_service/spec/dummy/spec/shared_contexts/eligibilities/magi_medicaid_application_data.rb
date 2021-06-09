@@ -11,8 +11,8 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
       is_veteran_or_active_military: false }
   end
   let(:benchmark_premium) do
-    { lcsp_premiums: [{ member_identifier: '95', monthly_premium: 310.50 },
-                      { member_identifier: '96', monthly_premium: 310.60 }],
+    { health_only_lcsp_premiums: [{ member_identifier: '95', monthly_premium: 310.50 },
+                                  { member_identifier: '96', monthly_premium: 310.60 }],
       health_only_slcsp_premiums: [{ member_identifier: '95', monthly_premium: 320.50 },
                                    { member_identifier: '96', monthly_premium: 320.60 }] }
   end
