@@ -6,7 +6,6 @@ module AptcCsr
 
     attribute :member_identifier, Types::String
     attribute :relationship_kind_to_primary, Types::String
-    # attribute :age_of_applicant, Types::Integer
     attribute :member_premium, Types::Money
 
   end

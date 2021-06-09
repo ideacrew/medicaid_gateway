@@ -35,7 +35,8 @@ module Eligibilities
           members << { member_identifier: thhm.applicant_reference.person_hbx_id,
                        household_count: BigDecimal('1'),
                        tax_filer_status: applicant.tax_filer_kind,
-                       is_applicant: applicant.is_applying_coverage }
+                       is_applicant: applicant.is_applying_coverage,
+                       age_of_applicant: applicant.age_of_applicant }
           members
         end
         aptc_household = {

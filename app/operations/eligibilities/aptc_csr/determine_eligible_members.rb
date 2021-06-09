@@ -16,11 +16,48 @@ module Eligibilities
         #   application: @application }
         affordability_threshold = yield find_affordability_threshold(params)
         aptc_household = yield determine_who_qualifies_for_aptc_csr(affordability_threshold)
+        aptc_household = yield determine_slcsp_premiums(aptc_household)
 
         Success(aptc_household)
       end
 
       private
+
+      def determine_slcsp_premiums(aptc_household)
+        aptc_members = aptc_household[:members].select { |mbr| mbr[:aptc_eligible] }
+        return Success(aptc_household) if aptc_members.blank?
+
+        primary_member_identifier = @application.primary_applicant.person_hbx_id
+        member_ids = aptc_members.inject([]) do |ids, mem_hash|
+          ids << mem_hash[:member_identifier]
+        end
+
+        # TODO: Resource Registry Configuration to pick based on benchmark_product_model
+        slcsp_member_premiums =
+          if member_ids.include?(primary_member_identifier)
+            @application.primary_applicant.benchmark_premium.health_only_slcsp_premiums
+          else
+            sorted_members = aptc_members.sort_by { |mbr| mbr[:age_of_applicant] }
+            younger_member = sorted_members.first
+            older_member = sorted_members.last
+            if older_member[:age_of_applicant] > 20
+              applicant = applicant_by_reference(older_member[:member_identifier])
+              applicant.benchmark_premium.health_only_slcsp_premiums
+            else
+              applicant = applicant_by_reference(younger_member[:member_identifier])
+              applicant.benchmark_premium.health_only_slcsp_premiums
+            end
+          end
+
+        aptc_household[:members].each do |member|
+          next member unless member[:aptc_eligible]
+          member[:benchmark_plan_monthly_premium_amount] = slcsp_member_premiums.detect do |m_premium|
+            m_premium.member_identifier == member[:member_identifier]
+          end.monthly_premium
+        end
+
+        Success(aptc_household)
+      end
 
       def find_affordability_threshold(params)
         @application = params[:application]
@@ -213,8 +250,15 @@ module Eligibilities
         claiming_applicant.incomes.present?
       end
 
+      def monthly_lcsp_premium(applicant)
+        applicant.benchmark_premium.lcsp_premiums.detect do |member_premium|
+          next member_premium if member_premium[:member_identifier] != applicant.person_hbx_id.to_s
+          member_premium[:monthly_premium]
+        end
+      end
+
       def all_ichra_affordable?(applicant)
-        monthly_premium = applicant.benchmark_premium.monthly_lcsp_premium
+        monthly_premium = monthly_lcsp_premium(applicant)
 
         # TODO: Update ichra_benefits method correctly
         applicant.ichra_benefits.all? do |ichra_benefit|
@@ -232,7 +276,7 @@ module Eligibilities
       end
 
       def all_qsehra_affordable?(applicant)
-        monthly_premium = applicant.benchmark_premium.monthly_lcsp_premium
+        monthly_premium = monthly_lcsp_premium(applicant)
 
         # TODO: Update qsehra_benefits method correctly
         applicant.qsehra_benefits.all? do |qsehra_benefit|

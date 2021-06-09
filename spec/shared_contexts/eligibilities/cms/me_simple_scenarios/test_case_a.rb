@@ -22,6 +22,12 @@ RSpec.shared_context 'cms ME simple_scenarios test_case_a', :shared_context => :
       is_self_attested_disabled: true,
       is_incarcerated: false }
   end
+  let(:benchmark_premium) do
+    { lcsp_premiums: [{ member_identifier: '95', monthly_premium: 310.50 },
+                      { member_identifier: '96', monthly_premium: 310.60 }],
+      health_only_slcsp_premiums: [{ member_identifier: '95', monthly_premium: 320.50 },
+                                   { member_identifier: '96', monthly_premium: 320.60 }] }
+  end
   let(:job_income) do
     { kind: 'wages_and_salaries',
       amount: 31_176,
@@ -120,7 +126,7 @@ RSpec.shared_context 'cms ME simple_scenarios test_case_a', :shared_context => :
       is_temporarily_out_of_state: false,
       age_of_applicant: 74,
       is_claimed_as_dependent_by_non_applicant: false,
-      benchmark_premium: { monthly_slcsp_premium: 496.02, monthly_lcsp_premium: 430.48 },
+      benchmark_premium: benchmark_premium,
       is_homeless: false,
       mitc_relationships: dwayne_mitc_relationships,
       mitc_income: mitc_income }
@@ -179,7 +185,7 @@ RSpec.shared_context 'cms ME simple_scenarios test_case_a', :shared_context => :
       is_temporarily_out_of_state: false,
       age_of_applicant: 60,
       is_claimed_as_dependent_by_non_applicant: false,
-      benchmark_premium: { monthly_slcsp_premium: 274.68, monthly_lcsp_premium: 230.48 },
+      benchmark_premium: benchmark_premium,
       is_homeless: false,
       mitc_relationships: betty_mitc_relationships,
       mitc_income: mitc2_income }

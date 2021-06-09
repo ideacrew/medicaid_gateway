@@ -7,6 +7,12 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants tiffan
       is_self_attested_disabled: true,
       is_incarcerated: false }
   end
+  let(:benchmark_premium) do
+    { lcsp_premiums: [{ member_identifier: '95', monthly_premium: 310.50 },
+                      { member_identifier: '96', monthly_premium: 310.60 }],
+      health_only_slcsp_premiums: [{ member_identifier: '95', monthly_premium: 320.50 },
+                                   { member_identifier: '96', monthly_premium: 320.60 }] }
+  end
   let(:family_member_reference) do
     { family_member_hbx_id: '1000',
       first_name: 'tiffany',
@@ -91,7 +97,7 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants tiffan
       is_temporarily_out_of_state: false,
       age_of_applicant: 45,
       is_claimed_as_dependent_by_non_applicant: false,
-      benchmark_premium: { monthly_slcsp_premium: 496.02, monthly_lcsp_premium: 430.48 },
+      benchmark_premium: benchmark_premium,
       is_homeless: false }
   end
 
@@ -136,7 +142,7 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants tiffan
       is_temporarily_out_of_state: false,
       age_of_applicant: 13,
       is_claimed_as_dependent_by_non_applicant: false,
-      benchmark_premium: { monthly_slcsp_premium: 274.68, monthly_lcsp_premium: 230.48 },
+      benchmark_premium: benchmark_premium,
       is_homeless: false }
   end
 

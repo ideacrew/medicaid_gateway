@@ -7,7 +7,8 @@ RSpec.describe ::AptcCsr::MemberContract, dbclean: :around_each do
     { member_identifier: '95',
       household_count: 1,
       tax_filer_status: 'tax_filer',
-      is_applicant: true }
+      is_applicant: true,
+      age_of_applicant: 22 }
   end
 
   let(:optional_params) do

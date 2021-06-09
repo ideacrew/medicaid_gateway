@@ -58,18 +58,11 @@ module Eligibilities
           applicant = applicant_by_reference(aptc_mmbr[:member_identifier])
           primary = @application.primary_applicant
           rel_kind = @application.relationship_kind(applicant, primary)
-          member_premium = applicant_member_premium(applicant)
           mem_hashes << { member_identifier: applicant.person_hbx_id,
                           relationship_kind_to_primary: rel_kind,
-                          # age_of_applicant: applicant.age_of_applicant,
-                          member_premium: member_premium }
-          aptc_mmbr[:benchmark_plan_monthly_premium_amount] = member_premium
+                          member_premium: aptc_mmbr[:benchmark_plan_monthly_premium_amount] }
           mem_hashes
         end
-      end
-
-      def applicant_member_premium(applicant)
-        applicant.benchmark_premium.monthly_slcsp_premium
       end
 
       def applicant_by_reference(person_hbx_id)

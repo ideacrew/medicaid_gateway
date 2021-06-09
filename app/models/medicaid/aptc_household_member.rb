@@ -26,6 +26,9 @@ module Medicaid
     # Premium amount that is used for this member for determining APTC/CSR
     field :benchmark_plan_monthly_premium_amount, type: Float
 
+    # Age of applicant
+    field :age_of_applicant, type: Integer
+
     # Member Eligibility
     field :aptc_eligible, type: Boolean
     field :totally_ineligible, type: Boolean

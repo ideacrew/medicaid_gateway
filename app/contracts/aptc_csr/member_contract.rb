@@ -11,6 +11,7 @@ module AptcCsr
     # @option opts [String] :tax_filer_status required
     # @option opts [Bool] :is_applicant required
     # @option opts [BigDecimal] :benchmark_plan_monthly_premium_amount optional
+    # @option opts [Integer] :age_of_applicant required
     # @option opts [Bool] :aptc_eligible optional
     # @option opts [Bool] :totally_ineligible optional
     # @option opts [Bool] :uqhp_eligible optional
@@ -24,6 +25,7 @@ module AptcCsr
       required(:tax_filer_status).filled(Types::TaxFilerKind)
       required(:is_applicant).filled(:bool)
       optional(:benchmark_plan_monthly_premium_amount).maybe(Types::Money)
+      required(:age_of_applicant).maybe(:integer)
 
       optional(:aptc_eligible).maybe(:bool)
       optional(:totally_ineligible).maybe(:bool)

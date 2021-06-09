@@ -10,6 +10,7 @@ module AptcCsr
     attribute :tax_filer_status, Types::TaxFilerKind
     attribute :is_applicant, Types::Bool
     attribute :benchmark_plan_monthly_premium_amount, Types::Money.optional.meta(omittable: true)
+    attribute :age_of_applicant, Types::Integer
 
     attribute :aptc_eligible, Types::Bool.optional.meta(omittable: true)
     attribute :totally_ineligible, Types::Bool.optional.meta(omittable: true)
