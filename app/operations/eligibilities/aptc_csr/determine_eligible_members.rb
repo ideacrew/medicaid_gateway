@@ -40,13 +40,8 @@ module Eligibilities
             sorted_members = aptc_members.sort_by { |mbr| mbr[:age_of_applicant] }
             younger_member = sorted_members.first
             older_member = sorted_members.last
-            if older_member[:age_of_applicant] > 20
-              applicant = applicant_by_reference(older_member[:member_identifier])
-              applicant.benchmark_premium.health_only_slcsp_premiums
-            else
-              applicant = applicant_by_reference(younger_member[:member_identifier])
-              applicant.benchmark_premium.health_only_slcsp_premiums
-            end
+            member_identifier = (older_member[:age_of_applicant] > 20 ? older_member : younger_member)[:member_identifier]
+            applicant_by_reference(member_identifier).benchmark_premium.health_only_slcsp_premiums
           end
 
         aptc_household[:members].each do |member|

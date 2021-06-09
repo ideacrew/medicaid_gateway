@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require File.join(Rails.root, 'spec/shared_contexts/eligibilities/aptc_csr/two_applicants_data')
+require File.join(Rails.root, 'spec/shared_contexts/eligibilities/magi_medicaid_application_data')
 require 'aca_entities/magi_medicaid/contracts/create_federal_poverty_level_contract'
 require 'aca_entities/magi_medicaid/contracts/federal_poverty_level_contract'
 require 'aca_entities/magi_medicaid/federal_poverty_level'
