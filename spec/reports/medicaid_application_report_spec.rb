@@ -8,7 +8,7 @@ RSpec.describe MedicaidApplicationReport, dbclean: :after_each do
       double(
         application_identifier: 1,
         medicaid_request_payload: 1,
-        medicaid_response_payload: 1,
+        medicaid_response_payload: 1
       )
     end
     before do

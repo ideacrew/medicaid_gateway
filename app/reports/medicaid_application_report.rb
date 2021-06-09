@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 require 'csv'
 
+# Class used for returning Medicaid Application reports
 class MedicaidApplicationReport
   def self.run
     timestamp = Time.now.to_s
@@ -11,7 +14,7 @@ class MedicaidApplicationReport
         created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day
       )
       puts("No applications present.") if todays_applications.blank?
-      return if todays_applications.blank?
+      break if todays_applications.blank?
       todays_applications.each do |application|
         # What goes here? Just the attributes?
         csv << [
