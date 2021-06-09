@@ -11,6 +11,7 @@ gemspec
 
 gem 'aca_entities', git:  'https://github.com/ideacrew/aca_entities.git', branch: 'release_0.2.2'
 gem 'httparty', '~> 0.16'
+gem 'mongoid', '~> 7.2.1'
 
 group :development, :test do
   gem "rspec-rails"

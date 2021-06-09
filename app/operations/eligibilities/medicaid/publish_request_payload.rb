@@ -15,9 +15,9 @@ module Eligibilities
       # @return [Dry::Monads::Result]
       def call(mm_application)
         medicaid_service = yield determine_service(mm_application)
-        mitc_request_payload = yield generate_and_publish_payload(medicaid_service)
+        application = yield generate_and_publish_payload(medicaid_service)
 
-        Success(mitc_request_payload)
+        Success(application)
       end
 
       private

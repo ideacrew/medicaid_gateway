@@ -17,9 +17,10 @@ module MitcService
     def call(mm_application)
       mm_application = yield validate_mm_application(mm_application)
       mitc_request_payload = yield generate_request_payload(mm_application)
+      application = yield persist_medicaid_application(mm_application, mitc_request_payload)
       _message = yield publish_mitc_request_payload(mitc_request_payload)
 
-      Success(mitc_request_payload)
+      Success(application)
     end
 
     private
@@ -35,6 +36,12 @@ module MitcService
     # Transforms MagiMedicaid Application to Mitc Request Payload
     def generate_request_payload(mm_application)
       ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(mm_application)
+    end
+
+    def persist_medicaid_application(mm_application, mitc_request_payload)
+      ::Applications::Create.new.call({ application_identifier: mm_application.hbx_id,
+                                        application_request_payload: mm_application.to_json,
+                                        medicaid_request_payload: mitc_request_payload.to_json })
     end
 
     def publish_mitc_request_payload(mitc_request_payload)

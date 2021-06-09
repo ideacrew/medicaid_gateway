@@ -3,6 +3,10 @@
 require 'rails_helper'
 require "#{Rails.root}/spec/shared_contexts/eligibilities/magi_medicaid_application_data.rb"
 Dir["#{Rails.root}/spec/shared_contexts/eligibilities/cms/me_simple_scenarios/*.rb"].sort.each { |file| require file }
+require 'aca_entities/magi_medicaid/contracts/create_federal_poverty_level_contract'
+require 'aca_entities/magi_medicaid/contracts/federal_poverty_level_contract'
+require 'aca_entities/magi_medicaid/federal_poverty_level'
+require 'aca_entities/operations/magi_medicaid/create_federal_poverty_level'
 
 RSpec.describe ::MitcService::GenerateAndPublishPayload, dbclean: :after_each do
   it 'should be a container-ready operation' do
@@ -16,7 +20,7 @@ RSpec.describe ::MitcService::GenerateAndPublishPayload, dbclean: :after_each do
     before do
       allow(HTTParty).to receive(:post).and_return(mitc_response)
       @result = subject.call(application_entity)
-      @mitc_request_payload = @result.success
+      @application = @result.success
     end
 
     let(:medicaid_request_payload) do
@@ -27,8 +31,8 @@ RSpec.describe ::MitcService::GenerateAndPublishPayload, dbclean: :after_each do
       expect(@result).to be_success
     end
 
-    it 'should return medicaid_request_payload' do
-      expect(@mitc_request_payload).to eq(medicaid_request_payload)
+    it 'should store medicaid_request_payload' do
+      expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
     end
   end
 
@@ -39,7 +43,7 @@ RSpec.describe ::MitcService::GenerateAndPublishPayload, dbclean: :after_each do
     before do
       allow(HTTParty).to receive(:post).and_return(mitc_response)
       @result = subject.call(application_entity)
-      @mitc_request_payload = @result.success
+      @application = @result.success
     end
 
     let(:medicaid_request_payload) do
@@ -50,8 +54,8 @@ RSpec.describe ::MitcService::GenerateAndPublishPayload, dbclean: :after_each do
       expect(@result).to be_success
     end
 
-    it 'should return medicaid_request_payload' do
-      expect(@mitc_request_payload).to eq(medicaid_request_payload)
+    it 'should store medicaid_request_payload' do
+      expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
     end
   end
 
@@ -62,7 +66,7 @@ RSpec.describe ::MitcService::GenerateAndPublishPayload, dbclean: :after_each do
     before do
       allow(HTTParty).to receive(:post).and_return(mitc_response)
       @result = subject.call(application_entity)
-      @mitc_request_payload = @result.success
+      @application = @result.success
     end
 
     let(:medicaid_request_payload) do
@@ -73,8 +77,8 @@ RSpec.describe ::MitcService::GenerateAndPublishPayload, dbclean: :after_each do
       expect(@result).to be_success
     end
 
-    it 'should return medicaid_request_payload' do
-      expect(@mitc_request_payload).to eq(medicaid_request_payload)
+    it 'should store medicaid_request_payload' do
+      expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
     end
   end
 end

@@ -14,8 +14,7 @@ module Eligibilities
       # @return [Dry::Monads::Result]
       def call(params)
         mm_application = yield init_magi_medicaid_application(params)
-        medicaid_request_payload = yield publish_request_payload(mm_application)
-        application = yield persist_medicaid_application(mm_application, medicaid_request_payload)
+        application = yield publish_request_payload(mm_application)
 
         Success(application)
       end
@@ -28,12 +27,6 @@ module Eligibilities
 
       def publish_request_payload(mm_application)
         ::Eligibilities::Medicaid::PublishRequestPayload.new.call(mm_application)
-      end
-
-      def persist_medicaid_application(mm_application, medicaid_request_payload)
-        ::Applications::Create.new.call({ application_identifier: mm_application.hbx_id,
-                                          application_request_payload: mm_application.to_json,
-                                          medicaid_request_payload: medicaid_request_payload.to_json })
       end
     end
   end
