@@ -26,5 +26,28 @@ module AptcCsr
         end
       end
     end
+
+    rule(:application_request_payload) do
+      key.failure(text: 'should be a valid JSON string') if key? && !valid_json?(value)
+    end
+
+    rule(:application_response_payload) do
+      key.failure(text: 'should be a valid JSON string') if key? && value && !valid_json?(value)
+    end
+
+    rule(:medicaid_request_payload) do
+      key.failure(text: 'should be a valid JSON string') if key? && !valid_json?(value)
+    end
+
+    rule(:medicaid_response_payload) do
+      key.failure(text: 'should be a valid JSON string') if key? && value && !valid_json?(value)
+    end
+
+    def valid_json?(json_input)
+      JSON.parse(json_input)
+    rescue JSON::ParserError => _e
+      false
+    end
+
   end
 end

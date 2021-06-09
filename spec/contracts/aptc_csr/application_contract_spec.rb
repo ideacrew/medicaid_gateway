@@ -21,8 +21,8 @@ describe AptcCsr::ApplicationContract do
   context 'with required data ' do
     before do
       @result = subject.call({ application_identifier: application_request_payload.to_h[:hbx_id].to_s,
-                               application_request_payload: application_request_payload.to_h.to_s,
-                               medicaid_request_payload: medicaid_request_payload.to_h.to_s })
+                               application_request_payload: application_request_payload.to_json,
+                               medicaid_request_payload: medicaid_request_payload.to_json })
     end
 
     it 'should return success' do
@@ -32,8 +32,8 @@ describe AptcCsr::ApplicationContract do
 
   context 'with missing data ' do
     before do
-      @result = subject.call({ application_request_payload: application_request_payload.to_h.to_s,
-                               medicaid_request_payload: medicaid_request_payload.to_h.to_s })
+      @result = subject.call({ application_request_payload: application_request_payload.to_json,
+                               medicaid_request_payload: medicaid_request_payload.to_json })
     end
 
     it 'should return failure' do

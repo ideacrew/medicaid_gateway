@@ -12,17 +12,17 @@ module Medicaid
     # For example: EA's FinancialAssistance::Application's hbx_id
     field :application_identifier, type: String
 
-    # Input Application Request Payload that we get from external system for Determination
+    # Input Application Request Payload that we get from external system for Determination in JSON format
     field :application_request_payload, type: String
 
-    # Response Application Payload that we will send back to the external system with Full Determination
+    # Response Application Payload that we will send back to the external system with Full Determination in JSON format
     field :application_response_payload, type: String
 
-    # Request application that we generate to send it to external system for Medicaid Determination
+    # Request application that we generate to send it to external system for Medicaid Determination in JSON format
     # For Example: In DC's case the external system is MitC
     field :medicaid_request_payload, type: String
 
-    # Response application that we get back from external system which includes Medicaid Determination
+    # Response application that we get back from external system which includes Medicaid Determination in JSON format
     # For Example: In DC's case the external system is MitC
     field :medicaid_response_payload, type: String
 
