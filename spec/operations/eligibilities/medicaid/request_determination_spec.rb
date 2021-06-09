@@ -23,7 +23,7 @@ RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_
       allow(EventSource::ConnectionManager).to receive(:instance).and_return(manager)
       allow(manager).to receive(:connections_for).and_return([connection])
       allow(connection).to receive(:channels).and_return({ :'/determinations/eval' => channel })
-      allow(channel).to receive(:publish_operations).and_return({ :'/determinations/eval' => publish_operation })
+      allow(channel).to receive(:publish_operations).and_return({ '/determinations/eval' => publish_operation })
       allow(publish_operation).to receive(:call).and_return(true)
     end
 
@@ -160,7 +160,7 @@ RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_
         allow(EventSource::ConnectionManager).to receive(:instance).and_return(manager)
         allow(manager).to receive(:connections_for).and_return([connection])
         allow(connection).to receive(:channels).and_return({ :'/determinations/eval' => channel })
-        allow(channel).to receive(:publish_operations).and_return({ :'/determinations/eval' => publish_operation })
+        allow(channel).to receive(:publish_operations).and_return({ '/determinations/eval' => publish_operation })
         allow(publish_operation).to receive(:call).and_return(true)
         @result = subject.call({ test: "test" })
         @application = @result.success

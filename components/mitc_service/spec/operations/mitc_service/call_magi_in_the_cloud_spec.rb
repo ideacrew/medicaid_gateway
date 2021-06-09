@@ -21,13 +21,17 @@ RSpec.describe ::MitcService::CallMagiInTheCloud do
       allow(EventSource::ConnectionManager).to receive(:instance).and_return(manager)
       allow(manager).to receive(:connections_for).and_return([connection])
       allow(connection).to receive(:channels).and_return({ :'/determinations/eval' => channel })
-      allow(channel).to receive(:publish_operations).and_return({ :'/determinations/eval' => publish_operation })
+      allow(channel).to receive(:publish_operations).and_return({ '/determinations/eval' => publish_operation })
       allow(publish_operation).to receive(:call).and_return(true)
       @result = subject.call(mitc_request_payload)
     end
 
     it 'should return success with valid mitc response' do
       expect(@result).to be_success
+    end
+
+    it 'should return success with a message' do
+      expect(@result.success).to eq("Successfully sent request payload to mitc")
     end
   end
 

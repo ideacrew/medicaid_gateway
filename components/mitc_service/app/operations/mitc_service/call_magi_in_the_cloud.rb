@@ -23,7 +23,7 @@ module MitcService
     private
 
     def call_magi_in_the_cloud(mitc_request_payload)
-      publish(mitc_request_payload.to_json)
+      publish(mitc_request_payload)
 
       Success("Successfully sent request payload to mitc")
     rescue StandardError => _e
@@ -43,7 +43,7 @@ module MitcService
       manager = EventSource::ConnectionManager.instance
       connection = manager.connections_for(:http).first
       channel = connection.channels[:'/determinations/eval']
-      publish_operation = channel.publish_operations[:'/determinations/eval']
+      publish_operation = channel.publish_operations['/determinations/eval']
       publish_operation.call(mitc_request_payload)
     end
   end
