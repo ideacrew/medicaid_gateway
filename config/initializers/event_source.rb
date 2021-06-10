@@ -12,6 +12,7 @@ EventSource.configure do |config|
       # TODO: update production URL when go live
       http.host = "http://localhost"
       http.port = "3000"
+      http.url = "http://localhost:3000"
     end
   end
 end
