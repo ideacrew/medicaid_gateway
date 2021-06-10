@@ -46,6 +46,7 @@ services:
       - QB_CLIENT_ID=${QB_CLIENT_ID:-1234567890}
       - QB_CLIENT_SECRET=${QB_CLIENT_SECRET:-1234567890}
       - QB_REALM_ID=${QB_REALM_ID:-1234567890}
+      - RABBITMQ_URL=${RABBITMQ_URL:-amqp://guest:guest@amqp:5672}
       - RAILS_ENV=${RAILS_ENV:-development}
       - SFTP_HOST=""
       - SFTP_PORT=""
@@ -64,6 +65,7 @@ services:
     command: bash -c "rm -f tmp/pids/server.pid && mkdir -p tmp/pids && yarn install --check-files && bundle install && bundle exec puma -C config/puma.rb"
     depends_on:
       - db
+      - amqp
   db:
     image: mongo:4.2
     volumes:
@@ -72,6 +74,30 @@ services:
     ports:
       - 27017:27017
 
+  amqp:
+    image: rabbitmq:3.8-management
+    build:
+      context: .
+      dockerfile: ./.docker/development/Dockerfile.rabbitmq
+      args:
+        HBX_ID: 'dc0'
+        ENV_NAME: 'dev'
+    image: ledger_redux_amqp:dev-0.1.0
+    container_name: rabbitmq
+    volumes:
+      - rabbitmq_etc:/etc/rabbitmq/
+      - rabbitmq_data:/var/lib/rabbitmq/
+      - rabbitmq_logs:/var/log/rabbitmq/
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=${RABBITMQ_ERLANG_COOKIE:-123456789}
+      - RABBITMQ_USER=${RABBITMQ_DEFAULT_USER:-guest}
+      - RABBITMQ_PASSWORD=${RABBITMQ_DEFAULT_PASS:-guest}
+    ports:
+      - 4369
+      - 5672:5672
+      - 25672:25672
+      - 15672:15672
+
 volumes:
   bundle:
   rails_cache:
@@ -79,3 +105,6 @@ volumes:
   packs:
   mongodb:
   mongodb_config:
+  rabbitmq_etc:
+  rabbitmq_data:
+  rabbitmq_logs:
