@@ -14,16 +14,6 @@ EventSource.configure do |config|
     # - RABBITMQ_VERSION=""
     # - RABBITMQ_USERNAME=${RABBITMQ_USERNAME:-guest}
     # - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-guest}
-    # server.amqp do |rabbitmq|
-    #   rabbitmq.environment = :production
-    #   rabbitmq.host = ENV['RABBITMQ_HOST']
-    #   rabbitmq.vhost = ENV['RABBITMQ_VHOST']
-    #   rabbitmq.port = ENV['RABBITMQ_PORT']
-    #   rabbitmq.user_name = ENV['RABBITMQ_USERNAME']
-    #   rabbitmq.password = ENV['RABBITMQ_PASSWORD']
-
-    #   # rabbitmq.url = "" # ENV['RABBITMQ_URL']
-    # end
 
     # server.amqp do |rabbitmq|
     #   rabbitmq.environment = :production
@@ -51,12 +41,18 @@ EventSource.configure do |config|
       # rabbitmq.url = "" # ENV['RABBITMQ_URL']
     end
   end
-
   # config.asyncapi_resources = [AcaEntities::AsyncApi::MedicaidGataway]
   # config.asyncapi_resources = AcaEntities.find_resources_for(:enroll, %w[amqp resque_bus]) # will give you resouces in array of hashes form
   # AcaEntities::Operations::AsyncApi::FindResource.new.call(self)
 end
 
+
+#  mg_schemas = Gem.loaded_specs.values.inject([]) do |ps, s|
+#     ps.concat(s.matches_for_glob("aca_entities/async_api/medicaid_gateway.yml"))
+#   end
+#   config.async_api_schemas = mg_schemas.map do |mgs|
+#     EventSource::AsyncApi::Operations::AsyncApiConf::LoadPath.new.call(path: mgs).success.to_h
+#   end
 
 dir = Rails.root.join('asyncapi')
 EventSource.async_api_schemas = ::Dir[::File.join(dir, '**', '*')].reject { |p| ::File.directory? p }.reduce([]) do |memo, file|
