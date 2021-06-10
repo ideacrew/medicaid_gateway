@@ -8,15 +8,25 @@ module EventSource
 
       # # from: MagiMedicaidEngine of EA after Application's submission
       # # { event: magi_medicaid_application_submitted, payload: :magi_medicaid_application }
-      subscribe(:on_determinations_eval) do |_headers, _response|
+      subscribe(:on_determinations_eval) do |headers, response|
+        correlation_id = headers["CorrelationID"]
+        persist(response, correlation_id)
+      end
 
-        # TODO: requesst payload is not available
-        # correlation_id = JSON.parse(response.env.request_body)["Name"]
-        # mitc_response_payload = response.merge(correlation_id: correlation_id)
+      def self.persist(response, correlation_id)
+        params = { medicaid_application_id: correlation_id, medicaid_response_payload: response }
+        result = Eligibilities::DetermineFullEligibility.new.call(params.deep_symbolize_keys!)
 
-        # operation to persist
-        Medicaid::Application.new(mitc_response_payload).call
-
+        message = if result.success?
+                    result.success
+                  else
+                    result.failure
+                  end
+        # TODO: log message
+        puts message
+      rescue StandardError => e
+        # TODO: log error message
+        puts e.inspect
       end
     end
   end

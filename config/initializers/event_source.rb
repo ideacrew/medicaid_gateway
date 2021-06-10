@@ -5,6 +5,13 @@ require 'event_source'
 EventSource.configure do |config|
   config.protocols = %w[amqp http]
   config.pub_sub_root = Pathname.pwd.join('components', 'mitc_service', 'app', 'event_source')
+
+  config.servers do |server|
+    server.http do |http|
+      # TODO: update production URL when go live
+      http.url = "http://localhost:3000"
+    end
+  end
 end
 
 dir = Pathname.pwd.join('components', 'mitc_service', 'app', 'async_api_files')

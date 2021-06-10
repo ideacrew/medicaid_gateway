@@ -39,16 +39,14 @@ module MitcService
     end
 
     def publish(mitc_request_payload)
-      # TODO: refactor based on updates from event source
       manager = EventSource::ConnectionManager.instance
       connection = manager.connections_for(:http).first
       channel = connection.channels[:'/determinations/eval']
       publish_operation = channel.publish_operations['/determinations/eval']
-      publish_operation.call(mitc_request_payload)
+      publish_operation.call(mitc_request_payload.merge(CorrelationID: mitc_request_payload[:Name]))
     end
   end
 end
 
 # Pending Tasks:
-#   1. Use typhoeus instead of HTTParty for integrating with MiTC.
-#   2. Log all Failure moands for finding failure cases.
+#   1. Log all Failure moands for finding failure cases.
