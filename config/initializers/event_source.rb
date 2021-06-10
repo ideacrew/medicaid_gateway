@@ -41,25 +41,18 @@ EventSource.configure do |config|
       # rabbitmq.url = "" # ENV['RABBITMQ_URL']
     end
   end
+
+  app_schemas = Gem.loaded_specs.values.inject([]) do |ps, s|
+    ps.concat(s.matches_for_glob("aca_entities/async_api/medicaid_gateway.yml"))
+  end
+
+  config.async_api_schemas = app_schemas.map do |schema|
+    EventSource::AsyncApi::Operations::AsyncApiConf::LoadPath.new.call(path: schema).success.to_h
+  end
+
   # config.asyncapi_resources = [AcaEntities::AsyncApi::MedicaidGataway]
   # config.asyncapi_resources = AcaEntities.find_resources_for(:enroll, %w[amqp resque_bus]) # will give you resouces in array of hashes form
   # AcaEntities::Operations::AsyncApi::FindResource.new.call(self)
-end
-
-
-#  mg_schemas = Gem.loaded_specs.values.inject([]) do |ps, s|
-#     ps.concat(s.matches_for_glob("aca_entities/async_api/medicaid_gateway.yml"))
-#   end
-#   config.async_api_schemas = mg_schemas.map do |mgs|
-#     EventSource::AsyncApi::Operations::AsyncApiConf::LoadPath.new.call(path: mgs).success.to_h
-#   end
-
-dir = Rails.root.join('asyncapi')
-EventSource.async_api_schemas = ::Dir[::File.join(dir, '**', '*')].reject { |p| ::File.directory? p }.reduce([]) do |memo, file|
-  # read
-  # serialize yaml to hash
-  # Add to memo
-  memo << EventSource::AsyncApi::Operations::AsyncApiConf::LoadPath.new.call(path: file).success.to_h
 end
 
 EventSource.initialize!
