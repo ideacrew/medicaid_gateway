@@ -16,9 +16,10 @@ EventSource.configure do |config|
     # - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-guest}
     server.amqp do |rabbitmq|
       rabbitmq.environment = :production
-      rabbitmq.host = ENV['RABBITMQ_HOST'] || "localhost"
-      rabbitmq.vhost = ENV['RABBITMQ_VHOST'] || "/"
+      rabbitmq.host = ENV['RABBITMQ_HOST'] || "amqp://localhost"
+      rabbitmq.vhost = ENV['RABBITMQ_VHOST'] || "/event_source"
       rabbitmq.port = ENV['RABBITMQ_PORT'] || "5672"
+      rabbitmq.url = ENV['RABBITMQ_URL'] || ""
       rabbitmq.user_name = ENV['RABBITMQ_USERNAME'] || "guest"
       rabbitmq.password = ENV['RABBITMQ_PASSWORD'] || "guest"
 
@@ -28,7 +29,9 @@ EventSource.configure do |config|
   mg_schemas = Gem.loaded_specs.values.inject([]) do |ps, s|
     ps.concat(s.matches_for_glob("aca_entities/async_api/medicaid_gateway.yml"))
   end
-  config.async_api_schemas = mg_schemas
+  config.async_api_schemas = mg_schemas.map do |mgs|
+    EventSource::AsyncApi::Operations::AsyncApiConf::LoadPath.new.call(path: mgs).success.to_h
+  end
 end
 
 EventSource.initialize!
