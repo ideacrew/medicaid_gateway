@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Layout/LineLength
 require 'rails_helper'
 require 'aca_entities/magi_medicaid/contracts/create_federal_poverty_level_contract'
 require 'aca_entities/magi_medicaid/contracts/federal_poverty_level_contract'
@@ -62,13 +63,14 @@ RSpec.describe ::AptcCsr::AptcHouseholdContract, dbclean: :around_each do
   context 'with invalid data' do
     context 'no params' do
       let(:errs) do
-        { total_household_count: ['is missing'],
-          annual_tax_household_income: ['is missing'],
-          assistance_year: ['is missing'],
-          fpl: ['is missing'],
-          fpl_percent: ['is missing'],
-          members: ['is missing'],
-          eligibility_date: ['is missing'] }
+        { :annual_tax_household_income => ["is missing", "must be a decimal"],
+          :assistance_year => ["is missing", "must be an integer"],
+          :eligibility_date => ["is missing", "must be a date"],
+          :fpl => [["is missing"],
+                   { :state_code => ["must be one of: AL, AK, AS, AZ, AR, CA, CO, CT, DE, DC, FM, FL, GA, GU, HI, ID, IL, IN, IA, KS, KY, LA, ME, MH, MD, MA, MI, MN, MS, MO, MT, NE, NV, NH, NJ, NM, NY, NC, ND, MP, OH, OK, OR, PW, PA, PR, RI, SC, SD, TN, TX, UT, VT, VI, VA, WA, WV, WI, WY"] }],
+          :fpl_percent => ["is missing", "must be a decimal"],
+          :members => ["is missing", "must be an array"],
+          :total_household_count => ["is missing", "must be an integer"] }
       end
       it 'should return failure with errors' do
         expect(subject.call({}).errors.to_h).to eq(errs)
@@ -126,3 +128,4 @@ RSpec.describe ::AptcCsr::AptcHouseholdContract, dbclean: :around_each do
     end
   end
 end
+# rubocop:enable Layout/LineLength

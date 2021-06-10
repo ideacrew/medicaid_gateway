@@ -9,6 +9,8 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gem 'mitc_service', path: 'components/mitc_service'
 
 gem 'aca_entities',  git:  'https://github.com/ideacrew/aca_entities.git', branch: 'release_0.2.2'
+gem 'event_source',  git:  'https://github.com/ideacrew/event_source.git', branch: 'release_0.5.0'
+# gem 'event_source',  path: '../event_source'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.3'
@@ -32,7 +34,7 @@ gem 'bootsnap', '>= 1.4.4', require: false
 
 gem 'resource_registry',  git:  'https://github.com/ideacrew/resource_registry.git', branch: 'trunk'
 gem 'mongoid',             '~> 7.2.1'
-gem "faraday", "~> 0.17.3"
+gem "faraday", "~> 1.4.1"
 gem 'typhoeus'
 gem 'mime-types'
 gem 'httparty',            '~> 0.16'
