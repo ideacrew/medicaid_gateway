@@ -6,8 +6,12 @@ module EventSource
     class DeterminationRequestSubscriber
       include ::EventSource::Subscriber[http: '/determinations/eval']
 
-      # # from: MagiMedicaidEngine of EA after Application's submission
-      # # { event: magi_medicaid_application_submitted, payload: :magi_medicaid_application }
+      # From medicaid_gateway request is published to mitc from call_magi_in_the_cloud operation
+      # Response from mitc is received in this subscriber
+      # headers: Hash contains correlation id
+      # response Hash[{event: type_of_determination, payload: determination_hash}] contains determination from mitc
+      #
+      # @return [success/failure message]
       subscribe(:on_determinations_eval) do |headers, response|
         correlation_id = headers["CorrelationID"]
         persist(response, correlation_id)
@@ -23,10 +27,10 @@ module EventSource
                     result.failure
                   end
         # TODO: log message
-        puts message
+        puts "determination_request_subscriber_message: #{message.is_a?(Hash) ? message[:event] : message}"
       rescue StandardError => e
         # TODO: log error message
-        puts e.inspect
+        puts "determination_request_subscriber_error: #{e.backtrace}"
       end
     end
   end
