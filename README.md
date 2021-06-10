@@ -1,30 +1,36 @@
-# README
+# Medicaid Gateway Service
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+The MedicaidGateway service provides MAGI Medicaid eligibility determinations and transfers Account information
+between the State-based Exchange and State Medicaid systems.
 
-Creation command:
+## Docker Setup
+
+Build Docker environment
 
 ```bash
-rails new medicaid_gateway --skip-action-mailer --skip-action-mailbox --skip-action-text --skip-active-record --skip-active-storage --skip-test
+docker-compose build
 ```
 
-Things you may want to cover:
+Find the RabbitMQ container
 
-- Ruby version
+```bash
+docker ps
 
-- System dependencies
+CONTAINER ID   IMAGE                     COMMAND                  CREATED         STATUS         PORTS
+c485144f966   rabbitmq:3.8-management   "docker-entrypoint.s…"   3 minutes ago   Up 3 minutes
+```
 
-- Configuration
+Connect to the RabbitMQ Container command line, add the `event_source` vhost and grant permissions
+to the `guest` account
 
-- Database creation
+```bash
+docker exec -it c485144f966 bash
 
-- Database initialization
+root@cc485144f966:/# rabbitmqctl add_vhost event_source
+root@cc485144f966:/# rabbitmqctl set_permissions -p event_source guest ".*" ".*" ".*"
+```
 
-- How to run the test suite
-
-- Services (job queues, cache servers, search engines, etc.)
-
-- Deployment instructions
-
-- ...
+- Ruby version: 2.7.2
+- Rails version: 6.1.3.2
+- Tests: RSpec
+- Database: MongoDB
