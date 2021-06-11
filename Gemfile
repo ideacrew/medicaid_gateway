@@ -33,6 +33,10 @@ gem 'jbuilder', '~> 2.7'
 gem 'bootsnap', '>= 1.4.4', require: false
 
 gem 'resource_registry',  git:  'https://github.com/ideacrew/resource_registry.git', branch: 'trunk'
+gem 'event_source',  git:  'https://github.com/ideacrew/event_source.git', branch: 'release_0.5.1'
+
+gem 'aca_entities',  git:  'https://github.com/ideacrew/aca_entities.git', branch: 'fdsh'
+
 gem 'mongoid',             '~> 7.2.1'
 gem "faraday", "~> 1.4.1"
 gem 'typhoeus'
