@@ -11,7 +11,6 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-            steps:
       - uses: getong/rabbitmq-action@v1.2
         with:
           rabbitmq version: '3.8.2-management-alpine'
