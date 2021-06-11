@@ -27,17 +27,11 @@ EventSource.configure do |config|
 
     server.amqp do |rabbitmq|
       rabbitmq.host = ENV['RABBITMQ_HOST'] || "amqp://amqp"
-      STDERR.puts rabbitmq.host
       rabbitmq.vhost = ENV['RABBITMQ_VHOST'] || "event_source"
-      STDERR.puts rabbitmq.vhost
       rabbitmq.port = ENV['RABBITMQ_PORT'] || "5672"
-      STDERR.puts rabbitmq.port
       rabbitmq.url = ENV['RABBITMQ_URL'] || ""
-      STDERR.puts rabbitmq.url
       rabbitmq.user_name = ENV['RABBITMQ_USERNAME'] || "guest"
-      STDERR.puts rabbitmq.user_name
       rabbitmq.password = ENV['RABBITMQ_PASSWORD'] || "guest"
-      STDERR.puts rabbitmq.password
       # rabbitmq.url = "" # ENV['RABBITMQ_URL']
     end
   end
