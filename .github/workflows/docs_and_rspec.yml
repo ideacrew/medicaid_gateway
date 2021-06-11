@@ -11,13 +11,18 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-      - uses: mer-team/rabbitmq-mng-action@v1.2
+            steps:
+      - uses: getong/rabbitmq-action@v1.2
         with:
-          RABBITMQ_USER: 'guest'
-          RABBITMQ_PASS: 'guest'
-          RABBITMQ_PORT: 5672
-          RABBITMQ_MNG_PORT: 15672
-          RABBITMQ_TAG: '3-management-alpine'
+          rabbitmq version: '3.8.2-management-alpine'
+          host port: 5672
+          rabbitmq user: 'guest'
+          rabbitmq password: 'guest'
+          rabbitmq vhost: '/'
+      - name: Add VHost
+        run: |
+          rabbitmqctl add_vhost event_source
+          rabbitmqctl set_permissions -p event_source guest ".*" ".*" ".*"
       - uses: wbari/start-mongoDB@v0.2
         with:
           mongoDBVersion: '4.2'
@@ -41,7 +46,6 @@ jobs:
       - name: run tests
         run: |
           sudo bash -c "echo '127.0.0.1 amqp' >> /etc/hosts"
-          cat /etc/hosts
           bundle exec rspec
         env:
           RABBITMQ_HOST: localhost
