@@ -63,7 +63,7 @@ COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
 
 RUN bundle install --jobs 20 --retry 5 --without development test 
-RUN rm -f /medicaid_gateway/config/master.key && rm -f /medicaid_gateway/config/credentials.yml.enc
+#RUN rm -f /medicaid_gateway/config/master.key && rm -f /medicaid_gateway/config/credentials.yml.enc
 
 #CMD ["./entrypoints/docker-entrypoint.sh"]
 
