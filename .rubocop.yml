@@ -8,6 +8,7 @@ AllCops:
     - "vendor/**/*"
     - "node_modules/**/*"
     - "config/deploy.rb"
+    - "config/unicorn.rb"
     - "config/deploy/**/*"
 
 Layout/EmptyLineAfterGuardClause:
