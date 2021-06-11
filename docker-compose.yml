@@ -48,6 +48,12 @@ services:
       - QB_CLIENT_ID=${QB_CLIENT_ID:-1234567890}
       - QB_CLIENT_SECRET=${QB_CLIENT_SECRET:-1234567890}
       - QB_REALM_ID=${QB_REALM_ID:-1234567890}
+      - RABBITMQ_HOST=${RABBITMQ_HOST:-amqp://rabbitmq}
+      - RABBITMQ_VHOST=${RABBITMQ_VHOST:-event_source}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-guest}
+      - RABBITMQ_PORT=${RABBITMQ_PORT:-5672}
+      - RABBITMQ_URL=${RABBITMQ_URL:-amqp://guest:guest@amqp:5672}
+      - RABBITMQ_USERNAME=${AMQP_USERNAME:-guest}
       - RAILS_ENV=${RAILS_ENV:-development}
       - SFTP_HOST=""
       - SFTP_PORT=""
