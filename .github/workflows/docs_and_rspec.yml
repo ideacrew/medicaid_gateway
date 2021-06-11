@@ -40,7 +40,7 @@ jobs:
           bundle exec rubocop
       - name: run tests
         run: |
-          sudo bash -c "echo '127.0.0.1 amqp' >> ~/.hosts"
+          sudo bash -c "echo '127.0.0.1 amqp' >> /etc/.hosts"
           bundle exec rspec
         env:
           RABBITMQ_HOST: localhost
