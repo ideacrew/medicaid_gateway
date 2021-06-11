@@ -11,7 +11,7 @@ EventSource.configure do |config|
 
 
     server.amqp do |rabbitmq|
-      rabbitmq.host = ENV['RABBITMQ_HOST'] || "amqp://localhost"
+      rabbitmq.host = ENV['RABBITMQ_HOST'] || "amqp://rabbitmq"
       STDERR.puts rabbitmq.host
       rabbitmq.vhost = ENV['RABBITMQ_VHOST'] || "event_source"
       STDERR.puts rabbitmq.vhost
