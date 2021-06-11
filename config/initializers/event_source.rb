@@ -8,22 +8,7 @@ EventSource.configure do |config|
   config.server_key = ENV['RAILS_ENV'] # production, development# Rails.env.to_sym
 
   config.servers do |server|
-    # - RABBITMQ_HOST=""
-    # - RABBITMQ_PORT=""
-    # - RABBITMQ_URL=${RABBITMQ_URL:-amqp://guest:guest@amqp:5672}
-    # - RABBITMQ_VERSION=""
-    # - RABBITMQ_USERNAME=${RABBITMQ_USERNAME:-guest}
-    # - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-guest}
 
-    # server.amqp do |rabbitmq|
-    #   rabbitmq.environment = :production
-    #   rabbitmq.host = 'amqp://localhost'
-    #   rabbitmq.vhost = '/event_source'
-    #   rabbitmq.port = '5672'
-    #   rabbitmq.url = ''
-    #   rabbitmq.user_name = 'guest'
-    #   rabbitmq.password = 'guest'
-    # end
 
     server.amqp do |rabbitmq|
       rabbitmq.host = ENV['RABBITMQ_HOST'] || "amqp://amqp"
