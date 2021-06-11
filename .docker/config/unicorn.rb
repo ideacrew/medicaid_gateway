@@ -12,6 +12,6 @@ timeout 90
 preload_app true
 
 after_fork do |server, worker|
-  Rails.logger.info { "Rebooting Validation Proxy for worker" }
-  AtpBusinessRulesValidationProxy.reconnect!
+#  Rails.logger.info { "Rebooting Validation Proxy for worker" }
+#  AtpBusinessRulesValidationProxy.reconnect!
 end
