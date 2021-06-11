@@ -9,7 +9,7 @@ module EventSource
       # From medicaid_gateway request is published to mitc from call_magi_in_the_cloud operation
       # Response from mitc is received in this subscriber
       # headers: Hash contains correlation id
-      # response Hash[{event: type_of_determination, payload: determination_hash}] contains determination from mitc
+      # response Hash[determination_hash] contains determination from mitc
       #
       # @return [success/failure message]
       subscribe(:on_determinations_eval) do |headers, response|
