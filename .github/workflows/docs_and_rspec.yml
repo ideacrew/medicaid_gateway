@@ -17,7 +17,7 @@ jobs:
           host port: 5672
           rabbitmq user: 'guest'
           rabbitmq password: 'guest'
-          rabbitmq vhost: '/event_source'
+          rabbitmq vhost: 'event_source'
       - uses: wbari/start-mongoDB@v0.2
         with:
           mongoDBVersion: '4.2'
