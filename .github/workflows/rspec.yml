@@ -9,6 +9,13 @@ jobs:
       - uses: wbari/start-mongoDB@v0.2
         with:
           mongoDBVersion: '4.2'
+      - uses: mer-team/rabbitmq-mng-action@v1.2
+        with:
+          RABBITMQ_USER: 'guest'
+          RABBITMQ_PASS: 'guest'
+          RABBITMQ_PORT: 5672
+          RABBITMQ_MNG_PORT: 15672
+          RABBITMQ_TAG: '3-management-alpine'
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
@@ -29,3 +36,9 @@ jobs:
       - name: run tests
         run: |
           bundle exec rspec
+        env:
+          RABBITMQ_HOST: localhost
+          RABBITMQ_VHOST: /
+          RABBITMQ_PORT: 5672
+          RABBITMQ_USERNAME: guest
+          RABBITMQ_PASSWORD: guest
