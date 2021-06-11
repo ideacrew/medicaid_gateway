@@ -43,7 +43,7 @@ EventSource.configure do |config|
   end
 
   app_schemas = Gem.loaded_specs.values.inject([]) do |ps, s|
-    ps.concat(s.matches_for_glob("aca_entities/async_api/medicaid_gateway.yml"))
+    ps.concat(s.matches_for_glob("aca_entities/async_api/medicaid_gateway/amqp.yml"))
   end
 
   config.async_api_schemas = app_schemas.map do |schema|
