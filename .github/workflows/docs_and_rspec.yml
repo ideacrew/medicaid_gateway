@@ -42,12 +42,6 @@ jobs:
         run: |
           sudo bash -c "echo '127.0.0.1 amqp' >> /etc/hosts"
           bundle exec rspec
-        env:
-          RABBITMQ_HOST: localhost
-          RABBITMQ_VHOST: /
-          RABBITMQ_PORT: 5672
-          RABBITMQ_USERNAME: guest
-          RABBITMQ_PASSWORD: guest
   docs:
     needs:
       - rspec
