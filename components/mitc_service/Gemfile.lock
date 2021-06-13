@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/ideacrew/aca_entities.git
-  revision: dc681fab626b117106cf97714c6e126c53cfbee1
-  branch: release_0.2.2
+  revision: bf7ecc3efd6dde96d8214d7a749ff552af811724
+  branch: fdsh
   specs:
     aca_entities (0.2.2)
       deep_merge
@@ -14,8 +14,8 @@ GIT
 
 GIT
   remote: https://github.com/ideacrew/event_source.git
-  revision: b69ca07bb255894fc7b492d1d37925ad2f032d50
-  branch: release_0.5.0
+  revision: 810117e4fcc0a6ca591aac766df44fb7b4da1073
+  branch: release_0.5.1
   specs:
     event_source (0.5.0)
       bunny (~> 2.17.0)
@@ -231,7 +231,7 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2021.0225)
     mini_mime (1.0.3)
-    mini_portile2 (2.5.1)
+    mini_portile2 (2.5.3)
     minitest (5.14.4)
     mongo (2.14.0)
       bson (>= 4.8.2, < 5.0.0)
@@ -245,7 +245,7 @@ GEM
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
     nio4r (2.5.7)
-    nokogiri (1.11.5)
+    nokogiri (1.11.7)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
     oj (3.11.5)
@@ -297,7 +297,7 @@ GEM
       thor (~> 1.0)
     rainbow (3.0.0)
     rake (13.0.3)
-    redis (4.2.5)
+    redis (4.3.1)
     redis-namespace (1.8.1)
       redis (>= 3.0.4)
     regexp_parser (2.1.1)

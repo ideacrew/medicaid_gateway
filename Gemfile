@@ -9,7 +9,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gem 'mitc_service', path: 'components/mitc_service'
 
 gem 'aca_entities',  git:  'https://github.com/ideacrew/aca_entities.git', branch: 'fdsh'
-gem 'event_source',  git:  'https://github.com/ideacrew/event_source.git', branch: 'release_0.5.0'
+gem 'event_source',  git:  'https://github.com/ideacrew/event_source.git', branch: 'release_0.5.1'
 # gem 'event_source',  path: '../event_source'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
