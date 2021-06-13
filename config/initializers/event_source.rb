@@ -15,34 +15,35 @@ EventSource.configure do |config|
 
     server.amqp do |rabbitmq|
       rabbitmq.host = ENV['RABBITMQ_HOST'] || "amqp://localhost"
-      STDERR.puts rabbitmq.host
+      warn rabbitmq.host
       rabbitmq.vhost = ENV['RABBITMQ_VHOST'] || "/"
-      STDERR.puts rabbitmq.vhost
+      warn rabbitmq.vhost
       rabbitmq.port = ENV['RABBITMQ_PORT'] || "5672"
-      STDERR.puts rabbitmq.port
+      warn rabbitmq.port
       rabbitmq.url = ENV['RABBITMQ_URL'] || "amqp://localhost:5672"
-      STDERR.puts rabbitmq.url
+      warn rabbitmq.url
       rabbitmq.user_name = ENV['RABBITMQ_USERNAME'] || "guest"
-      STDERR.puts rabbitmq.user_name
+      warn rabbitmq.user_name
       rabbitmq.password = ENV['RABBITMQ_PASSWORD'] || "guest"
-      STDERR.puts rabbitmq.password
+      warn rabbitmq.password
       # rabbitmq.url = "" # ENV['RABBITMQ_URL']
     end
   end
 
-  config.async_api_schemas =  if Rails.env.test? || Rails.env.development?
-    publishers_dir = Pathname.pwd.join('asyncapi_files', 'publishers')
-    resource_files = ::Dir[::File.join(publishers_dir, '**', '*')].reject { |p| ::File.directory? p }
+  config.async_api_schemas =
+    if Rails.env.test? || Rails.env.development?
+      publishers_dir = Pathname.pwd.join('asyncapi_files', 'publishers')
+      resource_files = ::Dir[::File.join(publishers_dir, '**', '*')].reject { |p| ::File.directory? p }
 
-    subscribers_dir = Pathname.pwd.join('asyncapi_files', 'subscribers')
-    resource_files += ::Dir[::File.join(subscribers_dir, '**', '*')].reject { |p| ::File.directory? p }
+      subscribers_dir = Pathname.pwd.join('asyncapi_files', 'subscribers')
+      resource_files += ::Dir[::File.join(subscribers_dir, '**', '*')].reject { |p| ::File.directory? p }
 
-    resource_files.collect do |file|
-      EventSource::AsyncApi::Operations::AsyncApiConf::LoadPath.new.call(path: file).success.to_h
+      resource_files.collect do |file|
+        EventSource::AsyncApi::Operations::AsyncApiConf::LoadPath.new.call(path: file).success.to_h
+      end
+    else
+      ::AcaEntities.async_api_config_find_by_service_name('medicaid_gateway').success
     end
-  else
-    ::AcaEntities.async_api_config_find_by_service_name('medicaid_gateway').success
-  end
 end
 
 EventSource.initialize!

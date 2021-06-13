@@ -3,6 +3,7 @@
 module EventSource
   module Subscribers
     # Subscriber will receive response payload from mitc and perform validation along with persisting the payload
+    # rubocop:disable Lint/EmptyClass
     class DeterminationRequestSubscriber
       # include ::EventSource::Subscriber[http: '/determinations/eval']
 
@@ -33,5 +34,6 @@ module EventSource
       #   puts "determination_request_subscriber_error: #{e.backtrace}"
       # end
     end
+    # rubocop:enable Lint/EmptyClass
   end
 end
