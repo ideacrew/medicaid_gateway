@@ -32,8 +32,12 @@ EventSource.configure do |config|
 
   config.async_api_schemas =
     if Rails.env.test? || Rails.env.development?
+      # TODO: refactor below paths to load from spec - test_data
+      mitc_dir = Pathname.pwd.join('app', 'async_api_files')
+      resource_files = ::Dir[::File.join(mitc_dir, '**', '*')].reject { |p| ::File.directory? p }
+
       publishers_dir = Pathname.pwd.join('asyncapi_files', 'publishers')
-      resource_files = ::Dir[::File.join(publishers_dir, '**', '*')].reject { |p| ::File.directory? p }
+      resource_files += ::Dir[::File.join(publishers_dir, '**', '*')].reject { |p| ::File.directory? p }
 
       subscribers_dir = Pathname.pwd.join('asyncapi_files', 'subscribers')
       resource_files += ::Dir[::File.join(subscribers_dir, '**', '*')].reject { |p| ::File.directory? p }

@@ -9,10 +9,10 @@ require 'aca_entities/magi_medicaid/federal_poverty_level'
 require 'aca_entities/operations/magi_medicaid/create_federal_poverty_level'
 
 RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_each do
-  let(:manager) { double }
-  let(:connection) { double }
-  let(:channel) { double }
-  let(:publish_operation) { double }
+  include Dry::Monads[:result, :do]
+
+  let(:event) { Success(double) }
+  let(:obj)  {MitcService::CallMagiInTheCloud.new}
 
   it 'should be a container-ready operation' do
     expect(subject.respond_to?(:call)).to be_truthy
@@ -20,11 +20,9 @@ RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_
 
   context 'for success' do
     before do
-      allow(EventSource::ConnectionManager).to receive(:instance).and_return(manager)
-      allow(manager).to receive(:connections_for).and_return([connection])
-      allow(connection).to receive(:channels).and_return({ :'/determinations/eval' => channel })
-      allow(channel).to receive(:publish_operations).and_return({ '/determinations/eval' => publish_operation })
-      allow(publish_operation).to receive(:call).and_return(true)
+      allow(MitcService::CallMagiInTheCloud).to receive(:new).and_return(obj)
+      allow(obj).to receive(:build_event).and_return(event)
+      allow(event.success).to receive(:publish).and_return(true)
     end
 
     # Dwayne is UQHP eligible and eligible for non_magi_reasons
@@ -157,11 +155,9 @@ RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_
 
     context 'when input is invalid' do
       before do
-        allow(EventSource::ConnectionManager).to receive(:instance).and_return(manager)
-        allow(manager).to receive(:connections_for).and_return([connection])
-        allow(connection).to receive(:channels).and_return({ :'/determinations/eval' => channel })
-        allow(channel).to receive(:publish_operations).and_return({ '/determinations/eval' => publish_operation })
-        allow(publish_operation).to receive(:call).and_return(true)
+        allow(MitcService::CallMagiInTheCloud).to receive(:new).and_return(obj)
+        allow(obj).to receive(:build_event).and_return(event)
+        allow(event.success).to receive(:publish).and_return(true)
         @result = subject.call({ test: "test" })
         @application = @result.success
       end

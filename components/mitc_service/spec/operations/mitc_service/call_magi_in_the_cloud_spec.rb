@@ -4,6 +4,7 @@ require 'rails_helper'
 require "#{Rails.root}/spec/shared_contexts/eligibilities/magi_medicaid_application_data.rb"
 
 RSpec.describe ::MitcService::CallMagiInTheCloud do
+  include Dry::Monads[:result, :do]
   include_context 'setup magi_medicaid application with two applicants'
 
   let(:mitc_request_payload) do
@@ -11,18 +12,14 @@ RSpec.describe ::MitcService::CallMagiInTheCloud do
     ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(mm_app).success
   end
 
-  let(:manager) { double }
-  let(:connection) { double }
-  let(:channel) { double }
-  let(:publish_operation) { double }
+  let(:event) { Success(double) }
+  let(:obj)  {MitcService::CallMagiInTheCloud.new}
 
   context 'with valid response from MitC service' do
     before do
-      allow(EventSource::ConnectionManager).to receive(:instance).and_return(manager)
-      allow(manager).to receive(:connections_for).and_return([connection])
-      allow(connection).to receive(:channels).and_return({ :'/determinations/eval' => channel })
-      allow(channel).to receive(:publish_operations).and_return({ '/determinations/eval' => publish_operation })
-      allow(publish_operation).to receive(:call).and_return(true)
+      allow(MitcService::CallMagiInTheCloud).to receive(:new).and_return(obj)
+      allow(obj).to receive(:build_event).and_return(event)
+      allow(event.success).to receive(:publish).and_return(true)
       @result = subject.call(mitc_request_payload)
     end
 
