@@ -6,6 +6,7 @@ module AptcCsr
 
     attribute :total_household_count, Types::Integer
     attribute :annual_tax_household_income, Types::Money
+    attribute :csr_annual_income_limit, Types::Money.optional.meta(omittable: true)
     # attribute :are_all_members_medicaid_eligible, Types::Bool
     attribute :is_aptc_calculated, Types::Bool.optional.meta(omittable: true)
     attribute :maximum_aptc_amount, Types::Money.optional.meta(omittable: true)

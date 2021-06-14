@@ -51,6 +51,18 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       expect(@thh.max_aptc).to be_nil
     end
 
+    it 'should add effective_on for TaxHousehold' do
+      expect(@thh.effective_on).to be_a(Date)
+    end
+
+    it 'should add determined_on for TaxHousehold' do
+      expect(@thh.determined_on).to eq(Date.today)
+    end
+
+    it 'should not add csr_annual_income_limit for TaxHousehold' do
+      expect(@thh.csr_annual_income_limit).to be_nil
+    end
+
     it 'should not return any Aptc determination for TaxHouseholdMembers' do
       @thh.tax_household_members.each do |thhm|
         ped = thhm.product_eligibility_determination
@@ -186,6 +198,18 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       expect(@thh.max_aptc).to be_nil
     end
 
+    it 'should add effective_on for TaxHousehold' do
+      expect(@thh.effective_on).to be_a(Date)
+    end
+
+    it 'should add determined_on for TaxHousehold' do
+      expect(@thh.determined_on).to eq(Date.today)
+    end
+
+    it 'should not add csr_annual_income_limit for TaxHousehold' do
+      expect(@thh.csr_annual_income_limit).to be_nil
+    end
+
     it 'should not return any Aptc determination for aisha' do
       expect(@aisha_ped.is_ia_eligible).not_to eq(true)
     end
@@ -254,6 +278,19 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     it 'should return any APTC for given TaxHousehold' do
       expect(@thh.max_aptc).to eq(496.00)
       expect(@thh.max_aptc).not_to be_nil
+    end
+
+    it 'should add effective_on for TaxHousehold' do
+      expect(@thh.effective_on).to be_a(Date)
+    end
+
+    it 'should add determined_on for TaxHousehold' do
+      expect(@thh.determined_on).to eq(Date.today)
+    end
+
+    it 'should add csr_annual_income_limit for TaxHousehold' do
+      expect(@thh.csr_annual_income_limit).not_to be_nil
+      expect(@thh.csr_annual_income_limit).to be_a(BigDecimal)
     end
 
     it 'should return any Aptc determination for gerald' do

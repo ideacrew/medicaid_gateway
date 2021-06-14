@@ -69,6 +69,8 @@ module MitcService
     def add_determination_data(mm_app_hash, mitc_response)
       mitc_applicants = mitc_response[:applicants]
       mm_app_hash[:tax_households].each do |mm_thh|
+        mm_thh[:determined_on] = Date.today
+        mm_thh[:effective_on] = calculate_eligibility_date(mm_app_hash)
         mm_thh[:tax_household_members].each do |mm_thhm|
           member_identifier = mm_thhm[:applicant_reference][:person_hbx_id]
           next mm_thhm if bypass_mitc_determination?(mm_app_hash, member_identifier)
@@ -90,6 +92,17 @@ module MitcService
 
           mm_thhm[:product_eligibility_determination].merge!(ped_attrs)
         end
+      end
+    end
+
+    def calculate_eligibility_date(mm_app_hash)
+      current_date = Date.today
+      oe_start_on = mm_app_hash[:oe_start_on]
+      end_of_year = oe_start_on.end_of_year
+      if (oe_start_on..end_of_year).cover?(current_date)
+        end_of_year.next_day
+      else
+        current_date.next_month.beginning_of_month
       end
     end
 

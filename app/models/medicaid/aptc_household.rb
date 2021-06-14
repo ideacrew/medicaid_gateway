@@ -15,6 +15,9 @@ module Medicaid
     # Computed annual_tax_household_income that is used for APTC/CSR determination
     field :annual_tax_household_income, type: Float
 
+    # Computed csr_annual_income_limit that is sent to the determination request system
+    field :csr_annual_income_limit, type: Float
+
     # is_aptc_calculated tells us if APTC/CSR is calculated
     field :is_aptc_calculated, type: Boolean
 

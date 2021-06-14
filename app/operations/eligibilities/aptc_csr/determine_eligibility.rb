@@ -74,6 +74,9 @@ module Eligibilities
         mm_application_hash[:tax_households].each do |thh|
           next unless thh[:hbx_id].to_s == @mm_tax_household.hbx_id.to_s
           thh[:max_aptc] = aptc_household.maximum_aptc_amount
+          thh[:effective_on] = aptc_household.eligibility_date
+          thh[:annual_tax_household_income] = aptc_household.annual_tax_household_income
+          thh[:csr_annual_income_limit] = aptc_household.csr_annual_income_limit
           thh[:is_insurance_assistance_eligible] =
             aptc_household.benchmark_calculation_members.present? ? 'Yes' : 'No'
 

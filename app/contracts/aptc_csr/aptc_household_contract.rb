@@ -6,10 +6,12 @@ module AptcCsr
     # @!method call(opts)
     # @param [Hash] opts the parameters to validate using this contract
     # @option opts [Integer] :total_household_count required
+    # @option opts [BigDecimal] :csr_annual_income_limit optional
     # @return [Dry::Monads::Result]
     params do
       required(:total_household_count).filled(:integer)
       required(:annual_tax_household_income).filled(Types::Money)
+      optional(:csr_annual_income_limit).maybe(Types::Money)
       # required(:are_all_members_medicaid_eligible).filled(:bool)
       optional(:is_aptc_calculated).maybe(:bool)
       optional(:maximum_aptc_amount).maybe(Types::Money)
