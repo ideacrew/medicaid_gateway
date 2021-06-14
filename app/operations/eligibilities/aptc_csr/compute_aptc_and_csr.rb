@@ -112,12 +112,12 @@ module Eligibilities
 
       def calculate_csr_annual_income_limit(aptc_household)
         fpl = aptc_household[:fpl]
-        2.5 * (fpl[:annual_poverty_guideline] * (fpl[:annual_per_person_amount] * fpl[:household_size]) )
+        2.5 * (fpl[:annual_poverty_guideline] * (fpl[:annual_per_person_amount] * fpl[:household_size]))
       end
 
       # def calculate_aptc_annual_income_limit(aptc_household)
       #   fpl = aptc_household[:fpl]
-      #   2.5 * (fpl[:annual_poverty_guideline] * (fpl[:annual_per_person_amount] * fpl[:household_size]) )
+      #   2.5 * (fpl[:annual_poverty_guideline] * (fpl[:annual_per_person_amount] * fpl[:household_size]))
       # end
 
       # rubocop:disable Style/IfInsideElse
