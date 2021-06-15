@@ -72,5 +72,8 @@ RSpec.describe ::Subscribers::ApplicationSubscriber, dbclean: :after_each do
       expect(bunny_exchange).to receive(:publish).at_least(1).times
       Operations::DetermineEligibility.new.execute(payload)
     end
+
+    #  TODO verify exchange.on_return
+
   end
 end

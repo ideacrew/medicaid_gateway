@@ -7,12 +7,12 @@ EventSource.configure do |config|
   config.app_name = :medicaid_gateway
 
   config.servers do |server|
-    # server.http do |http|
-    #   # TODO: update production URL when go live
-    #   http.host = "http://localhost"
-    #   http.port = "3000"
-    #   http.url = "http://localhost:3000"
-    # end
+    server.http do |http|
+      # TODO: update production URL when go live
+      http.host = "http://localhost"
+      http.port = "3000"
+      http.url = "http://localhost:3000"
+    end
 
     server.amqp do |rabbitmq|
       rabbitmq.host = ENV['RABBITMQ_HOST'] || "amqp://localhost"

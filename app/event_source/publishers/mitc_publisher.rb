@@ -5,7 +5,7 @@ module Publishers
   class MitcPublisher
     include ::EventSource::Publisher[http: '/determinations/eval']
 
-    # register_event '/determinations/eval'
+    register_event '/determinations/eval'
   end
 end
 
