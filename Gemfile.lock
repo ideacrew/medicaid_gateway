@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ideacrew/aca_entities.git
-  revision: 22b4fd1acd1523a5ed7caae1a9c58a3b4411b963
+  revision: 47dc40eaabb864e137815cd0ecd200b63a2c39a9
   branch: fdsh
   specs:
     aca_entities (0.2.2)
@@ -14,11 +14,11 @@ GIT
 
 GIT
   remote: https://github.com/ideacrew/event_source.git
-  revision: 810117e4fcc0a6ca591aac766df44fb7b4da1073
+  revision: fed49a229606da02cd4795adb3b613afdd904ea7
   branch: release_0.5.1
   specs:
     event_source (0.5.0)
-      bunny (~> 2.17.0)
+      bunny (>= 1.7.1)
       deep_merge (~> 1.2.0)
       dry-events (~> 0.3)
       dry-inflector (~> 0.2)
@@ -32,7 +32,7 @@ GIT
       faraday_middleware (~> 1.0)
       logging (~> 2.3.0)
       mime-types
-      nokogiri (~> 1.11.5)
+      nokogiri (>= 1.10.8)
       oj (~> 3.11)
       ox (~> 2.14)
       resque-bus (~> 0.7.0)
@@ -146,8 +146,9 @@ GEM
       msgpack (~> 1.0)
     bson (4.12.0)
     builder (3.2.4)
-    bunny (2.17.0)
+    bunny (2.18.0)
       amq-protocol (~> 2.3, >= 2.3.1)
+      sorted_set (~> 1, >= 1.0.2)
     byebug (11.1.3)
     capistrano (3.16.0)
       airbrussh (>= 1.0.0)
@@ -377,6 +378,7 @@ GEM
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    rbtree (0.4.4)
     redis (4.3.1)
     redis-namespace (1.8.1)
       redis (>= 3.0.4)
@@ -444,6 +446,7 @@ GEM
       sprockets-rails
       tilt
     semantic_range (3.0.0)
+    set (1.0.1)
     shoulda-matchers (3.1.3)
       activesupport (>= 4.0.0)
     sinatra (2.1.0)
@@ -451,6 +454,9 @@ GEM
       rack (~> 2.2)
       rack-protection (= 2.1.0)
       tilt (~> 2.0)
+    sorted_set (1.0.3)
+      rbtree
+      set (~> 1.0)
     spring (2.1.1)
     sprockets (4.0.2)
       concurrent-ruby (~> 1.0)

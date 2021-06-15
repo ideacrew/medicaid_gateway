@@ -7,12 +7,12 @@ EventSource.configure do |config|
   config.app_name = :medicaid_gateway
 
   config.servers do |server|
-    server.http do |http|
-      # TODO: update production URL when go live
-      http.host = "http://localhost"
-      http.port = "3000"
-      http.url = "http://localhost:3000"
-    end
+    # server.http do |http|
+    #   # TODO: update production URL when go live
+    #   http.host = "http://localhost"
+    #   http.port = "3000"
+    #   http.url = "http://localhost:3000"
+    # end
 
     server.amqp do |rabbitmq|
       rabbitmq.host = ENV['RABBITMQ_HOST'] || "amqp://localhost"
@@ -33,14 +33,14 @@ EventSource.configure do |config|
 
   config.async_api_schemas =
     if Rails.env.test? || Rails.env.development?
-      # TODO: refactor below paths to load from spec - test_data
-      mitc_dir = Pathname.pwd.join('app', 'async_api_files')
-      resource_files = ::Dir[::File.join(mitc_dir, '**', '*')].reject { |p| ::File.directory? p }
+      # # TODO: refactor below paths to load from spec - test_data
+      # mitc_dir = Pathname.pwd.join('app', 'async_api_files')
+      # resource_files = ::Dir[::File.join(mitc_dir, '**', '*')].reject { |p| ::File.directory? p }
 
-      publishers_dir = Pathname.pwd.join('asyncapi_files', 'publishers')
-      resource_files += ::Dir[::File.join(publishers_dir, '**', '*')].reject { |p| ::File.directory? p }
+      publishers_dir = Pathname.pwd.join('spec', 'async_api_resources', 'publishers')
+      resource_files = ::Dir[::File.join(publishers_dir, '**', '*')].reject { |p| ::File.directory? p }
 
-      subscribers_dir = Pathname.pwd.join('asyncapi_files', 'subscribers')
+      subscribers_dir = Pathname.pwd.join('spec', 'async_api_resources', 'subscribers')
       resource_files += ::Dir[::File.join(subscribers_dir, '**', '*')].reject { |p| ::File.directory? p }
 
       resource_files.collect do |file|
