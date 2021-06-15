@@ -15,7 +15,7 @@ module EventSource
       #
       # @return [success/failure message]
 
-      subscribe(:on_determinations_eval) do |headers, payload|
+      subscribe(:on_determinations_eval) do |_headers, _payload|
 
         logger.info "invoked on_determinations_eval..."
 

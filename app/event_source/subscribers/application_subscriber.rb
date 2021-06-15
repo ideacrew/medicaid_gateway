@@ -27,5 +27,9 @@ module Subscribers
       # TODO: log error message
       puts "application_submitted_subscriber_error: #{e.backtrace}"
     end
+
+    # subscribe(:on_determine_eligibility) do |_delivery_info, _metadata, payload|
+    #   binding.pry
+    # end
   end
 end
