@@ -12,7 +12,7 @@ module Subscribers
     # # payload Hash[application_hash]
     # #
     # # @return [success/failure message]
-    subscribe(:"on_medicaid_gateway_enroll_iap_applications") do |delivery_info, metadata, payload|
+    subscribe(:on_medicaid_gateway_enroll_iap_applications) do |_delivery_info, _metadata, payload|
       result = ::Eligibilities::Medicaid::RequestDetermination.new.call(payload)
 
       message = if result.success?
