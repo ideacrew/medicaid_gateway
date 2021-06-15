@@ -26,16 +26,6 @@ defaultContentType: application/json
 
 channels:
   /determinations/eval:
-    subscribe:
-      operationId: /on/determinations/eval
-      description: HTTP endpoint for MitC eligibility determination requests
-      bindings:
-        http:
-          type: request
-          method: GET
-          headers:
-            Content-Type: application/json
-            Accept: application/json
     publish:
       operationId: /determinations/eval
       description: EventSource Subscriber that publishes MitC eligibility determination responses
@@ -43,6 +33,16 @@ channels:
         http:
           type: response
           method: POST
+          headers:
+            Content-Type: application/json
+            Accept: application/json
+    subscribe:
+      operationId: /on_medicaid_gateway/determinations/eval
+      description: HTTP endpoint for MitC eligibility determination requests
+      bindings:
+        http:
+          type: request
+          method: GET
           headers:
             Content-Type: application/json
             Accept: application/json

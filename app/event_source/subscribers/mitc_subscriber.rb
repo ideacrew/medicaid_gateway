@@ -4,7 +4,7 @@ module EventSource
   module Subscribers
     # Subscriber will receive response payload from mitc and perform validation along with persisting the payload
     class MitcSubscriber
-      include ::EventSource::Subscriber[http: '/determinations/eval']
+      include ::EventSource::Subscriber[http: 'determinations.eval']
 
       # From medicaid_gateway request is published to mitc from call_magi_in_the_cloud operation
       # Response from mitc is received in this subscriber
@@ -12,8 +12,8 @@ module EventSource
       # response Hash[determination_hash] contains determination from mitc
       #
       # @return [success/failure message]
-      subscribe(:on_determinations_eval) do |headers, response|
-        correlation_id = headers["CorrelationID"]
+      subscribe(:on_medicaid_gateway_determinations_eval) do |delivery_info, metadata, payload|
+        correlation_id = delivery_info["CorrelationID"]
         persist(response, correlation_id)
       end
 
