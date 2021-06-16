@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ideacrew/aca_entities.git
-  revision: 56238af25e5cac3184f872403ff5863e78f2b57a
+  revision: 02d3f8ebed98e1238d7ab0795cec33355cd1de68
   branch: fdsh
   specs:
     aca_entities (0.2.2)
@@ -205,7 +205,7 @@ GEM
     faraday-net_http_persistent (1.1.0)
     faraday_middleware (1.0.0)
       faraday (~> 1.0)
-    ffi (1.15.1)
+    ffi (1.15.3)
     fugit (1.5.0)
       et-orbi (~> 1.1, >= 1.1.8)
       raabro (~> 1.4)
@@ -260,7 +260,7 @@ GEM
     pry-byebug (3.9.0)
       byebug (~> 11.0)
       pry (~> 0.13.0)
-    queue-bus (0.10.0)
+    queue-bus (0.11.0)
       multi_json
       redis
     raabro (1.4.0)
