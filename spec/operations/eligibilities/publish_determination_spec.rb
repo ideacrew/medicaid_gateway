@@ -7,7 +7,7 @@ RSpec.describe ::Eligibilities::PublishDetermination, dbclean: :after_each do
 
   context 'when connection is available' do
     it 'should publish the payload' do
-      result = Eligibilities::PublishDetermination.new.call(params, "aptc_eligible")
+      result = Eligibilities::PublishDetermination.new.call(JSON.parse(params), "aptc_eligible")
       expect(result.success?).to be true
     end
   end
