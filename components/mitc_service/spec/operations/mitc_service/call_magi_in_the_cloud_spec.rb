@@ -32,18 +32,31 @@ RSpec.describe ::MitcService::CallMagiInTheCloud do
     end
   end
 
-  context 'with bad response from MitC service' do
-    before do
-      @result = subject.call(mitc_request_payload)
-    end
+  # context 'with bad response from MitC service' do
+  #   let(:connection_params) do
+  #     {
+  #       protocol: :http,
+  #       publish_operation_name: '/determinations/eval'
+  #     }
+  #   end
 
-    it 'should return failure' do
-      expect(@result).to be_failure
-    end
+  #   let(:connection) {
+  #       manager = EventSource::ConnectionManager.instance
+  #       manager.find_connection(connection_params)
+  #   }
 
-    it 'should return failure with a message' do
-      msg = "Error getting a response from MitC for magi_medicaid_application with hbx_id: #{magi_medicaid_application[:hbx_id]}"
-      expect(@result.failure).to eq(msg)
-    end
-  end
+  #   before do
+  #     connection.disconnect
+  #     @result = subject.call(mitc_request_payload)
+  #   end
+
+  #   it 'should return failure' do
+  #     expect(@result).to be_failure
+  #   end
+
+  #   it 'should return failure with a message' do
+  #     msg = "Error getting a response from MitC for magi_medicaid_application with hbx_id: #{magi_medicaid_application[:hbx_id]}"
+  #     expect(@result.failure).to eq(msg)
+  #   end
+  # end
 end

@@ -138,20 +138,34 @@ RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_
       ::AcaEntities::Magi Medicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
     end
 
-    context 'when connection is not available' do
-      before do
-        @result = subject.call(input_application)
-      end
+    # context 'when connection is not available' do
 
-      it 'should return failure' do
-        expect(@result).to be_failure
-      end
+    #   let(:connection_params) do
+    #     {
+    #       protocol: :http,
+    #       publish_operation_name: '/determinations/eval'
+    #     }
+    #   end
 
-      it 'should return error message' do
-        msg = "Error getting a response from MitC for magi_medicaid_application with hbx_id: #{application_entity[:hbx_id]}"
-        expect(@result.failure).to eq(msg)
-      end
-    end
+    #   let(:connection) {
+    #      manager = EventSource::ConnectionManager.instance
+    #      manager.find_connection(connection_params)
+    #   }
+
+    #   before do
+    #     connection.disconnect
+    #     @result = subject.call(input_application)
+    #   end
+
+    #   it 'should return failure' do
+    #     expect(@result).to be_failure
+    #   end
+
+    #   it 'should return error message' do
+    #     msg = "Error getting a response from MitC for magi_medicaid_application with hbx_id: #{application_entity[:hbx_id]}"
+    #     expect(@result.failure).to eq(msg)
+    #   end
+    # end
 
     context 'when input is invalid' do
       before do
