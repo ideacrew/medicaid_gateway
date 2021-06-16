@@ -1,0 +1,582 @@
+{
+    "family_reference": {
+        "hbx_id": "10011"
+    },
+    "assistance_year": 2021,
+    "aptc_effective_date": "2021-06-15",
+    "applicants": [
+        {
+            "name": {
+                "first_name": "testfirst",
+                "last_name": "testlast"
+            },
+            "identifying_information": {
+                "has_ssn": false
+            },
+            "demographic": {
+                "gender": "Male",
+                "dob": "1947-06-15",
+                "is_veteran_or_active_military": false
+            },
+            "attestation": {
+                "is_incarcerated": false,
+                "is_self_attested_disabled": true,
+                "is_self_attested_blind": false
+            },
+            "is_primary_applicant": true,
+            "citizenship_immigration_status_information": {
+                "citizen_status": "us_citizen",
+                "is_lawful_presence_self_attested": false
+            },
+            "is_applying_coverage": true,
+            "family_member_reference": {
+                "family_member_hbx_id": "1000",
+                "first_name": "testfirst",
+                "last_name": "testlast",
+                "person_hbx_id": "95",
+                "is_primary_family_member": true
+            },
+            "person_hbx_id": "95",
+            "is_required_to_file_taxes": true,
+            "tax_filer_kind": "tax_filer",
+            "is_joint_tax_filing": true,
+            "is_claimed_as_tax_dependent": false,
+            "claimed_as_tax_dependent_by": null,
+            "student": {
+                "is_student": false
+            },
+            "is_refugee": false,
+            "is_trafficking_victim": false,
+            "foster_care": {
+                "is_former_foster_care": false
+            },
+            "pregnancy_information": {
+                "is_pregnant": false,
+                "is_post_partum_period": false,
+                "expected_children_count": null
+            },
+            "is_subject_to_five_year_bar": false,
+            "is_five_year_bar_met": false,
+            "has_job_income": true,
+            "has_self_employment_income": false,
+            "has_unemployment_income": false,
+            "has_other_income": false,
+            "has_deductions": false,
+            "has_enrolled_health_coverage": false,
+            "has_eligible_health_coverage": false,
+            "addresses": [
+                {
+                    "has_fixed_address": true,
+                    "kind": "home",
+                    "address_1": "1234",
+                    "address_3": "person",
+                    "city": "test",
+                    "county": null,
+                    "state": "DC",
+                    "zip": "12345",
+                    "country_name": "USA",
+                    "validation_status": "ValidMatch",
+                    "start_on": "2021-06-15",
+                    "end_on": null,
+                    "lives_outside_state_temporarily": false
+                }
+            ],
+            "incomes": [
+                {
+                    "kind": "wages_and_salaries",
+                    "amount": "31176.0",
+                    "frequency_kind": "Annually",
+                    "start_on": "2021-01-01"
+                }
+            ],
+            "benefits": [
+                {
+                    "kind": "medicare",
+                    "status": "is_enrolled",
+                    "esi_covered": "self",
+                    "start_on": "2021-01-01"
+                }
+            ],
+            "is_medicare_eligible": false,
+            "has_insurance": false,
+            "has_state_health_benefit": false,
+            "had_prior_insurance": false,
+            "age_of_applicant": 74,
+            "is_self_attested_long_term_care": false,
+            "hours_worked_per_week": 0,
+            "is_temporarily_out_of_state": false,
+            "is_claimed_as_dependent_by_non_applicant": false,
+            "benchmark_premium": {
+                "health_only_lcsp_premiums": [
+                    {
+                        "member_identifier": "95",
+                        "monthly_premium": "310.5"
+                    },
+                    {
+                        "member_identifier": "96",
+                        "monthly_premium": "310.6"
+                    }
+                ],
+                "health_only_slcsp_premiums": [
+                    {
+                        "member_identifier": "95",
+                        "monthly_premium": "320.5"
+                    },
+                    {
+                        "member_identifier": "96",
+                        "monthly_premium": "320.6"
+                    }
+                ]
+            },
+            "is_homeless": false,
+            "mitc_income": {
+                "amount": 2598,
+                "taxable_interest": 0,
+                "tax_exempt_interest": 0,
+                "taxable_refunds": 0,
+                "alimony": 0,
+                "capital_gain_or_loss": 0,
+                "pensions_and_annuities_taxable_amount": 0,
+                "farm_income_or_loss": 0,
+                "unemployment_compensation": 0,
+                "other_income": 0,
+                "magi_deductions": 0,
+                "adjusted_gross_income": 0,
+                "deductible_part_of_self_employment_tax": 0,
+                "ira_deduction": 0,
+                "student_loan_interest_deduction": 0,
+                "tution_and_fees": 0,
+                "other_magi_eligible_income": 0
+            },
+            "mitc_relationships": [
+                {
+                    "other_id": 96,
+                    "attest_primary_responsibility": "Y",
+                    "relationship_code": "02"
+                }
+            ]
+        },
+        {
+            "name": {
+                "first_name": "test1first",
+                "last_name": "test1last"
+            },
+            "identifying_information": {
+                "has_ssn": false
+            },
+            "demographic": {
+                "gender": "Female",
+                "dob": "1961-06-15",
+                "is_veteran_or_active_military": false
+            },
+            "attestation": {
+                "is_incarcerated": false,
+                "is_self_attested_disabled": true,
+                "is_self_attested_blind": false
+            },
+            "is_primary_applicant": false,
+            "citizenship_immigration_status_information": {
+                "citizen_status": "us_citizen",
+                "is_lawful_presence_self_attested": false
+            },
+            "is_applying_coverage": false,
+            "family_member_reference": {
+                "family_member_hbx_id": "1001",
+                "first_name": "test1first",
+                "last_name": "test1last",
+                "person_hbx_id": "96",
+                "is_primary_family_member": false
+            },
+            "person_hbx_id": "96",
+            "is_required_to_file_taxes": true,
+            "tax_filer_kind": "tax_filer",
+            "is_joint_tax_filing": true,
+            "is_claimed_as_tax_dependent": false,
+            "claimed_as_tax_dependent_by": null,
+            "student": {
+                "is_student": false
+            },
+            "is_refugee": false,
+            "is_trafficking_victim": false,
+            "foster_care": {
+                "is_former_foster_care": false
+            },
+            "pregnancy_information": {
+                "is_pregnant": false,
+                "is_post_partum_period": false,
+                "expected_children_count": null
+            },
+            "is_subject_to_five_year_bar": false,
+            "is_five_year_bar_met": false,
+            "has_job_income": false,
+            "has_self_employment_income": false,
+            "has_unemployment_income": false,
+            "has_other_income": false,
+            "has_deductions": false,
+            "has_enrolled_health_coverage": false,
+            "has_eligible_health_coverage": false,
+            "addresses": [
+                {
+                    "has_fixed_address": true,
+                    "kind": "home",
+                    "address_1": "1234",
+                    "address_3": "person",
+                    "city": "test",
+                    "county": null,
+                    "state": "DC",
+                    "zip": "12345",
+                    "country_name": "USA",
+                    "validation_status": "ValidMatch",
+                    "start_on": "2021-06-15",
+                    "end_on": null,
+                    "lives_outside_state_temporarily": false
+                }
+            ],
+            "is_medicare_eligible": false,
+            "has_insurance": false,
+            "has_state_health_benefit": false,
+            "had_prior_insurance": false,
+            "age_of_applicant": 60,
+            "is_self_attested_long_term_care": false,
+            "hours_worked_per_week": 0,
+            "is_temporarily_out_of_state": false,
+            "is_claimed_as_dependent_by_non_applicant": false,
+            "benchmark_premium": {
+                "health_only_lcsp_premiums": [
+                    {
+                        "member_identifier": "95",
+                        "monthly_premium": "310.5"
+                    },
+                    {
+                        "member_identifier": "96",
+                        "monthly_premium": "310.6"
+                    }
+                ],
+                "health_only_slcsp_premiums": [
+                    {
+                        "member_identifier": "95",
+                        "monthly_premium": "320.5"
+                    },
+                    {
+                        "member_identifier": "96",
+                        "monthly_premium": "320.6"
+                    }
+                ]
+            },
+            "is_homeless": false,
+            "mitc_income": {
+                "amount": 0,
+                "taxable_interest": 0,
+                "tax_exempt_interest": 0,
+                "taxable_refunds": 0,
+                "alimony": 0,
+                "capital_gain_or_loss": 0,
+                "pensions_and_annuities_taxable_amount": 0,
+                "farm_income_or_loss": 0,
+                "unemployment_compensation": 0,
+                "other_income": 0,
+                "magi_deductions": 0,
+                "adjusted_gross_income": 0,
+                "deductible_part_of_self_employment_tax": 0,
+                "ira_deduction": 0,
+                "student_loan_interest_deduction": 0,
+                "tution_and_fees": 0,
+                "other_magi_eligible_income": 0
+            },
+            "mitc_relationships": [
+                {
+                    "other_id": 95,
+                    "attest_primary_responsibility": "N",
+                    "relationship_code": "02"
+                }
+            ]
+        }
+    ],
+    "tax_households": [
+        {
+            "max_aptc": null,
+            "hbx_id": "12345",
+            "is_insurance_assistance_eligible": "No",
+            "tax_household_members": [
+                {
+                    "product_eligibility_determination": {
+                        "is_ia_eligible": false,
+                        "is_medicaid_chip_eligible": false,
+                        "is_totally_ineligible": null,
+                        "is_magi_medicaid": false,
+                        "is_uqhp_eligible": true,
+                        "is_csr_eligible": false,
+                        "csr": null,
+                        "is_non_magi_medicaid_eligible": false,
+                        "is_without_assistance": false,
+                        "magi_medicaid_monthly_household_income": "2598.0",
+                        "medicaid_household_size": 2,
+                        "magi_as_percentage_of_fpl": "14.0",
+                        "magi_medicaid_category": "none",
+                        "is_eligible_for_non_magi_reasons": true,
+                        "chip_ineligibility_reasons": [
+                            "Applicant did not meet the requirements for any CHIP category"
+                        ],
+                        "magi_medicaid_category_threshold": null,
+                        "medicaid_chip_category": "None",
+                        "medicaid_chip_category_threshold": "0.0",
+                        "category_determinations": [
+                            {
+                                "category": "Residency",
+                                "indicator_code": true,
+                                "ineligibility_code": null,
+                                "ineligibility_reason": null
+                            },
+                            {
+                                "category": "Adult Group Category",
+                                "indicator_code": false,
+                                "ineligibility_code": 123,
+                                "ineligibility_reason": "Applicant is not between the ages of 19 and 64 (inclusive)"
+                            },
+                            {
+                                "category": "Parent Caretaker Category",
+                                "indicator_code": false,
+                                "ineligibility_code": 146,
+                                "ineligibility_reason": "No child met all criteria for parent caretaker category"
+                            },
+                            {
+                                "category": "Pregnancy Category",
+                                "indicator_code": false,
+                                "ineligibility_code": 124,
+                                "ineligibility_reason": "Applicant not pregnant or within postpartum period"
+                            },
+                            {
+                                "category": "Child Category",
+                                "indicator_code": false,
+                                "ineligibility_code": 394,
+                                "ineligibility_reason": "Applicant is over the age limit for the young adult threshold in the state"
+                            },
+                            {
+                                "category": "Optional Targeted Low Income Child",
+                                "indicator_code": null,
+                                "ineligibility_code": null,
+                                "ineligibility_reason": null
+                            },
+                            {
+                                "category": "CHIP Targeted Low Income Child",
+                                "indicator_code": null,
+                                "ineligibility_code": null,
+                                "ineligibility_reason": null
+                            },
+                            {
+                                "category": "Unborn Child",
+                                "indicator_code": null,
+                                "ineligibility_code": null,
+                                "ineligibility_reason": null
+                            },
+                            {
+                                "category": "Income Medicaid Eligible",
+                                "indicator_code": false,
+                                "ineligibility_code": 401,
+                                "ineligibility_reason": "Applicant did not meet the requirements for any eligibility category"
+                            },
+                            {
+                                "category": "Income CHIP Eligible",
+                                "indicator_code": false,
+                                "ineligibility_code": 401,
+                                "ineligibility_reason": "Applicant did not meet the requirements for any eligibility category"
+                            },
+                            {
+                                "category": "Medicaid CHIPRA 214",
+                                "indicator_code": null,
+                                "ineligibility_code": null,
+                                "ineligibility_reason": null
+                            },
+                            {
+                                "category": "CHIP CHIPRA 214",
+                                "indicator_code": null,
+                                "ineligibility_code": null,
+                                "ineligibility_reason": null
+                            },
+                            {
+                                "category": "Trafficking Victim",
+                                "indicator_code": null,
+                                "ineligibility_code": null,
+                                "ineligibility_reason": null
+                            },
+                            {
+                                "category": "Seven Year Limit",
+                                "indicator_code": null,
+                                "ineligibility_code": null,
+                                "ineligibility_reason": null
+                            },
+                            {
+                                "category": "Five Year Bar",
+                                "indicator_code": null,
+                                "ineligibility_code": null,
+                                "ineligibility_reason": null
+                            },
+                            {
+                                "category": "Title II Work Quarters Met",
+                                "indicator_code": null,
+                                "ineligibility_code": null,
+                                "ineligibility_reason": null
+                            },
+                            {
+                                "category": "Medicaid Citizen Or Immigrant",
+                                "indicator_code": true,
+                                "ineligibility_code": null,
+                                "ineligibility_reason": null
+                            },
+                            {
+                                "category": "CHIP Citizen Or Immigrant",
+                                "indicator_code": true,
+                                "ineligibility_code": null,
+                                "ineligibility_reason": null
+                            },
+                            {
+                                "category": "Former Foster Care Category",
+                                "indicator_code": false,
+                                "ineligibility_code": 400,
+                                "ineligibility_reason": "Applicant was not formerly in foster care"
+                            },
+                            {
+                                "category": "Work Quarters Override Income",
+                                "indicator_code": false,
+                                "ineligibility_code": 338,
+                                "ineligibility_reason": "Applicant did not meet all the criteria for income override rule"
+                            },
+                            {
+                                "category": "State Health Benefits CHIP",
+                                "indicator_code": null,
+                                "ineligibility_code": null,
+                                "ineligibility_reason": null
+                            },
+                            {
+                                "category": "CHIP Waiting Period Satisfied",
+                                "indicator_code": null,
+                                "ineligibility_code": null,
+                                "ineligibility_reason": null
+                            },
+                            {
+                                "category": "Dependent Child Covered",
+                                "indicator_code": null,
+                                "ineligibility_code": null,
+                                "ineligibility_reason": null
+                            },
+                            {
+                                "category": "Medicaid Non-MAGI Referral",
+                                "indicator_code": true,
+                                "ineligibility_code": null,
+                                "ineligibility_reason": null
+                            },
+                            {
+                                "category": "Emergency Medicaid",
+                                "indicator_code": false,
+                                "ineligibility_code": 109,
+                                "ineligibility_reason": "Applicant does not meet the eligibility criteria for emergency Medicaid"
+                            },
+                            {
+                                "category": "Refugee Medical Assistance",
+                                "indicator_code": null,
+                                "ineligibility_code": null,
+                                "ineligibility_reason": null
+                            },
+                            {
+                                "category": "APTC Referral",
+                                "indicator_code": true,
+                                "ineligibility_code": null,
+                                "ineligibility_reason": null
+                            }
+                        ]
+                    },
+                    "applicant_reference": {
+                        "first_name": "testfirst",
+                        "last_name": "testlast",
+                        "dob": "1947-06-15",
+                        "person_hbx_id": "95"
+                    }
+                },
+                {
+                    "product_eligibility_determination": {
+                        "is_ia_eligible": false,
+                        "is_medicaid_chip_eligible": false,
+                        "is_totally_ineligible": null,
+                        "is_magi_medicaid": false,
+                        "is_uqhp_eligible": null,
+                        "is_csr_eligible": false,
+                        "csr": null,
+                        "is_non_magi_medicaid_eligible": false,
+                        "is_without_assistance": false
+                    },
+                    "applicant_reference": {
+                        "first_name": "test1first",
+                        "last_name": "test1last",
+                        "dob": "1961-06-15",
+                        "person_hbx_id": "96"
+                    }
+                }
+            ],
+            "annual_tax_household_income": "31176.0",
+            "csr_annual_income_limit": null,
+            "effective_on": "2021-07-01",
+            "determined_on": "2021-06-15"
+        }
+    ],
+    "relationships": [
+        {
+            "kind": "spouse",
+            "applicant_reference": {
+                "first_name": "testfirst",
+                "last_name": "testlast",
+                "dob": "1947-06-15",
+                "person_hbx_id": "95"
+            },
+            "relative_reference": {
+                "first_name": "test1first",
+                "last_name": "test1last",
+                "dob": "1961-06-15",
+                "person_hbx_id": "96"
+            }
+        },
+        {
+            "kind": "spouse",
+            "applicant_reference": {
+                "first_name": "test1first",
+                "last_name": "test1last",
+                "dob": "1961-06-15",
+                "person_hbx_id": "96"
+            },
+            "relative_reference": {
+                "first_name": "Dwayne",
+                "last_name": "Curtis",
+                "dob": "1947-06-15",
+                "person_hbx_id": "95"
+            }
+        }
+    ],
+    "us_state": "DC",
+    "hbx_id": "200000123",
+    "oe_start_on": "2021-11-01",
+    "mitc_households": [
+        {
+            "household_id": "1",
+            "people": [
+                {
+                    "person_id": 95
+                },
+                {
+                    "person_id": 96
+                }
+            ]
+        }
+    ],
+    "mitc_tax_returns": [
+        {
+            "filers": [
+                {
+                    "person_id": 95
+                },
+                {
+                    "person_id": 96
+                }
+            ],
+            "dependents": []
+        }
+    ]
+}

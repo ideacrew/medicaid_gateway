@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# rubocop:disable Lint/ConstantDefinitionInBlock, Style/Documentation
 require 'rails_helper'
 
 RSpec.describe ::Publishers::MitcPublisher, dbclean: :after_each do
@@ -21,27 +24,27 @@ RSpec.describe ::Publishers::MitcPublisher, dbclean: :after_each do
     end
   end
 
-  let(:payload) { {message: "Hello world!!"} }
-  let(:publish_params) {
+  let(:payload) { { message: "Hello world!!" } }
+  let(:publish_params) do
     {
       protocol: :http,
       publish_operation_name: '/determinations/eval'
     }
-  }
+  end
 
   let(:connection_manager_instance) { EventSource::ConnectionManager.instance }
-  let(:connection) { 
-      connection_manager_instance.find_connection(publish_params) 
-    }
+  let(:connection) do
+    connection_manager_instance.find_connection(publish_params)
+  end
 
   let(:publish_operation) { connection_manager_instance.find_publish_operation(publish_params) }
- 
-  let(:subscribe_params) {
+
+  let(:subscribe_params) do
     {
       protocol: :http,
       subscribe_operation_name: '/on/determinations/eval'
     }
-  }
+  end
 
   let(:subscribe_operation) { connection_manager_instance.find_subscribe_operation(subscribe_params) }
 

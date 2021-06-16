@@ -12,13 +12,14 @@ module Subscribers
     # # payload Hash[application_hash]
     # #
     # # @return [success/failure message]
-    subscribe(:on_enroll_iap_applications) do |_delivery_info, _metadata, payload|
+    subscribe(:on_enroll_iap_applications) do |_delivery_info, _metadata, request|
+      payload = JSON.parse(request, :symbolize_names => true)
       result = ::Eligibilities::Medicaid::RequestDetermination.new.call(payload)
 
       message = if result.success?
                   result.success
                 else
-                  result.failure
+                  result.failure.errors.to_h
                 end
 
       # TODO: log message
@@ -27,5 +28,9 @@ module Subscribers
       # TODO: log error message
       puts "application_submitted_subscriber_error: #{e.backtrace}"
     end
+
+    # subscribe(:on_determine_eligibility) do |_delivery_info, _metadata, payload|
+    #   binding.pry
+    # end
   end
 end

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'types'
+
 module AptcCsr
   # Schema and validation rules for {AptcCsr::BenchmarkCalculationMember}
   class BenchmarkCalculationMemberContract < Dry::Validation::Contract
@@ -15,7 +17,7 @@ module AptcCsr
       # self is also allowed as one of the types
       required(:relationship_kind_to_primary).filled(:string)
       # required(:age_of_applicant).filled(:integer)
-      required(:member_premium).filled(Types::Money)
+      required(:member_premium).filled(::Types::Money)
     end
   end
 end
