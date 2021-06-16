@@ -7,11 +7,11 @@ EventSource.configure do |config|
   config.app_name = :medicaid_gateway
 
   config.servers do |server|
+
     server.http do |http|
-      # TODO: update production URL when go live
-      http.host = "http://localhost"
-      http.port = "3000"
-      http.url = "http://localhost:3000"
+      http.host = ENV['MITC_HOST'] || "http://localhost"
+      http.port = ENV['MITC_PORT'] || "3000"
+      http.url = ENV['MITC_URL'] || "http://localhost:3000"
     end
 
     server.amqp do |rabbitmq|
@@ -27,16 +27,11 @@ EventSource.configure do |config|
       warn rabbitmq.user_name
       rabbitmq.password = ENV['RABBITMQ_PASSWORD'] || "guest"
       warn rabbitmq.password
-      # rabbitmq.url = "" # ENV['RABBITMQ_URL']
     end
   end
 
   config.async_api_schemas =
-    if Rails.env.test? || Rails.env.development?
-      # # TODO: refactor below paths to load from spec - test_data
-      # mitc_dir = Pathname.pwd.join('app', 'async_api_files')
-      # resource_files = ::Dir[::File.join(mitc_dir, '**', '*')].reject { |p| ::File.directory? p }
-
+    if Rails.env.test? || Rails.env.development? && ENV['RABBITMQ_HOST'].nil?
       publishers_dir = Pathname.pwd.join('spec', 'async_api_resources', 'publishers')
       resource_files = ::Dir[::File.join(publishers_dir, '**', '*')].reject { |p| ::File.directory? p }
 
@@ -47,7 +42,7 @@ EventSource.configure do |config|
         EventSource::AsyncApi::Operations::AsyncApiConf::LoadPath.new.call(path: file).success.to_h
       end
     else
-      ::AcaEntities.async_api_config_find_by_service_name('medicaid_gateway').success
+      ::AcaEntities.async_api_config_find_by_service_name(nil).success
     end
 end
 

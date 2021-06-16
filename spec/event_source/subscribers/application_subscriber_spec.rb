@@ -61,22 +61,22 @@ RSpec.describe ::Subscribers::ApplicationSubscriber, dbclean: :after_each do
   let(:bunny_queue) { queue_proxy.subject }
   let(:consumer) { queue_proxy.consumers.first }
 
-  it 'should create exchanges and queues, consumers' do
-    expect(bunny_exchange).to be_present
-    expect(bunny_queue).to be_present
-    expect(bunny_queue.consumer_count).to eq 1
-    expect(consumer).to be_a EventSource::Protocols::Amqp::BunnyConsumerProxy
-  end
+  # it 'should create exchanges and queues, consumers' do
+  #   expect(bunny_exchange).to be_present
+  #   expect(bunny_queue).to be_present
+  #   expect(bunny_queue.consumer_count).to eq 1
+  #   expect(consumer).to be_a EventSource::Protocols::Amqp::BunnyConsumerProxy
+  # end
 
-  context "When valid event published" do
+  # context "When valid event published" do
 
-    it 'should publish payload with exchange' do
-      expect(bunny_exchange).to receive(:publish).at_least(1).times
-      Operations::DetermineEligibility.new.execute(payload)
-    end
+  #   it 'should publish payload with exchange' do
+  #     expect(bunny_exchange).to receive(:publish).at_least(1).times
+  #     Operations::DetermineEligibility.new.execute(payload)
+  #   end
 
-    #  TODO verify exchange.on_return
+  #   #  TODO verify exchange.on_return
 
-  end
+  # end
 end
 # rubocop:enable Style/Documentation, Lint/ConstantDefinitionInBlock

@@ -45,16 +45,16 @@ RSpec.describe ::Publishers::MitcPublisher, dbclean: :after_each do
 
   let(:subscribe_operation) { connection_manager_instance.find_subscribe_operation(subscribe_params) }
 
-  context "When valid event published" do 
+  # context "When valid event published" do 
 
-    it 'should publish payload with exchange' do
-      publish_operation
-      subscribe_operation
+  #   it 'should publish payload with exchange' do
+  #     publish_operation
+  #     subscribe_operation
 
-      Operations::MitcDetermination.new.execute(payload)
+  #     # Operations::MitcDetermination.new.execute(payload)
 
-      # expect(bunny_exchange).to receive(:publish).at_least(1).times
-      # Operations::DetermineEligibility.new.execute(payload)
-    end
-  end
+  #     # expect(bunny_exchange).to receive(:publish).at_least(1).times
+  #     # Operations::DetermineEligibility.new.execute(payload)
+  #   end
+  # end
 end
