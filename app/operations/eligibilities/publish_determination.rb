@@ -23,7 +23,7 @@ module Eligibilities
 
     def build_event(params, event_name)
       event_key = "determined_#{event_name}"
-      event("events.magi_medicaid.mitc.eligibilities.#{event_key}", attributes: params)
+      event("events.magi_medicaid.mitc.eligibilities.#{event_key}", attributes: params.to_h)
     end
 
     def send_to_enroll(event)

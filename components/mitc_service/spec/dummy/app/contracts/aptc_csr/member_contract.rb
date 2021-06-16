@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'types'
+
 module AptcCsr
   # Schema and validation rules for {AptcCsr::Member}
   class MemberContract < Dry::Validation::Contract
@@ -21,10 +23,10 @@ module AptcCsr
     params do
       required(:member_identifier).filled(:string)
       required(:household_count).filled(:integer)
-      optional(:annual_household_income_contribution).maybe(Types::Money)
+      optional(:annual_household_income_contribution).maybe(::Types::Money)
       required(:tax_filer_status).filled(Types::TaxFilerKind)
       required(:is_applicant).filled(:bool)
-      optional(:benchmark_plan_monthly_premium_amount).maybe(Types::Money)
+      optional(:benchmark_plan_monthly_premium_amount).maybe(::Types::Money)
       required(:age_of_applicant).maybe(:integer)
 
       optional(:aptc_eligible).maybe(:bool)
