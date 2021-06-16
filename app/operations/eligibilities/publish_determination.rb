@@ -25,8 +25,8 @@ module Eligibilities
     def build_event(params, event_name)
       event_key = "determined_#{event_name}"
       result = event("events.magi_medicaid.mitc.eligibilities.#{event_key}", attributes: params.to_h)
-      logger.info "MedicaidGateway Reponse Publisher to external systems(enroll & polypress), event_key: #{event_key}, attributes: #{params.to_h}, result: #{result}"
-      logger.info ('-' * 100)
+      logger.info "MedicaidGateway Reponse Publisher to enroll & polypress, event_key: #{event_key}, attributes: #{params.to_h}, result: #{result}"
+      logger.info('-' * 100)
       result
     end
 
