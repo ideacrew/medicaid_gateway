@@ -3,15 +3,14 @@
 require 'dry/monads'
 require 'dry/monads/do'
 
-  # This class is for detemining the full eligibility for a MedicaidApplication
 module Eligibilities
+  # PublishDetermination will publish determination events to enroll and polypress
   class PublishDetermination
     include EventSource::Command
     include Dry::Monads[:result, :do]
 
-    # @param [Hash] opts The options to determine eligibility
-    # @option opts [Hash] :medicaid_application_id MedicaidApplication identifier
-    # @option opts [Hash] :medicaid_response_payload
+    # @option opts [Hash] :fully_determined_medicaid_application
+    # @option opts [String] :determined_aptc_eligible
     # @return [Dry::Monads::Result]
     def call(params, event_name)
       event = yield build_event(params, event_name)

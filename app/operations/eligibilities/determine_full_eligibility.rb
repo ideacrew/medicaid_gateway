@@ -126,8 +126,9 @@ module Eligibilities
           :mixed_determination
         end
 
-      Success({ event: event_name,
-                payload: mm_application })
+      Eligibilities::PublishDetermination.new.call(mm_application, event_name.to_s)
+
+      Success({ event: event_name, payload: mm_application })
     end
     # rubocop:enable Metrics/CyclomaticComplexity
   end
@@ -140,3 +141,4 @@ end
 #   4. Resource Registry configurations.
 #   5. Member Level Determinations.
 #   6. Correct MagiMedicaid/MedicaidChip Determinations.
+

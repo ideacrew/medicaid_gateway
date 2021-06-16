@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Lint/ConstantDefinitionInBlock, Style/Documentation
 require 'rails_helper'
 
 RSpec.describe ::Publishers::MitcPublisher, dbclean: :after_each do
@@ -60,3 +61,4 @@ RSpec.describe ::Publishers::MitcPublisher, dbclean: :after_each do
     end
   end
 end
+# rubocop:enable Lint/ConstantDefinitionInBlock, Style/Documentation
