@@ -8,6 +8,7 @@ module Eligibilities
   class PublishDetermination
     include EventSource::Command
     include Dry::Monads[:result, :do]
+    include EventSource::Logging
 
     # @option opts [Hash] :fully_determined_medicaid_application
     # @option opts [String] :determined_aptc_eligible
@@ -23,7 +24,10 @@ module Eligibilities
 
     def build_event(params, event_name)
       event_key = "determined_#{event_name}"
-      event("events.magi_medicaid.mitc.eligibilities.#{event_key}", attributes: params.to_h)
+      result = event("events.magi_medicaid.mitc.eligibilities.#{event_key}", attributes: params.to_h)
+      logger.info "MedicaidGateway Reponse Publisher to external systems(enroll & polypress), event_key: #{event_key}, attributes: #{params.to_h}, result: #{result}"
+      logger.info ('-' * 100)
+      result
     end
 
     def send_to_enroll(event)
