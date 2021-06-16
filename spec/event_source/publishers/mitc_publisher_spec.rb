@@ -61,3 +61,4 @@ RSpec.describe ::Publishers::MitcPublisher, dbclean: :after_each do
     end
   end
 end
+# rubocop:enable Lint/ConstantDefinitionInBlock, Style/Documentation
