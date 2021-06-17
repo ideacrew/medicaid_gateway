@@ -14,7 +14,7 @@ GIT
 
 GIT
   remote: https://github.com/ideacrew/event_source.git
-  revision: 69f78adf586afe4d165c9e42bafa2bfec04c7195
+  revision: 2270507b39192753eaabdeeb0035acc4470d7afa
   branch: release_0.5.1
   specs:
     event_source (0.5.0)
