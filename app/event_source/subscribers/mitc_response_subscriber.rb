@@ -13,6 +13,7 @@ module Subscribers
     #
     # @return [success/failure message]
     subscribe(:on_determinations_eval) do |headers, response|
+      logger.info "MitcResponseSubscriber on_determinations_eval headers: #{headers}, response: #{response}"
       correlation_id = headers["CorrelationID"]
       persist(response, correlation_id)
     end
