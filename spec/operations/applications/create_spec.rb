@@ -7,7 +7,7 @@ require 'aca_entities/magi_medicaid/contracts/federal_poverty_level_contract'
 require 'aca_entities/magi_medicaid/federal_poverty_level'
 require 'aca_entities/operations/magi_medicaid/create_federal_poverty_level'
 
-describe Applications::Create do
+describe Applications::Create, dbclean: :after_each do
   include_context 'setup magi_medicaid application with two applicants'
 
   let(:application_request_payload) do
@@ -27,6 +27,10 @@ describe Applications::Create do
 
     it 'should return success' do
       expect(@result).to be_success
+    end
+
+    it 'should create only one Application' do
+      expect(::Medicaid::Application.all.count).to eq(1)
     end
 
     it 'should persisted the data' do

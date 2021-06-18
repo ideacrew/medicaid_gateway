@@ -47,6 +47,10 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       end.product_eligibility_determination
     end
 
+    it 'should not update hbx_id for given TaxHousehold' do
+      expect(@thh.hbx_id).to eq(tax_hh[:hbx_id])
+    end
+
     it 'should not return any APTC for given TaxHousehold' do
       expect(@thh.max_aptc).to be_nil
     end
@@ -194,6 +198,10 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       @aisha_ped = @thh.tax_household_members.first.product_eligibility_determination
     end
 
+    it 'should not update hbx_id for given TaxHousehold' do
+      expect(@thh.hbx_id).to eq(tax_hh[:hbx_id])
+    end
+
     it 'should not return any APTC for given TaxHousehold' do
       expect(@thh.max_aptc).to be_nil
     end
@@ -273,6 +281,10 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       @application = @result.success[:payload]
       @thh = @application.tax_households.first
       @gerald_ped = @thh.tax_household_members.first.product_eligibility_determination
+    end
+
+    it 'should not update hbx_id for given TaxHousehold' do
+      expect(@thh.hbx_id).to eq(tax_hh[:hbx_id])
     end
 
     it 'should return any APTC for given TaxHousehold' do
