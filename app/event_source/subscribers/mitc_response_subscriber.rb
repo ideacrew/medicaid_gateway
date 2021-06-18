@@ -18,6 +18,7 @@ module Subscribers
     end
 
     def self.persist(response, correlation_id)
+      logger.info "MitcResponseSubscriber response: #{response}, response_class: #{response.class}"
       params = { medicaid_application_id: correlation_id, medicaid_response_payload: response }
 
       result = Eligibilities::DetermineFullEligibility.new.call(params.deep_symbolize_keys!)
