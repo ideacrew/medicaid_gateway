@@ -13,11 +13,13 @@ module Subscribers
     #
     # @return [success/failure message]
     subscribe(:on_determinations_eval) do |headers, response|
+      logger.info "MitcResponseSubscriber on_determinations_eval headers: #{headers}, response: #{response}"
       correlation_id = headers["CorrelationID"]
       persist(response, correlation_id)
     end
 
     def self.persist(response, correlation_id)
+      logger.info "MitcResponseSubscriber response: #{response}, response_class: #{response.class}"
       params = { medicaid_application_id: correlation_id, medicaid_response_payload: response }
 
       result = Eligibilities::DetermineFullEligibility.new.call(params.deep_symbolize_keys!)

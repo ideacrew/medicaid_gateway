@@ -38,6 +38,10 @@ RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_
         ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
       end
 
+      it 'should create only one Medicaid::Application object with given hbx_id' do
+        expect(::Medicaid::Application.where(application_identifier: application_entity.hbx_id).count).to eq(1)
+      end
+
       it 'should return success' do
         expect(@result).to be_success
       end
@@ -73,6 +77,10 @@ RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_
         ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
       end
 
+      it 'should create only one Medicaid::Application object with given hbx_id' do
+        expect(::Medicaid::Application.where(application_identifier: application_entity.hbx_id).count).to eq(1)
+      end
+
       it 'should return success' do
         expect(@result).to be_success
       end
@@ -106,6 +114,10 @@ RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_
 
       let(:medicaid_request_payload) do
         ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
+      end
+
+      it 'should create only one Medicaid::Application object with given hbx_id' do
+        expect(::Medicaid::Application.where(application_identifier: application_entity.hbx_id).count).to eq(1)
       end
 
       it 'should return success' do
