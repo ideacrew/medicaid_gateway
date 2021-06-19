@@ -188,6 +188,7 @@ module Eligibilities
       end
 
       def tax_filing?(applicant)
+        true
         eligible_tax_filer?(applicant) || eligible_tax_dependent?(applicant)
       end
 
@@ -232,7 +233,7 @@ module Eligibilities
 
       def eligible_tax_filer?(applicant)
         return false if applicant.is_claimed_as_tax_dependent
-        applicant.is_joint_tax_filing || (married?(applicant) && applicant.is_primary_applicant)
+        applicant.is_primary_applicant || (married?(applicant) && applicant.is_joint_tax_filing)
       end
 
       def married?(applicant)
@@ -240,6 +241,7 @@ module Eligibilities
       end
 
       def eligible_tax_dependent?(applicant)
+        return false unless applicant.is_claimed_as_tax_dependent
         claiming_applicant_identifier = applicant.claimed_as_tax_dependent_by.person_hbx_id
         claiming_applicant = applicant_by_reference(claiming_applicant_identifier)
         claiming_applicant.incomes.present?
