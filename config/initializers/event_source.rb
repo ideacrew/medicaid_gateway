@@ -31,7 +31,7 @@ EventSource.configure do |config|
   end
 
   config.async_api_schemas =
-    if Rails.env.test? || Rails.env.development? && ENV['RABBITMQ_HOST'].nil?
+    if Rails.env.test? || ENV['RABBITMQ_HOST'].nil?
       publishers_dir = Pathname.pwd.join('spec', 'async_api_resources', 'publishers')
       resource_files = ::Dir[::File.join(publishers_dir, '**', '*')].reject { |p| ::File.directory? p }
 

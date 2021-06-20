@@ -12,10 +12,10 @@ module Subscribers
     # response Hash[determination_hash] contains determination from mitc
     #
     # @return [success/failure message]
-    subscribe(:on_determinations_eval) do |headers, response|
-      logger.info "MitcResponseSubscriber on_determinations_eval headers: #{headers}, response: #{response}"
+    subscribe(:on_determinations_eval) do |body, status, headers|
+      logger.debug "MitcResponseSubscriber#on_determinations_eval body: #{body}, status: #{status}, headers: #{headers}"
       correlation_id = headers["CorrelationID"]
-      persist(response, correlation_id)
+      persist(body, correlation_id)
     end
 
     def self.persist(response, correlation_id)
