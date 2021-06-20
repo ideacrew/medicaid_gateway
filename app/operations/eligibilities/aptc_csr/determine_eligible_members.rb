@@ -188,7 +188,6 @@ module Eligibilities
       end
 
       def tax_filing?(applicant)
-        true
         eligible_tax_filer?(applicant) || eligible_tax_dependent?(applicant)
       end
 
