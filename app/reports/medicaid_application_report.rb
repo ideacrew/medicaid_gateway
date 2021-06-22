@@ -6,7 +6,7 @@ require 'csv'
 class MedicaidApplicationReport
   def self.run
     timestamp = Time.zone.now.to_s
-    start_on = ENV['start_on'].present? ? Date.strptime(ENV['start_on'].to_s, "%m/%d/%Y") : Date.today
+    start_on = ENV['start_on'].present? ? Date.strptime(ENV['start_on'].to_s, "%m/%d/%Y") : (Date.today - 10.years)
     end_on = ENV['end_on'].present? ? Date.strptime(ENV['end_on'].to_s, "%m/%d/%Y") : Date.today
     range = start_on.beginning_of_day..end_on.end_of_day
     report_name = "medicaid_application_report_#{timestamp}.csv"
