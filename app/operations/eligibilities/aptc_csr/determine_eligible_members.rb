@@ -224,7 +224,7 @@ module Eligibilities
       end
 
       def benefit_coverage_covers?(benefit)
-        eligibility_date = @aptc_household.eligibility_date
+        eligibility_date = @aptc_household[:eligibility_date]
         start_on = benefit.start_on
         end_on = benefit.end_on || eligibility_date.end_of_year
         (start_on..end_on).cover? eligibility_date
@@ -265,7 +265,7 @@ module Eligibilities
       def ichra_benefit_affordable?(ichra_benefit, monthly_premium)
         employee_premium_amnt = ichra_benefit.annual_employee_cost
         net_premium = (monthly_premium * 12) - employee_premium_amnt
-        net_premium_percent = net_premium / @aptc_household.annual_tax_household_income
+        net_premium_percent = net_premium / @aptc_household[:annual_tax_household_income]
         return true if net_premium_percent > @affordability_threshold
         update_all_members_as_aptc_ineligible
         false
@@ -283,7 +283,7 @@ module Eligibilities
       def qsehra_benefit_affordable?(qsehra_benefit, monthly_premium)
         employee_premium_amnt = qsehra_benefit.annual_employee_cost
         net_premium = (monthly_premium * 12) - employee_premium_amnt
-        net_premium_percent = net_premium / @aptc_household.annual_tax_household_income
+        net_premium_percent = net_premium / @aptc_household[:annual_tax_household_income]
         return true if net_premium_percent > @affordability_threshold
         update_all_members_as_aptc_ineligible
         false
