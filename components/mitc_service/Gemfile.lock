@@ -14,10 +14,10 @@ GIT
 
 GIT
   remote: https://github.com/ideacrew/event_source.git
-  revision: 28325ca945838e84f78090abf9429a1304bf4ae9
-  branch: release_0.5.1
+  revision: 4a4baa01544467fb97c732659c6e1ec82fa8be01
+  branch: release_0.5.2
   specs:
-    event_source (0.5.0)
+    event_source (0.5.2)
       bunny (>= 1.7.1)
       deep_merge (~> 1.2.0)
       dry-events (~> 0.3)
@@ -249,7 +249,7 @@ GEM
     nokogiri (1.11.7)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
-    oj (3.11.6)
+    oj (3.11.7)
     ox (2.14.5)
     parallel (1.20.1)
     parser (3.0.1.1)
