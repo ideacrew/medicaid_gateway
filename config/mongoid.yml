@@ -172,7 +172,7 @@ test:
     default:
       database: medicaid_gateway_test
       hosts:
-        - db:27017
+        - localhost:27017
       options:
         read:
           mode: :primary
