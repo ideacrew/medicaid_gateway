@@ -1,12 +1,5 @@
 # frozen_string_literal: true
 
-# Summary: In this simple scenario, a single consumer (age 22) applies for financial assistance.
-# He attests to job income and to a recent Medicaid denial. The application should include follow-up
-# questions about his Medicaid denial to determine whether he originally applied during open enrollment
-# or after a qualifying life event as well as the date of the denial.
-# Despite income below the Medicaid limit, the consumer is found QHP, APTC, CSR and
-# SEP eligible due to the Medicaid denial attestation.
-
 # rubocop:disable Layout/LineLength
 RSpec.shared_context 'cms ME simple_scenarios test_case_g', :shared_context => :metadata do
   let(:app_params) do

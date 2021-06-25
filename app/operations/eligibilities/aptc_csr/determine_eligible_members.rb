@@ -95,8 +95,6 @@ module Eligibilities
       def any_income_questions_unanswered?
         @tax_household.tax_household_members.any? do |thhm|
           applicant = applicant_by_reference(thhm.applicant_reference.person_hbx_id)
-          next applicant unless applicant.is_applying_coverage
-
           [applicant.has_job_income,
            applicant.has_self_employment_income,
            applicant.has_unemployment_income,
