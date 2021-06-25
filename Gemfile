@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-# ruby '2.7.2'
+ruby '2.7.2'
 
 # Mount the Engines
 gem 'mitc_service', path: 'components/mitc_service'
