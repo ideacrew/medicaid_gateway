@@ -30,7 +30,7 @@ module Eligibilities
     def find_medicaid_application(params)
       @medicaid_response_payload = params[:medicaid_response_payload]
       medicaid_app = ::Medicaid::Application.where(application_identifier: params[:medicaid_application_id]).first
-      medicaid_app ? Success(medicaid_app) : Failure('Unable to find Medicaid Application with given input')
+      medicaid_app ? Success(medicaid_app) : Failure("Unable to find Medicaid Application with given identifier: #{params[:medicaid_application_id]}")
     end
 
     def get_magi_medicaid_application(medicaid_application)

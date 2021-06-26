@@ -14,17 +14,17 @@ module Subscribers
     # @return [success/failure message]
 
     # event_source branch: release_0.5.2
-    # subscribe(:on_determinations_eval) do |body, status, headers|
-    #   logger.debug "MitcResponseSubscriber#on_determinations_eval body: #{body}, status: #{status}, headers: #{headers}"
-    #   correlation_id = headers["CorrelationID"]
-    #   persist(body, correlation_id)
-    # end
-
-    subscribe(:on_determinations_eval) do |headers, response|
-      logger.info "MitcResponseSubscriber on_determinations_eval headers: #{headers}, response: #{response}"
+    subscribe(:on_determinations_eval) do |body, status, headers|
+      logger.info "MitcResponseSubscriber#on_determinations_eval body: #{body}, status: #{status}, headers: #{headers}"
       correlation_id = headers["CorrelationID"]
-      persist(response, correlation_id)
+      persist(body, correlation_id)
     end
+
+    # subscribe(:on_determinations_eval) do |headers, response|
+    #   logger.info "MitcResponseSubscriber on_determinations_eval headers: #{headers}, response: #{response}"
+    #   correlation_id = headers["CorrelationID"]
+    #   persist(response, correlation_id)
+    # end
 
     def self.persist(response, correlation_id)
       logger.info "MitcResponseSubscriber response: #{response}, response_class: #{response.class}"
