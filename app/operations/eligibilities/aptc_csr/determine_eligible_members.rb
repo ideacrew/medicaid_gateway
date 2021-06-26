@@ -196,29 +196,25 @@ module Eligibilities
 
       def enrolled_in_other_coverage?(applicant)
         return false if applicant.benefits.blank?
-
-        applicant.benefits.select do |benefit|
-          benefit.status == 'is_enrolled' &&
-            ['medicaid', 'child_health_insurance_plan',
-             'medicare', 'tricare', 'employer_sponsored_insurance',
-             'health_reimbursement_arrangement', 'cobra',
-             'retiree_health_benefits', 'veterans_administration_health_benefits',
-             'peace_corps_health_benefits'].include?(benefit.kind) &&
-            benefit_coverage_covers?(benefit)
+        enrolled_other_coverage_benefits = applicant.benefits.select do |benefit|
+          benefit.status == 'is_enrolled' && ['medicaid', 'child_health_insurance_plan',
+                                              'medicare', 'tricare', 'employer_sponsored_insurance',
+                                              'health_reimbursement_arrangement', 'cobra',
+                                              'retiree_health_benefits', 'veterans_administration_health_benefits',
+                                              'peace_corps_health_benefits'].include?(benefit.kind)
         end
+        enrolled_other_coverage_benefits.any? { |benefit| benefit_coverage_covers?(benefit) }
       end
 
       def eligible_for_other_coverage?(applicant)
         return false if applicant.benefits.blank?
-
-        applicant.benefits.select do |benefit|
-          benefit.status == 'is_eligible' &&
-            ['medicaid', 'child_health_insurance_plan',
-             'medicare', 'tricare', 'retiree_health_benefits',
-             'veterans_administration_health_benefits',
-             'peace_corps_health_benefits'].include?(benefit.kind) &&
-            benefit_coverage_covers?(benefit)
+        eligible_other_coverage_benefits = applicant.benefits.select do |benefit|
+          benefit.status == 'is_eligible' && ['medicaid', 'child_health_insurance_plan',
+                                              'medicare', 'tricare', 'retiree_health_benefits',
+                                              'veterans_administration_health_benefits',
+                                              'peace_corps_health_benefits'].include?(benefit.kind)
         end
+        eligible_other_coverage_benefits.any? { |benefit| benefit_coverage_covers?(benefit) }
       end
 
       def benefit_coverage_covers?(benefit)
