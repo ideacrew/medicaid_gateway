@@ -120,15 +120,15 @@ module Eligibilities
 
       def all_esi_affordable?(applicant)
         return true unless applicant.has_eligible_health_coverage
-        esi_benefits = eligible_benefit_esis
-        return true if esis.blank?
+        esi_benefits = applicant.eligible_benefit_esis
+        return true if esi_benefits.blank?
 
         esi_benefits.all? do |esi_benefit|
           esi_rules_satisfied?(applicant, esi_benefit)
         end
       end
 
-      def esi_rules_satisfied?(esi_benefit)
+      def esi_rules_satisfied?(applicant, esi_benefit)
         esi_benefit.is_esi_mec_met &&
           waiting_period_rule_satisfied?(esi_benefit) &&
           determine_esi_benefit_affordability(applicant, esi_benefit)
