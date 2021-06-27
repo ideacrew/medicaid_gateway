@@ -258,6 +258,45 @@ RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_
       end
     end
 
+    # Betty	CurtisH family
+    context 'cms simle test_case_h with state ME' do
+      include_context 'cms ME simple_scenarios test_case_h'
+
+      before do
+        @result = subject.call(input_application)
+        @application = @result.success
+      end
+
+      let(:medicaid_request_payload) do
+        ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
+      end
+
+      it 'should create only one Medicaid::Application object with given hbx_id' do
+        expect(::Medicaid::Application.where(application_identifier: application_entity.hbx_id).count).to eq(1)
+      end
+
+      it 'should return success' do
+        expect(@result).to be_success
+      end
+
+      it 'should return Medicaid::Application persistence object' do
+        expect(@application).to be_a(::Medicaid::Application)
+      end
+
+      it 'should create Medicaid::Application persistence object' do
+        expect(@application.persisted?).to be_truthy
+      end
+
+      it 'should store application_request_payload' do
+        expect(@application.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should store medicaid_request_payload' do
+        expect(@application.medicaid_request_payload).not_to be_nil
+        expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+    end
+
     # Jane Doe
     context 'cms complex test_case_d with state ME' do
       include_context 'cms ME complex_scenarios test_case_d'
