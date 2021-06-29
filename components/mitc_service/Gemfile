@@ -9,8 +9,8 @@ gemspec
 # To use a debugger
 # gem 'byebug', group: [:development, :test]
 
-gem 'aca_entities', git:  'https://github.com/ideacrew/aca_entities.git', branch: 'fdsh'
-gem 'event_source',  git:  'https://github.com/ideacrew/event_source.git', branch: 'release_0.5.2'
+gem 'aca_entities', git:  'https://github.com/ideacrew/aca_entities.git', branch: 'trunk'
+gem 'event_source',  git:  'https://github.com/ideacrew/event_source.git', branch: 'trunk'
 gem 'httparty', '~> 0.16'
 gem 'mongoid', '~> 7.2.1'
 

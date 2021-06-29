@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/ideacrew/aca_entities.git
-  revision: bd4d55043b5d333a1cf4dd565b37dbb79f4c554c
-  branch: fdsh
+  revision: 78cf1fc5374394bd01c2319e44aec234f5808ae7
+  branch: trunk
   specs:
     aca_entities (0.2.2)
       deep_merge
@@ -14,8 +14,8 @@ GIT
 
 GIT
   remote: https://github.com/ideacrew/event_source.git
-  revision: 4a4baa01544467fb97c732659c6e1ec82fa8be01
-  branch: release_0.5.2
+  revision: 7045bca20ba11705ac9c98517d43791c042f8877
+  branch: trunk
   specs:
     event_source (0.5.2)
       bunny (>= 1.7.1)
@@ -119,7 +119,7 @@ GEM
     ast (2.4.2)
     bson (4.12.1)
     builder (3.2.4)
-    bunny (2.18.0)
+    bunny (2.19.0)
       amq-protocol (~> 2.3, >= 2.3.1)
       sorted_set (~> 1, >= 1.0.2)
     byebug (11.1.3)
