@@ -140,7 +140,7 @@ module Eligibilities
         @assistance_year_start = Date.new(@application.assistance_year)
         @assistance_year_end = @assistance_year_start.end_of_year
         income_end = income.end_on || @assistance_year_end
-        income_date_range = (income.start_on)..(income_end)
+        income_date_range = (income.start_on)..income_end
         year_date_range = @assistance_year_start..@assistance_year_end
         date_ranges_overlap?(income_date_range, year_date_range)
       end

@@ -69,6 +69,7 @@ module Eligibilities
         ::Eligibilities::AptcCsr::InitAptcHousehold.new.call(aptc_household)
       end
 
+      # rubocop:disable Metrics/AbcSize
       def add_determination_to_application(aptc_household)
         mm_application_hash = @mm_application.to_h
         mm_application_hash[:tax_households].each do |thh|
@@ -77,9 +78,7 @@ module Eligibilities
           thh[:effective_on] = aptc_household.eligibility_date
           thh[:annual_tax_household_income] = aptc_household.annual_tax_household_income
           thh[:csr_annual_income_limit] = aptc_household.csr_annual_income_limit
-          thh[:is_insurance_assistance_eligible] =
-            aptc_household.benchmark_calculation_members.present? ? 'Yes' : 'No'
-
+          thh[:is_insurance_assistance_eligible] = aptc_household.benchmark_calculation_members.present? ? 'Yes' : 'No'
           thh[:tax_household_members].each do |thhm|
             ped = thhm[:product_eligibility_determination]
             aptc_hh_membr = aptc_household.members.detect do |aptc_mem|
@@ -99,6 +98,7 @@ module Eligibilities
         Success({ magi_medicaid_application: entity_result.success,
                   aptc_household: aptc_household })
       end
+      # rubocop:enable Metrics/AbcSize
     end
   end
 end

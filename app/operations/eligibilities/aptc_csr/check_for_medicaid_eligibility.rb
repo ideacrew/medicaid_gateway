@@ -73,20 +73,19 @@ module Eligibilities
 
         @tax_household.tax_household_members.each do |thhm|
           member = member_by_reference(aptc_household, thhm.applicant_reference.person_hbx_id)
-          check_and_update_magi_medicaid_eligibility(member, thhm, aptc_household)
+          check_and_update_magi_medicaid_eligibility(member, thhm)
         end
 
         Success(aptc_household)
       end
 
-      def check_and_update_magi_medicaid_eligibility(member, thhm, aptc_household)
+      def check_and_update_magi_medicaid_eligibility(member, thhm)
         applicant = applicant_by_reference(thhm.applicant_reference.person_hbx_id)
 
-        if denied_due_to_income?(thhm)
-          member[:aptc_eligible] = false
-          member[:magi_medicaid_eligible] = !recent_medicaid_denial_or_termination?(applicant)
-          member[:csr_eligible] = false
-        end
+        return unless denied_due_to_income?(thhm)
+        member[:aptc_eligible] = false
+        member[:magi_medicaid_eligible] = !recent_medicaid_denial_or_termination?(applicant)
+        member[:csr_eligible] = false
       end
 
       def recent_medicaid_denial_or_termination?(applicant)
@@ -119,7 +118,7 @@ module Eligibilities
         annual_income = aptc_household[:annual_tax_household_income]
         fpl_data = aptc_household[:fpl]
         hh_annual_poverty_guideline = fpl_data[:annual_poverty_guideline] +
-          ((aptc_household[:total_household_count] - 1) * fpl_data[:annual_per_person_amount])
+                                      ((aptc_household[:total_household_count] - 1) * fpl_data[:annual_per_person_amount])
         annual_income < hh_annual_poverty_guideline
       end
 
