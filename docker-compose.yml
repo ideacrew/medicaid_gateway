@@ -39,14 +39,17 @@ services:
       - FIN_SVC_PRIVATE_KEY=""
       - FIN_SVC_API_SECRET=""
       - INTERFACE="0.0.0.0"
+      - MITC_HOST=${MITC_HOST:-http://mitc}
+      - MITC_PORT=${MITC_PORT:-3001}
+      - MITC_URL=${MITC_URL:-http://mitc:3001}
       - QB_CLIENT_ID=${QB_CLIENT_ID:-1234567890}
       - QB_CLIENT_SECRET=${QB_CLIENT_SECRET:-1234567890}
       - QB_REALM_ID=${QB_REALM_ID:-1234567890}
-      - RABBITMQ_HOST=${RABBITMQ_HOST:-amqp://amqp}
+      - RABBITMQ_HOST=${RABBITMQ_HOST:-amqp://rabbitmq}
       - RABBITMQ_VHOST=${RABBITMQ_VHOST:-event_source}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-guest}
       - RABBITMQ_PORT=${RABBITMQ_PORT:-5672}
-      - RABBITMQ_URL=${RABBITMQ_URL:-amqp://guest:guest@amqp:5672}
+      - RABBITMQ_URL=${RABBITMQ_URL:-amqp://guest:guest@rabbitmq:5672}
       - RABBITMQ_USERNAME=${AMQP_USERNAME:-guest}
       - RAILS_ENV=${RAILS_ENV:-development}
       - SFTP_HOST=""
@@ -67,6 +70,7 @@ services:
     depends_on:
       - db
       - rabbitmq
+      - mitc
   db:
     image: mongo:4.2
     volumes:
@@ -91,6 +95,12 @@ services:
       - 5672:5672
       - 25672:25672
       - 15672:15672
+  mitc:
+    image: mitc:02.2021
+    container_name: mitc
+    ports:
+      - 3002:3001
+    command: bin/rails server --port 3001 --binding 0.0.0.0
 
 volumes:
   bundle:

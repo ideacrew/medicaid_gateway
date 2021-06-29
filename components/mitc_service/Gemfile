@@ -1,0 +1,23 @@
+# frozen_string_literal: true
+
+source 'https://rubygems.org'
+git_source(:github) { |repo| "https://github.com/#{repo}.git" }
+
+# Specify your gem's dependencies in mitc_service.gemspec.
+gemspec
+
+# To use a debugger
+# gem 'byebug', group: [:development, :test]
+
+gem 'aca_entities', git:  'https://github.com/ideacrew/aca_entities.git', branch: 'trunk'
+gem 'event_source',  git:  'https://github.com/ideacrew/event_source.git', branch: 'trunk'
+gem 'httparty', '~> 0.16'
+gem 'mongoid', '~> 7.2.1'
+
+group :development, :test do
+  gem "rspec-rails"
+  gem "pry",        platform: :mri
+  gem "pry-byebug", platform: :mri
+  gem 'rubocop', '1.10.0'
+  gem 'factory_bot_rails'
+end

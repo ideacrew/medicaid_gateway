@@ -14,4 +14,11 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  resources :reports, only: [] do
+    collection do
+      get 'medicaid_applications'
+    end
+  end
+
 end

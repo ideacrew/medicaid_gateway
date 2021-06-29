@@ -3,7 +3,13 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-# ruby '2.7.2'
+ruby '2.7.2'
+
+# Mount the Engines
+gem 'mitc_service', path: 'components/mitc_service'
+
+gem 'aca_entities',  git:  'https://github.com/ideacrew/aca_entities.git', branch: 'trunk'
+gem 'event_source',  git:  'https://github.com/ideacrew/event_source.git', branch: 'trunk'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.3'
@@ -26,17 +32,19 @@ gem 'jbuilder', '~> 2.7'
 gem 'bootsnap', '>= 1.4.4', require: false
 
 gem 'resource_registry',  git:  'https://github.com/ideacrew/resource_registry.git', branch: 'trunk'
-gem 'event_source',  git:  'https://github.com/ideacrew/event_source.git', branch: 'release_0.5.0'
 
-gem 'aca_entities',  git:  'https://github.com/ideacrew/aca_entities.git', branch: 'fdsh'
 gem 'mongoid',             '~> 7.2.1'
 gem "faraday", "~> 1.4.1"
+gem 'typhoeus'
+gem 'mime-types'
+gem 'httparty',            '~> 0.16'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-  gem 'pry-byebug'
   gem 'capistrano-bundler', '~> 1.1.2'
+  gem 'factory_bot_rails',  '~> 6.2'
+  gem 'pry-byebug'
   gem 'rspec-rails',            '~> 4.0'
   gem 'shoulda-matchers',       '~> 3'
   gem 'yard'
@@ -52,6 +60,11 @@ group :development do
   gem 'listen', '~> 3.3'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+end
+
+group :test do
+  gem 'database_cleaner', '~> 1.7'
+  gem 'database_cleaner-mongoid'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
