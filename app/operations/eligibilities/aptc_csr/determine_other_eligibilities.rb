@@ -73,7 +73,7 @@ module Eligibilities
 
       # Checks if member is eligible for magi_medicaid, medicaid_chip or aptc
       def eligble_for_medicaid_or_aptc?(aptc_member)
-        return true if aptc_member[:aptc_eligible]
+        return true if aptc_member[:aptc_eligible] || aptc_member[:magi_medicaid_eligible]
         ped = find_matching_ped(aptc_member[:member_identifier])
         ped.is_magi_medicaid || ped.is_medicaid_chip_eligible
       end

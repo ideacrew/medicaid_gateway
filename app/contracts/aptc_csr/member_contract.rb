@@ -17,6 +17,7 @@ module AptcCsr
     # @option opts [Bool] :aptc_eligible optional
     # @option opts [Bool] :totally_ineligible optional
     # @option opts [Bool] :uqhp_eligible optional
+    # @option opts [Bool] :magi_medicaid_eligible optional
     # @option opts [Bool] :csr_eligible optional
     # @option opts [String] :csr optional
     # @return [Dry::Monads::Result]
@@ -32,6 +33,7 @@ module AptcCsr
       optional(:aptc_eligible).maybe(:bool)
       optional(:totally_ineligible).maybe(:bool)
       optional(:uqhp_eligible).maybe(:bool)
+      optional(:magi_medicaid_eligible).maybe(:bool)
       optional(:csr_eligible).maybe(:bool)
 
       optional(:csr).maybe(Types::CsrKind)

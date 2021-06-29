@@ -139,11 +139,14 @@ module Eligibilities
       def income_for_current_year?(income)
         @assistance_year_start = Date.new(@application.assistance_year)
         @assistance_year_end = @assistance_year_start.end_of_year
-        if income.end_on.present?
-          ((income.start_on)..(income.end_on)).cover?(@assistance_year_start)
-        else
-          (@assistance_year_start..@assistance_year_end).cover?(income.start_on)
-        end
+        income_end = income.end_on || @assistance_year_end
+        income_date_range = (income.start_on)..(income_end)
+        year_date_range = @assistance_year_start..@assistance_year_end
+        date_ranges_overlap?(income_date_range, year_date_range)
+      end
+
+      def date_ranges_overlap?(range_a, range_b)
+        range_b.begin <= range_a.end && range_a.begin <= range_b.end
       end
 
       def applicant_by_reference(person_hbx_id)

@@ -20,6 +20,7 @@ module Eligibilities
         aptc_household = yield calculate_thh_size(params)
         aptc_household = yield calculate_annual_income(aptc_household)
         aptc_household = yield calculate_fpl(aptc_household)
+        aptc_household = yield determine_medicaid_eligibility(aptc_household)
 
         Success(aptc_household)
       end
@@ -35,6 +36,7 @@ module Eligibilities
           members << { member_identifier: thhm.applicant_reference.person_hbx_id,
                        household_count: BigDecimal('1'),
                        tax_filer_status: applicant.tax_filer_kind,
+                       magi_medicaid_eligible: thhm.product_eligibility_determination.is_magi_medicaid,
                        is_applicant: applicant.is_applying_coverage,
                        age_of_applicant: applicant.age_of_applicant }
           members
@@ -64,12 +66,69 @@ module Eligibilities
                                                                     tax_household: @tax_household,
                                                                     aptc_household: aptc_household })
       end
+
+      # Medicaid Gap Filling
+      def determine_medicaid_eligibility(aptc_household)
+        return Success(aptc_household) unless annual_income_less_than_100_percent_fpl?(aptc_household)
+
+        @tax_household.tax_household_members.each do |thhm|
+          member = member_by_reference(aptc_household, thhm.applicant_reference.person_hbx_id)
+          check_and_update_magi_medicaid_eligibility(member, thhm, aptc_household)
+        end
+
+        Success(aptc_household)
+      end
+
+      def check_and_update_magi_medicaid_eligibility(member, thhm, aptc_household)
+        applicant = applicant_by_reference(thhm.applicant_reference.person_hbx_id)
+
+        if denied_due_to_income?(thhm)
+          member[:aptc_eligible] = false
+          member[:magi_medicaid_eligible] = !recent_medicaid_denial_or_termination?(applicant)
+          member[:csr_eligible] = false
+        end
+      end
+
+      def recent_medicaid_denial_or_termination?(applicant)
+        return unless applicant.medicaid_and_chip
+        date_for_comparision = Date.today - 90.days
+        medicaid_or_chip_denial?(date_for_comparision, applicant.medicaid_and_chip) ||
+          medicaid_or_chip_termination?(date_for_comparision, applicant.medicaid_and_chip)
+      end
+
+      def medicaid_or_chip_denial?(date_for_comparision, medicaid_and_chip)
+        medicaid_and_chip[:not_eligible_in_last_90_days] &&
+          medicaid_and_chip[:denied_on] &&
+          date_for_comparision < medicaid_and_chip[:denied_on]
+      end
+
+      def medicaid_or_chip_termination?(date_for_comparision, medicaid_and_chip)
+        medicaid_and_chip[:ended_as_change_in_eligibility] &&
+          !medicaid_and_chip[:hh_income_or_size_changed] &&
+          date_for_comparision < medicaid_and_chip[:medicaid_or_chip_coverage_end_date]
+      end
+
+      # Checks if MagiMedicaid or MedicaidChip got denied due to income
+      def denied_due_to_income?(thhm)
+        thhm.medicaid_cd_for_income&.indicator_code == false ||
+          thhm.chip_cd_for_income&.indicator_code == false
+      end
+
+      # finds matching ::AptcCsr::Member
+      def annual_income_less_than_100_percent_fpl?(aptc_household)
+        annual_income = aptc_household[:annual_tax_household_income]
+        fpl_data = aptc_household[:fpl]
+        hh_annual_poverty_guideline = fpl_data[:annual_poverty_guideline] +
+          ((aptc_household[:total_household_count] - 1) * fpl_data[:annual_per_person_amount])
+        annual_income < hh_annual_poverty_guideline
+      end
+
+      # finds matching ::AptcCsr::Member
+      def member_by_reference(aptc_household, person_hbx_id)
+        aptc_household[:members].detect do |mmbr|
+          mmbr[:member_identifier] == person_hbx_id.to_s
+        end
+      end
     end
   end
 end
-
-# TODO
-#   1. Fix the Operation's name
-#     This Operation is to calculate THH size, AnnualIncome and Fpl values
-#     class CalculateThhSizeIncomeAndFpl
-#     class CalculateTaxHouseholdLevelValues
