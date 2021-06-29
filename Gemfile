@@ -42,8 +42,9 @@ gem 'httparty',            '~> 0.16'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-  gem 'pry-byebug'
   gem 'capistrano-bundler', '~> 1.1.2'
+  gem 'factory_bot_rails',  '~> 6.2'
+  gem 'pry-byebug'
   gem 'rspec-rails',            '~> 4.0'
   gem 'shoulda-matchers',       '~> 3'
   gem 'yard'
@@ -63,7 +64,7 @@ end
 
 group :test do
   gem 'database_cleaner', '~> 1.7'
-  gem 'factory_bot_rails',  '~> 6.2'
+  gem 'database_cleaner-mongoid'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
