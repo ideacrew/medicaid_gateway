@@ -607,7 +607,7 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
         expect(christian_ped.is_medicaid_chip_eligible).to eq(true)
       end
 
-      it 'should return aptc result for Monika' do
+      it 'should return medicaid_chip result for Monika' do
         expect(monika_ped.is_medicaid_chip_eligible).to eq(true)
       end
     end
@@ -725,32 +725,32 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     context 'for tax_household_members' do
       let(:jane_ped) do
         @new_thhms.detect do |thhm|
-          thhm.applicant_reference.person_hbx_id.to_s == '1002648'
+          thhm.applicant_reference.person_hbx_id.to_s == '1002507'
         end.product_eligibility_determination
       end
 
       let(:jim_ped) do
         @new_thhms.detect do |thhm|
-          thhm.applicant_reference.person_hbx_id.to_s == '1002649'
+          thhm.applicant_reference.person_hbx_id.to_s == '1002536'
         end.product_eligibility_determination
       end
 
       let(:baby_ped) do
         @new_thhms.detect do |thhm|
-          thhm.applicant_reference.person_hbx_id.to_s == '1002651'
+          thhm.applicant_reference.person_hbx_id.to_s == '1002537'
         end.product_eligibility_determination
       end
 
-      it 'should return aptc result for jane' do
-        expect(jane_ped.is_ia_eligible).to eq(true)
+      it 'should return uqhp result for jane' do
+        expect(jane_ped.is_uqhp_eligible).to eq(true)
       end
 
       it 'should return uqhp result for jim' do
         expect(jim_ped.is_uqhp_eligible).to eq(true)
       end
 
-      it 'should return aptc result for baby' do
-        expect(baby_ped.is_ia_eligible).to eq(true)
+      it 'should return medicaid_chip result for baby' do
+        expect(baby_ped.is_medicaid_chip_eligible).to eq(true)
       end
     end
 
