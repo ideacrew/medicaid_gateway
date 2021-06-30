@@ -375,9 +375,11 @@ RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_
       end
     end
 
-    # Medicaid Gap Filling case, medicaid_or_chip_termination
-    context 'cms simple test_case_c_1 with state ME' do
-      include_context 'cms ME simple_scenarios test_case_c_1'
+    # SBMaya should be eligible for MagiMedicaid because of Medicaid Gap Filling,
+    # but just because SBMaya attested that her medicaid_or_chip_termination in the last 90 days,
+    # she is eligible for uqhp.
+    context 'cms simple test_case_1_mgf_uqhp with state ME' do
+      include_context 'cms ME simple_scenarios test_case_1_mgf_uqhp'
 
       before do
         @result = subject.call(input_application)

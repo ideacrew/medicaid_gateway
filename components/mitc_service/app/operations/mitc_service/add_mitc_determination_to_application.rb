@@ -73,14 +73,14 @@ module MitcService
         mm_thh[:effective_on] = calculate_eligibility_date(mm_app_hash)
         mm_thh[:tax_household_members].each do |mm_thhm|
           member_identifier = mm_thhm[:applicant_reference][:person_hbx_id]
-          next mm_thhm if bypass_mitc_determination?(mm_app_hash, member_identifier)
+          mitc_bypass_flag = bypass_mitc_determination?(mm_app_hash, member_identifier)
           mitc_applicant = mitc_applicant_by_person_id(mitc_applicants, member_identifier)
           next mm_thhm if mitc_applicant.blank?
           ped_attrs = { magi_medicaid_monthly_household_income: mitc_applicant[:medicaid_household][:magi_income],
                         medicaid_household_size: mitc_applicant[:medicaid_household][:size],
                         magi_as_percentage_of_fpl: mitc_applicant[:medicaid_household][:magi_as_percentage_of_fpl],
-                        is_magi_medicaid: to_boolean(mitc_applicant[:is_medicaid_eligible]),
-                        is_medicaid_chip_eligible: to_boolean(mitc_applicant[:is_chip_eligible]),
+                        is_magi_medicaid: calculate_medicaid_eligibility(mitc_applicant[:is_medicaid_eligible], mitc_bypass_flag),
+                        is_medicaid_chip_eligible: calculate_medicaid_eligibility(mitc_applicant[:is_chip_eligible], mitc_bypass_flag),
                         magi_medicaid_ineligibility_reasons: mitc_applicant[:medicaid_ineligibility_reasons],
                         is_eligible_for_non_magi_reasons: mitc_applicant[:is_eligible_for_non_magi_reasons],
                         chip_ineligibility_reasons: mitc_applicant[:chip_ineligibility_reasons],
@@ -93,6 +93,12 @@ module MitcService
           mm_thhm[:product_eligibility_determination].merge!(ped_attrs)
         end
       end
+    end
+
+    # Calculates MagiMedicaid/MedicaidChip eligibility based on MitcBypassFlag
+    def calculate_medicaid_eligibility(medicaid_eligible, mitc_bypass_flag)
+      return false if mitc_bypass_flag
+      to_boolean(medicaid_eligible)
     end
 
     def calculate_eligibility_date(mm_app_hash)

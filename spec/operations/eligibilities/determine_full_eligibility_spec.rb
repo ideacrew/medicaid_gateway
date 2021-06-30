@@ -842,12 +842,10 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
   end
 
   # SBMaya should be eligible for MagiMedicaid because of Medicaid Gap Filling,
-  # but just because this is Override case we do not add response from Mitc
-  # to Application entity and this is the reason we DO NOT know if SBMaya
-  # got denied for income.
-  # Medicaid Gap Filling case, medicaid_or_chip_termination
-  context 'cms simple test_case_1_mgf with state ME' do
-    include_context 'cms ME simple_scenarios test_case_1_mgf'
+  # but just because SBMaya attested that her medicaid_or_chip_termination in the last 90 days,
+  # she is eligible for uqhp.
+  context 'cms simple test_case_1_mgf_uqhp with state ME' do
+    include_context 'cms ME simple_scenarios test_case_1_mgf_uqhp'
 
     before do
       @result = subject.call(input_params)
@@ -866,12 +864,8 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
         end.product_eligibility_determination
       end
 
-      # it 'should return magi medicaid result for sbmaya' do
-      #   expect(sbmaya_ped.is_magi_medicaid).to eq(true)
-      # end
-
-      it 'should return aptc result for sbmaya' do
-        expect(sbmaya_ped.is_ia_eligible).to eq(true)
+      it 'should return uqhp result for sbmaya' do
+        expect(sbmaya_ped.is_uqhp_eligible).to eq(true)
       end
     end
 
