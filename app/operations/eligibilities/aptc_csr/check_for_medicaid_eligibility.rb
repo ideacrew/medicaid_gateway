@@ -101,6 +101,8 @@ module Eligibilities
           date_for_comparision < medicaid_and_chip[:denied_on]
       end
 
+      # Medicaid/Chip ended in the last 90 days without any HH Income or Size change.
+      # As change in HH Income or Size triggers a new determination and hence no MedicaidGapFilling.
       def medicaid_or_chip_termination?(date_for_comparision, medicaid_and_chip)
         medicaid_and_chip[:ended_as_change_in_eligibility] &&
           !medicaid_and_chip[:hh_income_or_size_changed] &&
