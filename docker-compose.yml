@@ -81,20 +81,24 @@ services:
 
   rabbitmq:
     image: rabbitmq:3.8-management
-    container_name: rabbitmq
+    container_name: rabbitmq_node
     volumes:
       - rabbitmq_etc:/etc/rabbitmq/
       - rabbitmq_data:/var/lib/rabbitmq/
       - rabbitmq_logs:/var/log/rabbitmq/
-    environment:
-      - RABBITMQ_ERLANG_COOKIE=${RABBITMQ_ERLANG_COOKIE:-123456789}
-      - RABBITMQ_USER=${RABBITMQ_DEFAULT_USER:-guest}
-      - RABBITMQ_PASSWORD=${RABBITMQ_DEFAULT_PASS:-guest}
+      - ./.docker/rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+      - ./.docker/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
     ports:
-      - 4369
       - 5672:5672
-      - 25672:25672
       - 15672:15672
+  mongodb:
+    image: mongo:4.2
+    volumes:
+      - mongodb:/data/db
+      - mongodb_config:/data/configdb
+    ports:
+      - 27017:27017
+
   mitc:
     image: mitc:02.2021
     container_name: mitc
