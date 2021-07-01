@@ -24,7 +24,7 @@ ARG BUNDLER_VERSION_OVERRIDE
 RUN echo $BUNDLER_VERSION_OVERRIDE
 RUN apt-get update && \
     apt-get -yq dist-upgrade && \
-    apt-get install -y tzdata build-essential nodejs vim && \
+    apt-get install -y tzdata build-essential nodejs vim default-jre  && \
     apt-get autoremove -y && \
     gem install bundler:$BUNDLER_VERSION_OVERRIDE && \
     npm install --global yarn
