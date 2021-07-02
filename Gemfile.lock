@@ -14,7 +14,7 @@ GIT
 
 GIT
   remote: https://github.com/ideacrew/event_source.git
-  revision: cabe494c60e43d2d0ddaa1fb8211a5e3e38a9f5e
+  revision: 5a4f28e7f23a359de6f245e8a4001455ba4b91ef
   branch: release_0.5.3
   specs:
     event_source (0.5.3)
@@ -197,7 +197,7 @@ GEM
     dry-events (0.3.0)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.5, >= 0.5)
-    dry-inflector (0.2.0)
+    dry-inflector (0.2.1)
     dry-initializer (3.0.4)
     dry-logic (1.2.0)
       concurrent-ruby (~> 1.0)
