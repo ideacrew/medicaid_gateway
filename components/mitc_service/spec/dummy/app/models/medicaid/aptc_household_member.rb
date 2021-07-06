@@ -33,6 +33,7 @@ module Medicaid
     field :aptc_eligible, type: Boolean
     field :totally_ineligible, type: Boolean
     field :uqhp_eligible, type: Boolean
+    field :magi_medicaid_eligible, type: Boolean
     field :csr_eligible, type: Boolean
     field :csr, type: String
 

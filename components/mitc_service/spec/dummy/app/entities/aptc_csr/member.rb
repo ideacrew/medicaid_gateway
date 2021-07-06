@@ -15,6 +15,7 @@ module AptcCsr
     attribute :aptc_eligible, Types::Bool.optional.meta(omittable: true)
     attribute :totally_ineligible, Types::Bool.optional.meta(omittable: true)
     attribute :uqhp_eligible, Types::Bool.optional.meta(omittable: true)
+    attribute :magi_medicaid_eligible, Types::Bool.optional.meta(omittable: true)
     attribute :csr_eligible, Types::Bool.optional.meta(omittable: true)
 
     attribute :csr, Types::CsrKind.optional.meta(omittable: true)

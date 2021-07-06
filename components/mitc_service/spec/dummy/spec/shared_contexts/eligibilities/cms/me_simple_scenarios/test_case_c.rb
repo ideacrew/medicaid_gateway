@@ -81,6 +81,7 @@ RSpec.shared_context 'cms ME simple_scenarios test_case_c', :shared_context => :
       family_member_reference: family_member_reference,
       person_hbx_id: '95',
       is_required_to_file_taxes: true,
+      mitc_is_required_to_file_taxes: true,
       tax_filer_kind: 'tax_filer',
       is_joint_tax_filing: true,
       is_claimed_as_tax_dependent: false,
