@@ -109,10 +109,9 @@ module Eligibilities
           date_for_comparision < medicaid_and_chip[:medicaid_or_chip_coverage_end_date]
       end
 
-      # Checks if MagiMedicaid or MedicaidChip got denied due to income
+      # Checks if MagiMedicaid got denied due to income and we need not look at MedicaidChip
       def denied_due_to_income?(thhm)
-        thhm.medicaid_cd_for_income&.indicator_code == false ||
-          thhm.chip_cd_for_income&.indicator_code == false
+        thhm.medicaid_cd_for_income&.indicator_code == false
       end
 
       # finds matching ::AptcCsr::Member

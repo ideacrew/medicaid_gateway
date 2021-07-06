@@ -843,9 +843,9 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
 
   # SBMaya should be eligible for MagiMedicaid because of Medicaid Gap Filling,
   # but just because SBMaya attested that her medicaid_or_chip_termination in the last 90 days,
-  # she is eligible for uqhp.
-  context 'cms simple test_case_1_mgf_uqhp with state ME' do
-    include_context 'cms ME simple_scenarios test_case_1_mgf_uqhp'
+  # she is eligible for aqhp.
+  context 'cms simple test_case_1_mgf_aqhp with state ME' do
+    include_context 'cms ME simple_scenarios test_case_1_mgf_aqhp'
 
     before do
       @result = subject.call(input_params)
@@ -864,8 +864,9 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
         end.product_eligibility_determination
       end
 
-      it 'should return uqhp result for sbmaya' do
-        expect(sbmaya_ped.is_uqhp_eligible).to eq(true)
+      it 'should return aqhp result for sbmaya' do
+        expect(sbmaya_ped.is_ia_eligible).to eq(true)
+        expect(sbmaya_ped.is_ia_eligible).to eq(true)
       end
     end
 
@@ -947,6 +948,63 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       it 'should return both(Magi & Chip) medicaid results for baby' do
         expect(baby_ped.is_medicaid_chip_eligible).to eq(true)
         expect(baby_ped.is_magi_medicaid).to eq(true)
+      end
+    end
+
+    context 'for persistence' do
+      before do
+        medicaid_app.reload
+        @aptc_household = medicaid_app.aptc_households.first
+        @bcm = @aptc_household.benchmark_calculation_members.first
+        @ahm = @aptc_household.aptc_household_members.first
+      end
+
+      it 'should match with hbx_id' do
+        expect(medicaid_app.application_identifier).to eq(application_entity.hbx_id)
+      end
+
+      it 'should match with application request payload' do
+        expect(medicaid_app.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should match with application response payload' do
+        expect(medicaid_app.application_response_payload).to eq(@application.to_json)
+      end
+
+      it 'should match with medicaid request payload' do
+        expect(medicaid_app.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+    end
+  end
+
+  # Medicaid gap filling for Simple test_case_k
+  context 'cms simple test_case_k with state ME' do
+    include_context 'cms ME simple_scenarios test_case_k'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @new_thhms = @application.tax_households.flat_map(&:tax_household_members)
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    context 'for tax_household_members' do
+      let(:sb_sarah_ped) do
+        @new_thhms.detect do |thhm|
+          thhm.applicant_reference.person_hbx_id.to_s == '1002587'
+        end.product_eligibility_determination
+      end
+
+      it 'should return aqhp result for SBSarah' do
+        expect(sb_sarah_ped.is_ia_eligible).to eq(true)
+        expect(sb_sarah_ped.is_csr_eligible).to eq(true)
       end
     end
 

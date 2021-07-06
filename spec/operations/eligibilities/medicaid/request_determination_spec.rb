@@ -377,9 +377,9 @@ RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_
 
     # SBMaya should be eligible for MagiMedicaid because of Medicaid Gap Filling,
     # but just because SBMaya attested that her medicaid_or_chip_termination in the last 90 days,
-    # she is eligible for uqhp.
-    context 'cms simple test_case_1_mgf_uqhp with state ME' do
-      include_context 'cms ME simple_scenarios test_case_1_mgf_uqhp'
+    # she is eligible for aqhp.
+    context 'cms simple test_case_1_mgf_aqhp with state ME' do
+      include_context 'cms ME simple_scenarios test_case_1_mgf_aqhp'
 
       before do
         @result = subject.call(input_application)
@@ -419,6 +419,45 @@ RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_
     # Fix MitC depending income counting issue
     context 'cms complex test_case_e with state ME' do
       include_context 'cms ME complex_scenarios test_case_e'
+
+      before do
+        @result = subject.call(input_application)
+        @application = @result.success
+      end
+
+      let(:medicaid_request_payload) do
+        ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
+      end
+
+      it 'should create only one Medicaid::Application object with given hbx_id' do
+        expect(::Medicaid::Application.where(application_identifier: application_entity.hbx_id).count).to eq(1)
+      end
+
+      it 'should return success' do
+        expect(@result).to be_success
+      end
+
+      it 'should return Medicaid::Application persistence object' do
+        expect(@application).to be_a(::Medicaid::Application)
+      end
+
+      it 'should create Medicaid::Application persistence object' do
+        expect(@application.persisted?).to be_truthy
+      end
+
+      it 'should store application_request_payload' do
+        expect(@application.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should store medicaid_request_payload' do
+        expect(@application.medicaid_request_payload).not_to be_nil
+        expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+    end
+
+    # Medicaid gap filling for Simple test_case_k
+    context 'cms simple test_case_k with state ME' do
+      include_context 'cms ME simple_scenarios test_case_k'
 
       before do
         @result = subject.call(input_application)
