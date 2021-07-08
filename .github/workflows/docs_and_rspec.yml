@@ -49,6 +49,7 @@ jobs:
         run: |
           sudo apt-key adv --keyserver "hkps://keys.openpgp.org" --recv-keys "0x0A9AF2115F4687BD29803A206B73A36E6026DFCA"
           sudo apt-key adv --keyserver "keyserver.ubuntu.com" --recv-keys "F77F1EDA57EBB1CC"
+          curl -1sLf 'https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey' | sudo apt-key add -
 
           sudo tee /etc/apt/sources.list.d/rabbitmq.list <<EOF
           ## Provides modern Erlang/OTP releases
