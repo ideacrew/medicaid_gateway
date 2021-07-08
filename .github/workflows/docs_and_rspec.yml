@@ -47,7 +47,29 @@ jobs:
           distribution: 'adopt'
       - name: Boot RabbitMQ
         run: |
+          sudo tee /etc/apt/sources.list.d/rabbitmq.list <<EOF
+          ## Provides modern Erlang/OTP releases
+          ##
+          deb http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu bionic main
+          deb-src http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu bionic main
+
+          ## Provides RabbitMQ
+          ##
+          deb https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu/ bionic main
+          deb-src https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu/ bionic main
+          EOF
+
           sudo apt-get update -y
+
+          ## Install Erlang packages
+          sudo apt-get install -y erlang-base \
+                        erlang-asn1 erlang-crypto erlang-eldap erlang-ftp erlang-inets \
+                        erlang-mnesia erlang-os-mon erlang-parsetools erlang-public-key \
+                        erlang-runtime-tools erlang-snmp erlang-ssl \
+                        erlang-syntax-tools erlang-tftp erlang-tools erlang-xmerl
+
+          ## Install rabbitmq-server and its dependencies
+          sudo apt-get install rabbitmq-server -y --fix-missing
           sudo apt-get install rabbitmq-server -y --fix-missing
           sudo rabbitmqctl add_vhost event_source
           sudo rabbitmqctl set_permissions -p event_source guest ".*" ".*" ".*"
