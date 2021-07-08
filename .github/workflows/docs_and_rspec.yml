@@ -45,13 +45,12 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-      - uses: getong/rabbitmq-action@v1.2
-        with:
-          rabbitmq version: '3.8.2-management-alpine'
-          host port: 5672
-          rabbitmq user: 'guest'
-          rabbitmq password: 'guest'
-          rabbitmq vhost: '/'
+      - name: Boot RabbitMQ
+        run: |
+          sudo apt-get update
+          sudo apt-get install rabbitmq-server
+          sudo rabbitmqctl add_vhost event_source
+          sudo rabbitmqctl set_permissions -p event_source guest ".*" ".*" ".*"
       - uses: wbari/start-mongoDB@v0.2
         with:
           mongoDBVersion: '4.2'
