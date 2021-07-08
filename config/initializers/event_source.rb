@@ -11,6 +11,7 @@ EventSource.configure do |config|
       http.host = ENV['MITC_HOST'] || 'http://localhost'
       http.port = ENV['MITC_PORT'] || '3000'
       http.url = ENV['MITC_URL'] || 'http://localhost:3000'
+      http.default_content_type = 'application/json'
     end
 
     server.amqp do |rabbitmq|
@@ -26,6 +27,8 @@ EventSource.configure do |config|
       warn rabbitmq.user_name
       rabbitmq.password = ENV['RABBITMQ_PASSWORD'] || 'guest'
       warn rabbitmq.password
+      rabbitmq.default_content_type =
+        ENV['RABBITMQ_CONTENT_TYPE'] || 'application/json'
     end
   end
 
@@ -53,7 +56,12 @@ EventSource.configure do |config|
           .to_h
       end
     else
-      ::AcaEntities.async_api_config_find_by_service_name(nil).success
+      ::AcaEntities.async_api_config_find_by_service_name(
+        { protocol: :amqp, service_name: nil }
+      ).success +
+        ::AcaEntities.async_api_config_find_by_service_name(
+          { protocol: :http, service_name: :medicaid_gateway }
+        ).success
     end
 
   config.async_api_schemas =
