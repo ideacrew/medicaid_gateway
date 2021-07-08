@@ -3,7 +3,7 @@ on: push
 
 jobs:
   mitc_service:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
       - uses: wbari/start-mongoDB@v0.2
@@ -37,7 +37,7 @@ jobs:
           cd components/mitc_service
           bundle exec rspec
   rspec:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
@@ -79,7 +79,7 @@ jobs:
     needs:
       - mitc_service
       - rspec
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
         with:
