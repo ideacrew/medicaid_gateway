@@ -33,36 +33,12 @@ EventSource.configure do |config|
   end
 
   async_api_resources =
-    if Rails.env.test? || ENV['RABBITMQ_HOST'].nil?
-      publishers_dir =
-        Pathname.pwd.join('spec', 'async_api_resources', 'publishers')
-      resource_files =
-        ::Dir[::File.join(publishers_dir, '**', '*')].reject do |p|
-          ::File.directory? p
-        end
-
-      subscribers_dir =
-        Pathname.pwd.join('spec', 'async_api_resources', 'subscribers')
-      resource_files +=
-        ::Dir[::File.join(subscribers_dir, '**', '*')].reject do |p|
-          ::File.directory? p
-        end
-
-      resource_files.collect do |file|
-        EventSource::AsyncApi::Operations::AsyncApiConf::LoadPath
-          .new
-          .call(path: file)
-          .success
-          .to_h
-      end
-    else
       ::AcaEntities.async_api_config_find_by_service_name(
         { protocol: :amqp, service_name: nil }
       ).success +
         ::AcaEntities.async_api_config_find_by_service_name(
           { protocol: :http, service_name: :medicaid_gateway }
         ).success
-    end
 
   config.async_api_schemas =
     async_api_resources.collect do |resource|
