@@ -8,11 +8,11 @@ EventSource.configure do |config|
 
   config.servers do |server|
     server.http do |http|
-      http.ref = "http://mitc:3001"
+      # http.ref = "http://mitc:3001"
       http.host = ENV['MITC_HOST'] || 'http://localhost'
       http.port = ENV['MITC_PORT'] || '3000'
       http.url = ENV['MITC_URL'] || 'http://localhost:3000'
-      http.default_content_type = 'application/json'
+      # http.default_content_type = 'application/json'
     end
 
     server.amqp do |rabbitmq|
@@ -28,12 +28,13 @@ EventSource.configure do |config|
       warn rabbitmq.user_name
       rabbitmq.password = ENV['RABBITMQ_PASSWORD'] || 'guest'
       warn rabbitmq.password
-      rabbitmq.default_content_type =
-        ENV['RABBITMQ_CONTENT_TYPE'] || 'application/json'
+      # rabbitmq.default_content_type =
+      #   ENV['RABBITMQ_CONTENT_TYPE'] || 'application/json'
     end
   end
 
-  async_api_resources =
+  # async_api_resources =
+  config.async_api_schemas =
     ::AcaEntities.async_api_config_find_by_service_name(
       { protocol: :amqp, service_name: nil }
     ).success +
@@ -41,10 +42,10 @@ EventSource.configure do |config|
       { protocol: :http, service_name: :medicaid_gateway }
     ).success
 
-  config.async_api_schemas =
-    async_api_resources.collect do |resource|
-      EventSource.build_async_api_resource(resource)
-    end
+  # config.async_api_schemas =
+    # async_api_resources.collect do |resource|
+    #   EventSource.build_async_api_resource(resource)
+    # end
 end
 
 EventSource.initialize!
