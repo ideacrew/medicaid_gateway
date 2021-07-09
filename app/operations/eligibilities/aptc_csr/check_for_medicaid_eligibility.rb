@@ -82,10 +82,21 @@ module Eligibilities
       def check_and_update_magi_medicaid_eligibility(member, thhm)
         applicant = applicant_by_reference(thhm.applicant_reference.person_hbx_id)
 
-        return unless denied_due_to_income?(thhm)
-        member[:aptc_eligible] = false
-        member[:magi_medicaid_eligible] = !recent_medicaid_denial_or_termination?(applicant)
-        member[:csr_eligible] = false
+        if denied_due_to_income?(thhm) && !recent_medicaid_denial_or_termination?(applicant)
+          member[:aptc_eligible] = false
+          member[:magi_medicaid_eligible] = true
+          member[:csr_eligible] = false
+        elsif not_denied_due_to_income?(thhm) &&
+              recent_medicaid_denial_or_termination?(applicant) &&
+              not_denied_due_to_immigration?(applicant.medicaid_and_chip)
+          member[:aptc_eligible] = false
+          member[:magi_medicaid_eligible] = false
+          member[:csr_eligible] = false
+        end
+      end
+
+      def not_denied_due_to_immigration?(medicaid_and_chip)
+        medicaid_and_chip[:ineligible_due_to_immigration_in_last_5_years] == false
       end
 
       def recent_medicaid_denial_or_termination?(applicant)
@@ -107,6 +118,11 @@ module Eligibilities
         medicaid_and_chip[:ended_as_change_in_eligibility] &&
           !medicaid_and_chip[:hh_income_or_size_changed] &&
           date_for_comparision < medicaid_and_chip[:medicaid_or_chip_coverage_end_date]
+      end
+
+      # Checks if MagiMedicaid not denied due to income and we need not look at MedicaidChip
+      def not_denied_due_to_income?(thhm)
+        thhm.medicaid_cd_for_income&.indicator_code == true
       end
 
       # Checks if MagiMedicaid got denied due to income and we need not look at MedicaidChip

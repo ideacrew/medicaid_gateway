@@ -4,6 +4,7 @@ require 'rails_helper'
 require "#{Rails.root}/spec/shared_contexts/eligibilities/magi_medicaid_application_data.rb"
 Dir["#{Rails.root}/spec/shared_contexts/eligibilities/cms/me_simple_scenarios/*.rb"].sort.each { |file| require file }
 Dir["#{Rails.root}/spec/shared_contexts/eligibilities/cms/me_complex_scenarios/*.rb"].sort.each { |file| require file }
+Dir["#{Rails.root}/spec/shared_contexts/eligibilities/cms/me_test_scenarios/*.rb"].sort.each { |file| require file }
 require 'aca_entities/magi_medicaid/contracts/create_federal_poverty_level_contract'
 require 'aca_entities/magi_medicaid/contracts/federal_poverty_level_contract'
 require 'aca_entities/magi_medicaid/federal_poverty_level'
@@ -866,9 +867,8 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
         end.product_eligibility_determination
       end
 
-      it 'should return aqhp result for sbmaya' do
-        expect(sbmaya_ped.is_ia_eligible).to eq(true)
-        expect(sbmaya_ped.is_ia_eligible).to eq(true)
+      it 'should return uqhp result for sbmaya' do
+        expect(sbmaya_ped.is_uqhp_eligible).to eq(true)
       end
     end
 
@@ -1098,6 +1098,117 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
         @aptc_household = medicaid_app.aptc_households.first
         @bcm = @aptc_household.benchmark_calculation_members.first
         @ahm = @aptc_household.aptc_household_members.first
+      end
+
+      it 'should match with hbx_id' do
+        expect(medicaid_app.application_identifier).to eq(application_entity.hbx_id)
+      end
+
+      it 'should match with application request payload' do
+        expect(medicaid_app.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should match with application response payload' do
+        expect(medicaid_app.application_response_payload).to eq(@application.to_json)
+      end
+
+      it 'should match with medicaid request payload' do
+        expect(medicaid_app.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+    end
+  end
+
+  # US citizen applicant with income under 100% getting APTC instead of UQHP
+  context 'cms me_test_scenarios test_one state ME' do
+    include_context 'cms ME me_test_scenarios test_one'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @new_thhms = @application.tax_households.flat_map(&:tax_household_members)
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    context 'for tax_household_members' do
+      let(:maya_ped) do
+        @new_thhms.detect do |thhm|
+          thhm.applicant_reference.person_hbx_id.to_s == '1002733'
+        end.product_eligibility_determination
+      end
+
+      it 'should return uqhp result for maya' do
+        expect(maya_ped.is_uqhp_eligible).to eq(true)
+      end
+    end
+
+    context 'for persistence' do
+      before do
+        medicaid_app.reload
+        @aptc_household = medicaid_app.aptc_households.first
+        @bcm = @aptc_household.benchmark_calculation_members.first
+        @ahm = @aptc_household.aptc_household_members.first
+      end
+
+      it 'should match with hbx_id' do
+        expect(medicaid_app.application_identifier).to eq(application_entity.hbx_id)
+      end
+
+      it 'should match with application request payload' do
+        expect(medicaid_app.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should match with application response payload' do
+        expect(medicaid_app.application_response_payload).to eq(@application.to_json)
+      end
+
+      it 'should match with medicaid request payload' do
+        expect(medicaid_app.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+    end
+  end
+
+  # Medicaid eligibility for I-766 lawfully present immigrant due to Medicaid gap fill
+  # Should not get Medicaid, but just because we are mocking for Mitc immigration_status
+  # we are getting Medicaid from Mitc.
+  context 'cms me_test_scenarios test_one state ME' do
+    include_context 'cms ME me_test_scenarios test_two'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @new_thhms = @application.tax_households.flat_map(&:tax_household_members)
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    context 'for tax_household_members' do
+      let(:brenda_ped) do
+        @new_thhms.detect do |thhm|
+          thhm.applicant_reference.person_hbx_id.to_s == '1005120'
+        end.product_eligibility_determination
+      end
+
+      it 'should return is_magi_medicaid result for brenda' do
+        expect(brenda_ped.is_magi_medicaid).to eq(true)
+      end
+    end
+
+    context 'for persistence' do
+      before do
+        medicaid_app.reload
       end
 
       it 'should match with hbx_id' do

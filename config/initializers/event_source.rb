@@ -33,19 +33,30 @@ EventSource.configure do |config|
     end
   end
 
-  # async_api_resources =
   config.async_api_schemas =
-    ::AcaEntities.async_api_config_find_by_service_name(
-      { protocol: :amqp, service_name: nil }
-    ).success +
-    ::AcaEntities.async_api_config_find_by_service_name(
-      { protocol: :http, service_name: :medicaid_gateway }
-    ).success
+    if Rails.env.test? || Rails.env.development?
+      publishers_dir = Pathname.pwd.join('spec', 'async_api_resources', 'publishers')
+      resource_files = ::Dir[::File.join(publishers_dir, '**', '*')].reject { |p| ::File.directory? p }
+
+      subscribers_dir = Pathname.pwd.join('spec', 'async_api_resources', 'subscribers')
+      resource_files += ::Dir[::File.join(subscribers_dir, '**', '*')].reject { |p| ::File.directory? p }
+
+      resource_files.collect do |file|
+        EventSource::AsyncApi::Operations::AsyncApiConf::LoadPath.new.call(path: file).success.to_h
+      end
+    else
+      ::AcaEntities.async_api_config_find_by_service_name(
+        { protocol: :amqp, service_name: nil }
+      ).success +
+        ::AcaEntities.async_api_config_find_by_service_name(
+          { protocol: :http, service_name: :medicaid_gateway }
+        ).success
+    end
 
   # config.async_api_schemas =
-    # async_api_resources.collect do |resource|
-    #   EventSource.build_async_api_resource(resource)
-    # end
+  #   async_api_resources.collect do |resource|
+  #     EventSource.build_async_api_resource(resource)
+  #   end
 end
 
 EventSource.initialize!
