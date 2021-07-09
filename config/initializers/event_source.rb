@@ -16,17 +16,6 @@ EventSource.configure do |config|
     end
 
     server.amqp do |rabbitmq|
-      rabbitmq.ref = 'amqp://rabbitmq:5672/event_source'
-      rabbitmq.url = ENV['RABBITMQ_URL'] || 'amqp://localhost:5672/event_source'
-      warn rabbitmq.url
-      rabbitmq.user_name = ENV['RABBITMQ_USERNAME'] || 'guest'
-      warn rabbitmq.user_name
-      rabbitmq.password = ENV['RABBITMQ_PASSWORD'] || 'guest'
-      warn rabbitmq.password
-      rabbitmq.default_content_type = "application/json"
-    end
-
-    server.amqp do |rabbitmq|
       rabbitmq.host = ENV['RABBITMQ_HOST'] || 'amqp://localhost'
       warn rabbitmq.host
       rabbitmq.vhost = ENV['RABBITMQ_VHOST'] || '/'
