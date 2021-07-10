@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ideacrew/aca_entities.git
-  revision: 4a3c62d49973ee799b4ba7c47f0f79e425b5baf2
+  revision: 93d02d8991f97abbe898df109adf19954dfed953
   branch: release_0.3.0
   specs:
     aca_entities (0.3.0)
@@ -192,7 +192,7 @@ GEM
     dry-container (0.8.0)
       concurrent-ruby (~> 1.0)
       dry-configurable (~> 0.1, >= 0.1.3)
-    dry-core (0.7.0)
+    dry-core (0.7.1)
       concurrent-ruby (~> 1.0)
     dry-equalizer (0.3.0)
     dry-events (0.3.0)
