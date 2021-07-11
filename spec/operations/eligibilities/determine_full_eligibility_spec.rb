@@ -1362,4 +1362,70 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     end
   end
 
+  # AI/AN member given eligibility of 87% CSR instead of 100%
+  # CSR is 100 if attested to indian_tribe_member for Alex and if not it is 87
+  context 'cms me_test_scenarios test_6 state ME' do
+    include_context 'cms ME me_test_scenarios test_6'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @new_thhms = @application.tax_households.flat_map(&:tax_household_members)
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    context 'for tax_household_members' do
+      let(:alex_ped) do
+        @new_thhms.detect do |thhm|
+          thhm.applicant_reference.person_hbx_id.to_s == '1002502'
+        end.product_eligibility_determination
+      end
+
+      let(:lynn_ped) do
+        @new_thhms.detect do |thhm|
+          thhm.applicant_reference.person_hbx_id.to_s == '1002503'
+        end.product_eligibility_determination
+      end
+
+      it 'should return aqhp, csr result for alex' do
+        expect(alex_ped.is_ia_eligible).to eq(true)
+        expect(alex_ped.is_csr_eligible).to eq(true)
+        expect(alex_ped.csr).to eq('100')
+      end
+
+      it 'should return is_magi_medicaid result for lynn' do
+        expect(lynn_ped.is_magi_medicaid).to eq(true)
+      end
+    end
+
+    context 'for persistence' do
+      before do
+        medicaid_app.reload
+      end
+
+      it 'should match with hbx_id' do
+        expect(medicaid_app.application_identifier).to eq(application_entity.hbx_id)
+      end
+
+      it 'should match with application request payload' do
+        expect(medicaid_app.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should match with application response payload' do
+        expect(medicaid_app.application_response_payload).to eq(@application.to_json)
+      end
+
+      it 'should match with medicaid request payload' do
+        expect(medicaid_app.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+    end
+  end
+
 end
