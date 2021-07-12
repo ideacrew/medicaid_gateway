@@ -63,7 +63,7 @@ module Eligibilities
       end
 
       def determine_who_qualifies_for_aptc_csr(affordability_threshold)
-        if any_income_questions_unanswered?
+        if any_income_questions_unanswered? || check_for_married_filing_separate?
           update_all_members_as_aptc_ineligible
         else
           @affordability_threshold = affordability_threshold
@@ -99,6 +99,22 @@ module Eligibilities
            applicant.has_self_employment_income,
            applicant.has_unemployment_income,
            applicant.has_other_income].any?(&:nil?)
+        end
+      end
+
+      # 'spouse' rela & Jointly: false, HeadOfHousehold: false
+      # MarriedFilingSeparate
+      def check_for_married_filing_separate?
+        spouse_applicants_from_thh.any? do |appli|
+          !appli.is_joint_tax_filing && !appli.is_filing_as_head_of_household
+        end
+      end
+
+      def spouse_applicants_from_thh
+        @tax_household.tax_household_members.inject([]) do |applis, thhm|
+          appli = applicant_by_reference(thhm.applicant_reference.person_hbx_id)
+          applis << appli if @application.spouse_relationships(appli).present?
+          applis
         end
       end
 

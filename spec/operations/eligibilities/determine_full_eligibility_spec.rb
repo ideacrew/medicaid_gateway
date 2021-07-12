@@ -1234,6 +1234,8 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
   end
 
   # Fix Eligibility response error 999
+  # Child claimed by married filing separately parent given APTC,
+  # but should be UQHP because of rule check_for_married_filing_separate
   context 'cms me_test_scenarios test_three state ME' do
     include_context 'cms ME me_test_scenarios test_three'
 
@@ -1254,9 +1256,8 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
         end.product_eligibility_determination
       end
 
-      it 'should return aqhp & csr result for kid' do
-        expect(kid_ped.is_ia_eligible).to eq(true)
-        expect(kid_ped.is_csr_eligible).to eq(true)
+      it 'should return uqhp result for kid' do
+        expect(kid_ped.is_uqhp_eligible).to eq(true)
       end
     end
 
@@ -1332,6 +1333,60 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
 
       it 'should return is_medicaid_chip_eligible result for baby' do
         expect(baby_ped.is_medicaid_chip_eligible).to eq(true)
+      end
+    end
+
+    context 'for persistence' do
+      before do
+        medicaid_app.reload
+      end
+
+      it 'should match with hbx_id' do
+        expect(medicaid_app.application_identifier).to eq(application_entity.hbx_id)
+      end
+
+      it 'should match with application request payload' do
+        expect(medicaid_app.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should match with application response payload' do
+        expect(medicaid_app.application_response_payload).to eq(@application.to_json)
+      end
+
+      it 'should match with medicaid request payload' do
+        expect(medicaid_app.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+    end
+  end
+
+  # Child claimed by married filing separately parent given APTC,
+  # but should be UQHP because of rule check_for_married_filing_separate
+  context 'cms me_test_scenarios test_5 state ME' do
+    include_context 'cms ME me_test_scenarios test_5'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @new_thhms = @application.tax_households.flat_map(&:tax_household_members)
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    context 'for tax_household_members' do
+      let(:kid_ped) do
+        @new_thhms.detect do |thhm|
+          thhm.applicant_reference.person_hbx_id.to_s == '1002514'
+        end.product_eligibility_determination
+      end
+
+      it 'should return is_uqhp_eligible result for kid' do
+        expect(kid_ped.is_uqhp_eligible).to eq(true)
       end
     end
 
