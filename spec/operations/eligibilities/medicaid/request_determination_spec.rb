@@ -4,6 +4,7 @@ require 'rails_helper'
 require "#{Rails.root}/spec/shared_contexts/eligibilities/magi_medicaid_application_data.rb"
 Dir["#{Rails.root}/spec/shared_contexts/eligibilities/cms/me_simple_scenarios/*.rb"].sort.each { |file| require file }
 Dir["#{Rails.root}/spec/shared_contexts/eligibilities/cms/me_complex_scenarios/*.rb"].sort.each { |file| require file }
+Dir["#{Rails.root}/spec/shared_contexts/eligibilities/cms/me_test_scenarios/*.rb"].sort.each { |file| require file }
 require 'aca_entities/magi_medicaid/contracts/create_federal_poverty_level_contract'
 require 'aca_entities/magi_medicaid/contracts/federal_poverty_level_contract'
 require 'aca_entities/magi_medicaid/federal_poverty_level'
@@ -377,9 +378,9 @@ RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_
 
     # SBMaya should be eligible for MagiMedicaid because of Medicaid Gap Filling,
     # but just because SBMaya attested that her medicaid_or_chip_termination in the last 90 days,
-    # she is eligible for uqhp.
-    context 'cms simple test_case_1_mgf_uqhp with state ME' do
-      include_context 'cms ME simple_scenarios test_case_1_mgf_uqhp'
+    # she is eligible for aqhp.
+    context 'cms simple test_case_1_mgf_aqhp with state ME' do
+      include_context 'cms ME simple_scenarios test_case_1_mgf_aqhp'
 
       before do
         @result = subject.call(input_application)
@@ -415,6 +416,359 @@ RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_
         expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
       end
     end
+
+    # Fix MitC depending income counting issue
+    context 'cms complex test_case_e with state ME' do
+      include_context 'cms ME complex_scenarios test_case_e'
+
+      before do
+        @result = subject.call(input_application)
+        @application = @result.success
+      end
+
+      let(:medicaid_request_payload) do
+        ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
+      end
+
+      it 'should create only one Medicaid::Application object with given hbx_id' do
+        expect(::Medicaid::Application.where(application_identifier: application_entity.hbx_id).count).to eq(1)
+      end
+
+      it 'should return success' do
+        expect(@result).to be_success
+      end
+
+      it 'should return Medicaid::Application persistence object' do
+        expect(@application).to be_a(::Medicaid::Application)
+      end
+
+      it 'should create Medicaid::Application persistence object' do
+        expect(@application.persisted?).to be_truthy
+      end
+
+      it 'should store application_request_payload' do
+        expect(@application.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should store medicaid_request_payload' do
+        expect(@application.medicaid_request_payload).not_to be_nil
+        expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+    end
+
+    # Medicaid gap filling for Simple test_case_k
+    context 'cms simple test_case_k with state ME' do
+      include_context 'cms ME simple_scenarios test_case_k'
+
+      before do
+        @result = subject.call(input_application)
+        @application = @result.success
+      end
+
+      let(:medicaid_request_payload) do
+        ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
+      end
+
+      it 'should create only one Medicaid::Application object with given hbx_id' do
+        expect(::Medicaid::Application.where(application_identifier: application_entity.hbx_id).count).to eq(1)
+      end
+
+      it 'should return success' do
+        expect(@result).to be_success
+      end
+
+      it 'should return Medicaid::Application persistence object' do
+        expect(@application).to be_a(::Medicaid::Application)
+      end
+
+      it 'should create Medicaid::Application persistence object' do
+        expect(@application.persisted?).to be_truthy
+      end
+
+      it 'should store application_request_payload' do
+        expect(@application.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should store medicaid_request_payload' do
+        expect(@application.medicaid_request_payload).not_to be_nil
+        expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+    end
+
+    # Non-MAGI referral missing if already eligible for MAGI Medicaid
+    # Complex TestCaseE1
+    context 'cms complex test_case_e_1 with state ME' do
+      include_context 'cms ME complex_scenarios test_case_e_1'
+
+      before do
+        @result = subject.call(input_application)
+        @application = @result.success
+      end
+
+      let(:medicaid_request_payload) do
+        ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
+      end
+
+      it 'should create only one Medicaid::Application object with given hbx_id' do
+        expect(::Medicaid::Application.where(application_identifier: application_entity.hbx_id).count).to eq(1)
+      end
+
+      it 'should return success' do
+        expect(@result).to be_success
+      end
+
+      it 'should return Medicaid::Application persistence object' do
+        expect(@application).to be_a(::Medicaid::Application)
+      end
+
+      it 'should create Medicaid::Application persistence object' do
+        expect(@application.persisted?).to be_truthy
+      end
+
+      it 'should store application_request_payload' do
+        expect(@application.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should store medicaid_request_payload' do
+        expect(@application.medicaid_request_payload).not_to be_nil
+        expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+    end
+
+    # US citizen applicant with income under 100% getting APTC instead of UQHP
+    context 'cms me_test_scenarios test_one state ME' do
+      include_context 'cms ME me_test_scenarios test_one'
+
+      before do
+        @result = subject.call(input_application)
+        @application = @result.success
+      end
+
+      let(:medicaid_request_payload) do
+        ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
+      end
+
+      it 'should create only one Medicaid::Application object with given hbx_id' do
+        expect(::Medicaid::Application.where(application_identifier: application_entity.hbx_id).count).to eq(1)
+      end
+
+      it 'should return success' do
+        expect(@result).to be_success
+      end
+
+      it 'should return Medicaid::Application persistence object' do
+        expect(@application).to be_a(::Medicaid::Application)
+      end
+
+      it 'should create Medicaid::Application persistence object' do
+        expect(@application.persisted?).to be_truthy
+      end
+
+      it 'should store application_request_payload' do
+        expect(@application.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should store medicaid_request_payload' do
+        expect(@application.medicaid_request_payload).not_to be_nil
+        expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+    end
+
+    # Medicaid eligibility for I-766 lawfully present immigrant due to Medicaid gap fill
+    context 'cms me_test_scenarios test_two state ME' do
+      include_context 'cms ME me_test_scenarios test_two'
+
+      before do
+        @result = subject.call(input_application)
+        @application = @result.success
+      end
+
+      let(:medicaid_request_payload) do
+        ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
+      end
+
+      it 'should create only one Medicaid::Application object with given hbx_id' do
+        expect(::Medicaid::Application.where(application_identifier: application_entity.hbx_id).count).to eq(1)
+      end
+
+      it 'should return success' do
+        expect(@result).to be_success
+      end
+
+      it 'should return Medicaid::Application persistence object' do
+        expect(@application).to be_a(::Medicaid::Application)
+      end
+
+      it 'should create Medicaid::Application persistence object' do
+        expect(@application.persisted?).to be_truthy
+      end
+
+      it 'should store application_request_payload' do
+        expect(@application.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should store medicaid_request_payload' do
+        expect(@application.medicaid_request_payload).not_to be_nil
+        expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+    end
+
+    # Eligibility response error 999
+    context 'cms me_test_scenarios test_three state ME' do
+      include_context 'cms ME me_test_scenarios test_three'
+
+      before do
+        @result = subject.call(input_application)
+        @application = @result.success
+      end
+
+      let(:medicaid_request_payload) do
+        ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
+      end
+
+      it 'should create only one Medicaid::Application object with given hbx_id' do
+        expect(::Medicaid::Application.where(application_identifier: application_entity.hbx_id).count).to eq(1)
+      end
+
+      it 'should return success' do
+        expect(@result).to be_success
+      end
+
+      it 'should return Medicaid::Application persistence object' do
+        expect(@application).to be_a(::Medicaid::Application)
+      end
+
+      it 'should create Medicaid::Application persistence object' do
+        expect(@application.persisted?).to be_truthy
+      end
+
+      it 'should store application_request_payload' do
+        expect(@application.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should store medicaid_request_payload' do
+        expect(@application.medicaid_request_payload).not_to be_nil
+        expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+    end
+
+    # Primary should get APTC instead of UQHP
+    context 'cms me_test_scenarios test_four state ME' do
+      include_context 'cms ME me_test_scenarios test_four'
+
+      before do
+        @result = subject.call(input_application)
+        @application = @result.success
+      end
+
+      let(:medicaid_request_payload) do
+        ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
+      end
+
+      it 'should create only one Medicaid::Application object with given hbx_id' do
+        expect(::Medicaid::Application.where(application_identifier: application_entity.hbx_id).count).to eq(1)
+      end
+
+      it 'should return success' do
+        expect(@result).to be_success
+      end
+
+      it 'should return Medicaid::Application persistence object' do
+        expect(@application).to be_a(::Medicaid::Application)
+      end
+
+      it 'should create Medicaid::Application persistence object' do
+        expect(@application.persisted?).to be_truthy
+      end
+
+      it 'should store application_request_payload' do
+        expect(@application.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should store medicaid_request_payload' do
+        expect(@application.medicaid_request_payload).not_to be_nil
+        expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+    end
+
+    # Child claimed by married filing separately parent given APTC
+    context 'cms me_test_scenarios test_5 state ME' do
+      include_context 'cms ME me_test_scenarios test_5'
+
+      before do
+        @result = subject.call(input_application)
+        @application = @result.success
+      end
+
+      let(:medicaid_request_payload) do
+        ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
+      end
+
+      it 'should create only one Medicaid::Application object with given hbx_id' do
+        expect(::Medicaid::Application.where(application_identifier: application_entity.hbx_id).count).to eq(1)
+      end
+
+      it 'should return success' do
+        expect(@result).to be_success
+      end
+
+      it 'should return Medicaid::Application persistence object' do
+        expect(@application).to be_a(::Medicaid::Application)
+      end
+
+      it 'should create Medicaid::Application persistence object' do
+        expect(@application.persisted?).to be_truthy
+      end
+
+      it 'should store application_request_payload' do
+        expect(@application.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should store medicaid_request_payload' do
+        expect(@application.medicaid_request_payload).not_to be_nil
+        expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+    end
+
+    # AI/AN member given eligibility of 87% CSR instead of 100%
+    context 'cms me_test_scenarios test_6 state ME' do
+      include_context 'cms ME me_test_scenarios test_6'
+
+      before do
+        @result = subject.call(input_application)
+        @application = @result.success
+      end
+
+      let(:medicaid_request_payload) do
+        ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
+      end
+
+      it 'should create only one Medicaid::Application object with given hbx_id' do
+        expect(::Medicaid::Application.where(application_identifier: application_entity.hbx_id).count).to eq(1)
+      end
+
+      it 'should return success' do
+        expect(@result).to be_success
+      end
+
+      it 'should return Medicaid::Application persistence object' do
+        expect(@application).to be_a(::Medicaid::Application)
+      end
+
+      it 'should create Medicaid::Application persistence object' do
+        expect(@application.persisted?).to be_truthy
+      end
+
+      it 'should store application_request_payload' do
+        expect(@application.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should store medicaid_request_payload' do
+        expect(@application.medicaid_request_payload).not_to be_nil
+        expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+    end
+
   end
 
   context 'for failure' do
@@ -423,35 +777,6 @@ RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_
     let(:medicaid_request_payload) do
       ::AcaEntities::Magi Medicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
     end
-
-    # context 'when connection is not available' do
-
-    #   let(:connection_params) do
-    #     {
-    #       protocol: :http,
-    #       publish_operation_name: '/determinations/eval'
-    #     }
-    #   end
-
-    #   let(:connection) {
-    #      manager = EventSource::ConnectionManager.instance
-    #      manager.find_connection(connection_params)
-    #   }
-
-    #   before do
-    #     connection.disconnect
-    #     @result = subject.call(input_application)
-    #   end
-
-    #   it 'should return failure' do
-    #     expect(@result).to be_failure
-    #   end
-
-    #   it 'should return error message' do
-    #     msg = "Error getting a response from MitC for magi_medicaid_application with hbx_id: #{application_entity[:hbx_id]}"
-    #     expect(@result.failure).to eq(msg)
-    #   end
-    # end
 
     context 'when input is invalid' do
       before do

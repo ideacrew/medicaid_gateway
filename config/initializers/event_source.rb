@@ -8,9 +8,11 @@ EventSource.configure do |config|
 
   config.servers do |server|
     server.http do |http|
+      # http.ref = "http://mitc:3001"
       http.host = ENV['MITC_HOST'] || 'http://localhost'
       http.port = ENV['MITC_PORT'] || '3000'
       http.url = ENV['MITC_URL'] || 'http://localhost:3000'
+      # http.default_content_type = 'application/json'
     end
 
     server.amqp do |rabbitmq|
@@ -26,40 +28,35 @@ EventSource.configure do |config|
       warn rabbitmq.user_name
       rabbitmq.password = ENV['RABBITMQ_PASSWORD'] || 'guest'
       warn rabbitmq.password
+      # rabbitmq.default_content_type =
+      #   ENV['RABBITMQ_CONTENT_TYPE'] || 'application/json'
     end
   end
 
-  async_api_resources =
-    if Rails.env.test? || ENV['RABBITMQ_HOST'].nil?
-      publishers_dir =
-        Pathname.pwd.join('spec', 'async_api_resources', 'publishers')
-      resource_files =
-        ::Dir[::File.join(publishers_dir, '**', '*')].reject do |p|
-          ::File.directory? p
-        end
+  config.async_api_schemas =
+    if Rails.env.test? || Rails.env.development?
+      publishers_dir = Pathname.pwd.join('spec', 'async_api_resources', 'publishers')
+      resource_files = ::Dir[::File.join(publishers_dir, '**', '*')].reject { |p| ::File.directory? p }
 
-      subscribers_dir =
-        Pathname.pwd.join('spec', 'async_api_resources', 'subscribers')
-      resource_files +=
-        ::Dir[::File.join(subscribers_dir, '**', '*')].reject do |p|
-          ::File.directory? p
-        end
+      subscribers_dir = Pathname.pwd.join('spec', 'async_api_resources', 'subscribers')
+      resource_files += ::Dir[::File.join(subscribers_dir, '**', '*')].reject { |p| ::File.directory? p }
 
       resource_files.collect do |file|
-        EventSource::AsyncApi::Operations::AsyncApiConf::LoadPath
-          .new
-          .call(path: file)
-          .success
-          .to_h
+        EventSource::AsyncApi::Operations::AsyncApiConf::LoadPath.new.call(path: file).success.to_h
       end
     else
-      ::AcaEntities.async_api_config_find_by_service_name(nil).success
+      ::AcaEntities.async_api_config_find_by_service_name(
+        { protocol: :amqp, service_name: nil }
+      ).success +
+        ::AcaEntities.async_api_config_find_by_service_name(
+          { protocol: :http, service_name: :medicaid_gateway }
+        ).success
     end
 
-  config.async_api_schemas =
-    async_api_resources.collect do |resource|
-      EventSource.build_async_api_resource(resource)
-    end
+  # config.async_api_schemas =
+  #   async_api_resources.collect do |resource|
+  #     EventSource.build_async_api_resource(resource)
+  #   end
 end
 
 EventSource.initialize!

@@ -63,7 +63,7 @@ module Eligibilities
       end
 
       def determine_who_qualifies_for_aptc_csr(affordability_threshold)
-        if any_income_questions_unanswered?
+        if any_income_questions_unanswered? || check_for_married_filing_separate?
           update_all_members_as_aptc_ineligible
         else
           @affordability_threshold = affordability_threshold
@@ -99,6 +99,22 @@ module Eligibilities
            applicant.has_self_employment_income,
            applicant.has_unemployment_income,
            applicant.has_other_income].any?(&:nil?)
+        end
+      end
+
+      # 'spouse' rela & Jointly: false, HeadOfHousehold: false
+      # MarriedFilingSeparate
+      def check_for_married_filing_separate?
+        spouse_applicants_from_thh.any? do |appli|
+          !appli.is_joint_tax_filing && !appli.is_filing_as_head_of_household
+        end
+      end
+
+      def spouse_applicants_from_thh
+        @tax_household.tax_household_members.inject([]) do |applis, thhm|
+          appli = applicant_by_reference(thhm.applicant_reference.person_hbx_id)
+          applis << appli if @application.spouse_relationships(appli).present?
+          applis
         end
       end
 
@@ -141,7 +157,7 @@ module Eligibilities
 
       def determine_esi_benefit_affordability(applicant, esi_benefit)
         employee_only_premium_amnt = esi_benefit.annual_employee_cost
-        employee_premium_as_percent = employee_only_premium_amnt / @aptc_household[:annual_tax_household_income]
+        employee_premium_as_percent = (employee_only_premium_amnt / @aptc_household[:annual_tax_household_income]) * 100
         return true if employee_premium_as_percent > @affordability_threshold
         update_member_aptc_eligibility(applicant, esi_benefit)
         false
@@ -259,7 +275,7 @@ module Eligibilities
       def ichra_benefit_affordable?(ichra_benefit, monthly_premium)
         employee_premium_amnt = ichra_benefit.annual_employee_cost
         net_premium = (monthly_premium * 12) - employee_premium_amnt
-        net_premium_percent = net_premium / @aptc_household[:annual_tax_household_income]
+        net_premium_percent = (net_premium / @aptc_household[:annual_tax_household_income]) * 100
         return true if net_premium_percent > @affordability_threshold
         update_all_members_as_aptc_ineligible
         false
@@ -277,7 +293,7 @@ module Eligibilities
       def qsehra_benefit_affordable?(qsehra_benefit, monthly_premium)
         employee_premium_amnt = qsehra_benefit.annual_employee_cost
         net_premium = (monthly_premium * 12) - employee_premium_amnt
-        net_premium_percent = net_premium / @aptc_household[:annual_tax_household_income]
+        net_premium_percent = (net_premium / @aptc_household[:annual_tax_household_income]) * 100
         return true if net_premium_percent > @affordability_threshold
         update_all_members_as_aptc_ineligible
         false

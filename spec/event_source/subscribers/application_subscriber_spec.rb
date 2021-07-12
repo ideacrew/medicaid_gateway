@@ -4,7 +4,6 @@ require 'rails_helper'
 
 # rubocop:disable Style/Documentation, Lint/ConstantDefinitionInBlock
 RSpec.describe ::Subscribers::ApplicationSubscriber, dbclean: :after_each do
-
   module Publishers
     class DetermineEligibilityPublisher
       include ::EventSource::Publisher[amqp: 'enroll.iap.applications']
@@ -18,7 +17,6 @@ RSpec.describe ::Subscribers::ApplicationSubscriber, dbclean: :after_each do
       # Eval will register event publisher for MiTC
       class DetermineEligibility < EventSource::Event
         publisher_path 'publishers.determine_eligibility_publisher'
-
       end
     end
   end
@@ -28,13 +26,23 @@ RSpec.describe ::Subscribers::ApplicationSubscriber, dbclean: :after_each do
       include EventSource::Command
 
       def execute(payload)
-        event = event('events.determinations.determine_eligibility', attributes: payload).success
+        event =
+          event(
+            'events.determinations.determine_eligibility',
+            attributes: payload
+          ).success
         event.publish
       end
     end
   end
 
-  let(:payload) { { message: "Hello world!!" } }
+  let(:payload) { { message: 'Hello world!!' } }
+
+  let(:connection_manager_instance) { EventSource::ConnectionManager.instance }
+  let(:connection) do
+    connection_manager_instance.find_connection(publish_params)
+  end
+
   let(:publish_params) do
     {
       protocol: :amqp,
@@ -42,12 +50,9 @@ RSpec.describe ::Subscribers::ApplicationSubscriber, dbclean: :after_each do
     }
   end
 
-  let(:connection_manager_instance) { EventSource::ConnectionManager.instance }
-  let(:connection) { connection_manager_instance.find_connection(publish_params) }
-
-  let(:publish_operation) { connection_manager_instance.find_publish_operation(publish_params) }
-  let(:publish_proxy) { publish_operation.subject }
-  let(:bunny_exchange) { publish_proxy.subject }
+  let(:publish_operation) do
+    connection_manager_instance.find_publish_operation(publish_params)
+  end
 
   let(:subscribe_params) do
     {
@@ -56,27 +61,35 @@ RSpec.describe ::Subscribers::ApplicationSubscriber, dbclean: :after_each do
     }
   end
 
-  let(:subscribe_operation) { connection_manager_instance.find_subscribe_operation(subscribe_params) }
+  let(:subscribe_operation) do
+    connection_manager_instance.find_subscribe_operation(subscribe_params)
+  end
+
+  let(:channel_proxy) { exchange_proxy.channel_proxy }
+  let(:exchange_proxy) { publish_operation.subject }
   let(:queue_proxy) { subscribe_operation.subject }
+
+  let(:bunny_exchange) { exchange_proxy.subject }
   let(:bunny_queue) { queue_proxy.subject }
-  let(:consumer) { queue_proxy.consumers.first }
+  let(:bunny_consumer) { queue_proxy.consumers.first }
+
+  after { channel_proxy.queue_delete(queue_proxy.name) }
 
   it 'should create exchanges and queues, consumers' do
     expect(bunny_exchange).to be_present
     expect(bunny_queue).to be_present
+
     expect(bunny_queue.consumer_count).to eq 1
-    expect(consumer).to be_a EventSource::Protocols::Amqp::BunnyConsumerProxy
+    # expect(bunny_consumer).to be_a EventSource::Protocols::Amqp::BunnyConsumerProxy
   end
 
-  context "When valid event published" do
-
+  context 'When valid event published' do
     it 'should publish payload with exchange' do
       expect(bunny_exchange).to receive(:publish).at_least(1).times
       Operations::DetermineEligibility.new.execute(payload)
     end
 
     #  TODO verify exchange.on_return
-
   end
 end
 # rubocop:enable Style/Documentation, Lint/ConstantDefinitionInBlock
