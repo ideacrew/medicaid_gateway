@@ -8,14 +8,16 @@ EventSource.configure do |config|
 
   config.servers do |server|
     server.http do |http|
-      # http.ref = "http://mitc:3001"
-      http.host = ENV['MITC_HOST'] || 'http://localhost'
-      http.port = ENV['MITC_PORT'] || '3000'
-      http.url = ENV['MITC_URL'] || 'http://localhost:3000'
+      http.host = 'http://localhost'
+      http.port = '3001'
+      http.url = 'http://localhost:3001'
       # http.default_content_type = 'application/json'
     end
 
+    
+
     server.amqp do |rabbitmq|
+      rabbitmq.ref = 'amqp://rabbitmq:5672/event_source'
       rabbitmq.host = ENV['RABBITMQ_HOST'] || 'amqp://localhost'
       warn rabbitmq.host
       rabbitmq.vhost = ENV['RABBITMQ_VHOST'] || '/'
@@ -47,4 +49,4 @@ EventSource.configure do |config|
     end
 end
 
-# EventSource.initialize!
+EventSource.initialize!
