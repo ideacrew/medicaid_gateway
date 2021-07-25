@@ -15,7 +15,7 @@ module Subscribers
     # event_source branch: release_0.5.2
     subscribe(:on_enroll_iap_transfers) do |delivery_info, _metadata, response|
       payload = JSON.parse(response, :symbolize_names => true)
-      result = ::Transfers::ToAces.new.call(payload)
+      result = ::Transfers::Inbound::AccountTransfer.new.call(payload)
 
       if result.success?
         ack(delivery_info.delivery_tag)
