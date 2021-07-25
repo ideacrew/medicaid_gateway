@@ -7,35 +7,30 @@ module Transfers
   class ToEnroll
     send(:include, Dry::Monads[:result, :do])
 
-    # @param [String] Take in the raw payload and serialize and transform it, then tranfer the result to EA.
+    # @param [String] raw_payload
     # @return [Dry::Result]
     def call(params)
-      payload = yield create_transfer(params)
-      transformed_params = yield transform_params(payload)
-      transferred_params = yield initiate_transfer(transformed_params)
-      transferred_params
+      serialized_params = yield serialize_data(params)
+      cv3_params = yield transform_params(serialized_params)
+      # validated_params = yield validate_params(cv3_params)
+      Success(initiate_transfer(cv3_params))
     end
 
     private
 
-    def create_transfer(input)
-      puts "creating transfer"
-      record = ::AcaEntities::Serializers::Xml::Medicaid::Atp::AccountTransferRequest.parse(input)
-      result = record.is_a?(Array) ? record.first : record
-      Success(result)
+    def serialize_data(input_xml)
+      record = ::AcaEntities::Serializers::Xml::Medicaid::Atp::AccountTransferRequest.parse(input_xml)
+      Success(record.to_hash(identifier: true))
     end
 
-    def transform_params(result)
-      puts "transforming"
-      puts result.inspect
-      transformed = ::AcaEntities::Atp::Transformers::Cv::Family.transform(result.to_hash(identifier: true))
-      Success(transformed)
+    def transform_params(input)
+      ::AcaEntities::Atp::Transformers::Cv::Family.transform(input)
     end
 
     def initiate_transfer(payload)
-      puts "transferring"
-      transfer = Transfers::InitiateTransferToEnroll.new.call(payload)
-      transfer.success? ? Success("Transferred account to Enroll") : Failure(transfer)
+      Transfers::InitiateTransferToEnroll.new.call(payload)
+
+      Success("Initiated account transfer to Enroll")
     end
   end
 end
