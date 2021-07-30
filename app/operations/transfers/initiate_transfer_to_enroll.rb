@@ -13,8 +13,8 @@ module Transfers
     # @option opts [Hash] :fully_determined_medicaid_application
     # @option opts [String] :determined_aptc_eligible
     # @return [Dry::Monads::Result]
-    def call(params, event_name)
-      event = yield build_event(params, event_name)
+    def call(params)
+      event = yield build_event(params)
       result = send_to_enroll(event)
 
       Success(result)
@@ -22,11 +22,16 @@ module Transfers
 
     private
 
-    def build_event(payload)
-      event('magi_medicaid.atp.enroll.transfer_in', attributes: payload)
+    def build_event(params)
+      puts "building event!"
+      result = event("events.magi_medicaid.atp.enroll.transfer_in", attributes: params.to_h)
+      logger.info "MedicaidGateway Transfer Publisher to enroll, event_key: transfer_in, attributes: #{params.to_h}, result: #{result}"
+      logger.info('-' * 100)
+      result
     end
 
     def send_to_enroll(event)
+      puts "sending event!"
       event.publish
     end
   end

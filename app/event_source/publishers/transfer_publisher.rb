@@ -2,7 +2,7 @@
 
 module Publishers
   # Publisher will send account transfer payload to EA
-  class TrasnferPublisher
+  class TransferPublisher
     include ::EventSource::Publisher[amqp: 'magi_medicaid.atp.enroll']
 
     register_event 'transfer_in'
