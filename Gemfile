@@ -9,7 +9,7 @@ ruby '2.7.2'
 gem 'mitc_service', path: 'components/mitc_service'
 
 gem 'aca_entities',  git:  'https://github.com/ideacrew/aca_entities.git', branch: 'atp_cv_transform_and_events'
-gem 'event_source',  git:  'https://github.com/ideacrew/event_source.git', branch: 'release_0.5.3'
+gem 'event_source',  git:  'https://github.com/ideacrew/event_source.git', branch: 'trunk'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.3'
