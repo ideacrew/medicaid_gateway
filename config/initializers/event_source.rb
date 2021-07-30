@@ -38,9 +38,9 @@ EventSource.configure do |config|
     ::AcaEntities.async_api_config_find_by_service_name(
       { protocol: :amqp, service_name: nil }
     ).success +
-      ::AcaEntities.async_api_config_find_by_service_name(
-        { protocol: :http, service_name: :medicaid_gateway }
-      ).success
+    ::AcaEntities.async_api_config_find_by_service_name(
+      { protocol: :http, service_name: :medicaid_gateway }
+    ).success
 
   config.async_api_schemas =
     async_api_resources.collect do |resource|
