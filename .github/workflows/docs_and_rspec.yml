@@ -35,6 +35,7 @@ jobs:
         run: |
           echo
           cd components/mitc_service
+          sudo bash -c "echo '127.0.0.1 rabbitmq mongodb' >> /etc/hosts"
           bundle exec rspec
   rspec:
     runs-on: ubuntu-18.04
