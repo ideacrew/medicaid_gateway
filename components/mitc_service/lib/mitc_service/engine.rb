@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "mongoid"
+
 module MitcService
   # MitcService::Engine
   class Engine < ::Rails::Engine
