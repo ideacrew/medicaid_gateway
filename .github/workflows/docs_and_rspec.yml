@@ -99,7 +99,7 @@ jobs:
           bundle exec rubocop
       - name: run tests
         run: |
-          sudo bash -c "echo '127.0.0.1 rabbitmq db' >> /etc/hosts"
+          sudo bash -c "echo '127.0.0.1 rabbitmq mongodb' >> /etc/hosts"
           bundle exec rspec
   docs:
     needs:
