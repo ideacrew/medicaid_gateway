@@ -73,17 +73,17 @@ module MitcService
         mm_thh[:effective_on] = calculate_eligibility_date(mm_app_hash)
         mm_thh[:tax_household_members].each do |mm_thhm|
           member_identifier = mm_thhm[:applicant_reference][:person_hbx_id]
-          next mm_thhm if bypass_mitc_determination?(mm_app_hash, member_identifier)
+          mitc_bypass_flag = bypass_mitc_determination?(mm_app_hash, member_identifier)
           mitc_applicant = mitc_applicant_by_person_id(mitc_applicants, member_identifier)
           next mm_thhm if mitc_applicant.blank?
           ped_attrs = { magi_medicaid_monthly_household_income: mitc_applicant[:medicaid_household][:magi_income],
                         medicaid_household_size: mitc_applicant[:medicaid_household][:size],
                         magi_as_percentage_of_fpl: mitc_applicant[:medicaid_household][:magi_as_percentage_of_fpl],
-                        is_magi_medicaid: to_boolean(mitc_applicant[:is_medicaid_eligible]),
-                        is_medicaid_chip_eligible: to_boolean(mitc_applicant[:is_chip_eligible]),
-                        magi_medicaid_ineligibility_reasons: mitc_applicant[:medicaid_ineligibility_reasons],
-                        is_eligible_for_non_magi_reasons: mitc_applicant[:is_eligible_for_non_magi_reasons],
-                        chip_ineligibility_reasons: mitc_applicant[:chip_ineligibility_reasons],
+                        is_magi_medicaid: calculate_medicaid_eligibility(mitc_applicant[:is_medicaid_eligible], mitc_bypass_flag),
+                        is_medicaid_chip_eligible: calculate_medicaid_eligibility(mitc_applicant[:is_chip_eligible], mitc_bypass_flag),
+                        magi_medicaid_ineligibility_reasons: mitc_applicant[:medicaid_ineligibility_reasons] || [],
+                        is_eligible_for_non_magi_reasons: get_non_magi_reasons(mitc_applicant),
+                        chip_ineligibility_reasons: mitc_applicant[:chip_ineligibility_reasons] || [],
                         magi_medicaid_category: medicaid_category(mitc_applicant[:medicaid_category]),
                         magi_medicaid_category_threshold: mitc_applicant[:medicaid_category_threshold],
                         medicaid_chip_category: mitc_applicant[:chip_category],
@@ -93,6 +93,25 @@ module MitcService
           mm_thhm[:product_eligibility_determination].merge!(ped_attrs)
         end
       end
+    end
+
+    # For a case, value for 'Non-MAGI Referral' is not sent but the cleanDets with
+    # category 'Medicaid Non-MAGI Referral' has the determination for is_eligible_for_non_magi_reasons.
+
+    # TestCase:
+    #   1. 'cms ME complex_scenarios test_case_e_1'
+    #   2. spec/shared_contexts/eligibilities/cms/me_complex_scenarios/test_case_e_1.rb
+    #   3. Member Name: 'Baby Ee', hbx_id: 1002558
+    def get_non_magi_reasons(mitc_applicant)
+      mitc_applicant[:determinations].detect do |cat_det|
+        cat_det[:category].to_s == 'Medicaid Non-MAGI Referral'
+      end[:indicator_code]
+    end
+
+    # Calculates MagiMedicaid/MedicaidChip eligibility based on MitcBypassFlag
+    def calculate_medicaid_eligibility(medicaid_eligible, mitc_bypass_flag)
+      return false if mitc_bypass_flag
+      mitc_value_to_boolean(medicaid_eligible)
     end
 
     def calculate_eligibility_date(mm_app_hash)
@@ -139,7 +158,7 @@ module MitcService
       end
     end
 
-    def to_boolean(value)
+    def mitc_value_to_boolean(value)
       { 'Y' => true, 'N' => false }[value]
     end
 
@@ -150,7 +169,7 @@ module MitcService
     def category_determinations(determinations)
       determinations.inject([]) do |det_array, deter|
         det_array << { category: deter[:category],
-                       indicator_code: to_boolean(deter[:indicator_code]),
+                       indicator_code: mitc_value_to_boolean(deter[:indicator_code]),
                        ineligibility_code: deter[:ineligibility_code],
                        ineligibility_reason: deter[:ineligibility_reason] }
       end

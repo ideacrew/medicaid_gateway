@@ -38,14 +38,15 @@ gem "faraday", "~> 1.4.1"
 gem 'typhoeus'
 gem 'mime-types'
 gem 'httparty',            '~> 0.16'
+gem 'nokogiri', '>= 1.10.8', platforms: [:ruby, :mri]
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-  gem 'capistrano-bundler', '~> 1.1.2'
+  # gem 'capistrano-bundler', '~> 1.1.2'
   gem 'factory_bot_rails',  '~> 6.2'
   gem 'pry-byebug'
-  gem 'rspec-rails',            '~> 4.0'
+  gem 'rspec-rails',            '~> 5.0'
   gem 'shoulda-matchers',       '~> 3'
   gem 'yard'
 end
@@ -59,7 +60,7 @@ group :development do
   gem 'rack-mini-profiler', '~> 2.0', require: false
   gem 'listen', '~> 3.3'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring'
+  gem 'spring', '~> 1.7.2'
 end
 
 group :test do

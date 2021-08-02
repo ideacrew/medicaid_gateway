@@ -3,12 +3,17 @@ on: push
 
 jobs:
   mitc_service:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
       - uses: wbari/start-mongoDB@v0.2
         with:
           mongoDBVersion: '4.2'
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7.2
@@ -30,9 +35,10 @@ jobs:
         run: |
           echo
           cd components/mitc_service
+          sudo bash -c "echo '127.0.0.1 rabbitmq mongodb' >> /etc/hosts"
           bundle exec rspec
   rspec:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
@@ -40,13 +46,38 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-      - uses: getong/rabbitmq-action@v1.2
-        with:
-          rabbitmq version: '3.8.2-management-alpine'
-          host port: 5672
-          rabbitmq user: 'guest'
-          rabbitmq password: 'guest'
-          rabbitmq vhost: '/'
+      - name: Boot RabbitMQ
+        run: |
+          sudo apt-key adv --keyserver "hkps://keys.openpgp.org" --recv-keys "0x0A9AF2115F4687BD29803A206B73A36E6026DFCA"
+          sudo apt-key adv --keyserver "keyserver.ubuntu.com" --recv-keys "F77F1EDA57EBB1CC"
+          curl -1sLf 'https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey' | sudo apt-key add -
+
+          sudo tee /etc/apt/sources.list.d/rabbitmq.list <<EOF
+          ## Provides modern Erlang/OTP releases
+          ##
+          deb http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu bionic main
+          deb-src http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu bionic main
+
+          ## Provides RabbitMQ
+          ##
+          deb https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu/ bionic main
+          deb-src https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu/ bionic main
+          EOF
+
+          sudo apt-get update -y
+
+          ## Install Erlang packages
+          sudo apt-get install -y erlang-base \
+                        erlang-asn1 erlang-crypto erlang-eldap erlang-ftp erlang-inets \
+                        erlang-mnesia erlang-os-mon erlang-parsetools erlang-public-key \
+                        erlang-runtime-tools erlang-snmp erlang-ssl \
+                        erlang-syntax-tools erlang-tftp erlang-tools erlang-xmerl
+
+          ## Install rabbitmq-server and its dependencies
+          sudo apt-get install rabbitmq-server -y --fix-missing
+          sudo apt-get install rabbitmq-server -y --fix-missing
+          sudo rabbitmqctl add_vhost event_source
+          sudo rabbitmqctl set_permissions -p event_source guest ".*" ".*" ".*"
       - uses: wbari/start-mongoDB@v0.2
         with:
           mongoDBVersion: '4.2'
@@ -69,13 +100,13 @@ jobs:
           bundle exec rubocop
       - name: run tests
         run: |
-          sudo bash -c "echo '127.0.0.1 rabbitmq db' >> /etc/hosts"
+          sudo bash -c "echo '127.0.0.1 rabbitmq mongodb' >> /etc/hosts"
           bundle exec rspec
   docs:
     needs:
       - mitc_service
       - rspec
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
         with:

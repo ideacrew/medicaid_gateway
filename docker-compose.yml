@@ -11,8 +11,6 @@ services:
         NODE_MAJOR: "12"
         YARN_VERSION: "1.22.4"
     image: medicaid_gateway_dev:0.3.0
-    links:
-      - db
     ports:
       - "3000:3000"
     volumes:
@@ -68,10 +66,10 @@ services:
       - /tmp
     command: bash -c "rm -f tmp/pids/server.pid && mkdir -p tmp/pids && yarn install --check-files && bundle install && bundle exec puma -C config/puma.rb"
     depends_on:
-      - db
+      - mongodb
       - rabbitmq
       - mitc
-  db:
+  mongodb:
     image: mongo:4.2
     volumes:
       - mongodb:/data/db
@@ -86,14 +84,10 @@ services:
       - rabbitmq_etc:/etc/rabbitmq/
       - rabbitmq_data:/var/lib/rabbitmq/
       - rabbitmq_logs:/var/log/rabbitmq/
-    environment:
-      - RABBITMQ_ERLANG_COOKIE=${RABBITMQ_ERLANG_COOKIE:-123456789}
-      - RABBITMQ_USER=${RABBITMQ_DEFAULT_USER:-guest}
-      - RABBITMQ_PASSWORD=${RABBITMQ_DEFAULT_PASS:-guest}
+      - ./.docker/rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+      - ./.docker/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
     ports:
-      - 4369
       - 5672:5672
-      - 25672:25672
       - 15672:15672
   mitc:
     image: mitc:02.2021
