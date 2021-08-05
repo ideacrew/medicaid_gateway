@@ -19,12 +19,15 @@ module Transfers
     private
 
     def create_transfer(input)
+      puts "creating transfer"
       record = ::AcaEntities::Serializers::Xml::Medicaid::Atp::AccountTransferRequest.parse(input)
       result = record.is_a?(Array) ? record.first : record
       Success(result)
     end
 
     def transform_params(result)
+      puts "transforming"
+      puts result.inspect
       transformed = ::AcaEntities::Atp::Transformers::Cv::Family.transform(result.to_hash(identifier: true))
       Success(transformed)
     end

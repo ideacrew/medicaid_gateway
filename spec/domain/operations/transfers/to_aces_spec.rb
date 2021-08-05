@@ -9,6 +9,7 @@ describe Transfers::ToAces, "given an ATP valid payload, transfer it to Aces" do
   include Dry::Monads[:result, :do]
 
   let(:atp_hash) {File.read("./spec/test_data/application_and_family.json")}
+
   let(:transfer) {described_class.new}
 
   context 'success' do
