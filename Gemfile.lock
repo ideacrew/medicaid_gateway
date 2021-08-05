@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ideacrew/aca_entities.git
-  revision: 1f80c4378ea345363f506e48c485fd246203abec
+  revision: 0b7ce630469125988dd865ad6a38d9ebc6d6fe6c
   branch: atp_cv_transform_and_events
   specs:
     aca_entities (0.3.0)
