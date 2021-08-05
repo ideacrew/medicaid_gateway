@@ -28,6 +28,7 @@ module Transfers
     end
 
     def parse_document(document_string)
+      puts "parsing document"
       result = Try do
         Nokogiri::XML(document_string)
       end

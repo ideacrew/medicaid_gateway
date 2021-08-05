@@ -15,8 +15,6 @@ EventSource.configure do |config|
       http.default_content_type = 'application/json'
     end
 
-    
-
     server.amqp do |rabbitmq|
       rabbitmq.ref = 'amqp://rabbitmq:5672/event_source'
       rabbitmq.host = ENV['RABBITMQ_HOST'] || 'amqp://localhost'
