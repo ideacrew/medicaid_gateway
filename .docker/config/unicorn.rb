@@ -7,6 +7,8 @@ stderr_path root_path + "/log/unicorn.log"
 stdout_path root_path + "/log/unicorn.log"
 
 listen "/tmp/unicorn_medicaid_gateway.ap.sock"
+listen 3000, :tcp_nopush => true
+
 worker_processes 1
 timeout 90
 preload_app true
