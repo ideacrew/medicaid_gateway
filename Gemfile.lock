@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/ideacrew/aca_entities.git
-  revision: 71bf138433f8787da12a4e5d482facdbeffb0854
-  branch: trunk
+  revision: 3c5b82ea5479a76eb89dd35ca85ba35cd3056c3a
+  branch: release_0.4.0
   specs:
     aca_entities (0.3.0)
       deep_merge
@@ -312,16 +312,16 @@ GEM
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
     nio4r (2.5.7)
-    nokogiri (1.12.0)
+    nokogiri (1.12.2)
       mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
-    nokogiri (1.12.0-x86_64-darwin)
+    nokogiri (1.12.2-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.12.0-x86_64-linux)
+    nokogiri (1.12.2-x86_64-linux)
       racc (~> 1.4)
     nokogiri-happymapper (0.8.1)
       nokogiri (~> 1.5)
-    oj (3.12.2)
+    oj (3.12.3)
     ox (2.14.5)
     parallel (1.20.1)
     parser (3.0.1.1)
