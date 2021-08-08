@@ -164,6 +164,7 @@ RSpec.shared_context 'cms ME simple_scenarios test_case_c', :shared_context => :
 
   let(:app_params) do
     { us_state: 'DC',
+      notice_options: { send_eligibility_notices: true, send_open_enrollment_notices: false },
       oe_start_on: Date.new(Date.today.year, 11, 1),
       hbx_id: '200000125',
       family_reference: { hbx_id: '10011' },

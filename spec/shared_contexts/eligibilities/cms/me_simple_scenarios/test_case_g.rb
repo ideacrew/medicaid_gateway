@@ -2461,7 +2461,7 @@ RSpec.shared_context 'cms ME simple_scenarios test_case_g', :shared_context => :
         "relative_reference" => {
           "first_name" => "AlbaG", "last_name" => "MorganG", "dob" => "1981-01-01", "person_hbx_id" => "1002592", "encrypted_ssn" => "QEVuQwEAhYXbOlomSO8L66BG9/gkTA=="
         }
-      }], "us_state" => "ME", "hbx_id" => "1000396", "oe_start_on" => "2020-11-01", "mitc_households" => [{
+      }], "us_state" => "ME", notice_options: { send_eligibility_notices: true, send_open_enrollment_notices: false }, "hbx_id" => "1000396", "oe_start_on" => "2020-11-01", "mitc_households" => [{
         "household_id" => "1000396",
         "people" => [{
           "person_id" => 1_002_584
