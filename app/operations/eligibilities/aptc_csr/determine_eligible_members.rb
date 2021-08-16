@@ -242,7 +242,9 @@ module Eligibilities
 
       def eligible_tax_filer?(applicant)
         return false if applicant.is_claimed_as_tax_dependent
-        applicant.is_primary_applicant || (married?(applicant) && applicant.is_joint_tax_filing)
+        applicant.is_primary_applicant ||
+          applicant.is_required_to_file_taxes ||
+          (married?(applicant) && applicant.is_joint_tax_filing)
       end
 
       def married?(applicant)
