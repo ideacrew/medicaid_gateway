@@ -30,7 +30,7 @@ module Transfers
     def parse_document(document_string)
       puts "parsing document"
       result = Try do
-        Nokogiri::XML(document_string)
+        Nokogiri::XML(document_string.value!)
       end
       puts result
       result.or(Failure(:xml_parse_failure))
