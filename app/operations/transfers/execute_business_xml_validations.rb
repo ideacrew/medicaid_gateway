@@ -3,7 +3,7 @@
 require 'dry/monads'
 require 'dry/monads/do'
 
-module Aces
+module Transfers
   # Run an ACES payload against the schematron business validations.
   class ExecuteBusinessXmlValidations
     send(:include, Dry::Monads[:result, :do, :try])
@@ -48,12 +48,15 @@ module Aces
       error_objects = parsed_document.xpath("//svrl:failed-assert", XML_NS).map do |node|
         location = node.at_xpath("@location").content
         message = node.at_xpath("svrl:text").content
-        AtpFailedBusinessAssertion.new({
+        Aces::AtpFailedBusinessAssertion.new({
                                          location: location,
                                          text: message
                                        })
       end
-      Failure(AtpBusinessRuleFailure.new({ failed_assertions: error_objects }))
+      error_objects.each do |eo|
+        puts eo.inspect
+      end
+      Failure(Aces::AtpBusinessRuleFailure.new({ failed_assertions: error_objects }))
     end
   end
 end
