@@ -3,7 +3,7 @@
 require 'dry/monads'
 require 'dry/monads/do'
 
-module Aces
+module Transfers
   # Validate the AccountTransferRequest body received from ACES against
   # the applicable schemas.
   class ValidateTransferXml
@@ -30,12 +30,13 @@ module Aces
     def parse_document(document_string)
       puts "parsing document"
       result = Try do
-        Nokogiri::XML(document_string)
+        Nokogiri::XML(document_string.value!)
       end
       result.or(Failure(:xml_parse_failure))
     end
 
     def validate_document(schema, doc)
+      puts "validating document"
       validation_result = schema.validate(doc)
       return Success(:ok) if validation_result.empty?
       Failure(validation_result)

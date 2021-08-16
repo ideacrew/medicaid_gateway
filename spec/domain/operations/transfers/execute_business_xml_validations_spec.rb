@@ -2,11 +2,11 @@
 
 require "rails_helper"
 
-describe Aces::ExecuteBusinessXmlValidations, "given an empty payload" do
+describe Transfers::ExecuteBusinessXmlValidations, "given an empty payload" do
   let(:payload) { "" }
 
   let(:subject) do
-    Aces::ExecuteBusinessXmlValidations.new
+    Transfers::ExecuteBusinessXmlValidations.new
   end
   it "crashes" do
     result = subject.call(payload)
@@ -14,7 +14,7 @@ describe Aces::ExecuteBusinessXmlValidations, "given an empty payload" do
   end
 end
 
-describe Aces::ExecuteBusinessXmlValidations, "given a payload with an empty body" do
+describe Transfers::ExecuteBusinessXmlValidations, "given a payload with an empty body" do
   let(:payload) do
     <<-XMLCODE
     <ns8:AccountTransferRequest ns4:atVersionText="2.3" xmlns:ns2="http://hix.cms.gov/0.1/hix-core" xmlns:ns4="http://at.dsh.cms.gov/extension/1.0" xmlns:ns5="http://hix.cms.gov/0.1/hix-ee" xmlns:ns6="http://niem.gov/niem/domains/screening/2.1" xmlns:ns7="http://hix.cms.gov/0.1/hix-pm" xmlns:ns8="http://at.dsh.cms.gov/exchange/1.0">
@@ -23,7 +23,7 @@ describe Aces::ExecuteBusinessXmlValidations, "given a payload with an empty bod
   end
 
   let(:subject) do
-    Aces::ExecuteBusinessXmlValidations.new
+    Transfers::ExecuteBusinessXmlValidations.new
   end
 
   it "fails" do

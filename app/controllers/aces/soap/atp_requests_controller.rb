@@ -14,6 +14,7 @@ module Aces
       def service
         result = ProcessAtpSoapRequest.new.call(request.body)
         if result.success?
+          Transfers::ToEnroll.new.call(request.body)
           Aces::RecordAcesSubmission.new.call({
                                                 body: request.body,
                                                 result: result.value!
