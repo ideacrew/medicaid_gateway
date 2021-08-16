@@ -1,0 +1,15 @@
+---
+registry:
+  - namespace:
+    - :medicaid_gateway
+    - :curam_integration
+    features:
+      - key: :curam_connection
+        is_enabled: true
+        settings:
+          - key: :curam_atp_service_uri
+            item: <%= ENV['CURAM_ATP_SERVICE_URI'] %>
+          - key: :curam_atp_service_username
+            item: <%= ENV['CURAM_ATP_SERVICE_USERNAME'] %>
+          - key: :curam_atp_service_password
+            item: <%= ENV['CURAM_ATP_SERVICE_PASSWORD'] %>
