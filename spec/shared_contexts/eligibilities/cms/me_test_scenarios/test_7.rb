@@ -133,10 +133,10 @@ RSpec.shared_context 'cms ME me_test_scenarios test_7', :shared_context => :meta
         },
         "is_homeless" => false,
         "mitc_income" => {
-          "amount" => 19000, "taxable_interest" => 0, "tax_exempt_interest" => 0, "taxable_refunds" => 0, "alimony" => 0, "capital_gain_or_loss" => 0, "pensions_and_annuities_taxable_amount" => 0, "farm_income_or_loss" => 0, "unemployment_compensation" => 0, "other_income" => 0, "magi_deductions" => 0, "adjusted_gross_income" => 19000, "deductible_part_of_self_employment_tax" => 0, "ira_deduction" => 0, "student_loan_interest_deduction" => 0, "tution_and_fees" => 0, "other_magi_eligible_income" => 0
+          "amount" => 19_000, "taxable_interest" => 0, "tax_exempt_interest" => 0, "taxable_refunds" => 0, "alimony" => 0, "capital_gain_or_loss" => 0, "pensions_and_annuities_taxable_amount" => 0, "farm_income_or_loss" => 0, "unemployment_compensation" => 0, "other_income" => 0, "magi_deductions" => 0, "adjusted_gross_income" => 19_000, "deductible_part_of_self_employment_tax" => 0, "ira_deduction" => 0, "student_loan_interest_deduction" => 0, "tution_and_fees" => 0, "other_magi_eligible_income" => 0
         },
         "mitc_relationships" => [{
-          "other_id" => 1003363,
+          "other_id" => 1_003_363,
           "attest_primary_responsibility" => "Y",
           "relationship_code" => "03"
         }],
@@ -268,10 +268,10 @@ RSpec.shared_context 'cms ME me_test_scenarios test_7', :shared_context => :meta
         },
         "is_homeless" => false,
         "mitc_income" => {
-          "amount" => 25000, "taxable_interest" => 0, "tax_exempt_interest" => 0, "taxable_refunds" => 0, "alimony" => 0, "capital_gain_or_loss" => 0, "pensions_and_annuities_taxable_amount" => 0, "farm_income_or_loss" => 0, "unemployment_compensation" => 0, "other_income" => 0, "magi_deductions" => 0, "adjusted_gross_income" => 25000, "deductible_part_of_self_employment_tax" => 0, "ira_deduction" => 0, "student_loan_interest_deduction" => 0, "tution_and_fees" => 0, "other_magi_eligible_income" => 0
+          "amount" => 25_000, "taxable_interest" => 0, "tax_exempt_interest" => 0, "taxable_refunds" => 0, "alimony" => 0, "capital_gain_or_loss" => 0, "pensions_and_annuities_taxable_amount" => 0, "farm_income_or_loss" => 0, "unemployment_compensation" => 0, "other_income" => 0, "magi_deductions" => 0, "adjusted_gross_income" => 25_000, "deductible_part_of_self_employment_tax" => 0, "ira_deduction" => 0, "student_loan_interest_deduction" => 0, "tution_and_fees" => 0, "other_magi_eligible_income" => 0
         },
         "mitc_relationships" => [{
-          "other_id" => 1003362,
+          "other_id" => 1_003_362,
           "attest_primary_responsibility" => "N",
           "relationship_code" => "04"
         }],
@@ -323,18 +323,18 @@ RSpec.shared_context 'cms ME me_test_scenarios test_7', :shared_context => :meta
       "hbx_id" => "1001006", "oe_start_on" => "2020-11-01", "mitc_households" => [{
         "household_id" => "1",
         "people" => [{
-          "person_id" => 1003362
+          "person_id" => 1_003_362
         }, {
-          "person_id" => 1003363
+          "person_id" => 1_003_363
         }]
       }], "mitc_tax_returns" => [{
         "filers" => [{
-          "person_id" => 1003362
+          "person_id" => 1_003_362
         }],
         "dependents" => []
       }, {
         "filers" => [{
-          "person_id" => 1003363
+          "person_id" => 1_003_363
         }],
         "dependents" => []
       }]
@@ -353,9 +353,9 @@ RSpec.shared_context 'cms ME me_test_scenarios test_7', :shared_context => :meta
   let(:mitc_string_response) do
     {
       "Determination Date" => "2021-08-16", "Applicants" => [{
-        "Person ID" => 1003362,
+        "Person ID" => 1_003_362,
         "Medicaid Household" => {
-          "People" => [1003362], "MAGI" => 19000, "MAGI as Percentage of FPL" => 147, "Size" => 1
+          "People" => [1_003_362], "MAGI" => 19_000, "MAGI as Percentage of FPL" => 147, "Size" => 1
         },
         "Medicaid Eligible" => "N",
         "CHIP Eligible" => "N",
@@ -363,7 +363,7 @@ RSpec.shared_context 'cms ME me_test_scenarios test_7', :shared_context => :meta
         "Non-MAGI Referral" => "N",
         "CHIP Ineligibility Reason" => ["Applicant did not meet the requirements for any CHIP category"],
         "Category" => "Adult Group Category",
-        "Category Threshold" => 17774,
+        "Category Threshold" => 17_774,
         "CHIP Category" => "None",
         "CHIP Category Threshold" => 0,
         "Determinations" => {
@@ -427,9 +427,9 @@ RSpec.shared_context 'cms ME me_test_scenarios test_7', :shared_context => :meta
           "Qualified Children List" => []
         }
       }, {
-        "Person ID" => 1003363,
+        "Person ID" => 1_003_363,
         "Medicaid Household" => {
-          "People" => [1003363], "MAGI" => 25000, "MAGI as Percentage of FPL" => 194, "Size" => 1
+          "People" => [1_003_363], "MAGI" => 25_000, "MAGI as Percentage of FPL" => 194, "Size" => 1
         },
         "Medicaid Eligible" => "N",
         "CHIP Eligible" => "N",
@@ -437,7 +437,7 @@ RSpec.shared_context 'cms ME me_test_scenarios test_7', :shared_context => :meta
         "Non-MAGI Referral" => "N",
         "CHIP Ineligibility Reason" => ["Applicant did not meet the requirements for any CHIP category"],
         "Category" => "Adult Group Category",
-        "Category Threshold" => 17774,
+        "Category Threshold" => 17_774,
         "CHIP Category" => "None",
         "CHIP Category Threshold" => 0,
         "Determinations" => {
