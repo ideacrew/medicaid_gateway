@@ -47,7 +47,7 @@ services:
       - RABBITMQ_VHOST=${RABBITMQ_VHOST:-event_source}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-guest}
       - RABBITMQ_PORT=${RABBITMQ_PORT:-5672}
-      - RABBITMQ_URL=${RABBITMQ_URL:-amqp://guest:guest@rabbitmq:5672}
+      - RABBITMQ_URL_EVENT_SOURCE=${RABBITMQ_URL_EVENT_SOURCE:-amqp://guest:guest@rabbitmq:5672}
       - RABBITMQ_USERNAME=${AMQP_USERNAME:-guest}
       - RAILS_ENV=${RAILS_ENV:-development}
       - SFTP_HOST=""
