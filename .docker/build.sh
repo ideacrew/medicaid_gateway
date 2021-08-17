@@ -12,7 +12,7 @@ cp .docker/config/master.key config/
 docker build --build-arg BUNDLER_VERSION_OVERRIDE='2.2.10' \
              --build-arg NODE_MAJOR='12' \
              --build-arg YARN_VERSION='1.22.4' \
-             --build-arg RABBITMQ_URL="amqp://rabbitmq:5672" \
+             --build-arg RABBITMQ_URL_EVENT_SOURCE="amqp://rabbitmq:5672" \
              -f .docker/production/Dockerfile --target app -t $2:$1 .
 docker push $2:$1
 
