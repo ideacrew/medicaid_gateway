@@ -65,6 +65,11 @@ module Types
       medicaid_year: 2021,
       annual_poverty_guideline: BigDecimal(12_880.to_s),
       annual_per_person_amount: BigDecimal(4_540.to_s)
+    },
+    {
+      medicaid_year: 2022,
+      annual_poverty_guideline: BigDecimal(12_880.to_s),
+      annual_per_person_amount: BigDecimal(4_540.to_s)
     }
   ].freeze
 
@@ -81,13 +86,20 @@ module Types
         earned_income: BigDecimal('12_400'),
         unearned_income: BigDecimal('1_100')
       }
+    },
+    {
+      2022 => {
+        earned_income: BigDecimal('12_400'),
+        unearned_income: BigDecimal('1_100')
+      }
     }
   ].freeze
 
   # Use ResourceRegistry to configure below
   AffordabilityThresholds = [
     { 2020 => BigDecimal('9.83') },
-    { 2021 => BigDecimal('9.83') }
+    { 2021 => BigDecimal('9.83') },
+    { 2022 => BigDecimal('9.83') }
   ].freeze
 
   CsrKind = Types::Coercible::String.enum('0',
