@@ -13,7 +13,7 @@ module Transfers
     def call(params, service)
       xml =      yield create_transfer_request(params)
       validated  = yield schema_validation(xml)
-      # validated  = yield business_validation(validated)
+      validated  = yield business_validation(validated)
       payload    = yield initiate_transfer(validated, service)
       payload
     end
@@ -26,7 +26,7 @@ module Transfers
     end
 
     def schema_validation(xml)
-      result = Transfers::ValidateTransferXml.new.call(xml)
+      result = Transfers::ValidateTransferXml.new.call(xml.value!)
       result.success? ? Success(xml) : Failure(result)
     end
 
