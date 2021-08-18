@@ -23,7 +23,6 @@ module Transfers
     private
 
     def build_event(params)
-      puts "building event!"
       result = event("events.magi_medicaid.atp.enroll.transfer_in", attributes: params.to_h)
       logger.info "MedicaidGateway Transfer Publisher to enroll, event_key: transfer_in, attributes: #{params.to_h}, result: #{result}"
       logger.info('-' * 100)
