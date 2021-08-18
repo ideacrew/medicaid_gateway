@@ -27,7 +27,6 @@ module Transfers
 
     def transform_params(result)
       puts "transforming"
-      puts result.inspect
       transformed = ::AcaEntities::Atp::Transformers::Cv::Family.transform(result.to_hash(identifier: true))
       Success(transformed)
     end
