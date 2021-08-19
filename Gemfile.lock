@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ideacrew/aca_entities.git
-  revision: 8ceb47dcd98d81168a11e0673ed118e63845af1c
+  revision: 37a1d390d342ff59fd943dc8b94a304a169bc461
   branch: atp_cv_transform_v3
   specs:
     aca_entities (0.4.0)
@@ -16,8 +16,8 @@ GIT
 
 GIT
   remote: https://github.com/ideacrew/event_source.git
-  revision: 7f261d5a8f985b8434572390b50065b02b6bcfcd
-  branch: trunk
+  revision: 7f4864116338abcc5ab2e7c4340778abfe9999be
+  branch: release_0.5.3
   specs:
     event_source (0.5.3)
       bunny (>= 1.7.1)
@@ -263,7 +263,7 @@ GEM
     faraday_middleware (1.1.0)
       faraday (~> 1.0)
     ffi (1.15.3)
-    fugit (1.5.0)
+    fugit (1.5.1)
       et-orbi (~> 1.1, >= 1.1.8)
       raabro (~> 1.4)
     globalid (0.4.2)
@@ -334,7 +334,7 @@ GEM
       pry (~> 0.13.0)
     puma (5.3.2)
       nio4r (~> 2.0)
-    queue-bus (0.11.0)
+    queue-bus (0.12.0)
       multi_json
       redis
     raabro (1.4.0)
@@ -396,7 +396,7 @@ GEM
       resque (>= 1.10.0, < 2.0)
       resque-retry
       resque-scheduler (>= 2.0.1)
-    resque-retry (1.7.4)
+    resque-retry (1.7.6)
       resque (>= 1.25, < 3.0)
       resque-scheduler (~> 4.0)
     resque-scheduler (4.4.0)

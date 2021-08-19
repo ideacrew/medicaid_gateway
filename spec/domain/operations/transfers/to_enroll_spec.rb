@@ -2,7 +2,7 @@
 
 require "rails_helper"
 require 'aca_entities/serializers/xml/medicaid/atp'
-require 'aca_entities/atp/transformers/cv/family.rb'
+require 'aca_entities/atp/transformers/cv/family'
 
 describe Transfers::ToEnroll, "given a soap envelope with an valid xml payload, transfer it to Enroll" do
   let(:body) { StringIO.new(raw_xml) }
@@ -454,9 +454,12 @@ describe Transfers::ToEnroll, "given a soap envelope with an valid xml payload, 
       end
 
       it 'should return success message' do
-        expect(@result).to eq('Transferred account to Enroll')
+        expect(@result).to be_success
       end
 
+      it 'should return success with message' do
+        expect(@result.success).to eq("Transferred account to Enroll")
+      end
     end
   end
 end

@@ -30,6 +30,7 @@ module Transfers
     end
 
     def send_to_enroll(event)
+      puts "sending event!"
       event.publish
     end
   end

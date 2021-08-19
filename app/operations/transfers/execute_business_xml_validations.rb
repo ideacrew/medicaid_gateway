@@ -49,9 +49,9 @@ module Transfers
         location = node.at_xpath("@location").content
         message = node.at_xpath("svrl:text").content
         Aces::AtpFailedBusinessAssertion.new({
-                                         location: location,
-                                         text: message
-                                       })
+                                               location: location,
+                                               text: message
+                                             })
       end
       error_objects.each do |eo|
         puts eo.inspect

@@ -3,7 +3,7 @@
 require "rails_helper"
 require 'aca_entities/serializers/xml/medicaid/atp'
 require 'aca_entities/medicaid/atp'
-require 'aca_entities/atp/operations/aces/generate_xml.rb'
+require 'aca_entities/atp/operations/aces/generate_xml'
 
 describe Transfers::ToAces, "given an ATP valid payload, transfer it to Aces" do
   include Dry::Monads[:result, :do]
@@ -17,8 +17,12 @@ describe Transfers::ToAces, "given an ATP valid payload, transfer it to Aces" do
         @result = transfer.call(atp_hash, "curam")
       end
 
+      it 'should return success message' do
+        expect(@result).to be_success
+      end
+
       it 'should return success with message' do
-        expect(@result).to eq('Successfully transferred in account')
+        expect(@result.success).to eq("Successfully transferred in account")
       end
     end
   end

@@ -26,7 +26,7 @@ module Curam
     end
 
     def submit_request(service_uri, payload)
-      conn = Faraday.new(ssl: {verify: false})
+      conn = Faraday.new(ssl: { verify: false })
       result = Try do
         conn.post(
           service_uri,

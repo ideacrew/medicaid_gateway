@@ -8,11 +8,11 @@ EventSource.configure do |config|
 
   config.servers do |server|
     server.http do |http|
-      # http.ref = "http://mitc:3001"
-      http.host =  'http://localhost'
-      http.port = ENV['MITC_PORT'] || '3001'
-      http.url = ENV['MITC_URL'] || 'http://localhost:3001'
-      # http.default_content_type = 'application/json'
+      # http.ref = 'http://mitc:3001'
+      http.host = ENV['MITC_HOST'] || 'http://localhost'
+      http.port = ENV['MITC_PORT'] || '3000'
+      http.url = ENV['MITC_URL'] || 'http://localhost:3000'
+      http.default_content_type = 'application/json'
     end
 
     server.amqp do |rabbitmq|
@@ -23,14 +23,14 @@ EventSource.configure do |config|
       warn rabbitmq.vhost
       rabbitmq.port = ENV['RABBITMQ_PORT'] || '5672'
       warn rabbitmq.port
-      rabbitmq.url = ENV['RABBITMQ_URL'] || 'amqp://localhost:5672/'
+      rabbitmq.url = ENV['RABBITMQ_URL_EVENT_SOURCE'] || 'amqp://localhost:5672/'
       warn rabbitmq.url
       rabbitmq.user_name = ENV['RABBITMQ_USERNAME'] || 'guest'
       warn rabbitmq.user_name
       rabbitmq.password = ENV['RABBITMQ_PASSWORD'] || 'guest'
       warn rabbitmq.password
-      # rabbitmq.default_content_type =
-      #   ENV['RABBITMQ_CONTENT_TYPE'] || 'application/json'
+      rabbitmq.default_content_type =
+        ENV['RABBITMQ_CONTENT_TYPE'] || 'application/json'
     end
   end
 
@@ -38,9 +38,9 @@ EventSource.configure do |config|
     ::AcaEntities.async_api_config_find_by_service_name(
       { protocol: :amqp, service_name: nil }
     ).success +
-      ::AcaEntities.async_api_config_find_by_service_name(
-        { protocol: :http, service_name: :medicaid_gateway }
-      ).success
+    ::AcaEntities.async_api_config_find_by_service_name(
+      { protocol: :http, service_name: :medicaid_gateway }
+    ).success
 
   config.async_api_schemas =
     async_api_resources.collect do |resource|

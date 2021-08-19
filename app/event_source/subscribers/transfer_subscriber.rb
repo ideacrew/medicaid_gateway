@@ -14,7 +14,8 @@ module Subscribers
 
     # event_source branch: release_0.5.2
     subscribe(:on_enroll_iap_transfers) do |delivery_info, _metadata, response|
-      puts result
+      puts "transfer from enroll"
+      puts response
       result = ::Transfers::ToAces.new.call(response, "curam")
 
       if result.success?
