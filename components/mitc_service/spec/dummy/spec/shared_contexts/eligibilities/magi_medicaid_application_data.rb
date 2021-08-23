@@ -294,6 +294,7 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
 
   let(:magi_medicaid_application) do
     { us_state: 'DC',
+      notice_options: { send_eligibility_notices: true, send_open_enrollment_notices: false },
       oe_start_on: Date.new(Date.today.year, 11, 1),
       hbx_id: '200000123',
       family_reference: family_reference,

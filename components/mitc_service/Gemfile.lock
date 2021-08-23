@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/ideacrew/aca_entities.git
-  revision: 71bf138433f8787da12a4e5d482facdbeffb0854
+  revision: 242f3733895739282059ce074e94c240aecd67be
   branch: trunk
   specs:
-    aca_entities (0.3.0)
+    aca_entities (0.4.0)
       deep_merge
       dry-monads (~> 1.2)
       dry-struct (~> 1.0)
@@ -257,12 +257,12 @@ GEM
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
     nio4r (2.5.7)
-    nokogiri (1.12.0)
+    nokogiri (1.12.3)
       mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
     nokogiri-happymapper (0.8.1)
       nokogiri (~> 1.5)
-    oj (3.12.2)
+    oj (3.13.2)
     ox (2.14.5)
     parallel (1.20.1)
     parser (3.0.2.0)
