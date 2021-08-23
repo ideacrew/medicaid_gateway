@@ -37,10 +37,8 @@ module Transfers
 
     def initiate_transfer(payload, service)
       if service == "aces"
-        transfer = Aces::PublishRawPayload.new.call(payload)
-        transfer.success? ? Success("Transferred account to ACES") : Failure(transfer)
-      else 
-        puts "trasnferring to curam!"
+        Aces::PublishRawPayload.new.call(payload)
+      else
         Curam::PublishRawPayload.new.call(payload)
       end
     end

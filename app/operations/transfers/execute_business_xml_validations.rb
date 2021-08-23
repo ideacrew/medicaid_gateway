@@ -4,7 +4,7 @@ require 'dry/monads'
 require 'dry/monads/do'
 
 module Transfers
-  # Run an ACES payload against the schematron business validations.
+  # Run a payload against the schematron business validations.
   class ExecuteBusinessXmlValidations
     send(:include, Dry::Monads[:result, :do, :try])
 
@@ -28,7 +28,6 @@ module Transfers
       end
       attempt.or do |e|
         Rails.logger.error { "Error During Validator Run:\n#{e.inspect}\n" + e.backtrace.join("\n") }
-        puts "Error During Validator Run:\n#{e.inspect}\n"
         Failure(:validator_crashed)
       end
     end
@@ -52,9 +51,6 @@ module Transfers
                                          location: location,
                                          text: message
                                        })
-      end
-      error_objects.each do |eo|
-        puts eo.inspect
       end
       Failure(Aces::AtpBusinessRuleFailure.new({ failed_assertions: error_objects }))
     end
