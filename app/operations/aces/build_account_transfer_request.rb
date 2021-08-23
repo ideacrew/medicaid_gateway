@@ -36,7 +36,7 @@ module Aces
                                                                                      nonce: nonce,
                                                                                      created: created
                                                                                    }),
-                                         raw_body: payload.value!
+                                         raw_body: payload
                                        })
     end
 

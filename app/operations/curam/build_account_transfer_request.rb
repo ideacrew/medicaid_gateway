@@ -29,11 +29,19 @@ module Curam
     )
       Aces::AccountTransferRequest.new({
                                          header: Curam::SoapAuthorizationHeader.new({
+<<<<<<< HEAD
                                                                                      username: username,
                                                                                      password: password,
                                                                                      created: created
                                                                                    }),
                                          raw_body: payload.value!
+=======
+                                                                                      username: username,
+                                                                                      password: password,
+                                                                                      created: created
+                                                                                    }),
+                                         raw_body: payload
+>>>>>>> aaaa6d8 (transfer specs)
                                        })
     end
 

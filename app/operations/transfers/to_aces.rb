@@ -23,14 +23,16 @@ module Transfers
     private
 
     def create_transfer_request(params)
-      puts "created transfer"
+      puts "created transfer #{params}"
       transfer_request = AcaEntities::Atp::Operations::Aces::GenerateXml.new.call(params)
+      puts "xml #{transfer_request.inspect}"
       Success(transfer_request)
     end
 
     def schema_validation(xml)
-      puts "validated transfer"
+      puts "validated transfer #{xml}"
       result = Transfers::ValidateTransferXml.new.call(xml.value!)
+      puts result
       result.success? ? Success(xml) : Failure(result)
     end
 
