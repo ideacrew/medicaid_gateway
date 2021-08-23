@@ -22,7 +22,7 @@ module Curam
       result = Try do
         MedicaidGatewayRegistry[:curam_connection].setting(:curam_atp_service_uri).item
       end
-      result.or(Failure("Failed to find setting: :aces_connection, :aces_atp_service_uri"))
+      result.or(Failure("Failed to find setting: :curam_connection, :curam_atp_service_uri"))
     end
 
     def submit_request(service_uri, payload)

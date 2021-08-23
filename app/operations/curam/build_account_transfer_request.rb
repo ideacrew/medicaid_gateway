@@ -45,7 +45,10 @@ module Curam
     end
 
     def read_password_setting
-      Success("Ftnvgz9szFDd")
+      result = Try do
+        MedicaidGatewayRegistry[:curam_connection].setting(:curam_atp_service_password).item
+      end
+      result.or(Failure("Failed to find setting: :curam_connection, :curam_atp_service_password"))
     end
 
     def generate_created

@@ -24,7 +24,6 @@ module Aces
 
     def run_validations_and_serialize(string_payload)
       schema_result = validate_document(string_payload)
-      puts schema_result
       return serialize_response_body(schema_result) unless schema_result.success?
       serialize_response_body(run_business_validations(string_payload))
     end

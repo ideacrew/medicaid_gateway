@@ -14,7 +14,7 @@ module Aces
       def service
         result = ProcessAtpSoapRequest.new.call(request.body)
         if result.success?
-          Transfers::ToEnroll.new.call(request.body)
+          transfer_account
           Aces::RecordAcesSubmission.new.call({
                                                 body: request.body,
                                                 result: result.value!
@@ -34,6 +34,11 @@ module Aces
             head 500
           end
         end
+      end
+
+      def transfer_account
+        return unless MedicaidGatewayRegistry.feature_enabled?(:to_ea)
+        Transfers::ToEnroll.new.call(request.body)
       end
     end
   end

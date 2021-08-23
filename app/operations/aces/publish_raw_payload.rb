@@ -27,7 +27,12 @@ module Aces
     end
 
     def submit_request(encoded_request)
-      Aces::SubmitAccountTransferPayload.new.call(encoded_request)
+      result = Aces::SubmitAccountTransferPayload.new.call(encoded_request)
+      if result.success?
+        Success("Successfully transferred in account")
+      else
+        Failure(result)
+      end
     end
   end
 end

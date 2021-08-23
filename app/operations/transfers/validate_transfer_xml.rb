@@ -4,8 +4,7 @@ require 'dry/monads'
 require 'dry/monads/do'
 
 module Transfers
-  # Validate the AccountTransferRequest body received from ACES against
-  # the applicable schemas.
+  # Validate the AccountTransferRequest against the applicable schemas.
   class ValidateTransferXml
     send(:include, Dry::Monads[:result, :do, :try])
 
@@ -20,7 +19,6 @@ module Transfers
     protected
 
     def read_schema
-      puts "reading schema"
       result = Try do
         Nokogiri::XML::Schema(File.open(Rails.root.join("artifacts", "aces", "atp_service.xsd")))
       end
@@ -28,16 +26,13 @@ module Transfers
     end
 
     def parse_document(document_string)
-      puts document_string
       result = Try do
         Nokogiri::XML(document_string)
       end
-      puts result
       result.or(Failure(:xml_parse_failure))
     end
 
     def validate_document(schema, doc)
-      puts "validating document"
       validation_result = schema.validate(doc)
       return Success(:ok) if validation_result.empty?
       Failure(validation_result)
