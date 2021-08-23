@@ -8,12 +8,12 @@ registry:
         is_enabled: true
         settings:
           - key: :aces_atp_service_uri
-            item: <%= ENV['ACES_ATP_SERVICE_URI'] || 'uri' %>
+            item: <%= ENV['ACES_ATP_SERVICE_URI'] %>
           - key: :aces_atp_service_username
-            item: <%= ENV['ACES_ATP_SERVICE_USERNAME'] || 'username' %>
+            item: <%= ENV['ACES_ATP_SERVICE_USERNAME'] %>
           - key: :aces_atp_service_password
-            item: <%= ENV['ACES_ATP_SERVICE_PASSWORD'] || 'password' %>
+            item: <%= ENV['ACES_ATP_SERVICE_PASSWORD'] %>
           - key: :aces_atp_caller_username
-            item: <%= ENV['ACES_ATP_CALLER_USERNAME'] || 'caller_username' %>
+            item: <%= ENV['ACES_ATP_CALLER_USERNAME'] %>
           - key: :aces_atp_caller_password
-            item: <%= ENV['ACES_ATP_CALLER_PASSWORD'] || 'caller_password' %>
+            item: <%= ENV['ACES_ATP_CALLER_PASSWORD'] %>
