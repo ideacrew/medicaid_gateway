@@ -11,18 +11,28 @@ describe Transfers::ToAces, "given an ATP valid payload, transfer it to the spec
   let(:atp_hash) {File.read("./spec/test_data/application_and_family.json")}
   let(:transfer) {described_class.new}
 
+  let(:feature_ns) { double }
+  let(:setting) { double(item: "SOME URI") }
+
+  before :each do
+    allow(MedicaidGatewayRegistry).to receive(:[]).with(:aces_connection).and_return(feature_ns)
+    allow(feature_ns).to receive(:setting).with(:aces_atp_service_uri).and_return(setting)
+    allow(feature_ns).to receive(:setting).with(:aces_atp_service_username).and_return(setting)
+    allow(feature_ns).to receive(:setting).with(:aces_atp_service_password).and_return(setting)
+    allow(MedicaidGatewayRegistry).to receive(:[]).with(:curam_connection).and_return(feature_ns)
+    allow(feature_ns).to receive(:setting).with(:curam_atp_service_uri).and_return(setting)
+    allow(feature_ns).to receive(:setting).with(:curam_atp_service_username).and_return(setting)
+    allow(feature_ns).to receive(:setting).with(:curam_atp_service_password).and_return(setting)
+  end
+
   context 'success' do
     context 'with valid application transfer to curam' do
       before do
         @result = transfer.call(atp_hash, "curam")
       end
 
-      it 'should return success message' do
-        expect(@result).to be_success
-      end
-
-      it 'should return success with message' do
-        expect(@result.success).to eq("Successfully transferred in account")
+      it "fails when the request fails" do
+        expect(@result.success?).not_to be_truthy
       end
     end
 
@@ -31,12 +41,8 @@ describe Transfers::ToAces, "given an ATP valid payload, transfer it to the spec
         @result = transfer.call(atp_hash, "aces")
       end
 
-      it 'should return success message' do
-        expect(@result).to be_success
-      end
-
-      it 'should return success with message' do
-        expect(@result.success).to eq("Successfully transferred in account")
+      it "fails when the request fails" do
+        expect(@result.success?).not_to be_truthy
       end
     end
   end

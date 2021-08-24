@@ -23,13 +23,11 @@ module Transfers
       result = Try do
         Nokogiri::XML::Schema(File.open(Rails.root.join("artifacts", "aces", "atp_service.xsd")))
       end
-      puts result
       result.or(Failure(:xml_schema_not_found))
     end
 
     def parse_document(document_string)
       puts "parsing"
-      # puts document_string
       result = Try do
         Nokogiri::XML(document_string)
       end
