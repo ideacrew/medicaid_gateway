@@ -28,7 +28,6 @@ module Transfers
       end
       attempt.or do |e|
         Rails.logger.error { "Error During Validator Run:\n#{e.inspect}\n" + e.backtrace.join("\n") }
-        # puts "Error During Validator Run:\n#{e.inspect}\n"
         Failure(:validator_crashed)
       end
     end
@@ -49,13 +48,10 @@ module Transfers
         location = node.at_xpath("@location").content
         message = node.at_xpath("svrl:text").content
         Aces::AtpFailedBusinessAssertion.new({
-                                         location: location,
-                                         text: message
-                                       })
+                                               location: location,
+                                               text: message
+                                             })
       end
-    # error_objects.each do |eo|
-      # puts eo.inspect
-    # end
       Failure(Aces::AtpBusinessRuleFailure.new({ failed_assertions: error_objects }))
     end
   end

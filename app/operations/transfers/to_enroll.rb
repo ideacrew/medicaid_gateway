@@ -4,6 +4,7 @@ require 'dry/monads'
 require 'dry/monads/do'
 
 module Transfers
+  # Transfer an account from ACES to enroll
   class ToEnroll
     send(:include, Dry::Monads[:result, :do])
 
@@ -12,8 +13,7 @@ module Transfers
     def call(params)
       payload = yield create_transfer(params)
       transformed_params = yield transform_params(payload)
-      transferred_params = yield initiate_transfer(transformed_params)
-      transferred_params
+      initiate_transfer(transformed_params)
     end
 
     private

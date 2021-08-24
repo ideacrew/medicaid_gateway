@@ -40,7 +40,6 @@ gem 'mime-types'
 gem 'httparty',            '~> 0.16'
 gem 'nokogiri', '>= 1.10.8', platforms: [:ruby, :mri]
 
-
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

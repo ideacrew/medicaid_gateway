@@ -7,6 +7,7 @@ require 'aca_entities/medicaid/atp'
 require 'aca_entities/atp/operations/aces/generate_xml'
 
 module Transfers
+  # Transfer out an account from EA to a specified service
   class ToAces
     send(:include, Dry::Monads[:result, :do])
 
