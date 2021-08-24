@@ -17,8 +17,12 @@ describe Transfers::ToAces, "given an ATP valid payload, transfer it to the spec
         @result = transfer.call(atp_hash, "curam")
       end
 
+      it 'should return success message' do
+        expect(@result).to be_success
+      end
+
       it 'should return success with message' do
-        expect(@result).to eq('Successfully transferred in account')
+        expect(@result.success).to eq("Successfully transferred in account")
       end
     end
 

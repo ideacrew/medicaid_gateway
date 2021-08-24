@@ -7,7 +7,7 @@ require 'aca_entities/medicaid/atp'
 require 'aca_entities/atp/operations/aces/generate_xml'
 
 module Transfers
-  # Transfer out an account from EA to a specified service
+  # Transfers and family and account from Enroll to a Medicaid service
   class ToAces
     send(:include, Dry::Monads[:result, :do])
 
@@ -51,7 +51,6 @@ module Transfers
       else
         Curam::PublishRawPayload.new.call(payload)
       end
-      puts "transferred"
     end
   end
 end
