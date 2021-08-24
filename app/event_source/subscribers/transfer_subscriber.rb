@@ -14,7 +14,8 @@ module Subscribers
 
     # event_source branch: release_0.5.2
     subscribe(:on_enroll_iap_transfers) do |delivery_info, _metadata, response|
-      result = ::Transfers::ToAces.new.call(response, "curam")
+      phash = JSON.parse(response)
+      result = ::Transfers::ToAces.new.call(JSON.generate(phash.except("service")), phash["service"])
 
       if result.success?
         ack(delivery_info.delivery_tag)

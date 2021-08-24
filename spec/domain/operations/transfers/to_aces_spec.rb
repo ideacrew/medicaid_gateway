@@ -8,7 +8,7 @@ require 'aca_entities/atp/operations/aces/generate_xml'
 describe Transfers::ToAces, "given an ATP valid payload, transfer it to the specified service" do
   include Dry::Monads[:result, :do]
 
-  let(:atp_hash) {File.read("./spec/test_data/application_and_family.json")}
+  let(:aces_hash) {File.read("./spec/test_data/application_and_family.json")}
   let(:transfer) {described_class.new}
 
   let(:feature_ns) { double }
@@ -28,7 +28,7 @@ describe Transfers::ToAces, "given an ATP valid payload, transfer it to the spec
   context 'success' do
     context 'with valid application transfer to curam' do
       before do
-        @result = transfer.call(atp_hash, "curam")
+        @result = transfer.call(aces_hash, "curam")
       end
 
       it "fails when the request fails" do
@@ -38,7 +38,7 @@ describe Transfers::ToAces, "given an ATP valid payload, transfer it to the spec
 
     context 'with valid application transfer to aces' do
       before do
-        @result = transfer.call(atp_hash, "aces")
+        @result = transfer.call(aces_hash, "aces")
       end
 
       it "fails when the request fails" do
