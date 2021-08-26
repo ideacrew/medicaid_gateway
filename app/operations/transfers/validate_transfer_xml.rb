@@ -3,9 +3,8 @@
 require 'dry/monads'
 require 'dry/monads/do'
 
-module Aces
-  # Validate the AccountTransferRequest body received from ACES against
-  # the applicable schemas.
+module Transfers
+  # Validate the AccountTransferRequest against the applicable schemas.
   class ValidateTransferXml
     send(:include, Dry::Monads[:result, :do, :try])
 

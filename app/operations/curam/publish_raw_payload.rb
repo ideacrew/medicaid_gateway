@@ -3,8 +3,8 @@
 require 'dry/monads'
 require 'dry/monads/do'
 
-module Aces
-  # Takes a raw payload, encodes it, and invokes the ACES service with it.
+module Curam
+  # Takes a raw payload, encodes it, and invokes the Curam service with it.
   class PublishRawPayload
     send(:include, Dry::Monads[:result, :do])
 
@@ -19,15 +19,15 @@ module Aces
     protected
 
     def build_request(raw_payload)
-      Aces::BuildAccountTransferRequest.new.call(raw_payload.value!)
+      Curam::BuildAccountTransferRequest.new.call(raw_payload.value!)
     end
 
     def encode_request(request)
-      Aces::EncodeAccountTransferRequest.new.call(request)
+      Curam::EncodeAccountTransferRequest.new.call(request)
     end
 
     def submit_request(encoded_request)
-      result = Aces::SubmitAccountTransferPayload.new.call(encoded_request)
+      result = Curam::SubmitAccountTransferPayload.new.call(encoded_request)
       if result.success?
         Success("Successfully transferred in account")
       else

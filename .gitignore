@@ -21,6 +21,10 @@
 /public/assets
 .byebug_history
 
+# Ignore OS generated files
+*/.DS_Store
+.DS_Store
+
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
