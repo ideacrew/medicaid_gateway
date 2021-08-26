@@ -3,6 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe MedicaidApplicationReport, dbclean: :after_each do
+  before :all do
+    DatabaseCleaner.clean
+  end
+
   describe "#run" do
     context 'application with aptc households' do
       let!(:application) { FactoryBot.create(:application, :with_aptc_households) }
