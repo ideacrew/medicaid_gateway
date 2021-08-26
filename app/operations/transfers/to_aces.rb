@@ -24,28 +24,23 @@ module Transfers
     private
 
     def create_transfer_request(params)
-      puts "created transfer #{params}"
       transfer_request = AcaEntities::Atp::Operations::Aces::GenerateXml.new.call(params)
-      puts "xml #{transfer_request.inspect}"
       Success(transfer_request)
     end
 
     def schema_validation(xml)
-      puts "validated transfer #{xml}"
       result = Transfers::ValidateTransferXml.new.call(xml.value!)
-      puts result
       result.success? ? Success(xml) : Failure(result)
     end
 
     def business_validation(xml)
-      puts "validating against schematron"
+      # puts "validating against schematron"
       result = Transfers::ExecuteBusinessXmlValidations.new.call(xml.value!)
-      puts result.inspect
+      # puts result.inspect
       result.success? ? Success(xml) : Failure(result)
     end
 
     def initiate_transfer(payload, service)
-      puts "initiate_transfer"
       if service == "aces"
         Aces::PublishRawPayload.new.call(payload)
       else

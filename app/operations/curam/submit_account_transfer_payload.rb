@@ -30,7 +30,7 @@ module Curam
       result = Try do
         conn.post(
           service_uri,
-          payload.gsub("<?xml version=\"1.0\"?>", "").gsub("<?xml version=\"1.0\"??>", ""),
+          payload,
           "Content-Type" => "text/xml"
         )
       end
