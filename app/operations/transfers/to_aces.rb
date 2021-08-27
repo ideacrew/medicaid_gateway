@@ -15,10 +15,10 @@ module Transfers
     # then tranfer the result to ACES.
     # @return [Dry::Result]
     def call(params, service)
-      xml =      yield create_transfer_request(params)
+      xml        = yield create_transfer_request(params)
       validated  = yield schema_validation(xml)
       validated  = yield business_validation(validated)
-      initiate_transfer(validated, service)
+      initiate_transfer(validated, service, params)
     end
 
     private
@@ -34,18 +34,27 @@ module Transfers
     end
 
     def business_validation(xml)
-      # puts "validating against schematron"
       result = Transfers::ExecuteBusinessXmlValidations.new.call(xml.value!)
-      # puts result.inspect
       result.success? ? Success(xml) : Failure(result)
     end
 
-    def initiate_transfer(payload, service)
-      if service == "aces"
-        Aces::PublishRawPayload.new.call(payload)
-      else
-        Curam::PublishRawPayload.new.call(payload)
-      end
+    def initiate_transfer(payload, service, params)
+      result = if service == "aces"
+                 Aces::PublishRawPayload.new.call(payload)
+               else
+                 Curam::PublishRawPayload.new.call(payload)
+               end
+      record_transfer(service, params, result.success? ? result.value! : result.failure)
+      result.success? ? Success("Successfully transferred in account") : Failure("result.failure")
+    end
+
+    def record_transfer(service, params, response)
+      payload = JSON.parse(params)
+      puts payload
+      Transfers::Create.new.call({ service: service,
+                                   application_identifier: payload["family"]["magi_medicaid_applications"][0]["hbx_id"],
+                                   family_identifier: payload["family"]["hbx_id"],
+                                   response_payload: response.to_json })
     end
   end
 end

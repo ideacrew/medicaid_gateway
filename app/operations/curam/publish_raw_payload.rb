@@ -27,12 +27,7 @@ module Curam
     end
 
     def submit_request(encoded_request)
-      result = Curam::SubmitAccountTransferPayload.new.call(encoded_request)
-      if result.success?
-        Success("Successfully transferred in account")
-      else
-        Failure(result)
-      end
+      Curam::SubmitAccountTransferPayload.new.call(encoded_request)
     end
   end
 end
