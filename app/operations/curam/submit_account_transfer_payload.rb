@@ -27,10 +27,11 @@ module Curam
 
     def submit_request(service_uri, payload)
       conn = Faraday.new(ssl: { verify: false })
+      clean_payload = payload.to_s.gsub("<?xml version=\"1.0\"?>", "").gsub("<?xml version=\"1.0\"??>", "")
       result = Try do
         conn.post(
           service_uri,
-          payload,
+          clean_payload,
           "Content-Type" => "text/xml"
         )
       end
