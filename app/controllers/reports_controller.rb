@@ -9,6 +9,11 @@ class ReportsController < ApplicationController
     render json: applications
   end
 
+  def account_transfers
+    range = range_from_params
+    @transfers = Aces::Transfer.where(created_at: range).or(updated_at: range)
+  end
+
   private
 
   def range_from_params

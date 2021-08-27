@@ -9,4 +9,7 @@ namespace :reports do
   task :medicaid_application => :environment do
     MedicaidApplicationReport.run
   end
+  task :account_transfer => :environment do
+    TransferReport.run
+  end
 end
