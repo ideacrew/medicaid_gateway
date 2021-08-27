@@ -27,10 +27,7 @@ module Curam
     end
 
     def submit_request(encoded_request)
-      puts "submit_request"
-      result = Curam::SubmitAccountTransferPayload.new.call(encoded_request)
-      puts "result: #{result.inspect}"
-      result
+      Curam::SubmitAccountTransferPayload.new.call(encoded_request)
     end
   end
 end
