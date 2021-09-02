@@ -32,9 +32,9 @@ module Medicaid
     def other_factors
       return 'No other factors' unless self.aptc_households.present?
       aptc_hh_keys = %w[total_household_count annual_tax_household_income csr_annual_income_limit
-                        is_aptc_calculated maximum_aptc_amount total_expected_contribution_amount
-                        total_benchmark_plan_monthly_premium_amount assistance_year fpl_percent eligibility_date
-                        aptc_household_members benchmark_calculation_members]
+                      is_aptc_calculated maximum_aptc_amount total_expected_contribution_amount
+                      total_benchmark_plan_monthly_premium_amount assistance_year fpl_percent eligibility_date
+                      aptc_household_members benchmark_calculation_members]
       application.attributes['aptc_households'].inject([]) do |aptc_hh_array, aptc_hash|
         aptc_hh_array << aptc_hash.select { |k, _v| aptc_hh_keys.include?(k) }
       end
