@@ -19,6 +19,7 @@ Rails.application.routes.draw do
     collection do
       get 'medicaid_applications'
       get 'account_transfers'
+      get 'medicaid_application_check'
     end
   end
 
