@@ -10,6 +10,7 @@ class TransferContract < Dry::Validation::Contract
     required(:family_identifier).filled(:string)
     required(:service).filled(:string)
     required(:response_payload).filled(:string)
+    optional(:callback_payload).filled(:string)
   end
 
   rule(:response_payload) do

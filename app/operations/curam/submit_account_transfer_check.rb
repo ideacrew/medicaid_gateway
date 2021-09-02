@@ -11,8 +11,8 @@ module Curam
     # @param [String] payload
     # @return [Dry::Result]
     def call(payload)
-      #endpoint_uri = yield read_endpoint_setting
-      submit_request("https://esb-preprd.dchealthlink.com:443/DCAS/Release1/EnrollApp/ACCTransfer/ACCTranstatusChk", payload)
+      endpoint_uri = yield read_endpoint_setting
+      submit_request(endpoint_uri, payload)
     end
 
     protected
@@ -34,7 +34,6 @@ module Curam
           "Content-Type" => "text/xml"
         )
       end
-      puts result.inspect
       result.or(Failure(result.exception))
     end
   end

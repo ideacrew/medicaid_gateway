@@ -13,4 +13,4 @@ registry:
           - key: :curam_atp_service_password
             item: <%= ENV['CURAM_ATP_SERVICE_PASSWORD'] %>
           - key: :curam_check_service_uri
-            item: "https://esb-preprd.dchealthlink.com:443/DCAS/Release1/EnrollApp/ACCTransfer/ACCTranstatusChk"
+            item: <%= ENV['CURAM_ATP_CHECK_URI'] %>

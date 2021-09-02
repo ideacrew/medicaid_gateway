@@ -13,7 +13,7 @@ module Curam
     def call(id)
       built_check = yield build_check_request(find_transfer(id))
       encoded_check = yield encode_check(built_check)
-      submit_check(encoded_check)
+      submit_check(encoded_check, find_transfer(id))
     end
 
     protected
@@ -31,8 +31,17 @@ module Curam
       Curam::EncodeAccountTransferCheckRequest.new.call(payload)
     end
 
-    def submit_check(encoded_check)
-      Curam::SubmitAccountTransferCheck.new.call(encoded_check)
+    def submit_check(encoded_check, transfer)
+      check = Curam::SubmitAccountTransferCheck.new.call(encoded_check)
+      if check.success?
+        # response = JSON.parse(check.value!.to_json)
+        # xml = Nokogiri::XML(response["body"])
+        # status = xml.xpath('//tns:STATUS', 'tns' => 'http://xmlns.dhs.dc.gov/dcas/esb/acctransappstatuccheck/V1').last.text
+        transfer.update_attribute(:callback_status, check.value!.to_json)
+        Success("Callback added")
+      else
+        Failure("Callback failed: #{check.failure}")
+      end
     end
   end
 end

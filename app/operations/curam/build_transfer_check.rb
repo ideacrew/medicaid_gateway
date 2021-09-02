@@ -13,23 +13,25 @@ module Curam
     # @param [String] payload
     # @return [Dry::Result<Aces::AccountTransferRequest>]
     def call(id, date)
-      # username = yield read_username_setting
-      # password = yield read_password_setting
+      username = yield read_username_setting
+      password = yield read_password_setting
       created = yield generate_created
-      Success(build_request(created, id, date))
+      Success(build_request(username, password, created, id, date))
     end
 
     protected
 
     def build_request(
+      username,
+      password,
       created,
       id,
       date
     )
       Curam::TransferCheck.new({
                                          header: Curam::SoapAuthorizationHeader.new({
-                                                                                      username: "enrollapp.system.user",
-                                                                                      password: "Ftnvgz9szFDd",
+                                                                                      username: username,
+                                                                                      password: password,
                                                                                       created: created
                                                                                     }),
                                          global_application_id: "SBM#{id}",
