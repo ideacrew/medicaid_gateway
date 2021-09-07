@@ -1,0 +1,14 @@
+{
+    "status": 200,
+    "body": "\u003cenv:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:wsa=\"http://www.w3.org/2005/08/addressing\"\u003e\u003cenv:Header\u003e\u003cwsa:Action xmlns:wsa=\"http://www.w3.org/2005/08/addressing\" xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\"\u003eAccountTransfer\u003c/wsa:Action\u003e\u003cwsa:MessageID xmlns:wsa=\"http://www.w3.org/2005/08/addressing\" xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\"\u003eurn:58e164fb-074f-11ec-b384-005056b59461\u003c/wsa:MessageID\u003e\u003cwsa:ReplyTo xmlns:wsa=\"http://www.w3.org/2005/08/addressing\" xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\"\u003e\u003cwsa:Address\u003ehttp://www.w3.org/2005/08/addressing/anonymous\u003c/wsa:Address\u003e\u003cwsa:ReferenceParameters\u003e\u003cinstra:tracking.ecid xmlns:instra=\"http://xmlns.oracle.com/sca/tracking/1.0\"\u003e9affdaee-6aa5-4765-b98a-f3a6ad1ec069-004a677d\u003c/instra:tracking.ecid\u003e\u003cinstra:tracking.FlowEventId xmlns:instra=\"http://xmlns.oracle.com/sca/tracking/1.0\"\u003e4787910\u003c/instra:tracking.FlowEventId\u003e\u003cinstra:tracking.FlowId xmlns:instra=\"http://xmlns.oracle.com/sca/tracking/1.0\"\u003e560516\u003c/instra:tracking.FlowId\u003e\u003cinstra:tracking.CorrelationFlowId xmlns:instra=\"http://xmlns.oracle.com/sca/tracking/1.0\"\u003e0000Ni8Kv3wATOLLuQs1yX1Wzg4d00CrAu\u003c/instra:tracking.CorrelationFlowId\u003e\u003cinstra:tracking.quiescing.SCAEntityId xmlns:instra=\"http://xmlns.oracle.com/sca/tracking/1.0\"\u003e270004\u003c/instra:tracking.quiescing.SCAEntityId\u003e\u003c/wsa:ReferenceParameters\u003e\u003c/wsa:ReplyTo\u003e\u003cwsa:FaultTo xmlns:wsa=\"http://www.w3.org/2005/08/addressing\" xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\"\u003e\u003cwsa:Address\u003ehttp://www.w3.org/2005/08/addressing/anonymous\u003c/wsa:Address\u003e\u003c/wsa:FaultTo\u003e\u003c/env:Header\u003e\u003cenv:Body\u003e\u003cAccountTransferResponse xmlns=\"http://at.dsh.cms.gov/exchange/1.0\" atVersionText=\"\"\u003e\u003cResponseMetadata xmlns=\"http://at.dsh.cms.gov/extension/1.0\"\u003e\u003cResponseCode xmlns=\"http://hix.cms.gov/0.1/hix-core\"\u003eHS000000\u003c/ResponseCode\u003e\u003cResponseDescriptionText xmlns=\"http://hix.cms.gov/0.1/hix-core\"\u003eSuccess\u003c/ResponseDescriptionText\u003e\u003c/ResponseMetadata\u003e\u003c/AccountTransferResponse\u003e\u003c/env:Body\u003e\u003c/env:Envelope\u003e",
+    "response_headers": {
+        "server": "nginx/1.16.1",
+        "date": "Fri, 27 Aug 2021 15:56:31 GMT",
+        "content-type": "text/xml; charset=UTF-8",
+        "content-length": "2000",
+        "connection": "keep-alive",
+        "x-oracle-dms-ecid": "9affdaee-6aa5-4765-b98a-f3a6ad1ec069-004a677d",
+        "x-oracle-dms-rid": "0",
+        "set-cookie": "BIGipServerpool_esb-preprd.dchealthlink.com=2236896010.16927.0000; path=/; Httponly; Secure"
+    }
+}

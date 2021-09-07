@@ -12,18 +12,31 @@ class MedicaidApplicationReport
     report_name = "medicaid_application_report_#{timestamp}.csv"
     FileUtils.touch(report_name)
     CSV.open(report_name, "w") do |csv|
-      csv << %w[application_identifier medicaid_request_payload medicaid_response_payload]
+      csv << %w[ApplicationIdentifer MedicaidRequestPayload MedicaidResponsePayload
+                ApplicationRequestPayload ApplicationResponsePayload OtherComputedFactors]
       todays_applications = Medicaid::Application.where(created_at: range).or(updated_at: range)
-      puts("No applications present.") if todays_applications.blank?
       break if todays_applications.blank?
       todays_applications.each do |application|
-        # What goes here? Just the attributes?
         csv << [
           application.application_identifier,
           application.medicaid_request_payload,
-          application.medicaid_response_payload
+          application.medicaid_response_payload,
+          application.application_request_payload,
+          application.application_response_payload,
+          other_factors(application)
         ]
       end
+    end
+  end
+
+  def self.other_factors(application)
+    return 'No other factors' unless application.aptc_households.present?
+    aptc_hh_keys = %w[total_household_count annual_tax_household_income csr_annual_income_limit
+                      is_aptc_calculated maximum_aptc_amount total_expected_contribution_amount
+                      total_benchmark_plan_monthly_premium_amount assistance_year fpl_percent eligibility_date
+                      aptc_household_members benchmark_calculation_members]
+    application.attributes['aptc_households'].inject([]) do |aptc_hh_array, aptc_hash|
+      aptc_hh_array << aptc_hash.select { |k, _v| aptc_hh_keys.include?(k) }
     end
   end
 end

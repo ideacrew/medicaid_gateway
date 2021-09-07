@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ideacrew/aca_entities.git
-  revision: 242f3733895739282059ce074e94c240aecd67be
+  revision: 3d3985fc09f3f183d3c8b89e9687c9c7949760f8
   branch: trunk
   specs:
     aca_entities (0.4.0)
@@ -141,6 +141,8 @@ GEM
       minitest (>= 5.1)
       tzinfo (~> 2.0)
       zeitwerk (~> 2.3)
+    addressable (2.8.0)
+      public_suffix (>= 2.0.2, < 5.0)
     amq-protocol (2.3.2)
     ast (2.4.2)
     bindex (0.8.1)
@@ -152,6 +154,14 @@ GEM
       amq-protocol (~> 2.3, >= 2.3.1)
       sorted_set (~> 1, >= 1.0.2)
     byebug (11.1.3)
+    capybara (3.35.3)
+      addressable
+      mini_mime (>= 0.1.3)
+      nokogiri (~> 1.8)
+      rack (>= 1.6.0)
+      rack-test (>= 0.6.3)
+      regexp_parser (>= 1.5, < 3.0)
+      xpath (~> 3.2)
     celluloid (0.17.4)
       celluloid-essentials
       celluloid-extras
@@ -299,9 +309,9 @@ GEM
     mini_mime (1.1.0)
     mini_portile2 (2.6.1)
     minitest (5.14.4)
-    mongo (2.14.0)
+    mongo (2.15.0)
       bson (>= 4.8.2, < 5.0.0)
-    mongoid (7.2.3)
+    mongoid (7.2.4)
       activemodel (>= 5.1, < 6.2)
       mongo (>= 2.10.5, < 3.0.0)
     mono_logger (1.1.1)
@@ -312,19 +322,19 @@ GEM
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
     nio4r (2.5.7)
-    nokogiri (1.12.3)
+    nokogiri (1.12.4)
       mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
-    nokogiri (1.12.3-x86_64-darwin)
+    nokogiri (1.12.4-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.12.3-x86_64-linux)
+    nokogiri (1.12.4-x86_64-linux)
       racc (~> 1.4)
     nokogiri-happymapper (0.8.1)
       nokogiri (~> 1.5)
-    oj (3.13.2)
+    oj (3.13.3)
     ox (2.14.5)
     parallel (1.20.1)
-    parser (3.0.1.1)
+    parser (3.0.2.0)
       ast (~> 2.4.1)
     pry (0.13.1)
       coderay (~> 1.1)
@@ -332,6 +342,7 @@ GEM
     pry-byebug (3.9.0)
       byebug (~> 11.0)
       pry (~> 0.13.0)
+    public_suffix (4.0.6)
     puma (5.3.2)
       nio4r (~> 2.0)
     queue-bus (0.11.0)
@@ -376,7 +387,7 @@ GEM
       thor (~> 1.0)
     rainbow (3.0.0)
     raindrops (0.19.2)
-    rake (13.0.3)
+    rake (13.0.6)
     rb-fsevent (0.11.0)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
@@ -431,7 +442,7 @@ GEM
       rubocop-ast (>= 1.2.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.7.0)
+    rubocop-ast (1.8.0)
       parser (>= 3.0.1.1)
     ruby-progressbar (1.11.0)
     ruby2_keywords (0.0.5)
@@ -498,6 +509,8 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    xpath (3.2.0)
+      nokogiri (~> 1.8)
     yard (0.9.26)
     zeitwerk (2.4.2)
 
@@ -510,6 +523,7 @@ DEPENDENCIES
   aca_entities!
   bootsnap (>= 1.4.4)
   byebug
+  capybara (~> 3.12)
   database_cleaner (~> 1.7)
   event_source!
   eye (= 0.10.0)

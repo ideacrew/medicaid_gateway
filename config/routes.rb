@@ -18,6 +18,8 @@ Rails.application.routes.draw do
   resources :reports, only: [] do
     collection do
       get 'medicaid_applications'
+      get 'account_transfers'
+      get 'medicaid_application_check'
     end
   end
 
