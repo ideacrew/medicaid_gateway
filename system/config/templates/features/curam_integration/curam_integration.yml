@@ -1,7 +1,6 @@
 ---
 registry:
   - namespace:
-    - :medicaid_gateway
     - :curam_integration
     features:
       - key: :curam_connection

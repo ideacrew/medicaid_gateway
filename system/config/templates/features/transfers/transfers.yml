@@ -1,7 +1,7 @@
 ---
 registry:
   - namespace:
-    - :medicaid_gateway
+    - :transfers
     features:
       - key: :to_ea
         is_enabled: false
