@@ -1,7 +1,6 @@
 ---
 registry:
   - namespace:
-    - :medicaid_gateway
     - :aces_integration
     features:
       - key: :aces_connection
