@@ -54,7 +54,6 @@ module Curam
           end
         end
       end
-      puts builder.to_xml
       Success(builder.to_xml)
     end
 

@@ -34,11 +34,13 @@ module Curam
     def submit_check(encoded_check, transfer)
       check = Curam::SubmitAccountTransferCheck.new.call(encoded_check)
       if check.success?
-        # response = JSON.parse(check.value!.to_json)
-        # xml = Nokogiri::XML(response["body"])
-        # status = xml.xpath('//tns:STATUS', 'tns' => 'http://xmlns.dhs.dc.gov/dcas/esb/acctransappstatuccheck/V1').last.text
-        transfer.update_attribute(:callback_status, check.value!.to_json)
-        Success("Callback added")
+        response = JSON.parse(check.value!.to_json)
+        xml = Nokogiri::XML(response["body"])
+        status = xml.xpath('//tns:STATUS', 'tns' => 'http://xmlns.dhs.dc.gov/dcas/esb/acctransappstatuccheck/V1')
+        status_text = status.any? ? status.last.text : "N/A"
+        transfer.update_attribute(:callback_payload, check.value!.to_json)
+        transfer.update_attribute(:callback_status, status_text)
+        Success("Callback response added")
       else
         Failure("Callback failed: #{check.failure}")
       end
