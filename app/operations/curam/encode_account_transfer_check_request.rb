@@ -13,14 +13,14 @@ module Curam
     # @param [Aces::AccountTransferRequest] request
     # @return [Dry::Result<String>]
     def call(request)
-      envelope = encode_soap_envelope(request)
+      encode_soap_envelope(request)
     end
 
     protected
 
     def encode_soap_header(xml, request)
       request_header = request.header
-      xml[:soapenv].Header({ "xmlns:soap" => "http://schemas.xmlsoap.org/soap/envelope/"}) do |header|
+      xml[:soapenv].Header({ "xmlns:soap" => "http://schemas.xmlsoap.org/soap/envelope/" }) do |header|
         header[:wsse].Security({
                                  "xmlns:wsse" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
                                  "soap:mustUnderstand" => "1"
@@ -37,14 +37,14 @@ module Curam
           end
         end
       end
-    end 
+    end
 
     def encode_soap_envelope(request)
       builder = Nokogiri::XML::Builder.new do |xml|
         xml[:soapenv].Envelope({
-                                  "xmlns:soapenv" => "http://schemas.xmlsoap.org/soap/envelope/", 
-                                  "xmlns:v1" => "http://xmlns.dhs.dc.gov/dcas/esb/acctransappstatuccheck/V1"
-                                }) do |envelope|
+                                 "xmlns:soapenv" => "http://schemas.xmlsoap.org/soap/envelope/",
+                                 "xmlns:v1" => "http://xmlns.dhs.dc.gov/dcas/esb/acctransappstatuccheck/V1"
+                               }) do |envelope|
           encode_soap_header(envelope, request)
           xml[:soapenv].Body do |body|
             xml[:v1].AccTransStatusByIdReq do |req|

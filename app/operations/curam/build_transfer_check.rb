@@ -29,14 +29,14 @@ module Curam
       date
     )
       Curam::TransferCheck.new({
-                                         header: Curam::SoapAuthorizationHeader.new({
-                                                                                      username: username,
-                                                                                      password: password,
-                                                                                      created: created
-                                                                                    }),
-                                         global_application_id: "SBM#{id}",
-                                         last_written: date.to_date
-                                       })
+                                 header: Curam::SoapAuthorizationHeader.new({
+                                                                              username: username,
+                                                                              password: password,
+                                                                              created: created
+                                                                            }),
+                                 global_application_id: "SBM#{id}",
+                                 last_written: date.to_date
+                               })
     end
 
     def read_username_setting
