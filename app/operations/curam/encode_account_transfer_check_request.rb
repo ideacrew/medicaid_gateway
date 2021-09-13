@@ -46,12 +46,12 @@ module Curam
                                  "xmlns:v1" => "http://xmlns.dhs.dc.gov/dcas/esb/acctransappstatuccheck/V1"
                                }) do |envelope|
           encode_soap_header(envelope, request)
-          xml[:soapenv].Body {
-            xml[:v1].AccTransStatusByIdReq {
+          xml[:soapenv].Body do
+            xml[:v1].AccTransStatusByIdReq do
               xml[:v1].GLOBALAPPLICATIONID request.global_application_id
               xml[:v1].LASTWRITTEN request.last_written
-            }
-          }
+            end
+          end
         end
       end
       Success(builder.to_xml)
