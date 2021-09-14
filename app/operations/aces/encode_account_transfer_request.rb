@@ -13,7 +13,8 @@ module Aces
     # @param [Aces::AccountTransferRequest] request
     # @return [Dry::Result<String>]
     def call(request)
-      encode_soap_envelope(request)
+      envelope = encode_soap_envelope(request)
+      encode_soap_body(envelope, request)
     end
 
     protected
@@ -42,17 +43,17 @@ module Aces
       end
     end
 
-    def encode_soap_body(xml, request)
-      xml[:soap].Body do |header|
-        header << request.raw_body
-      end
+    def encode_soap_body(built, request)
+      str = "<\/soap:Header>"
+      pos = built.value!.index(str)
+      puts built.value!.insert(pos + str.size, "<soap:Body>#{request.raw_body}<\/soap:Body>")
+      Success(built.value!.insert(pos + str.size, "<soap:Body>#{request.raw_body}<\/soap:Body>"))
     end
 
     def encode_soap_envelope(request)
       builder = Nokogiri::XML::Builder.new do |xml|
         xml[:soap].Envelope({ "xmlns:soap" => "http://www.w3.org/2003/05/soap-envelope" }) do |envelope|
           encode_soap_header(envelope, request)
-          encode_soap_body(envelope, request)
         end
       end
       Success(builder.to_xml)
