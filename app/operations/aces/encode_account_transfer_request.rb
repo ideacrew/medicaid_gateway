@@ -28,7 +28,7 @@ module Aces
                                }) do |security|
           # wsse:UsernameToken wsu:Id="UsernameToken-73590BD4745C9F3F7814189343300461"
           security[:wsse].UsernameToken({
-                                          "wsu:Id" => "UsernameToken-73590BD4745C9F3F7814189343300461"
+                                          "wsu:Id" => "UsernameToken-4F2669429737B2CB5416203274155711"
                                         }) do |ut|
             ut[:wsse].Username request_header.username
             ut[:wsse].Password({
