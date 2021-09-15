@@ -78,10 +78,10 @@ describe Curam::EncodeAccountTransferCheckRequest, "given a Curam::AccountTransf
       ).text
     ).to eq "SBM123"
     expect(
-        document.at_xpath(
-          "//soapenv:Body/v1:AccTransStatusByIdReq/v1:LASTWRITTEN",
-          xml_ns
-        ).text
-      ).to eq "2021-01-01"
+      document.at_xpath(
+        "//soapenv:Body/v1:AccTransStatusByIdReq/v1:LASTWRITTEN",
+        xml_ns
+      ).text
+    ).to eq "2021-01-01"
   end
 end

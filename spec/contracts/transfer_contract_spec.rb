@@ -38,14 +38,14 @@ RSpec.describe ::TransferContract, dbclean: :after_each do
     context 'with response payload as a non-JSON string' do
       it 'should list error for response_payload key' do
         required_params[:response_payload] = "not a JSON string"
-        expect(subject.call(required_params).errors.to_h.keys).to match_array [:response_payload] 
+        expect(subject.call(required_params).errors.to_h.keys).to match_array [:response_payload]
       end
     end
 
     context 'with callback payload as a non-JSON string' do
       it 'should list error for callback_payload key' do
         required_params[:callback_payload] = "not a JSON string"
-        expect(subject.call(required_params).errors.to_h.keys).to match_array [:callback_payload] 
+        expect(subject.call(required_params).errors.to_h.keys).to match_array [:callback_payload]
       end
     end
   end
