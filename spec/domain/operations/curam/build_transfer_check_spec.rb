@@ -37,9 +37,8 @@ describe Aces::BuildAccountTransferRequest, "given a payload, with configured se
   let(:setting) { double(item: "SOME URI") }
 
   before :each do
-    allow(MedicaidGatewayRegistry).to receive(:[]).with(:curam_connection).and_return(feature_ns)
-    allow(feature_ns).to receive(:setting).with(:curam_atp_service_username).and_return(setting)
-    allow(feature_ns).to receive(:setting).with(:curam_atp_service_password).and_return(setting)
+    allow(MedicaidGatewayRegistry[:curam_connection].setting(:curam_atp_service_username)).to receive(:item).and_return("random_name")
+    allow(MedicaidGatewayRegistry[:curam_connection].setting(:curam_atp_service_password)).to receive(:item).and_return("random_pw")
   end
 
   it "generates the created" do
