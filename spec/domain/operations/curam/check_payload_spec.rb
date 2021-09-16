@@ -50,7 +50,7 @@ describe Curam::CheckPayload, "given a valid account transfer check request", db
 
   it "initally the transfer should not have a callback status" do
     updated_transfer = Aces::Transfer.where(application_identifier: id).first
-    expect(updated_transfer.callback_status).to_not eq "N/A"
+    expect(updated_transfer.callback_status).to_not eq "Federal Exchange Inbound Error"
   end
 
   it "calling the check payload should update the transfer callback status" do
