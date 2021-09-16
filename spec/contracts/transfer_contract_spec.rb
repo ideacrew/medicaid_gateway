@@ -9,14 +9,14 @@ RSpec.describe ::TransferContract, dbclean: :after_each do
       application_identifier: "AI123",
       family_identifier: "F123",
       service: "serv",
-      response_payload: "{\"k\": \"v\"}",
-      callback_payload: "{\"k\": \"v\"}"
+      response_payload: "{\"k\": \"v\"}"
     }
   end
 
   let(:optional_params) do
     {
-      callback_status: "status"
+      callback_status: "status",
+      callback_payload: "{\"k\": \"v\"}"
     }
   end
 
@@ -44,8 +44,8 @@ RSpec.describe ::TransferContract, dbclean: :after_each do
 
     context 'with callback payload as a non-JSON string' do
       it 'should list error for callback_payload key' do
-        required_params[:callback_payload] = "not a JSON string"
-        expect(subject.call(required_params).errors.to_h.keys).to match_array [:callback_payload]
+        all_params[:callback_payload] = "not a JSON string"
+        expect(subject.call(all_params).errors.to_h.keys).to match_array [:callback_payload]
       end
     end
   end
