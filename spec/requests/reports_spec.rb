@@ -60,7 +60,7 @@ RSpec.describe "Reports", type: :request do
     end
 
     it "shows the previous 24 hours without params" do
-      old_transfer = create :transfer, created_at: 2.days.ago, updated_at: 2.days.ago, application_identifier: "100745"
+      create :transfer, created_at: 2.days.ago, updated_at: 2.days.ago, application_identifier: "100745"
       visit '/reports/account_transfers'
 
       expect(page).to_not have_content("100745")
