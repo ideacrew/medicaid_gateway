@@ -11,9 +11,10 @@ module Curam
     # @param [String] hbxid of application
     # @return [Dry::Result]
     def call(id)
-      built_check = yield build_check_request(find_transfer(id))
+      built_check   = yield build_check_request(find_transfer(id))
       encoded_check = yield encode_check(built_check)
-      submit_check(encoded_check, find_transfer(id))
+      submitted     = yield submit_check(encoded_check)
+      save_check(submitted, find_transfer(id))
     end
 
     protected
@@ -31,19 +32,18 @@ module Curam
       Curam::EncodeAccountTransferCheckRequest.new.call(payload)
     end
 
-    def submit_check(encoded_check, transfer)
-      check = Curam::SubmitAccountTransferCheck.new.call(encoded_check)
-      if check.success?
-        response = JSON.parse(check.value!.to_json)
-        xml = Nokogiri::XML(response["body"])
-        status = xml.xpath('//tns:STATUS', 'tns' => 'http://xmlns.dhs.dc.gov/dcas/esb/acctransappstatuccheck/V1')
-        status_text = status.any? ? status.last.text : "N/A"
-        transfer.update_attribute(:callback_payload, check.value!.to_json)
-        transfer.update_attribute(:callback_status, status_text)
-        Success("Callback response added")
-      else
-        Failure("Callback failed: #{check.failure}")
-      end
+    def submit_check(encoded_check)
+      Curam::SubmitAccountTransferCheck.new.call(encoded_check)
+    end
+
+    def save_check(check, transfer)
+      response = JSON.parse(check.to_json)
+      xml = Nokogiri::XML(response["body"])
+      status = xml.xpath('//tns:STATUS', 'tns' => 'http://xmlns.dhs.dc.gov/dcas/esb/acctransappstatuccheck/V1')
+      status_text = status.any? ? status.last.text : "N/A"
+      transfer.update_attribute(:callback_payload, check.to_json)
+      transfer.update_attribute(:callback_status, status_text)
+      Success("Callback response added")
     end
   end
 end
