@@ -20,5 +20,11 @@ module Aces
     # Server response from the service
     field :response_payload, type: String
 
+    # Callback response from the service
+    field :callback_payload, type: String
+
+    # Callback response status from the service
+    field :callback_status, type: String
+
   end
 end

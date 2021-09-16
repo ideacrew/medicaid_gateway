@@ -12,3 +12,5 @@ registry:
             item: <%= ENV['CURAM_ATP_SERVICE_USERNAME'] %>
           - key: :curam_atp_service_password
             item: <%= ENV['CURAM_ATP_SERVICE_PASSWORD'] %>
+          - key: :curam_check_service_uri
+            item: <%= ENV['CURAM_ATP_CHECK_URI'] %>
