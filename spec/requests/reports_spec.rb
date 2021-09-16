@@ -2,7 +2,10 @@
 
 require 'rails_helper'
 
-RSpec.describe "Reports", type: :request do
+RSpec.describe "Reports", type: :request, dbclean: :after_each do
+  before :all do
+    DatabaseCleaner.clean
+  end
   describe "GET /reports/medicaid_applications" do
     before { create :application }
 

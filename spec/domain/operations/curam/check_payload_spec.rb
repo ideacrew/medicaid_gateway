@@ -42,6 +42,9 @@ describe Curam::CheckPayload, "given a valid account transfer check request", db
   let(:event) { Success(response) }
 
   before :each do
+    allow(MedicaidGatewayRegistry[:curam_connection].setting(:curam_atp_service_username)).to receive(:item).and_return("random_name")
+    allow(MedicaidGatewayRegistry[:curam_connection].setting(:curam_atp_service_password)).to receive(:item).and_return("random_pw")
+    allow(MedicaidGatewayRegistry[:curam_connection].setting(:curam_check_service_uri)).to receive(:item).and_return("random_uri")
     allow(operation).to receive(:submit_check).and_return(event)
     operation.call(id)
   end
