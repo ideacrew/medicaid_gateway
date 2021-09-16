@@ -53,4 +53,5 @@ describe Curam::CheckPayload, "given a valid account transfer check request", db
     updated_transfer = Aces::Transfer.where(application_identifier: id).first
     expect(updated_transfer.callback_status).to eq "N/A"
   end
+
 end

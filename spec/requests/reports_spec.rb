@@ -2,10 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe "Reports", type: :request, dbclean: :after_each do
-  before :all do
-    DatabaseCleaner.clean
-  end
+RSpec.describe "Reports", type: :request do
   describe "GET /reports/medicaid_applications" do
     before { create :application }
 
@@ -63,10 +60,10 @@ RSpec.describe "Reports", type: :request, dbclean: :after_each do
     end
 
     it "shows the previous 24 hours without params" do
-      old_transfer = create :transfer, created_at: 1.day.ago, updated_at: 1.day.ago
+      old_transfer = create :transfer, created_at: 2.days.ago, updated_at: 2.days.ago, application_identifier: "100745"
       visit '/reports/account_transfers'
 
-      expect(page).to_not have_content(old_transfer.application_identifier)
+      expect(page).to_not have_content("100745")
     end
 
     it "accepts and uses date params" do
