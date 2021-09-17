@@ -6,7 +6,7 @@ require 'aca_entities/medicaid/mec_check/operations/generate_xml'
 
 module Aces
   # Check for the existance of a person in the Medicare system already, and if so did they have coverage.
-  class MecCheck
+  class MecCheckCall
     send(:include, Dry::Monads[:result, :do])
 
     # @param [String] hbxid of application
@@ -22,7 +22,6 @@ module Aces
     protected
 
     def generate_xml(payload)
-      puts payload.to_json
       transfer_request = ::AcaEntities::Medicaid::MecCheck::Operations::GenerateXml.new.call(payload.to_json)
       Success(transfer_request)
     end
