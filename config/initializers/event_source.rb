@@ -14,7 +14,7 @@ EventSource.configure do |config|
       http.url = ENV['MITC_URL'] || 'http://localhost:3000'
       http.default_content_type = 'application/json'
     end
-
+    
     server.amqp do |rabbitmq|
       rabbitmq.ref = 'amqp://rabbitmq:5672/event_source'
       rabbitmq.host = ENV['RABBITMQ_HOST'] || 'amqp://localhost'

@@ -21,9 +21,9 @@ module Aces
 
     protected
 
-    def generate_xml(payload)
+    def generate_xml(payload)      
       transfer_request = ::AcaEntities::Medicaid::MecCheck::Operations::GenerateXml.new.call(payload.to_json)
-      Success(transfer_request)
+      transfer_request.success? ? Success(transfer_request) : Failure("Transform failure")
     end
 
     def validate_xml(seralized_xml)
