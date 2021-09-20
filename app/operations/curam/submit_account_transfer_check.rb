@@ -3,10 +3,9 @@
 require 'dry/monads'
 require 'dry/monads/do'
 
-module Aces
-  # Submits the pre-encoded account transfer payload, as a SOAP request,
-  # to ACES.
-  class SubmitAccountTransferPayload
+module Curam
+  # Requests the status of a transfer from Curam.
+  class SubmitAccountTransferCheck
     send(:include, Dry::Monads[:result, :do, :try])
 
     # @param [String] payload
@@ -20,18 +19,19 @@ module Aces
 
     def read_endpoint_setting
       result = Try do
-        MedicaidGatewayRegistry[:aces_connection].setting(:aces_atp_service_uri).item
+        MedicaidGatewayRegistry[:curam_connection].setting(:curam_check_service_uri).item
       end
-      result.or(Failure("Failed to find setting: :aces_connection, :aces_atp_service_uri"))
+      result.or(Failure("Failed to find setting: :curam_connection, :curam_check_service_uri"))
     end
 
     def submit_request(service_uri, payload)
+      conn = Faraday.new(ssl: { verify: false })
       clean_payload = payload.to_s.gsub("<?xml version=\"1.0\"?>", "").gsub("<?xml version=\"1.0\"??>", "")
       result = Try do
-        Faraday.post(
+        conn.post(
           service_uri,
           clean_payload,
-          "Content-Type" => "application/soap+xml"
+          "Content-Type" => "text/xml"
         )
       end
       result.or(Failure(result.exception))
