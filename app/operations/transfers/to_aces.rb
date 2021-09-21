@@ -50,7 +50,7 @@ module Transfers
     def record_transfer(service, params, response)
       payload = JSON.parse(params)
       Transfers::Create.new.call({ service: service,
-                                   application_identifier: payload["family"]["magi_medicaid_applications"][0]["hbx_id"],
+                                   application_identifier: payload["family"]["magi_medicaid_applications"]["hbx_id"],
                                    family_identifier: payload["family"]["hbx_id"],
                                    response_payload: response.to_json })
     end

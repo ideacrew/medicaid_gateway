@@ -79,7 +79,7 @@ RSpec.describe ::Subscribers::ApplicationSubscriber, dbclean: :after_each do
     expect(bunny_exchange).to be_present
     expect(bunny_queue).to be_present
 
-    expect(bunny_queue.consumer_count).to eq 1
+    expect(bunny_queue.consumer_count).to be >= 1
     # expect(bunny_consumer).to be_a EventSource::Protocols::Amqp::BunnyConsumerProxy
   end
 
