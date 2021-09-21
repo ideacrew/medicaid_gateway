@@ -12,16 +12,16 @@ module Aces
     # @param [String] hbxid of application
     # @return [Dry::Result]
     def call(person_payload)
-      xml              = yield generate_xml(person_payload)
-      _validate_xml     = yield validate_xml(xml)
-      built_check      = yield build_check_request(xml)
-      encoded_check    = yield encode_check(built_check)
+      xml = yield generate_xml(person_payload)
+      _validate_xml = yield validate_xml(xml)
+      built_check = yield build_check_request(xml)
+      encoded_check = yield encode_check(built_check)
       submit_check(encoded_check)
     end
 
     protected
 
-    def generate_xml(payload)      
+    def generate_xml(payload)
       transfer_request = ::AcaEntities::Medicaid::MecCheck::Operations::GenerateXml.new.call(payload.to_json)
       transfer_request.success? ? Success(transfer_request) : Failure("Transform failure")
     end

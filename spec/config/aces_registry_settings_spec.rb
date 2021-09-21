@@ -22,4 +22,8 @@ describe "configured aces settings" do
   it "contains the atp_caller_password" do
     expect(MedicaidGatewayRegistry[:aces_connection].setting(:aces_atp_caller_password)).not_to eq nil
   end
+
+  it "contains the aces_mec_check_uri" do
+    expect(MedicaidGatewayRegistry[:aces_connection].setting(:aces_mec_check_uri)).not_to eq nil
+  end
 end

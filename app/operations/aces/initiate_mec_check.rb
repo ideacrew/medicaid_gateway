@@ -25,10 +25,10 @@ module Aces
       results = {}
       if json["person"]
         person_hash = {}
-        person_hash["person"] = {"person": json["person"]}
+        person_hash["person"] = { person: json["person"] }
         results[json["person"]["hbx_id"]] = mec_check(person_hash)
       else
-        people = json["family"]["family_members"].map{|fm| fm["person"]}
+        people = json["family"]["family_members"].map { |fm| fm["person"] }
         people.each do |person|
           person_hash = { "person" => {} }
           person_hash["person"]["person"] = person
@@ -38,20 +38,24 @@ module Aces
       results
     end
 
-    def get_application(json)      
-      json["application"] ? json["application"] : json["family"]["magi_medicaid_applications"][0]["hbx_id"]
+    def get_application(json)
+      json["application"] || json["family"]["magi_medicaid_applications"][0]["hbx_id"]
     end
 
     def get_family(json)
-      json["fam"] ? json["fam"] : json["family"]["magi_medicaid_applications"][0]["family_reference"]["hbx_id"]
+      json["fam"] || json["family"]["magi_medicaid_applications"][0]["family_reference"]["hbx_id"]
     end
 
     def mec_check(person)
-      result = Aces::MecCheckCall.new.call(person)
+      result = call_mec_check(person)
       response = JSON.parse(result.value!.to_json)
       xml = Nokogiri::XML(response["body"])
       response_description = xml.xpath("//xmlns:ResponseDescription", "xmlns" => "http://gov.hhs.cms.hix.dsh.ee.nonesi_mec.ext")
       response_description.text
+    end
+
+    def call_mec_check(person)
+      Aces::MecCheckCall.new.call(person)
     end
 
     def save_check(check_results, application, family)
@@ -62,8 +66,8 @@ module Aces
           applicant_responses: check_results
         }
       )
-      results.success? ? Success(results) : Failure("Failed to save MEC check")
-    end    
+      results.success? ? results : Failure("Failed to save MEC check")
+    end
 
     def publish_to_enroll(payload)
       transfer = Aces::InitiateMecCheckToEnroll.new.call(payload.value!.attributes)
