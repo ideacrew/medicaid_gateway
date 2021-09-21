@@ -10,5 +10,4 @@ class MecCheckContract < Dry::Validation::Contract
     required(:family_identifier).filled(:string)
     required(:applicant_responses).filled(:hash)
   end
-  
 end
