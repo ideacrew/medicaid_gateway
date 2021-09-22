@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/ideacrew/aca_entities.git
-  revision: d940cc266dce9806716402faef3b1cacc8f72576
-  branch: release_0.6.0
+  revision: c967ee643bb10799dcdd00c64b410967386acd55
+  branch: release_0.7.0
   specs:
-    aca_entities (0.4.0)
+    aca_entities (0.6.0)
       deep_merge
       dry-monads (~> 1.2)
       dry-struct (~> 1.0)
@@ -262,7 +262,7 @@ GEM
       racc (~> 1.4)
     nokogiri-happymapper (0.8.1)
       nokogiri (~> 1.5)
-    oj (3.13.6)
+    oj (3.13.7)
     ox (2.14.5)
     parallel (1.20.1)
     parser (3.0.2.0)
