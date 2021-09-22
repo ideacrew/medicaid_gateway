@@ -3,7 +3,7 @@
 module Publishers
   # Publisher will send MEC check results payload to EA
   class MecCheckPublisher
-    include ::EventSource::Publisher[amqp: 'magi_medicaid.mec_check.enroll']
+    include ::EventSource::Publisher[amqp: 'magi_medicaid.mec_check']
     register_event 'mec_checked'
   end
 end
