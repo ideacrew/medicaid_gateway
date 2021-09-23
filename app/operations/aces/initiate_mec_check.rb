@@ -39,11 +39,11 @@ module Aces
     end
 
     def get_application(json)
-      json["application"] || json["family"]["magi_medicaid_applications"][0]["hbx_id"]
+      json["application"] || json["family"]["magi_medicaid_applications"]["hbx_id"]
     end
 
     def get_family(json)
-      json["fam"] || json["family"]["magi_medicaid_applications"][0]["family_reference"]["hbx_id"]
+      json["fam"] || json["family"]["magi_medicaid_applications"]["family_reference"]["hbx_id"]
     end
 
     def mec_check(person)
