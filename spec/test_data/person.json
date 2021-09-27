@@ -1,6 +1,5 @@
 {
-  "application": "0b6044f41c4547dcaa74305bbb5c85b6",
-  "fam": "10450",
+  "family_id": "10450",
   "person": {
     "hbx_id": "d81d92cf869540ed804b21d7b22352c6",
     "person_name": {
@@ -158,5 +157,6 @@
       "created_at": "2021-09-20T15:15:33.325+00:00",
       "modified_at": "2021-09-20T15:15:50.650+00:00"
     }
-  }
+  },
+  "type": "person"
 }

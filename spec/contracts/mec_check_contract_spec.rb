@@ -8,7 +8,8 @@ RSpec.describe ::MecCheckContract, dbclean: :after_each do
     {
       application_identifier: "AI123",
       family_identifier: "F123",
-      applicant_responses: "{\"k\": \"v\"}"
+      applicant_responses: "{\"k\": \"v\"}",
+      type: "application"
     }
   end
 
