@@ -12,10 +12,8 @@ module Aces
     # @return [Dry::Result]
     def call(payload)
       json = JSON.parse(payload)
-      application = get_application(json)
-      family = get_family(json)
       checks = get_checks(json)
-      results = save_check(checks, application, family)
+      results = yield save_check(checks, json)
       publish_to_enroll(results)
     end
 
@@ -28,7 +26,7 @@ module Aces
         person_hash["person"] = { person: json["person"] }
         results[json["person"]["hbx_id"]] = mec_check(person_hash)
       else
-        people = json["family"]["family_members"].map { |fm| fm["person"] }
+        people = json["people"]
         people.each do |person|
           person_hash = { "person" => {} }
           person_hash["person"]["person"] = person
@@ -36,14 +34,6 @@ module Aces
         end
       end
       results
-    end
-
-    def get_application(json)
-      json["application"] || json["family"]["magi_medicaid_applications"]["hbx_id"]
-    end
-
-    def get_family(json)
-      json["fam"] || json["family"]["magi_medicaid_applications"]["family_reference"]["hbx_id"]
     end
 
     def mec_check(person)
@@ -58,21 +48,24 @@ module Aces
       Aces::MecCheckCall.new.call(person)
     end
 
-    def save_check(check_results, application, family)
+    def save_check(check_results, json)
+      application = json["application"] || "n/a"
+      family = json["family_id"]
       results = Aces::CreateMecCheck.new.call(
         {
           application_identifier: application,
           family_identifier: family,
-          applicant_responses: check_results
+          applicant_responses: check_results,
+          type: json["type"]
         }
       )
-      results.success? ? results : Failure("Failed to save MEC check")
+      results.success? ? results : Failure("Failed to save MEC check: #{results.failure.errors.to_h}")
     end
 
     def publish_to_enroll(payload)
-      transfer = Aces::InitiateMecCheckToEnroll.new.call(payload.value!.attributes)
+      puts payload
+      transfer = Aces::InitiateMecCheckToEnroll.new.call(payload.attributes)
       transfer.success? ? Success("Transferred MEC Check to Enroll") : Failure(transfer)
     end
-
   end
 end

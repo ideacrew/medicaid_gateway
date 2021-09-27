@@ -3,10 +3,8 @@
 module Events
   module MagiMedicaid
     module MecCheck
-      module Enroll
-        class MecChecked < EventSource::Event
-          publisher_path 'publishers.mec_check_publisher'
-        end
+      class MecChecked < EventSource::Event
+        publisher_path 'publishers.mec_check_publisher'
       end
     end
   end
