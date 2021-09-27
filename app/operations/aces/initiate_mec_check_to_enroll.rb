@@ -22,8 +22,7 @@ module Aces
     private
 
     def build_event(params)
-      # result = event("events.magi_medicaid.mec_check.enroll.mec_checked", attributes: params.to_h)
-      result = event("events.magi_medicaid.mec_check.mec_checked", attributes: params.to_h)
+      result = event("events.magi_medicaid.mec_check.mec_checked", attributes: params)
       logger.info "MedicaidGateway MEC Check Publisher to enroll, event_key: mec_checked, attributes: #{params.to_h}, result: #{result}"
       logger.info('-' * 100)
       result

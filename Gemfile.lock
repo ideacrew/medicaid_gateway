@@ -537,6 +537,7 @@ DEPENDENCIES
   mitc_service!
   mongoid (~> 7.2.1)
   nokogiri (>= 1.10.8)
+  pry
   pry-byebug
   puma (~> 5.0)
   rack-mini-profiler (~> 2.0)
