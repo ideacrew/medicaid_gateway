@@ -46,11 +46,6 @@ describe Aces::InitiateMecCheck, "given a person payload", dbclean: :after_each 
     operation.call(payload)
   end
 
-  it "there should be a mec check with the application id from the payload" do
-    mec_check = Aces::MecCheck.first
-    expect(mec_check.application_identifier).to eq "0b6044f41c4547dcaa74305bbb5c85b6"
-  end
-
   it "there should be a mec check with the family id" do
     mec_check = Aces::MecCheck.first
     expect(mec_check.family_identifier).to eq "10450"
@@ -70,7 +65,7 @@ describe Aces::InitiateMecCheck, "given an application payload", dbclean: :after
 
   include Dry::Monads[:result, :do]
 
-  let(:payload) {File.read("./spec/test_data/application_and_family.json")}
+  let(:payload) {File.read("./spec/test_data/application_payload.json")}
   let(:operation) { Aces::InitiateMecCheck.new }
 
   let(:response_body) do
@@ -97,7 +92,7 @@ describe Aces::InitiateMecCheck, "given an application payload", dbclean: :after
   end
   let(:event) { Success(response) }
 
-  let(:expected_response) { { "1003158" => "Applicant Not Found", "1002699" => "Applicant Not Found", "1003159" => "Applicant Not Found" } }
+  let(:expected_response) { { "1003158" => "Applicant Not Found", "1002699" => "Applicant Not Found" } }
 
   before :each do
     allow(MedicaidGatewayRegistry[:aces_connection].setting(:aces_atp_service_username)).to receive(:item).and_return("random_name")
@@ -114,7 +109,7 @@ describe Aces::InitiateMecCheck, "given an application payload", dbclean: :after
 
   it "there should be a mec check with the family id" do
     mec_check = Aces::MecCheck.first
-    expect(mec_check.family_identifier).to eq "10419"
+    expect(mec_check.family_identifier).to eq "10449"
   end
 
   it "the mec check should have the correct applicant_responses value" do

@@ -13,7 +13,8 @@ describe Aces::CreateMecCheck, "create mec check", dbclean: :after_each do
     {
       application_identifier: "app_id",
       family_identifier: "fam_id",
-      applicant_responses: checks
+      applicant_responses: checks,
+      type: "application"
     }
   end
 
