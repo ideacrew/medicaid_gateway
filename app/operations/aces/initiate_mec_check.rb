@@ -12,36 +12,47 @@ module Aces
     # @return [Dry::Result]
     def call(payload)
       json = JSON.parse(payload)
-      checks = get_checks(json)
+      checks = yield get_person_check(json) if json["person"]
+      checks = yield get_people_checks(json) if json["people"]
       results = yield save_check(checks, json)
       publish_to_enroll(results)
     end
 
     protected
 
-    def get_checks(json)
+    def get_person_check(json)
       results = {}
-      if json["person"]
-        person_hash = {}
-        person_hash["person"] = { person: json["person"] }
-        results[json["person"]["hbx_id"]] = mec_check(person_hash)
-      else
-        people = json["people"]
-        people.each do |person|
-          person_hash = { "person" => {} }
-          person_hash["person"]["person"] = person
-          results[person["hbx_id"]] = mec_check(person_hash)
-        end
+      person_hash = {}
+      person_hash["person"] = { person: json["person"] }
+      mc_response = mec_check(person_hash)
+      return Failure(mc_response.failure.errors) if mc_response.failure?
+
+      results[json["person"]["hbx_id"]] = mc_response.value!
+      Success(results)
+    end
+
+    def get_people_checks(json)
+      results = {}
+      people = json["people"]
+      people.each do |person|
+        person_hash = { "person" => {} }
+        person_hash["person"]["person"] = person
+        mc_response = mec_check(person_hash)
+        return Failure(mc_response.failure.errors) if mc_response.failure?
+
+        results[person["hbx_id"]] = mc_response.value!
       end
-      results
+      Success(results)
     end
 
     def mec_check(person)
       result = call_mec_check(person)
+      return Failure(result.failure.errors) if result.failure?
+
       response = JSON.parse(result.value!.to_json)
       xml = Nokogiri::XML(response["body"])
       response_description = xml.xpath("//xmlns:ResponseDescription", "xmlns" => "http://gov.hhs.cms.hix.dsh.ee.nonesi_mec.ext")
-      response_description.text
+      Success(response_description.text)
     end
 
     def call_mec_check(person)
@@ -63,7 +74,6 @@ module Aces
     end
 
     def publish_to_enroll(payload)
-      puts payload
       transfer = Aces::InitiateMecCheckToEnroll.new.call(payload.attributes)
       transfer.success? ? Success("Transferred MEC Check to Enroll") : Failure(transfer)
     end
