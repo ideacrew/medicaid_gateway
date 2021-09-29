@@ -25,7 +25,7 @@ module Aces
       person_hash = {}
       person_hash["person"] = { person: json["person"] }
       mc_response = mec_check(person_hash)
-      return Failure(mc_response.failure.errors) if mc_response.failure?
+      return Failure(mc_response.failure) if mc_response.failure?
 
       results[json["person"]["hbx_id"]] = mc_response.value!
       Success(results)
@@ -38,7 +38,7 @@ module Aces
         person_hash = { "person" => {} }
         person_hash["person"]["person"] = person
         mc_response = mec_check(person_hash)
-        return Failure(mc_response.failure.errors) if mc_response.failure?
+        return Failure(mc_response.failure) if mc_response.failure?
 
         results[person["hbx_id"]] = mc_response.value!
       end
@@ -47,7 +47,8 @@ module Aces
 
     def mec_check(person)
       result = call_mec_check(person)
-      return Failure(result.failure.errors) if result.failure?
+      puts result
+      return Failure(result.failure) if result.failure?
 
       response = JSON.parse(result.value!.to_json)
       xml = Nokogiri::XML(response["body"])
