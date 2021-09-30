@@ -47,13 +47,13 @@ module Aces
 
     def mec_check(person)
       result = call_mec_check(person)
-      puts result
       return Failure(result.failure) if result.failure?
 
       response = JSON.parse(result.value!.to_json)
       xml = Nokogiri::XML(response["body"])
       response_description = xml.xpath("//xmlns:ResponseDescription", "xmlns" => "http://gov.hhs.cms.hix.dsh.ee.nonesi_mec.ext")
-      Success(response_description.text)
+
+      response_description.empty? ? Failure("XML error: ResponseDescription tag missing.") : Success(response_description.text)
     end
 
     def call_mec_check(person)
