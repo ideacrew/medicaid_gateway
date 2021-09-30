@@ -6,7 +6,7 @@ module Aces
     include Mongoid::Document
     include Mongoid::Timestamps
 
-    # Unique Identifier(hbx_id) of the application.
+    # Unique Identifier(application_id) of the application.
     # For example: EA's FinancialAssistance::Application's hbx_id
     field :application_identifier, type: String
 

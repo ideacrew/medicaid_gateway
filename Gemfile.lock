@@ -13,7 +13,7 @@ GIT
       iso_country_codes
       nokogiri-happymapper
       oj (~> 3.11)
-      symmetric-encryption (~> 4.3)
+      symmetric-encryption (~> 3.9.1)
 
 GIT
   remote: https://github.com/ideacrew/event_source.git
@@ -485,7 +485,7 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     state_machines (0.5.0)
-    symmetric-encryption (4.3.3)
+    symmetric-encryption (3.9.1)
       coercible (~> 1.0)
     thor (1.1.0)
     thread_safe (0.3.6)
