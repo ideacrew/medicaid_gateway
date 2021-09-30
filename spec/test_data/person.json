@@ -1,0 +1,162 @@
+{
+  "family_id": "10450",
+  "person": {
+    "hbx_id": "d81d92cf869540ed804b21d7b22352c6",
+    "person_name": {
+      "first_name": "Test",
+      "middle_name": null,
+      "last_name": "Test",
+      "name_sfx": null,
+      "name_pfx": null,
+      "full_name": "Test Test",
+      "alternate_name": null
+    },
+    "person_demographics": {
+      "ssn": "908923111",
+      "no_ssn": false,
+      "gender": "female",
+      "dob": "1983-07-29",
+      "date_of_death": null,
+      "dob_check": false,
+      "is_incarcerated": false,
+      "ethnicity": ["", "", "", "", "", "", ""],
+      "race": null,
+      "tribal_id": null,
+      "language_code": "en"
+    },
+    "person_health": {
+      "is_tobacco_user": "unknown",
+      "is_physically_disabled": null
+    },
+    "no_dc_address": false,
+    "no_dc_address_reason": "",
+    "is_homeless": false,
+    "is_temporarily_out_of_state": false,
+    "age_off_excluded": false,
+    "is_applying_for_assistance": null,
+    "is_active": true,
+    "is_disabled": null,
+    "person_relationships": [],
+    "consumer_role": {
+      "five_year_bar": false,
+      "requested_coverage_start_date": "2021-09-20",
+      "aasm_state": "unverified",
+      "is_applicant": true,
+      "birth_location": null,
+      "marital_status": null,
+      "is_active": true,
+      "is_applying_coverage": true,
+      "bookmark_url": "http://localhost:3000/financial_assistance/applications/6148a7f33ae740105af4cb82/edit",
+      "admin_bookmark_url": null,
+      "contact_method": "mail",
+      "language_preference": "English",
+      "is_state_resident": null,
+      "identity_validation": "valid",
+      "identity_update_reason": "Verified from Experian",
+      "application_validation": "valid",
+      "application_update_reason": "Verified from Experian",
+      "identity_rejected": false,
+      "application_rejected": false,
+      "documents": [],
+      "vlp_documents": [],
+      "ridp_documents": [],
+      "verification_type_history_elements": [],
+      "lawful_presence_determination": {
+        "vlp_verified_at": null,
+        "vlp_authority": null,
+        "vlp_document_id": null,
+        "citizen_status": "us_citizen",
+        "citizenship_result": null,
+        "qualified_non_citizenship_result": null,
+        "aasm_state": "verification_pending",
+        "ssa_responses": [],
+        "ssa_requests": [],
+        "vlp_responses": [],
+        "vlp_requests": []
+      },
+      "local_residency_responses": [],
+      "local_residency_requests": []
+    },
+    "resident_role": null,
+    "broker_role": null,
+    "individual_market_transitions": [
+      {
+        "role_type": "consumer",
+        "start_on": "2021-09-20",
+        "end_on": null,
+        "reason_code": "generating_consumer_role",
+        "submitted_at": "2021-09-20T15:15:33.000+00:00"
+      }
+    ],
+    "verification_types": [
+      {
+        "type_name": "Social Security Number",
+        "validation_status": "unverified",
+        "applied_roles": ["consumer_role"],
+        "update_reason": null,
+        "rejected": null,
+        "external_service": null,
+        "due_date": null,
+        "due_date_type": null,
+        "inactive": null,
+        "vlp_documents": []
+      },
+      {
+        "type_name": "Citizenship",
+        "validation_status": "unverified",
+        "applied_roles": ["consumer_role"],
+        "update_reason": null,
+        "rejected": null,
+        "external_service": null,
+        "due_date": null,
+        "due_date_type": null,
+        "inactive": null,
+        "vlp_documents": []
+      }
+    ],
+    "user": {
+      "approved": true,
+      "email": "newtest@fake.com",
+      "oim_id": "newTest@fake.com",
+      "hint": true,
+      "identity_confirmed_token": null,
+      "identity_final_decision_code": "acc",
+      "identity_final_decision_transaction_id": "WhateverRefNumberHere",
+      "identity_response_code": "acc",
+      "identity_response_description_text": "FARS passed.",
+      "identity_verified_date": "2021-09-20",
+      "idp_uuid": null,
+      "idp_verified": true,
+      "last_portal_visited": "/insured/consumer_role/search",
+      "preferred_language": "en",
+      "profile_type": null,
+      "roles": ["consumer"],
+      "timestamps": {
+        "created_at": "2021-09-20T15:14:40.269+00:00",
+        "modified_at": "2021-09-20T15:16:05.006+00:00"
+      }
+    },
+    "addresses": [
+      {
+        "kind": "home",
+        "address_1": "123 fake",
+        "address_2": "",
+        "address_3": "",
+        "city": "city",
+        "county": "York",
+        "state": "ME",
+        "zip": "04005",
+        "country_name": "United States of America",
+        "has_fixed_address": true
+      }
+    ],
+    "emails": [{ "kind": "home", "address": "newtest@fake.com" }],
+    "phones": [],
+    "documents": [],
+    "timestamp": {
+      "created_at": "2021-09-20T15:15:33.325+00:00",
+      "modified_at": "2021-09-20T15:15:50.650+00:00"
+    }
+  },
+  "type": "person"
+}
