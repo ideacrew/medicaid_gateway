@@ -13,22 +13,23 @@ module Transfers
     # then tranfer the result to ACES.
     # @return [Dry::Result]
     def call(params, service)
-      transfer_id   = yield record_transfer(service, params)
-      xml        = yield generate_xml(params, transfer_id)
-      validated  = yield schema_validation(xml, transfer_id)
+      transfer_id = yield record_transfer(service, params)
+      xml = yield generate_xml(params, transfer_id)
+      validated = yield schema_validation(xml, transfer_id)
       # validated  = yield business_validation(validated)
-      initiate_transfer(validated, service, params, transfer_id)
+      initiate_transfer(validated, service, transfer_id)
     end
 
     private
-    
+
     def record_transfer(service, params)
       payload = JSON.parse(params)
-      transfer = Transfers::Create.new.call({ service: service,
-                                   application_identifier: payload["family"]["magi_medicaid_applications"]["hbx_id"] || "application_id not found",
-                                   family_identifier: payload["family"]["hbx_id"] || "family_id not found"
-                                 })
-      transfer.success? ? Success(transfer.id) : Failure("Failed to record transfer: #{transfer.failure}")
+      transfer = Transfers::Create.new.call({
+                                              service: service,
+                                              application_identifier: payload["family"]["magi_medicaid_applications"]["hbx_id"] || "not found",
+                                              family_identifier: payload["family"]["hbx_id"] || "family_id not found"
+                                            })
+      transfer.success? ? Success(transfer.value!.id) : Failure("Failed to record transfer: #{transfer.failure}")
     end
 
     def generate_xml(params, transfer_id)
@@ -63,7 +64,7 @@ module Transfers
       result.success? ? Success(xml) : Failure(result)
     end
 
-    def initiate_transfer(payload, service, params, transfer_id)
+    def initiate_transfer(payload, service, transfer_id)
       result = if service == "aces"
                  Aces::PublishRawPayload.new.call(payload)
                else
@@ -72,7 +73,7 @@ module Transfers
 
       if result.success?
         update_transfer(transfer_id, result.value!)
-        Success("Successfully transferred in account") 
+        Success("Successfully transferred in account")
       else
         error_result = {
           transfer_id: transfer_id,
@@ -82,10 +83,10 @@ module Transfers
       end
     end
 
-    def update_transfer(transfer_id, response_payload)
+    def update_transfer(transfer_id, response)
       transfer = Aces::Transfer.find(transfer_id)
-      transfer.update(response_payload)
+      transfer.update!(response_payload: response.to_json)
     end
-    
+
   end
 end

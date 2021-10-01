@@ -23,7 +23,7 @@ module Subscribers
       else
         errors = result.failure
         error = result.failure[:error]
-        mc_id = result.failure[:transfer_id]
+        transfer_id = result.failure[:transfer_id]
         transfer = Aces::Transfer.find(transfer_id)
         transfer.update!(failure: error)
         nack(delivery_info.delivery_tag)

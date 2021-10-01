@@ -22,7 +22,8 @@ module Curam
       result = Try do
         MedicaidGatewayRegistry[:curam_connection].setting(:curam_atp_service_uri).item
       end
-      result.or(Failure("Failed to find setting: :curam_connection, :curam_atp_service_uri"))
+      return Failure("Failed to find setting: :curam_connection, :curam_atp_service_uri") if result.failure?
+      result.nil? ? Failure(":curam_atp_service_uri cannot be nil") : result
     end
 
     def submit_request(service_uri, payload)
@@ -35,7 +36,7 @@ module Curam
           "Content-Type" => "text/xml"
         )
       end
-      result.or(Failure(result.exception))
+      result.or(Failure("Curam SubmitAccountTransferPayload submit_request failed with: #{result.exception}"))
     end
   end
 end

@@ -4,9 +4,8 @@ require 'dry/monads'
 require 'dry/monads/do'
 
 module Aces
-  # Submits the pre-encoded account transfer payload, as a SOAP request,
-  # to ACES.
-  class SubmitAccountTransferPayload
+  # Submits the MecCheck Request
+  class SubmitMecCheckPayload
     send(:include, Dry::Monads[:result, :do, :try])
 
     # @param [String] payload
@@ -20,10 +19,10 @@ module Aces
 
     def read_endpoint_setting
       result = Try do
-        MedicaidGatewayRegistry[:aces_connection].setting(:aces_atp_service_uri).item
+        MedicaidGatewayRegistry[:aces_connection].setting(:aces_mec_check_uri).item
       end
-      return Failure("Failed to find setting: :aces_connection, :aces_atp_service_uri") if result.failure?
-      result.nil? ? Failure(":aces_atp_service_uri cannot be nil") : result
+      return Failure("Failed to find setting: :aces_connection, :aces_mec_check_uri") if result.failure?
+      result.nil? ? Failure(":aces_mec_check_uri cannot be nil") : result
     end
 
     def submit_request(service_uri, payload)
@@ -32,10 +31,10 @@ module Aces
         Faraday.post(
           service_uri,
           clean_payload,
-          "Content-Type" => "application/soap+xml"
+          "Content-Type" => "application/soap+xml;charset=UTF-8"
         )
       end
-      result.or(Failure("Aces submit_request failed with: #{result.exception}"))
+      result.or(Failure("ACES transfer submit_request failed with: #{result.exception}"))
     end
   end
 end
