@@ -7,7 +7,7 @@ module Aces
     include Mongoid::Timestamps
 
     # Unique Identifier(application_id) of the application.
-    # For example: EA's FinancialAssistance::Application's hbx_id
+    # For example: EA's FinancialAssistance::Application's application_id
     field :application_identifier, type: String
 
     # Unique Identifier(hbx_id) of the family.
@@ -20,5 +20,7 @@ module Aces
     # Payload type of person or application
     field :type, type: String
 
+    # Record of failure point in the MEC check process
+    field :failure, type: String
   end
 end

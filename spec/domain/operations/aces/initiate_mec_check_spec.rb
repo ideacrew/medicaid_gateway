@@ -102,7 +102,7 @@ describe Aces::InitiateMecCheck, "given an application payload", dbclean: :after
     operation.call(payload)
   end
 
-  it "there should be a mec check with the application id from the payload" do
+  it "there should be a mec check with the application id from the payload" do    
     mec_check = Aces::MecCheck.first
     expect(mec_check.application_identifier).to eq "1000886"
   end
@@ -114,7 +114,6 @@ describe Aces::InitiateMecCheck, "given an application payload", dbclean: :after
 
   it "the mec check should have the correct applicant_responses value" do
     mec_check = Aces::MecCheck.first
-    puts mec_check.applicant_responses
     expect(mec_check.applicant_responses).to eq expected_response
   end
 

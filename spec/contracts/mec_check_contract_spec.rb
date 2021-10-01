@@ -8,10 +8,13 @@ RSpec.describe ::MecCheckContract, dbclean: :after_each do
     {
       application_identifier: "AI123",
       family_identifier: "F123",
-      applicant_responses: "{\"k\": \"v\"}",
       type: "application"
     }
   end
+
+  let(:optional_params) { { applicant_responses: "{\"k\": \"v\"}" } }
+
+  let(:all_params) { required_params.merge(optional_params) }
 
   context 'invalid parameters' do
     context 'with empty parameters' do
@@ -24,8 +27,8 @@ RSpec.describe ::MecCheckContract, dbclean: :after_each do
   context 'valid parameters' do
     context 'with all required and optional parameters' do
       it 'should pass validation' do
-        result = subject.call(required_params)
-        expect(result.to_h).to eq required_params
+        result = subject.call(all_params)
+        expect(result.to_h).to eq all_params
       end
     end
   end

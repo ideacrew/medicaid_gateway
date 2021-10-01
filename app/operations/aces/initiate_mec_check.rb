@@ -12,34 +12,65 @@ module Aces
     # @return [Dry::Result]
     def call(payload)
       json = JSON.parse(payload)
-      checks = yield get_person_check(json) if json["person"]
-      checks = yield get_people_checks(json) if json["people"]
-      results = yield save_check(checks, json)
+
+      mec_check = yield create_mec_check(json)
+      checks    = yield get_person_check(mec_check, json) if json["person"]
+      checks    = yield get_people_checks(mec_check, json) if json["people"]
+      results   = yield update_mec_check(mec_check, checks)
+
       publish_to_enroll(results)
     end
 
     protected
 
-    def get_person_check(json)
+    def create_mec_check(json)
+      application = json["application"] || "n/a"
+      family = json["family_id"]
+      results = Aces::CreateMecCheck.new.call(
+        {
+          application_identifier: application,
+          family_identifier: family,
+          type: json["type"]
+        }
+      )      
+      results.success? ? results : Failure("Failed to save MEC check: #{results.failure}")
+    end
+
+    def get_person_check(mec_check, json)
       results = {}
       person_hash = {}
       person_hash["person"] = { person: json["person"] }
       mc_response = mec_check(person_hash)
-      return Failure(mc_response.failure) if mc_response.failure?
+      # return Failure(mc_response.failure) if mc_response.failure?
 
+      if mc_response.failure?
+        error_result = {
+          mc_id: mec_check.id,
+          error: mc_response.failure
+        }
+        return Failure(error_result)
+      end
       results[json["person"]["hbx_id"]] = mc_response.value!
       Success(results)
     end
 
-    def get_people_checks(json)
+    def get_people_checks(mec_check, json)
       results = {}
       people = json["people"]
       people.each do |person|
         person_hash = { "person" => {} }
         person_hash["person"]["person"] = person
         mc_response = mec_check(person_hash)
-        return Failure(mc_response.failure) if mc_response.failure?
+        # return Failure(mc_response.failure) if mc_response.failure?
 
+        if mc_response.failure?
+          error_result = {
+            mc_id: mec_check.id,
+            error: mc_response.failure
+          }
+          return Failure(error_result)
+        end
+        
         results[person["hbx_id"]] = mc_response.value!
       end
       Success(results)
@@ -60,18 +91,15 @@ module Aces
       Aces::MecCheckCall.new.call(person)
     end
 
-    def save_check(check_results, json)
-      application = json["application"] || "n/a"
-      family = json["family_id"]
-      results = Aces::CreateMecCheck.new.call(
-        {
-          application_identifier: application,
-          family_identifier: family,
-          applicant_responses: check_results,
-          type: json["type"]
-        }
-      )
-      results.success? ? results : Failure("Failed to save MEC check: #{results.failure.errors.to_h}")
+    def update_mec_check(mec_check, checks)
+      return Success(mec_check) if mec_check.update(applicant_responses: checks)
+
+      # return Failure("Failed to save MEC check response: #{mec_check.errors.to_h}")      
+      error_result = {
+        mc_id: mec_check.id,
+        error: "Failed to save MEC check response: #{mec_check.errors.to_h}"
+      }
+      Failure(error_result)  
     end
 
     def publish_to_enroll(payload)

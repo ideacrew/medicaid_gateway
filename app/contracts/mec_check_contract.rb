@@ -8,7 +8,8 @@ class MecCheckContract < Dry::Validation::Contract
   params do
     required(:application_identifier).filled(:string)
     required(:family_identifier).filled(:string)
-    required(:applicant_responses).filled(:hash)
     required(:type).filled(:string)
+    optional(:applicant_responses).maybe(:hash)
+    optional(:failure).maybe(:string)
   end
 end
