@@ -18,7 +18,7 @@ module Aces
       checks    = yield get_people_checks(mec_check, json) if json["people"]
       results   = yield update_mec_check(mec_check, checks)
 
-      publish_to_enroll(results)
+      publish_to_enroll(mec_check, results)
     end
 
     protected
@@ -32,8 +32,10 @@ module Aces
           family_identifier: family,
           type: json["type"]
         }
-      )      
-      results.success? ? results : Failure("Failed to save MEC check: #{results.failure}")
+      )
+
+      return results if results.success?
+      Failure({ error: "Failed to save MEC check: #{results.failure}" })
     end
 
     def get_person_check(mec_check, json)
@@ -41,12 +43,11 @@ module Aces
       person_hash = {}
       person_hash["person"] = { person: json["person"] }
       mc_response = mec_check(person_hash)
-      # return Failure(mc_response.failure) if mc_response.failure?
 
       if mc_response.failure?
         error_result = {
           mc_id: mec_check.id,
-          error: mc_response.failure
+          error: "#{mc_response.failure} on Person: #{person['hbx_id']}"
         }
         return Failure(error_result)
       end
@@ -61,16 +62,15 @@ module Aces
         person_hash = { "person" => {} }
         person_hash["person"]["person"] = person
         mc_response = mec_check(person_hash)
-        # return Failure(mc_response.failure) if mc_response.failure?
 
         if mc_response.failure?
           error_result = {
             mc_id: mec_check.id,
-            error: mc_response.failure
+            error: "#{mc_response.failure} on Person: #{person['hbx_id']}"
           }
           return Failure(error_result)
         end
-        
+
         results[person["hbx_id"]] = mc_response.value!
       end
       Success(results)
@@ -94,17 +94,24 @@ module Aces
     def update_mec_check(mec_check, checks)
       return Success(mec_check) if mec_check.update(applicant_responses: checks)
 
-      # return Failure("Failed to save MEC check response: #{mec_check.errors.to_h}")      
       error_result = {
         mc_id: mec_check.id,
         error: "Failed to save MEC check response: #{mec_check.errors.to_h}"
       }
-      Failure(error_result)  
+      Failure(error_result)
     end
 
-    def publish_to_enroll(payload)
+    def publish_to_enroll(mec_check, payload)
       transfer = Aces::InitiateMecCheckToEnroll.new.call(payload.attributes)
-      transfer.success? ? Success("Transferred MEC Check to Enroll") : Failure(transfer)
+      if transfer.success?
+        Success("Transferred MEC Check to Enroll")
+      else
+        error_result = {
+          mc_id: mec_check.id,
+          error: "Failed to transfer MEC to enroll: #{transfer.failure}"
+        }
+        Failure(error_result)
+      end
     end
   end
 end

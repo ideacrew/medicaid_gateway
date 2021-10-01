@@ -27,7 +27,7 @@ module Aces
       if result.success?
         Success(result.to_h)
       else
-        Failure(result)
+        Failure(result.errors.to_h)
       end
     end
 
