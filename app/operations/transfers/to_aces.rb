@@ -13,22 +13,48 @@ module Transfers
     # then tranfer the result to ACES.
     # @return [Dry::Result]
     def call(params, service)
-      xml        = yield create_transfer_request(params)
-      validated  = yield schema_validation(xml)
+      transfer_id   = yield record_transfer(service, params)
+      xml        = yield generate_xml(params, transfer_id)
+      validated  = yield schema_validation(xml, transfer_id)
       # validated  = yield business_validation(validated)
-      initiate_transfer(validated, service, params)
+      initiate_transfer(validated, service, params, transfer_id)
     end
 
     private
-
-    def create_transfer_request(params)
-      transfer_request = AcaEntities::Atp::Operations::Aces::GenerateXml.new.call(params)
-      Success(transfer_request)
+    
+    def record_transfer(service, params)
+      payload = JSON.parse(params)
+      transfer = Transfers::Create.new.call({ service: service,
+                                   application_identifier: payload["family"]["magi_medicaid_applications"]["hbx_id"] || "application_id not found",
+                                   family_identifier: payload["family"]["hbx_id"] || "family_id not found"
+                                 })
+      transfer.success? ? Success(transfer.id) : Failure("Failed to record transfer: #{transfer.failure}")
     end
 
-    def schema_validation(xml)
+    def generate_xml(params, transfer_id)
+      transfer_request = AcaEntities::Atp::Operations::Aces::GenerateXml.new.call(params)
+      if transfer_request.success?
+        Success(transfer_request)
+      else
+        error_result = {
+          transfer_id: transfer_id,
+          failure: "Generate XML failure: #{transfer_request.failure}"
+        }
+        Failure(error_result)
+      end
+    end
+
+    def schema_validation(xml, transfer_id)
       result = Transfers::ValidateTransferXml.new.call(xml.value!)
-      result.success? ? Success(xml) : Failure(result)
+      if result.success?
+        Success(xml)
+      else
+        error_result = {
+          transfer_id: transfer_id,
+          failure: "Schema validation failure: #{result.failure}"
+        }
+        Failure(error_result)
+      end
     end
 
     def business_validation(xml)
@@ -37,22 +63,29 @@ module Transfers
       result.success? ? Success(xml) : Failure(result)
     end
 
-    def initiate_transfer(payload, service, params)
+    def initiate_transfer(payload, service, params, transfer_id)
       result = if service == "aces"
                  Aces::PublishRawPayload.new.call(payload)
                else
                  Curam::PublishRawPayload.new.call(payload)
                end
-      record_transfer(service, params, result.success? ? result.value! : result.failure)
-      result.success? ? Success("Successfully transferred in account") : Failure("result.failure")
+
+      if result.success?
+        update_transfer(transfer_id, result.value!)
+        Success("Successfully transferred in account") 
+      else
+        error_result = {
+          transfer_id: transfer_id,
+          failure: "Failed to initiate transfer: #{result.failure}"
+        }
+        Failure(error_result)
+      end
     end
 
-    def record_transfer(service, params, response)
-      payload = JSON.parse(params)
-      Transfers::Create.new.call({ service: service,
-                                   application_identifier: payload["family"]["magi_medicaid_applications"]["hbx_id"],
-                                   family_identifier: payload["family"]["hbx_id"],
-                                   response_payload: response.to_json })
+    def update_transfer(transfer_id, response_payload)
+      transfer = Aces::Transfer.find(transfer_id)
+      transfer.update(response_payload)
     end
+    
   end
 end

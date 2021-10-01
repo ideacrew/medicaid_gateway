@@ -9,9 +9,10 @@ class TransferContract < Dry::Validation::Contract
     required(:application_identifier).filled(:string)
     required(:family_identifier).filled(:string)
     required(:service).filled(:string)
-    required(:response_payload).filled(:string)
+    optional(:response_payload).filled(:string)
     optional(:callback_payload).filled(:string)
     optional(:callback_status).filled(:string)
+    optional(:failure).filled(:string)
   end
 
   rule(:response_payload) do
