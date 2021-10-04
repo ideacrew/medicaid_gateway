@@ -12,33 +12,19 @@ module Aces
       end
 
       def service
-        result = ProcessAtpSoapRequest.new.call(request.body)
-        if result.success?
-          transfer_account
-          Aces::RecordAcesSubmission.new.call({
-                                                body: request.body,
-                                                result: result.value!
-                                              })
-          render inline: result.value!, status: 200, content_type: "application/soap+xml"
-        else
-          Aces::RecordAcesSubmission.new.call({
-                                                body: request.body,
-                                                result: result.failure
-                                              })
-          case result.failure
-          when :unknown_user, :invalid_password, :security_header_unreadable
-            head 401
-          when :xml_parse_failed, :missing_body_node
-            head 400
-          else
-            head 500
-          end
-        end
+        record = Aces::InboundTransfer.create!(payload: request.body)
+        result = Aces::ProcessAtpSoapRequest.new.call(request.body, record.id)
+        update_transfer(record.id, result)
+
+        render inline: result.value!, status: 200, content_type: "application/soap+xml" if result.success?
       end
 
-      def transfer_account
-        return unless MedicaidGatewayRegistry.feature_enabled?(:to_ea)
-        Transfers::ToEnroll.new.call(request.body)
+      private
+
+      def update_transfer(id, request)
+        result_text = request.success? ? "Sucessfully Transferred" : request.failure
+        transfer = Aces::InboundTransfer.find(id)
+        transfer.update!(payload: '', result: result_text)
       end
     end
   end
