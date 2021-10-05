@@ -12,7 +12,6 @@ module Aces
     # @return [Dry::Result]
     def call(payload)
       json = JSON.parse(payload)
-
       mec_check = yield create_mec_check(json)
       checks    = yield get_person_check(mec_check, json) if json["person"]
       checks    = yield get_people_checks(mec_check, json) if json["people"]
