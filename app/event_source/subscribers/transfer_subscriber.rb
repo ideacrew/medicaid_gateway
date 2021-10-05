@@ -14,8 +14,15 @@ module Subscribers
 
     # event_source branch: release_0.5.2
     subscribe(:on_enroll_iap_transfers) do |delivery_info, _metadata, response|
+      transfer_type = delivery_info.routing_key == "enroll.iap.transfers.transfer_account" ? "transfer" : "response"
+      puts "transfer_type: #{transfer_type}"
+      puts "delivery_info.routing_key: #{delivery_info.routing_key}"
       phash = JSON.parse(response)
-      result = ::Transfers::ToAces.new.call(JSON.generate(phash.except("service")), phash["service"])
+      if transfer_type == "transfer"
+        result = ::Transfers::ToAces.new.call(JSON.generate(phash.except("service")), phash["service"])
+      else
+        ::Transfers::AddEnrollResponse.new.call(phash)
+      end
 
       if result.success?
         ack(delivery_info.delivery_tag)
@@ -31,14 +38,16 @@ module Subscribers
       end
     rescue StandardError => e
       # In the case of subscriber error, saving details for reporting purposes, repurposing existing fields.
-      Aces::Transfer.new.call(
-        {
-          application_identifier: response.to_s,
-          family_identifier: result,
-          service: "subscriber failure",
-          failure: e
-        }
-      )
+      if transfer_type == transfer
+        Aces::Transfer.new.call(
+          {
+            application_identifier: response.to_s,
+            family_identifier: result,
+            service: "subscriber failure",
+            failure: e
+          }
+        )
+      end
       nack(delivery_info.delivery_tag)
       logger.debug "application_submitted_subscriber_error: baacktrace: #{e.backtrace}; nacked"
     end
