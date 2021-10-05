@@ -4,7 +4,7 @@ require 'dry/monads'
 require 'dry/monads/do'
 
 module Aces
-  # Operation creates persitance MEC check object with
+  # Operation creates MEC check object with
   # application identifier, family identifer, applicant responses
   # and payload type params only.
   class CreateMecCheck
