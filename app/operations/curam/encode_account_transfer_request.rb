@@ -41,8 +41,9 @@ module Curam
 
     def encode_soap_body(built, request)
       str = "<\/soapenv:Header>"
-      pos = built.value!.index(str)
-      Success(built.value!.insert(pos + str.size, "<soapenv:Body>#{request.raw_body}<\/soapenv:Body>"))
+      payload = built.value!
+      pos = payload.index(str)
+      Success(payload.insert(pos + str.size, "<soapenv:Body>#{request.raw_body}<\/soapenv:Body>"))
     end
 
     def encode_soap_envelope(request)

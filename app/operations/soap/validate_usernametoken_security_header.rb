@@ -74,7 +74,7 @@ module Soap
           security_parameters[:created] +
           password
         )
-        (sha_value == security_parameters[:password_value]) ? Success(:ok) : Failure(:invalid_password)
+        (sha_value == security_parameters[:password_value]) ? Success(:ok) : Failure(:invalid_nonce)
       else
         (password == security_parameters[:password_value]) ? Success(:ok) : Failure(:invalid_password)
       end
