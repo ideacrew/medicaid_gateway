@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       get 'medicaid_applications'
       get 'account_transfers'
       get 'medicaid_application_check'
+      get 'mec_checks'
     end
   end
 
