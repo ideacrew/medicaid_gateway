@@ -11,14 +11,25 @@ module Subscribers
         ack(delivery_info.delivery_tag)
         logger.debug "application_submitted_subscriber_message; acked"
       else
-        errors = result.failure.errors.to_h
+        error = result.failure[:error]
+        mc_id = result.failure[:mc_id]
+        mec_check = Aces::MecCheck.find(mc_id)
+        mec_check.update!(failure: error)
         nack(delivery_info.delivery_tag)
-        logger.debug "application_submitted_subscriber_message; nacked due to:#{errors}"
+        logger.debug "application_submitted_subscriber_message; nacked due to: #{error}"
       end
     rescue StandardError => e
+      # In the case of subscriber error, saving details for reporting purposes, repurposing existing fields.
+      Aces::CreateMecCheck.new.call(
+        {
+          application_identifier: response.to_s,
+          family_identifier: result,
+          type: "subscriber failure",
+          failure: e
+        }
+      )
       nack(delivery_info.delivery_tag)
-      logger.debug "application_submitted_subscriber_error: baacktrace: #{e.backtrace}; nacked"
+      logger.debug "application_submitted_subscriber_error: backtrace: #{e.backtrace}; nacked"
     end
-
   end
 end

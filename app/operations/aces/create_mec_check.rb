@@ -4,20 +4,20 @@ require 'dry/monads'
 require 'dry/monads/do'
 
 module Aces
-  # Operation creates persitance application object with
-  # application identifier, family identifer and application results
-  # params only.
+  # Operation creates MEC check object with
+  # application identifier, family identifer, applicant responses
+  # and payload type params only.
   class CreateMecCheck
     include Dry::Monads[:result, :do]
 
-    # @param [Hash] opts The options to create application object
+    # @param [Hash] opts The options to create MEC check object
     # @option opts [Hash] :params MEC Check params
     # @return [Dry::Monads::Result]
     def call(params)
       values = yield validate_params(params)
-      application = yield persist(values)
+      mec_check = yield persist(values)
 
-      Success(application)
+      Success(mec_check)
     end
 
     private
@@ -27,14 +27,14 @@ module Aces
       if result.success?
         Success(result.to_h)
       else
-        Failure(result)
+        Failure(result.errors.to_h)
       end
     end
 
     def persist(values)
-      application = ::Aces::MecCheck.new(values)
-      if application.save
-        Success(application)
+      mec_check = ::Aces::MecCheck.new(values)
+      if mec_check.save
+        Success(mec_check)
       else
         Failure('Unable to persist MEC Check.')
       end

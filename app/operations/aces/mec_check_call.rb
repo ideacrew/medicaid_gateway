@@ -23,11 +23,11 @@ module Aces
 
     def generate_xml(payload)
       transfer_request = ::AcaEntities::Medicaid::MecCheck::Operations::GenerateXml.new.call(payload.to_json)
-      transfer_request.success? ? Success(transfer_request) : Failure("Transform failure")
+      transfer_request.success? ? transfer_request : Failure("Generate XML failure: #{transfer_request.failure}")
     end
 
     def validate_xml(seralized_xml)
-      document = Nokogiri::XML(seralized_xml.value!)
+      document = Nokogiri::XML(seralized_xml)
       xsd_path = File.open(Pathname.pwd.join("spec/test_data/nonesi_mec.xsd"))
       schema_location = File.expand_path(xsd_path)
       schema = Nokogiri::XML::Schema(File.open(schema_location))
@@ -43,7 +43,7 @@ module Aces
     end
 
     def build_check_request(transfer)
-      Aces::BuildAccountTransferRequest.new.call(transfer.value!)
+      Aces::BuildAccountTransferRequest.new.call(transfer)
     end
 
     def encode_check(payload)

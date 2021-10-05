@@ -44,14 +44,16 @@ module Aces
       result = Try do
         MedicaidGatewayRegistry[:aces_connection].setting(:aces_atp_service_username).item
       end
-      result.or(Failure("Failed to find setting: :aces_connection, :aces_atp_service_username"))
+      return Failure("Failed to find setting: :aces_connection, :aces_atp_service_username") if result.failure?
+      result.nil? ? Failure(":aces_atp_service_username cannot be nil") : result
     end
 
     def read_password_setting
       result = Try do
         MedicaidGatewayRegistry[:aces_connection].setting(:aces_atp_service_password).item
       end
-      result.or(Failure("Failed to find setting: :aces_connection, :aces_atp_service_password"))
+      return Failure("Failed to find setting: :aces_connection, :aces_atp_service_password") if result.failure?
+      result.nil? ? Failure(":aces_atp_service_password cannot be nil") : result
     end
 
     def generate_nonce

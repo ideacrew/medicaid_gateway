@@ -21,7 +21,8 @@ module Aces
       result = Try do
         MedicaidGatewayRegistry[:aces_connection].setting(:aces_mec_check_uri).item
       end
-      result.or(Failure("Failed to find setting: :aces_connection, :aces_mec_check_uri"))
+      return Failure("Failed to find setting: :aces_connection, :aces_mec_check_uri") if result.failure?
+      result.nil? ? Failure(":aces_mec_check_uri cannot be nil") : result
     end
 
     def submit_request(service_uri, payload)
@@ -33,7 +34,7 @@ module Aces
           "Content-Type" => "application/soap+xml;charset=UTF-8"
         )
       end
-      result.or(Failure(result.exception))
+      result.or(Failure("MEC check submit request failed with: #{result.exception}"))
     end
   end
 end
