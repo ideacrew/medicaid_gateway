@@ -12,12 +12,14 @@ module Aces
 
     # @param [IO] body the body of the request
     # @return [Dry::Result]
-    def call(body)
+    def call(body, transfer_id)
       parsed_payload = yield parse_xml(body)
+      _identifier = yield get_id(parsed_payload, transfer_id)
       _validation_result = yield validate_soap_header(parsed_payload)
       body_node = yield extract_top_body_node(parsed_payload)
       string_payload = yield convert_to_document_string(body_node)
-      run_validations_and_serialize(string_payload)
+      serialized = run_validations_and_serialize(string_payload)
+      transfer_account(serialized)
     end
 
     protected
@@ -38,6 +40,17 @@ module Aces
       end
       return Failure(:xml_parse_failed) if parse_result.success? && parse_result.value!.blank?
       parse_result.or(Failure(:xml_parse_failed))
+    end
+
+    def get_id(payload, transfer_id)
+      parent_node = payload.xpath("//xmlns:TransferActivity", "xmlns" => "http://at.dsh.cms.gov/extension/1.0")
+      identity_tag = parent_node.xpath(".//ns3:IdentificationID", "ns3" => "http://niem.gov/niem/niem-core/2.0")
+
+      return Failure("XML error: ID tag missing.") if identity_tag.empty?
+
+      transfer = Aces::InboundTransfer.find(transfer_id)
+      transfer.update!(external_id: identity_tag.text)
+      Success(identity_tag.text)
     end
 
     def validate_soap_header(document)
@@ -109,5 +122,11 @@ module Aces
         (["Payload Failed XML Schema Validation:"] + error_messages).join("\n")
       end
     end
+
+    def transfer_account(payload)
+      return payload unless MedicaidGatewayRegistry.feature_enabled?(:to_ea)
+      Transfers::ToEnroll.new.call(payload.value!)
+    end
+
   end
 end

@@ -19,6 +19,11 @@ class ReportsController < ApplicationController
     @transfers = Aces::Transfer.where(created_at: range).or(updated_at: range)
   end
 
+  def mec_checks
+    @range = range_from_params
+    @checks = Aces::MecCheck.where(created_at: @range).or(updated_at: @range)
+  end
+
   private
 
   def range_from_params

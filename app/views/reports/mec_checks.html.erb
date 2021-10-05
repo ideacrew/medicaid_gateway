@@ -1,0 +1,31 @@
+<h1>Mec Checks from <%= @range %></h1>
+<table>
+	<thead>
+		<th>Application ID</th>
+		<th>Family HBX ID</th>
+		<th>Result</th>
+		<th>Result Details</th>
+		<th>Checked On</th>
+	</thead>
+	<tbody>
+		<% @checks.each do |check| %>
+			<tr>
+				<td><%= check.application_identifier %></td>
+				<td><%= check.family_identifier %></td>
+				<td><%= check.failure.nil? ? "Success" : "Failure" %></td>
+				<td style="max-width: 800px">
+					<% unless check.failure.nil? %>
+						<%= check.failure %>
+					<% end %>
+					<% unless check.applicant_responses.nil? %>
+						<% JSON.parse(check.applicant_responses.to_json).each_with_index do |resp, i| %>
+							<%= raw("<br />") unless i ==0 %>
+							<%= resp[0] %>: <%= resp[1] %> 
+						<% end %>
+					<% end %>
+				</td>
+				<td><%= check.created_at %></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>

@@ -26,5 +26,7 @@ module Aces
     # Callback response status from the service
     field :callback_status, type: String
 
+    # Record of transfer failure
+    field :failure, type: String
   end
 end

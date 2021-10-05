@@ -78,4 +78,34 @@ RSpec.describe "Reports", type: :request, dbclean: :after_each do
       expect(page).to have_content(old_transfer.application_identifier)
     end
   end
+
+  describe "GET /reports/mec_checks" do
+
+    it "generates mec check report"  do
+      visit '/reports/mec_checks'
+      expect(page).to have_content("Mec Checks")
+    end
+
+    it "shows the previous 24 hours without params" do
+      create :mec_check, created_at: 2.days.ago, updated_at: 2.days.ago, application_identifier: "100745"
+      visit '/reports/account_transfers'
+
+      expect(page).to_not have_content("100745")
+    end
+
+    it "accepts and uses date params" do
+      old_mc = create :mec_check, created_at: 1.day.ago, updated_at: 1.day.ago
+      start_on = 2.days.ago.strftime('%m/%d/%Y')
+      visit "/reports/mec_checks?start_on=#{start_on}"
+
+      expect(page).to have_content(old_mc.application_identifier)
+    end
+
+    it "displays failure if not nil" do
+      create :mec_check, failure: 'Generate XML failure'
+      visit "/reports/mec_checks"
+
+      expect(page).to have_content('Generate XML failure')
+    end
+  end
 end

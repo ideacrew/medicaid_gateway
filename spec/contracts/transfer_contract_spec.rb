@@ -8,15 +8,16 @@ RSpec.describe ::TransferContract, dbclean: :after_each do
     {
       application_identifier: "AI123",
       family_identifier: "F123",
-      service: "serv",
-      response_payload: "{\"k\": \"v\"}"
+      service: "serv"
     }
   end
 
   let(:optional_params) do
     {
+      response_payload: "{\"k\": \"v\"}",
       callback_status: "status",
-      callback_payload: "{\"k\": \"v\"}"
+      callback_payload: "{\"k\": \"v\"}",
+      failure: "Failure: whatever"
     }
   end
 
