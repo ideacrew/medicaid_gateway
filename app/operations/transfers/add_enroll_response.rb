@@ -17,6 +17,7 @@ module Transfers
     private
 
     def get_transfer(params)
+      puts params
       transfer_id = params["transfer_id"]
       transfer = Aces::InboundTransfer.find_by(external_id: transfer_id)
       transfer ? Success(transfer) : Failure("Failed to find transfer for application: #{transfer_id}")

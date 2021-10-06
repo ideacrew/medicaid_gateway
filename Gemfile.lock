@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ideacrew/aca_entities.git
-  revision: 2ad220db62ef88d37d7c50f7ad760e83a8a4705f
+  revision: 02b04b1f220af1d3d3e4a4b297e85d26089f21c8
   branch: atp_response_event
   specs:
     aca_entities (0.8.0)

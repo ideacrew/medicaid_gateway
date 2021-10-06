@@ -1,14 +1,4 @@
-# frozen_string_literal: true
-
-require "rails_helper"
-require 'aca_entities/serializers/xml/medicaid/atp'
-require 'aca_entities/atp/transformers/cv/family'
-
-describe Transfers::ToEnroll, "given a soap envelope with an valid xml payload, transfer it to Enroll" do
-  let(:body) { StringIO.new(raw_xml) }
-  let(:raw_xml) do
-    <<-XMLCODE
-    <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:ns="http://at.dsh.cms.gov/exchange/1.0" xmlns:ns1="http://niem.gov/niem/structures/2.0" xmlns:ns2="http://at.dsh.cms.gov/extension/1.0" xmlns:ns3="http://niem.gov/niem/niem-core/2.0" xmlns:hix="http://hix.cms.gov/0.1/hix-core" xmlns:hix1="http://hix.cms.gov/0.1/hix-ee" xmlns:ns4="http://niem.gov/niem/domains/screening/2.1" xmlns:hix2="http://hix.cms.gov/0.1/hix-pm">
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:ns="http://at.dsh.cms.gov/exchange/1.0" xmlns:ns1="http://niem.gov/niem/structures/2.0" xmlns:ns2="http://at.dsh.cms.gov/extension/1.0" xmlns:ns3="http://niem.gov/niem/niem-core/2.0" xmlns:hix="http://hix.cms.gov/0.1/hix-core" xmlns:hix1="http://hix.cms.gov/0.1/hix-ee" xmlns:ns4="http://niem.gov/niem/domains/screening/2.1" xmlns:hix2="http://hix.cms.gov/0.1/hix-pm">
     <soap:Header>
        <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
           <wsse:UsernameToken wsu:Id="UsernameToken-73590BD4745C9F3F7814189343300461">
@@ -127,7 +117,7 @@ describe Transfers::ToEnroll, "given a soap envelope with an valid xml payload, 
           <nc:PersonName>
             <nc:PersonGivenName>Simple</nc:PersonGivenName>
             <nc:PersonMiddleName>Transfer1</nc:PersonMiddleName>
-            <nc:PersonSurName>L2</nc:PersonSurName>
+            <nc:PersonSurName>L3</nc:PersonSurName>
             <nc:PersonFullName>Simple Transfer L2</nc:PersonFullName>
           </nc:PersonName>
           <nc:PersonRaceText>White</nc:PersonRaceText>
@@ -344,12 +334,12 @@ describe Transfers::ToEnroll, "given a soap envelope with an valid xml payload, 
           <nc:PersonName>
             <nc:PersonGivenName>Robert</nc:PersonGivenName>
             <nc:PersonSurName>test2</nc:PersonSurName>
-            <nc:PersonFullName>Robert test2</nc:PersonFullName>
+            <nc:PersonFullName>Robert test3</nc:PersonFullName>
           </nc:PersonName>
           <nc:PersonRaceText>White</nc:PersonRaceText>
           <nc:PersonSexText>male</nc:PersonSexText>
           <nc:PersonSSNIdentification>
-            <nc:IdentificationID>213828539</nc:IdentificationID>
+            <nc:IdentificationID>213828500</nc:IdentificationID>
           </nc:PersonSSNIdentification>
           <nc:PersonUSCitizenIndicator>true</nc:PersonUSCitizenIndicator>
           <hix-core:TribalAugmentation>
@@ -439,27 +429,3 @@ describe Transfers::ToEnroll, "given a soap envelope with an valid xml payload, 
       </ex:AccountTransferRequest>
     </soap:Body>
     </soap:Envelope>
-    XMLCODE
-  end
-  let(:document) { Nokogiri::XML(raw_xml) }
-
-  let(:process) { described_class.new }
-
-  let(:processed) { process.call(body) }
-
-  context 'success' do
-    context 'with valid application' do
-      before do
-        @result = process.call(document)
-      end
-
-      it 'should return success message' do
-        expect(@result).to be_success
-      end
-
-      it 'should return success with message' do
-        expect(@result.success).to eq("Transferred account to Enroll")
-      end
-    end
-  end
-end

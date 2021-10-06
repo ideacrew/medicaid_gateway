@@ -21,7 +21,7 @@ module Subscribers
       if transfer_type == "transfer"
         result = ::Transfers::ToAces.new.call(JSON.generate(phash.except("service")), phash["service"])
       else
-        ::Transfers::AddEnrollResponse.new.call(phash)
+        result = ::Transfers::AddEnrollResponse.new.call(phash)
       end
 
       if result.success?
