@@ -19,7 +19,7 @@ ARG YARN_VERSION
 # Install required packages/libraries
 RUN apt-get update && \
     apt-get -yq dist-upgrade && \
-    apt-get install -y default-jre git gcc openssl libyaml-dev libyaml-cpp-dev libyaml-cpp0.6 libffi-dev libffi6 libreadline-dev \
+    apt-get install -y default-jre git gcc openssl libyaml-dev libyaml-cpp-dev libyaml-cpp0.6 libffi-dev libffi6 libreadline-dev libsodium-dev \
     zlibc libgdbm-dev libncurses-dev autoconf fontconfig unzip zip sshpass bzip2 libxrender1 libxext6 \
     build-essential nodejs yarn=$YARN_VERSION-1 && \
     apt-get autoremove -y
