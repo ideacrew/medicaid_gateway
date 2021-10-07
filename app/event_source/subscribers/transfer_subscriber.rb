@@ -31,8 +31,8 @@ module Subscribers
         error = result.failure[:error]
         if transfer
           transfer_id = result.failure[:transfer_id]
-          transfer = Aces::Transfer.find(transfer_id)
-          transfer.update!(failure: error)
+          outbound_transfer = Aces::Transfer.find(transfer_id)
+          outbound_transfer.update!(failure: error)
         end
         nack(delivery_info.delivery_tag)
         logger.debug "application_submitted_subscriber_message; nacked due to:#{errors}"
@@ -48,6 +48,10 @@ module Subscribers
             failure: e
           }
         )
+      else
+        ib_transfer_id = phash["transfer_id"]
+        inbound_transfer = Aces::InboundTransfer.where(external_id: ib_transfer_id).last
+        inbound_transfer.update!(failure: true)
       end
       nack(delivery_info.delivery_tag)
       logger.debug "application_submitted_subscriber_error: baacktrace: #{e.backtrace}; nacked"

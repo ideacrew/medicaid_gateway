@@ -8,7 +8,7 @@ ruby '2.7.2'
 # Mount the Engines
 gem 'mitc_service', path: 'components/mitc_service'
 
-gem 'aca_entities',  git:  'https://github.com/ideacrew/aca_entities.git', branch: 'atp_response_event'
+gem 'aca_entities',  git:  'https://github.com/ideacrew/aca_entities.git', branch: 'release_0.9.0'
 gem 'event_source',  git:  'https://github.com/ideacrew/event_source.git', branch: 'release_0.5.5'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
@@ -29,6 +29,8 @@ gem 'jbuilder', '~> 2.7'
 # gem 'bcrypt', '~> 3.1.7'
 # Bootstrap for styling
 gem 'bootstrap', '~> 5.1.0'
+# To prettify json payloads
+gem 'awesome_print'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false

@@ -24,5 +24,7 @@ module Aces
     # For example: EA's FinancialAssistance::Family's hbx_id
     field :family_identifier, type: String
 
+    field :failure, type: String
+
   end
 end

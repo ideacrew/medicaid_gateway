@@ -28,8 +28,5 @@ module Aces
 
     # Record of transfer failure
     field :failure, type: String
-
-    # Inbound transfer id
-    field :external_id, type: String
   end
 end
