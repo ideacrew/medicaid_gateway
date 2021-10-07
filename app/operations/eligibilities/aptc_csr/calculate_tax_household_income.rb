@@ -50,6 +50,8 @@ module Eligibilities
 
       def calculate_eligibility_date
         current_date = Date.today
+        return Date.new(@application.assistance_year) if current_date.year < @application.assistance_year
+
         oe_start_on = @application.oe_start_on
         end_of_year = oe_start_on.end_of_year
         if (oe_start_on..end_of_year).cover?(current_date)
