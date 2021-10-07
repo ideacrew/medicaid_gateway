@@ -1,19 +1,23 @@
-<table>
+<h1>Account Transfers</h1>
+<p><%= @range %></p>
+<table class="table table-striped table-responsive"  style="table-layout:fixed; width:100%; word-wrap: break-word;">
 	<thead>
-		<th>Service</th>
+		<th>To</th>
 		<th>Creation Date</th>
 		<th>Family HBX Id</th>
 		<th>Application HBX Id</th>
+		<th>Status</th>
 		<th>Response</th>
 	</thead>
 	<tbody>
 		<% @transfers.each do |transfer| %>
 			<tr>
-				<td><%= transfer.service %></td>
+				<td><%= transfer.class == Aces::Transfer ? "#{transfer.service.upcase}" : "Enroll" %></td>
 				<td><%= transfer.created_at %></td>
 				<td><%= transfer.family_identifier %></td>
 				<td><%= transfer.application_identifier %></td>
-				<td style="max-width: 800px"><%= transfer.response_payload %></td>
+				<td><%= transfer.callback_status %></td>
+				<td><p class="text-truncate"><%= transfer.response_payload %></p></td>
 			</tr>
 		<% end %>
 	</tbody>

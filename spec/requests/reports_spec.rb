@@ -60,7 +60,7 @@ RSpec.describe "Reports", type: :request, dbclean: :after_each do
 
     it "generates transfer report"  do
       visit '/reports/account_transfers'
-      expect(page).to have_content("Service")
+      expect(page).to have_content("Account Transfer")
     end
 
     it "shows the previous 24 hours without params" do

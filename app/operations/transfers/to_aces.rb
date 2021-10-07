@@ -72,7 +72,7 @@ module Transfers
                end
 
       if result.success?
-        update_transfer(transfer_id, result.value!)
+        update_transfer(transfer_id, result.value!, service)
         Success("Successfully transferred in account")
       else
         error_result = {
@@ -83,9 +83,17 @@ module Transfers
       end
     end
 
-    def update_transfer(transfer_id, response)
+    def update_transfer(transfer_id, response, service)
       transfer = Aces::Transfer.find(transfer_id)
-      transfer.update!(response_payload: response.to_json)
+      response_json = response.to_json
+      if service == "aces"
+        xml = Nokogiri::XML(response.to_hash[:body])
+        status = xml.xpath('//tns:ResponseDescriptionText', 'tns' => 'http://hix.cms.gov/0.1/hix-core')
+        status_text = status.any? ? status.last.text : "N/A"
+        transfer.update!(response_payload: response_json, callback_status: status_text)
+      else
+        transfer.update!(response_payload: response_json)
+      end
     end
 
   end

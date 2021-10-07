@@ -1,18 +1,19 @@
-<h1>Mec Checks from <%= @range %></h1>
-<table>
+<h1>Mec Checks</h1>
+<p><%= @range %></p>
+<table class="table table-striped">
 	<thead>
+		<th>Result</th>
 		<th>Application ID</th>
 		<th>Family HBX ID</th>
-		<th>Result</th>
 		<th>Result Details</th>
 		<th>Checked On</th>
 	</thead>
 	<tbody>
 		<% @checks.each do |check| %>
-			<tr>
+			<tr >
+				<td class="<%= check.failure.nil? ? 'table-success' : 'table-danger' %>"><%= check.failure.nil? ? "Success" : "Failure" %></td>
 				<td><%= check.application_identifier %></td>
 				<td><%= check.family_identifier %></td>
-				<td><%= check.failure.nil? ? "Success" : "Failure" %></td>
 				<td style="max-width: 800px">
 					<% unless check.failure.nil? %>
 						<%= check.failure %>
@@ -20,7 +21,7 @@
 					<% unless check.applicant_responses.nil? %>
 						<% JSON.parse(check.applicant_responses.to_json).each_with_index do |resp, i| %>
 							<%= raw("<br />") unless i ==0 %>
-							<%= resp[0] %>: <%= resp[1] %> 
+							Person <%= resp[0] %>: <%= resp[1] %> 
 						<% end %>
 					<% end %>
 				</td>

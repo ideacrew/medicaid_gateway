@@ -145,9 +145,15 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     amq-protocol (2.3.2)
     ast (2.4.2)
+    autoprefixer-rails (10.3.3.0)
+      execjs (~> 2)
     bindex (0.8.1)
     bootsnap (1.9.1)
       msgpack (~> 1.0)
+    bootstrap (5.1.0)
+      autoprefixer-rails (>= 9.1.0)
+      popper_js (>= 2.9.3, < 3)
+      sassc-rails (>= 2.0.0)
     bson (4.12.1)
     builder (3.2.4)
     bunny (2.19.0)
@@ -246,6 +252,7 @@ GEM
       tzinfo
     ethon (0.14.0)
       ffi (>= 1.15.0)
+    execjs (2.8.1)
     eye (0.10.0)
       celluloid (~> 0.17.3)
       celluloid-io (~> 0.17.0)
@@ -337,6 +344,7 @@ GEM
     parallel (1.21.0)
     parser (3.0.2.0)
       ast (~> 2.4.1)
+    popper_js (2.9.3)
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -523,6 +531,7 @@ PLATFORMS
 DEPENDENCIES
   aca_entities!
   bootsnap (>= 1.4.4)
+  bootstrap (~> 5.1.0)
   byebug
   capybara (~> 3.12)
   database_cleaner (~> 1.7)
