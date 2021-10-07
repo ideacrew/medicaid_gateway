@@ -5,7 +5,3 @@ registry:
     features:
       - key: :to_ea
         is_enabled: false
-      - key: :to_curam
-        is_enabled: false
-      - key: :to_aces
-        is_enabled: false
