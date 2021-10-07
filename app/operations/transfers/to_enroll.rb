@@ -10,9 +10,9 @@ module Transfers
 
     # @param [String] Take in the raw payload and serialize and transform it, then tranfer the result to EA.
     # @return [Dry::Result]
-    def call(params)
+    def call(params, transfer_id)
       payload = yield create_transfer(params)
-      transformed_params = yield transform_params(payload)
+      transformed_params = yield transform_params(payload, transfer_id)
       initiate_transfer(transformed_params)
     end
 
@@ -24,9 +24,15 @@ module Transfers
       Success(result)
     end
 
-    def transform_params(result)
+    def transform_params(result, transfer_id)
       transformed = ::AcaEntities::Atp::Transformers::Cv::Family.transform(result.to_hash(identifier: true))
+      update_transfer(transfer_id, transformed[:family][:magi_medicaid_applications][0][:transfer_id])
       Success(transformed)
+    end
+
+    def update_transfer(transfer_id, external_id)
+      transfer = Aces::InboundTransfer.find(transfer_id)
+      transfer.update!(external_id: external_id)
     end
 
     def initiate_transfer(payload)

@@ -18,8 +18,8 @@ module Aces
       _validation_result = yield validate_soap_header(parsed_payload)
       body_node = yield extract_top_body_node(parsed_payload)
       string_payload = yield convert_to_document_string(body_node)
-      serialized = run_validations_and_serialize(string_payload)
-      transfer_account(serialized)
+      _serialized = yield run_validations_and_serialize(string_payload)
+      transfer_account(string_payload, transfer_id)
     end
 
     protected
@@ -31,7 +31,8 @@ module Aces
     end
 
     def run_business_validations(string_payload)
-      Transfers::ExecuteBusinessXmlValidations.new.call(string_payload)
+      # Transfers::ExecuteBusinessXmlValidations.new.call(string_payload)
+      Success(string_payload)
     end
 
     def parse_xml(body)
@@ -123,9 +124,9 @@ module Aces
       end
     end
 
-    def transfer_account(payload)
-      return payload unless MedicaidGatewayRegistry.feature_enabled?(:to_ea)
-      Transfers::ToEnroll.new.call(payload.value!)
+    def transfer_account(payload, transfer_id)
+      # return payload unless MedicaidGatewayRegistry.feature_enabled?(:to_ea)
+      Transfers::ToEnroll.new.call(payload, transfer_id)
     end
 
   end

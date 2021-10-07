@@ -29,6 +29,8 @@ gem 'jbuilder', '~> 2.7'
 # gem 'bcrypt', '~> 3.1.7'
 # Bootstrap for styling
 gem 'bootstrap', '~> 5.1.0'
+# To prettify json payloads
+gem 'awesome_print'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
