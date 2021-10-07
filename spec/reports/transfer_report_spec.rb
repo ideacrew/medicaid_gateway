@@ -5,6 +5,7 @@ require 'rails_helper'
 RSpec.describe TransferReport, dbclean: :after_each do
   before :all do
     DatabaseCleaner.clean
+    Dir[Rails.root.join("transfer_report_*.csv")].each { |filename| FileUtils.rm_rf(filename) }
   end
 
   describe "#run" do
@@ -37,10 +38,6 @@ RSpec.describe TransferReport, dbclean: :after_each do
       it 'should return proper values for header ResponsePayload' do
         expect(@report_content['ResponsePayload']).to include(transfer.response_payload)
       end
-    end
-
-    after :all do
-      Dir[Rails.root.join("transfer_report_*.csv")].each { |filename| FileUtils.rm_rf(filename) }
     end
   end
 end

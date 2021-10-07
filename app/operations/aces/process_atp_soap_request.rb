@@ -31,8 +31,8 @@ module Aces
     end
 
     def run_business_validations(string_payload)
-      Transfers::ExecuteBusinessXmlValidations.new.call(string_payload)
       # Success(string_payload)
+      Transfers::ExecuteBusinessXmlValidations.new.call(string_payload)
     end
 
     def parse_xml(body)
@@ -125,7 +125,7 @@ module Aces
     end
 
     def transfer_account(payload, transfer_id)
-      return payload unless MedicaidGatewayRegistry.feature_enabled?(:to_ea)
+      return Success(payload) unless MedicaidGatewayRegistry.feature_enabled?(:to_ea)
       Transfers::ToEnroll.new.call(payload, transfer_id)
     end
 
