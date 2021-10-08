@@ -46,7 +46,7 @@ module Aces
       if mc_response.failure?
         error_result = {
           mc_id: mec_check.id,
-          error: "#{mc_response.failure} on Person: #{person['hbx_id']}"
+          error: "#{mc_response.failure} in get_person_check}"
         }
         return Failure(error_result)
       end
