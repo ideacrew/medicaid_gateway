@@ -5,7 +5,6 @@ require 'rails_helper'
 RSpec.describe TransferReport, dbclean: :after_each do
   before :all do
     DatabaseCleaner.clean
-    Dir[Rails.root.join("transfer_report_*.csv")].each { |filename| FileUtils.rm_rf(filename) }
   end
 
   describe "#run" do
@@ -13,6 +12,7 @@ RSpec.describe TransferReport, dbclean: :after_each do
       let!(:transfer) { FactoryBot.create(:transfer) }
 
       before do
+        Dir[Rails.root.join("transfer_report_*.csv")].each { |filename| FileUtils.rm_rf(filename) }
         TransferReport.run
         report_file = Dir[Rails.root.join("transfer_report_*.csv")].first
         @report_content = CSV.read(report_file, headers: true)
