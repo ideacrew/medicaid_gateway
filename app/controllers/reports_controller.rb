@@ -3,6 +3,18 @@
 # ReportsController provides API access to reports
 class ReportsController < ApplicationController
 
+  def events
+    @start_on = session[:start] || Date.today
+    @end_on = session[:end] || Date.today
+    range = @start_on.beginning_of_day..@end_on.end_of_day
+
+    @applications = Medicaid::Application.where(created_at: range).or(updated_at: range).limit(10)
+    @transfers = Aces::Transfer.where(created_at: range).or(updated_at: range).limit(10)
+    @inbound_transfers = Aces::InboundTransfer.where(created_at: range).or(updated_at: range).limit(10)
+    @checks = Aces::MecCheck.where(created_at: range).or(updated_at: range).limit(10)
+    # for each we want type, success /created_at/application_identifier?
+  end
+
   def medicaid_applications
     range = range_from_params
     applications = Medicaid::Application.where(created_at: range).or(updated_at: range)
@@ -10,35 +22,52 @@ class ReportsController < ApplicationController
   end
 
   def medicaid_application_check
-    @range = range_from_params
-    @applications = Medicaid::Application.where(created_at: @range).or(updated_at: @range)
+    start_on = Date.strptime(params.fetch(:start_on), "%m/%d/%Y") if params.key?(:start_on)
+    @start_on = start_on || session[:ma_start] || Date.today
+    end_on = Date.strptime(params.fetch(:end_on), "%m/%d/%Y") if params.key?(:end_on)
+    @end_on = end_on || session[:ma_end] || Date.today
+    range = @start_on.beginning_of_day..@end_on.end_of_day
+    @applications = Medicaid::Application.where(created_at: range).or(updated_at: range)
   end
 
   def account_transfers
-    @range = range_from_params
-    @transfers = Aces::Transfer.where(created_at: @range).or(updated_at: @range)
+    start_on = Date.strptime(params.fetch(:start_on), "%m/%d/%Y") if params.key?(:start_on)
+    @start_on = start_on || session[:atp_start] || Date.today
+    end_on = Date.strptime(params.fetch(:end_on), "%m/%d/%Y") if params.key?(:end_on)
+    @end_on = end_on || session[:atp_end] || Date.today
+    range = @start_on.beginning_of_day..@end_on.end_of_day
+    @transfers = Aces::Transfer.where(created_at: range).or(updated_at: range)
   end
 
   def account_transfers_to_enroll
-    @range = range_from_params
-    @transfers = Aces::InboundTransfer.where(created_at: @range).or(updated_at: @range)
+    start_on = Date.strptime(params.fetch(:start_on), "%m/%d/%Y") if params.key?(:start_on)
+    @start_on = start_on || session[:atp_start] || Date.today
+    end_on = Date.strptime(params.fetch(:end_on), "%m/%d/%Y") if params.key?(:end_on)
+    @end_on = end_on || session[:atp_end] || Date.today
+    range = @start_on.beginning_of_day..@end_on.end_of_day
+    @transfers = Aces::InboundTransfer.where(created_at: range).or(updated_at: range)
   end
 
   def mec_checks
-    @range = range_from_params
-    @checks = Aces::MecCheck.where(created_at: @range).or(updated_at: @range)
+    start_on = Date.strptime(params.fetch(:start_on), "%m/%d/%Y") if params.key?(:start_on)
+    @start_on = start_on || session[:mc_sent_start] || Date.today
+    @end_on = session[:mc_sent_end] || Date.today
+    range = @start_on.beginning_of_day..@end_on.end_of_day
+    @checks = Aces::MecCheck.where(created_at: range).or(updated_at: range)
   end
 
   def transfer_summary
-    @range = range_from_params
-    @start_on = params.fetch(:start_on) if params.key?(:start_on)
-    @end_on = params.fetch(:end_on) if params.key?(:end_on)
-    at_sent = Aces::Transfer.where(created_at: @range).or(updated_at: @range)
+    start_on = Date.strptime(params.fetch(:start_on), "%m/%d/%Y") if params.key?(:start_on)
+    @start_on = start_on || session[:atp_start] || Date.today
+    end_on = Date.strptime(params.fetch(:end_on), "%m/%d/%Y") if params.key?(:end_on)
+    @end_on = end_on || session[:atp_end] || Date.today
+    range = @start_on.beginning_of_day..@end_on.end_of_day
+    at_sent = Aces::Transfer.where(created_at: range).or(updated_at: range)
     @at_sent_total = at_sent.count
     @at_sent_successful = at_sent.where(failure: nil).count
     @at_sent_failure = @at_sent_total - @at_sent_successful
 
-    at_received = Aces::InboundTransfer.where(created_at: @range).or(updated_at: @range)
+    at_received = Aces::InboundTransfer.where(created_at: range).or(updated_at: range)
     @at_received_total = at_received.count
     @at_received_successful = at_received.where(failure: nil).count
     @at_received_failure = @at_received_total - @at_received_successful

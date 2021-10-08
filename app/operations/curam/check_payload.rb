@@ -19,9 +19,9 @@ module Curam
 
     protected
 
-    def find_transfer(application_id)
-      transfers = Aces::Transfer.where(application_identifier: application_id)
-      transfers.any? ? transfers.last : Failure(:no_transfers_found)
+    def find_transfer(transfer_id)
+      transfer = Aces::Transfer.find(transfer_id)
+      transfer || Failure(:no_transfers_found)
     end
 
     def build_check_request(transfer)

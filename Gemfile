@@ -79,3 +79,5 @@ group :production do
   gem 'eye',     '0.10.0'
   gem 'unicorn', '~> 4.8'
 end
+
+gem "stimulus_reflex", "~> 3.4"
