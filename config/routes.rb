@@ -24,6 +24,7 @@ Rails.application.routes.draw do
       get 'transfer_summary'
       get 'medicaid_application_check'
       get 'mec_checks'
+      get 'events'
     end
   end
 
