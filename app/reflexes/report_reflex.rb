@@ -2,7 +2,6 @@
 
 # Update report pages based on user actions
 class ReportReflex < ApplicationReflex
-  def 
 
   def change_date
     session_name = element.dataset[:session]
