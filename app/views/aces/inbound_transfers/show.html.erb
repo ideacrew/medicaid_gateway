@@ -19,6 +19,9 @@
 <%= @transfer.payload %>
 <% end %>
 
-
-
-<%= link_to "See today's account transfers to Enroll", account_transfers_to_enroll_reports_path %>
+<% unless @transfer.failure.blank? %>
+<h2>Failure Details:</h2>
+<%= @transfer.failure %>
+<% end %>
+<br />
+<%= link_to "Sent Transfers Report", account_transfers_to_enroll_reports_path, class: 'btn btn-primary' %>
