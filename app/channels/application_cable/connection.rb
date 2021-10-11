@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module ApplicationCable
+
+  # stimulus reflex connection differentiator
   class Connection < ActionCable::Connection::Base
     identified_by :session_id
 

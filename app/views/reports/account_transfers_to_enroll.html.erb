@@ -16,7 +16,7 @@
 	<tbody>
 		<% @transfers.each do |transfer| %>
 			<tr>
-				<td class="<%= transfer.failure.nil? ? 'table-success' : 'table-danger' %>"><%= transfer.failure.nil? ? 'Success' : 'Failure' %></td>
+				<td class="<%= transfer.successful? ? 'table-success' : 'table-danger' %>"><%= transfer.successful? ? "Success" : "Failure" %></td>
 				<td><%= transfer.created_at %></td>
 				<td><%= transfer.external_id %></td>
 				<td><%= transfer.family_identifier %></td>
