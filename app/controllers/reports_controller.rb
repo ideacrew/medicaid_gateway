@@ -8,11 +8,12 @@ class ReportsController < ApplicationController
     @end_on = session[:end] || Date.today
     range = @start_on.beginning_of_day..@end_on.end_of_day
 
-    @applications = Medicaid::Application.where(created_at: range).or(updated_at: range).limit(10)
-    @transfers = Aces::Transfer.where(created_at: range).or(updated_at: range).limit(10)
-    @inbound_transfers = Aces::InboundTransfer.where(created_at: range).or(updated_at: range).limit(10)
-    @checks = Aces::MecCheck.where(created_at: range).or(updated_at: range).limit(10)
-    # for each we want type, success /created_at/application_identifier?
+    applications = Medicaid::Application.where(created_at: range).or(updated_at: range)
+    transfers = Aces::Transfer.where(created_at: range).or(updated_at: range)
+    inbound_transfers = Aces::InboundTransfer.where(created_at: range).or(updated_at: range)
+    checks = Aces::MecCheck.where(created_at: range).or(updated_at: range)
+    events = applications + transfers + inbound_transfers + checks
+    @events = events.map(&:to_event).sort_by { |event| event[:created_at] }.reverse
   end
 
   def medicaid_applications
@@ -27,7 +28,7 @@ class ReportsController < ApplicationController
     end_on = Date.strptime(params.fetch(:end_on), "%m/%d/%Y") if params.key?(:end_on)
     @end_on = end_on || session[:ma_end] || Date.today
     range = @start_on.beginning_of_day..@end_on.end_of_day
-    @applications = Medicaid::Application.where(created_at: range).or(updated_at: range)
+    @applications = Medicaid::Application.where(created_at: range).or(updated_at: range).reverse
   end
 
   def account_transfers
@@ -36,7 +37,7 @@ class ReportsController < ApplicationController
     end_on = Date.strptime(params.fetch(:end_on), "%m/%d/%Y") if params.key?(:end_on)
     @end_on = end_on || session[:atp_end] || Date.today
     range = @start_on.beginning_of_day..@end_on.end_of_day
-    @transfers = Aces::Transfer.where(created_at: range).or(updated_at: range)
+    @transfers = Aces::Transfer.where(created_at: range).or(updated_at: range).reverse
   end
 
   def account_transfers_to_enroll
@@ -45,7 +46,7 @@ class ReportsController < ApplicationController
     end_on = Date.strptime(params.fetch(:end_on), "%m/%d/%Y") if params.key?(:end_on)
     @end_on = end_on || session[:atp_end] || Date.today
     range = @start_on.beginning_of_day..@end_on.end_of_day
-    @transfers = Aces::InboundTransfer.where(created_at: range).or(updated_at: range)
+    @transfers = Aces::InboundTransfer.where(created_at: range).or(updated_at: range).reverse
   end
 
   def mec_checks
@@ -53,7 +54,7 @@ class ReportsController < ApplicationController
     @start_on = start_on || session[:mc_sent_start] || Date.today
     @end_on = session[:mc_sent_end] || Date.today
     range = @start_on.beginning_of_day..@end_on.end_of_day
-    @checks = Aces::MecCheck.where(created_at: range).or(updated_at: range)
+    @checks = Aces::MecCheck.where(created_at: range).or(updated_at: range).reverse
   end
 
   def transfer_summary
@@ -80,4 +81,5 @@ class ReportsController < ApplicationController
     end_on = params.key?(:end_on) ? Date.strptime(params.fetch(:end_on), "%m/%d/%Y") : Time.now.utc
     start_on.beginning_of_day..end_on.end_of_day
   end
+
 end
