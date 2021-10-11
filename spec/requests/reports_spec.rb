@@ -7,6 +7,45 @@ RSpec.describe "Reports", type: :request, dbclean: :after_each do
     DatabaseCleaner.clean
   end
 
+  describe "GET /reports/events" do
+    before do
+      create :transfer
+      create :inbound_transfer
+      create :mec_check
+      create :application
+    end
+
+    it "generates Event Report"  do
+      visit '/reports/events'
+      expect(page).to have_content("Events")
+    end
+
+    it "shows the previous 24 hours without params" do
+      create :transfer, created_at: 2.days.ago, updated_at: 2.days.ago, application_identifier: "100745"
+      visit '/reports/events'
+
+      expect(page).to_not have_content("100745")
+    end
+
+    it "accepts and uses date params" do
+      old_transfer = create :transfer, created_at: 1.day.ago, updated_at: 1.day.ago
+      start_on = 2.days.ago.strftime('%m/%d/%Y')
+      visit "/reports/events?start_on=#{start_on}"
+
+      expect(page).to have_content(old_transfer.application_identifier)
+    end
+
+    # TODO: test date input (Stimulus Reflex)
+    # it "user input changes date range" do
+    #   old_transfer = create :transfer, created_at: 1.day.ago, updated_at: 1.day.ago
+    #   visit '/reports/events'
+    #   expect(page).not_to have_content(old_transfer.application_identifier)
+    #   start_on = 3.days.ago.strftime('%Y-%m-%d')
+    #   fill_in "input#start_on", with: start_on
+    #   expect(page).to have_content(old_transfer.application_identifier)
+    # end
+  end
+
   describe "GET /reports/medicaid_applications" do
     before { create :application }
 
@@ -74,6 +113,30 @@ RSpec.describe "Reports", type: :request, dbclean: :after_each do
       old_transfer = create :transfer, created_at: 1.day.ago, updated_at: 1.day.ago
       start_on = 2.days.ago.strftime('%m/%d/%Y')
       visit "/reports/account_transfers?start_on=#{start_on}"
+
+      expect(page).to have_content(old_transfer.application_identifier)
+    end
+  end
+
+  describe "GET /reports/account_transfers_to_enroll" do
+    before { create :inbound_transfer }
+
+    it "generates transfer report"  do
+      visit '/reports/account_transfers_to_enroll'
+      expect(page).to have_content("Account Transfers To Enroll")
+    end
+
+    it "shows the previous 24 hours without params" do
+      create :inbound_transfer, created_at: 2.days.ago, updated_at: 2.days.ago, application_identifier: "100745"
+      visit '/reports/account_transfers_to_enroll'
+
+      expect(page).to_not have_content("100745")
+    end
+
+    it "accepts and uses date params" do
+      old_transfer = create :inbound_transfer, created_at: 1.day.ago, updated_at: 1.day.ago
+      start_on = 2.days.ago.strftime('%m/%d/%Y')
+      visit "/reports/account_transfers_to_enroll?start_on=#{start_on}"
 
       expect(page).to have_content(old_transfer.application_identifier)
     end
