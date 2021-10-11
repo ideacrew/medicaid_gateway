@@ -10,6 +10,10 @@ RSpec.describe TransferReport, dbclean: :after_each do
   describe "#run" do
     context 'summary of all transfers' do
       before do
+        create :transfer
+        create :inbound_transfer
+        create :inbound_transfer, failure: "Failed"
+        create :transfer, failure: "Failed"
         Dir[Rails.root.join("transfer_report_*.csv")].each { |filename| FileUtils.rm_rf(filename) }
         create_date = DateTime.now.utc - 1.day
         create :transfer, created_at: create_date
