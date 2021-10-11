@@ -1,31 +1,20 @@
 @import "bootstrap";
 
 kbd {
-  -moz-background-clip: border;
-  -moz-background-inline-policy: continuous;
-  -moz-background-origin: padding;
-  background: #ffffff none repeat scroll 0 0;
-  border: none;
-  color: #000000;
-  padding: 2px 1px;
-  white-space: nowrap;
+  -moz-background-clip:border;
+  -moz-background-inline-policy:continuous;
+  -moz-background-origin:padding;
+  background:#ffffff none repeat scroll 0 0;
+  border:none;
+  color:#000000;
+  padding:2px 1px;
+  white-space:nowrap;
 }
 
-.fade {
-  position: relative;
-  height: 3.6em; /* exactly three lines */
-}
-.fade::after {
-  content: "";
-  text-align: right;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 70%;
-  height: 1.2em;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0),
-    rgba(255, 255, 255, 1) 50%
-  );
+.long-payload {
+  display: -webkit-box;
+  -webkit-line-clamp: 10;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

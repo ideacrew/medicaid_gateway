@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   namespace :aces do
     resource :publishing_connectivity_tests, only: [:new, :create]
     resources :inbound_transfers, only: [:show]
-    resources :transfers, only: [:show]    
+    resources :transfers, only: [:show]
     namespace :soap do
       resource :atp_requests, only: [] do
         collection do
