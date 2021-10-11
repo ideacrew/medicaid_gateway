@@ -4,4 +4,4 @@ registry:
     - :transfers
     features:
       - key: :to_ea
-        is_enabled: false
+        is_enabled: true

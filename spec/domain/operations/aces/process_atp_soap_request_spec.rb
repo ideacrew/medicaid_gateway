@@ -16,7 +16,7 @@ describe Aces::ProcessAtpSoapRequest, "given a soap envelope with an valid xml p
   before :each do
     allow(MedicaidGatewayRegistry[:aces_connection].setting(:aces_atp_caller_username)).to receive(:item).and_return("SOME_SOAP_USER")
     allow(MedicaidGatewayRegistry[:aces_connection].setting(:aces_atp_caller_password)).to receive(:item).and_return("SOME SOAP PASSWORD")
-    # allow(MedicaidGatewayRegistry[:to_ea].feature).to receive(:is_enabled).and_return(true)
+    allow(MedicaidGatewayRegistry[:to_ea].feature).to receive(:is_enabled).and_return(false)
   end
 
   it "payload processing should be successful" do

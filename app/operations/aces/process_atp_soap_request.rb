@@ -18,8 +18,9 @@ module Aces
       _validation_result = yield validate_soap_header(parsed_payload)
       body_node = yield extract_top_body_node(parsed_payload)
       string_payload = yield convert_to_document_string(body_node)
-      _serialized = yield run_validations_and_serialize(string_payload)
-      transfer_account(string_payload, transfer_id)
+      serialized = run_validations_and_serialize(string_payload)
+      _transfer = yield transfer_account(string_payload, transfer_id)
+      serialized
     end
 
     protected
@@ -32,7 +33,8 @@ module Aces
 
     def run_business_validations(string_payload)
       # Success(string_payload)
-      Transfers::ExecuteBusinessXmlValidations.new.call(string_payload)
+      # Transfers::ExecuteBusinessXmlValidations.new.call(string_payload)
+      Success(string_payload)
     end
 
     def parse_xml(body)
