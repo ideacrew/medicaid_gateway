@@ -23,4 +23,9 @@
 <%= raw(ap(JSON.parse(@transfer.callback_payload))) %>
 <% end %>
 
-<%= link_to "See today's account transfers", account_transfers_reports_path %>
+<% unless @transfer.failure.blank? %>
+<h2>Failure Details:</h2>
+<%= @transfer.failure %>
+<% end %>
+
+<%= link_to "Received Transfers Report", account_transfers_reports_path, class: 'btn btn-primary' %>
