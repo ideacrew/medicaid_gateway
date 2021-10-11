@@ -17,7 +17,10 @@
 	<tbody>
 		<% @applications.each do |application| %>
 			<tr>
-				<td><%= application.application_identifier %></td>
+				<td>
+				  <%= application.application_identifier %>
+				  <%= link_to 'details', application, class: 'btn btn-primary' %>
+				</td>
 				<td><%= application.medicaid_request_payload %></td>
 				<td><%= application.medicaid_response_payload %></td>
 				<td><%= application.application_request_payload %></td>

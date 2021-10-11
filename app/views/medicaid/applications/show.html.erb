@@ -1,0 +1,31 @@
+<h1>Determination of Application <%= @application.application_identifier %></h1>
+<p>Created At: <%= @application.created_at %></p>
+<p>Processed At: <%= @application.updated_at %></p>
+
+<h2>Application Request Payload:</h2>
+<%= raw(ap(JSON.parse(@application.application_request_payload))) %>
+
+<h2>Application Response Payload:</h2>
+<%= raw(ap(JSON.parse(@application.application_request_payload))) %>
+
+<h2>Medicaid Request Payload:</h2>
+<%= raw(ap(JSON.parse(@application.medicaid_request_payload))) %>
+
+<h2>Medicaid Response Payload:</h2>
+<%= raw(ap(JSON.parse(@application.medicaid_response_payload))) %>
+
+<% @application.aptc_households.each do |household| %>
+  <% household.attributes.each do |attr_name, attr_value| %>
+    <%= attr_name %>: <%= attr_value %>
+    <br />
+  <% end %>
+<% end %>
+
+<h2>Other Factors</h2>
+<% if @application.other_factors == 'No other factors' %>
+  <%= @application.other_factors %>
+<% else %>
+  <%= raw(ap(JSON.parse(@application.other_factors))) %>
+<% end %>
+
+<%= link_to "Determinations Report", medicaid_application_check_reports_path, class: 'btn btn-primary' %>
