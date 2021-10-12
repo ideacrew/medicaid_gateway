@@ -32,9 +32,8 @@ module Aces
     end
 
     def run_business_validations(string_payload)
-      # Success(string_payload)
-      # Transfers::ExecuteBusinessXmlValidations.new.call(string_payload)
-      Success(string_payload)
+      validation = Transfers::ExecuteBusinessXmlValidations.new.call(string_payload)
+      validation.success? ? Success(string_payload) : validation
     end
 
     def parse_xml(body)
@@ -104,6 +103,9 @@ module Aces
       if validation_result.success?
         rmd[:hix].ResponseCode "HS000000"
         rmd[:hix].ResponseDescriptionText "Success"
+      elsif validation_result.failure.to_s == "validator_crashed"
+        rmd[:hix].ResponseCode "HE001111"
+        rmd[:hix].ResponseDescriptionText "Validator Crashed"
       else
         rmd[:hix].ResponseCode "HE001111"
         rmd[:hix].ResponseDescriptionText "One or More Rules Failed Validation"

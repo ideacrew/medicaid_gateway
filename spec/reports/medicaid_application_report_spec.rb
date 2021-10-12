@@ -13,6 +13,7 @@ RSpec.describe MedicaidApplicationReport, dbclean: :after_each do
       let!(:application) { FactoryBot.create(:application, :with_aptc_households) }
 
       before do
+        Dir[Rails.root.join("medicaid_application_report_*.csv")].each { |filename| FileUtils.rm_rf(filename) }
         MedicaidApplicationReport.run
         report_file = Dir[Rails.root.join("medicaid_application_report_*.csv")].last
         @report_content = CSV.read(report_file, headers: true)

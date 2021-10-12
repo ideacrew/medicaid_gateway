@@ -60,9 +60,12 @@ class AtpBusinessRulesValidationProxy
     pid_status
   end
 
-  def run_validation(data)
+  def run_validation(data) # rubocop:disable Metrics/MethodLength
     packet_size = [data.bytesize].pack("l>*")
-
+    unless @writer
+      reconnect!
+      raise StandardError, "process timeout!"
+    end
     @writer.write(packet_size)
     @writer.write(data)
     @writer.flush
