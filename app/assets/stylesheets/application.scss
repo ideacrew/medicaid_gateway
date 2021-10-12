@@ -1,14 +1,14 @@
 @import "bootstrap";
 
 kbd {
-  -moz-background-clip:border;
-  -moz-background-inline-policy:continuous;
-  -moz-background-origin:padding;
-  background:#ffffff none repeat scroll 0 0;
-  border:none;
-  color:#000000;
-  padding:2px 1px;
-  white-space:nowrap;
+  -moz-background-clip: border;
+  -moz-background-inline-policy: continuous;
+  -moz-background-origin: padding;
+  background: #ffffff none repeat scroll 0 0;
+  border: none;
+  color: #000000;
+  padding: 2px 1px;
+  white-space: nowrap;
 }
 
 .long-payload {
@@ -17,4 +17,10 @@ kbd {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.table-overrides {
+  table-layout: fixed;
+  width: 100%;
+  word-wrap: break-word;
 }

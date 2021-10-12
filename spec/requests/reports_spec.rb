@@ -17,7 +17,7 @@ RSpec.describe "Reports", type: :request, dbclean: :after_each do
 
     it "generates Event Report"  do
       visit '/reports/events'
-      expect(page).to have_content("Events")
+      expect(page).to have_content("Event Log")
     end
 
     it "shows the previous 24 hours without params" do
