@@ -31,7 +31,7 @@ gem 'jbuilder', '~> 2.7'
 gem 'bootstrap', '~> 5.1.0'
 # To prettify json payloads
 gem 'awesome_print'
-#for interactive pieces
+# For interactive pieces
 gem "stimulus_reflex", "~> 3.4"
 
 # Reduces boot times through caching; required in config/boot.rb
