@@ -11,6 +11,8 @@ module Aces
     # @param [String] payload received from Enroll
     # @return [Dry::Result]
     def call(payload)
+      return Failure({ error: "MEC Check feature not enabled." }) unless MedicaidGatewayRegistry[:mec_check].enabled?
+
       json = JSON.parse(payload)
       mec_check = yield create_mec_check(json)
       checks    = yield get_person_check(mec_check, json) if json["person"]

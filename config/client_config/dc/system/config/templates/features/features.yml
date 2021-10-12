@@ -1,0 +1,17 @@
+---
+registry:
+  - namespace:
+      - :mg_app
+    features:
+      - key: :state_abbreviation
+        is_enabled: true
+        item: "DC"
+      - key: :transfer_to_enroll
+        is_enabled: false
+      - key: :transfer_service
+        is_enabled: true
+        item: "curam"
+      - key: :mitc_determination
+        is_enabled: false
+      - key: :mec_check
+        is_enabled: false

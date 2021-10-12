@@ -1,0 +1,20 @@
+---
+registry:
+  - namespace:
+      - :aces_integration
+    features:
+      - key: :aces_connection
+        is_enabled: true
+        settings:
+          - key: :aces_atp_service_uri
+            item: <%= ENV['ACES_ATP_SERVICE_URI'] %>
+          - key: :aces_atp_service_username
+            item: <%= ENV['ACES_ATP_SERVICE_USERNAME'] %>
+          - key: :aces_atp_service_password
+            item: <%= ENV['ACES_ATP_SERVICE_PASSWORD'] %>
+          - key: :aces_atp_caller_username
+            item: <%= ENV['ACES_ATP_CALLER_USERNAME'] %>
+          - key: :aces_atp_caller_password
+            item: <%= ENV['ACES_ATP_CALLER_PASSWORD'] %>
+          - key: :aces_mec_check_uri
+            item: <%= ENV['ACES_MEC_CHECK_URI'] %>

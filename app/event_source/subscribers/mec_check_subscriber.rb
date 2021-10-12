@@ -12,9 +12,11 @@ module Subscribers
         logger.debug "application_submitted_subscriber_message; acked"
       else
         error = result.failure[:error]
-        mc_id = result.failure[:mc_id]
-        mec_check = Aces::MecCheck.find(mc_id)
-        mec_check.update!(failure: error)
+        if result.failure[:mc_id]
+          mc_id = result.failure[:mc_id]
+          mec_check = Aces::MecCheck.find(mc_id)
+          mec_check.update!(failure: error)
+        end
         nack(delivery_info.delivery_tag)
         logger.debug "application_submitted_subscriber_message; nacked due to: #{error}"
       end

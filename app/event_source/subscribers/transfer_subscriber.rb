@@ -18,7 +18,7 @@ module Subscribers
       phash = JSON.parse(response)
 
       result = if transfer
-                 ::Transfers::ToAces.new.call(JSON.generate(phash.except("service")), phash["service"])
+                 ::Transfers::ToService.new.call(JSON.generate(phash.except("service")))
                else
                  ::Transfers::AddEnrollResponse.new.call(phash)
                end

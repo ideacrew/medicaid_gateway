@@ -128,9 +128,8 @@ module Aces
       end
     end
 
-    def transfer_account(payload, transfer_id, serialized)
-      return serialized if serialized.failure?
-      return Success(payload) unless MedicaidGatewayRegistry.feature_enabled?(:to_ea)
+    def transfer_account(payload, transfer_id)
+      return Success(payload) unless MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll)
       Transfers::ToEnroll.new.call(payload, transfer_id)
     end
 
