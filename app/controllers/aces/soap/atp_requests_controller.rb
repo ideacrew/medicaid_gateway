@@ -12,7 +12,7 @@ module Aces
       end
 
       def service
-        record = Aces::InboundTransfer.create!(payload: request.body, result: "Received")
+        record = Aces::InboundTransfer.create!(payload: request.body.string, result: "Received")
         result = Aces::ProcessAtpSoapRequest.new.call(request.body, record.id)
 
         update_transfer(record.id, result)
@@ -23,10 +23,10 @@ module Aces
       private
 
       def update_transfer(id, request)
-        result_text = request.success? ? "Sent" : "Failed"
         transfer = Aces::InboundTransfer.find(id)
-        transfer.update!(failure: request.failure) if request.failure?
-        transfer.update!(payload: '', result: result_text)
+        result_text = request.success? ? "Sent" : "Failed"
+        failure_text = request.failure? ? request.failure : transfer.failure
+        transfer.update!(result: result_text, failure: failure_text)
       end
     end
   end

@@ -24,6 +24,7 @@ module Transfers
 
     def update_transfer(params, transfer)
       result = Try do
+        params["payload"] = "" if params["result"] == "Success"
         transfer.update!(params.except("transfer_id"))
       end
       result.success? ? Success(transfer) : Failure("Failed to update transfer")
