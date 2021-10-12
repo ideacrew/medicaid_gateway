@@ -1,6 +1,6 @@
-<h1>Events</h1>
-<%= render partial: "date_range", locals: {start_on: @start_on, end_on: @end_on} %>
-<table class="table table-striped table-responsive"  style="table-layout:fixed; width:100%; word-wrap: break-word;">
+<h1>Event Log</h1>
+<%= render partial: "date_range", locals: {start_on: @start_on, end_on: @end_on, session_name: "atp_"} %>
+<table class="table table-striped table-responsive table-overrides">
 	<thead>
 		<th>Status</th>
 		<th>Type</th>
