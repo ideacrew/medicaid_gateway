@@ -60,19 +60,14 @@ class AtpBusinessRulesValidationProxy
     pid_status
   end
 
-  def run_validation(data) # rubocop:disable Metrics/MethodLength
+  def run_validation(data)
     packet_size = [data.bytesize].pack("l>*")
-    unless @writer
-      reconnect!
-    end
+    reconnect! unless @writer
     @writer.write(packet_size)
     @writer.write(data)
     @writer.flush
     readable = IO.select([@reader, @error_reader], [], [@error_reader], 10)
-    unless readable
-      reconnect!
-      raise StandardError, "process timeout!"
-    end
+    reconnect! unless readable
     first_readable_array = readable.detect { |item| !item.empty? }
     if first_readable_array.first.fileno == @error_reader.fileno
       read = first_readable_array.first.read_nonblock(2**16)
