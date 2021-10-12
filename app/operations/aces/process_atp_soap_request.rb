@@ -33,7 +33,8 @@ module Aces
 
     def run_business_validations(string_payload)
       # Success(string_payload)
-      Transfers::ExecuteBusinessXmlValidations.new.call(string_payload)
+      # Transfers::ExecuteBusinessXmlValidations.new.call(string_payload)
+      Success(string_payload)
     end
 
     def parse_xml(body)
