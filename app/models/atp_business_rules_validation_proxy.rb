@@ -64,12 +64,10 @@ class AtpBusinessRulesValidationProxy
     packet_size = [data.bytesize].pack("l>*")
     unless @writer
       reconnect!
-      raise StandardError, "process timeout!"
     end
     @writer.write(packet_size)
     @writer.write(data)
     @writer.flush
-
     readable = IO.select([@reader, @error_reader], [], [@error_reader], 10)
     unless readable
       reconnect!

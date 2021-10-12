@@ -19,7 +19,7 @@ module Aces
       body_node = yield extract_top_body_node(parsed_payload)
       string_payload = yield convert_to_document_string(body_node)
       serialized = run_validations_and_serialize(string_payload)
-      _transfer = yield transfer_account(string_payload, transfer_id)
+      _transfer = yield transfer_account(string_payload, transfer_id, serialized)
       serialized
     end
 
@@ -83,7 +83,7 @@ module Aces
           end
         end
       end
-      Success(builder.to_xml)
+      validation_result.success? ? Success(builder.to_xml) : Failure(builder.to_xml)
     end
 
     def encode_validation_result(soap_body, validation_result)
@@ -128,7 +128,8 @@ module Aces
       end
     end
 
-    def transfer_account(payload, transfer_id)
+    def transfer_account(payload, transfer_id, serialized)
+      return serialized if serialized.failure?
       return Success(payload) unless MedicaidGatewayRegistry.feature_enabled?(:to_ea)
       Transfers::ToEnroll.new.call(payload, transfer_id)
     end

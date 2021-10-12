@@ -14,10 +14,9 @@ module Aces
       def service
         record = Aces::InboundTransfer.create!(payload: request.body.string, result: "Received")
         result = Aces::ProcessAtpSoapRequest.new.call(request.body, record.id)
-
+        result_status = result.success? ? result.value! : result.failure
         update_transfer(record.id, result)
-
-        render inline: result.value!, status: 200, content_type: "application/soap+xml" if result.success?
+        render inline: result_status, status: 200, content_type: "application/soap+xml" if result_status.to_s.include?("<?xml")
       end
 
       private
