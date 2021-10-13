@@ -34,6 +34,7 @@ module Aces
     def run_business_validations(string_payload)
       validation = Transfers::ExecuteBusinessXmlValidations.new.call(string_payload)
       validation.success? ? Success(string_payload) : validation
+      Success(string_payload)
     end
 
     def parse_xml(body)
