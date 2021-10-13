@@ -5,7 +5,6 @@ require 'rails_helper'
 RSpec.describe MedicaidApplicationReport, dbclean: :after_each do
   before :all do
     DatabaseCleaner.clean
-    Dir[Rails.root.join("medicaid_application_report_*.csv")].each { |filename| FileUtils.rm_rf(filename) }
   end
 
   describe "#run" do
@@ -53,6 +52,7 @@ RSpec.describe MedicaidApplicationReport, dbclean: :after_each do
       let!(:application_no_aptc) { FactoryBot.create(:application) }
 
       before do
+        Dir[Rails.root.join("medicaid_application_report_*.csv")].each { |filename| FileUtils.rm_rf(filename) }
         MedicaidApplicationReport.run
         report_file = Dir[Rails.root.join("medicaid_application_report_*.csv")].last
         @report_content = CSV.read(report_file, headers: true)
@@ -87,6 +87,6 @@ RSpec.describe MedicaidApplicationReport, dbclean: :after_each do
         expect(@report_content['OtherComputedFactors']).to include('No other factors')
       end
     end
-
   end
+  after(:all) { Dir[Rails.root.join("medicaid_application_report_*.csv")].each { |filename| FileUtils.rm_rf(filename) } }
 end

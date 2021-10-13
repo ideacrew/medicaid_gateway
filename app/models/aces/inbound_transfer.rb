@@ -26,5 +26,18 @@ module Aces
 
     field :failure, type: String
 
+    def successful?
+      self.failure.nil?
+    end
+
+    def to_event
+      {
+        type: "Transfer In",
+        created_at: self.created_at,
+        success: self.successful?,
+        app_id: self.application_identifier
+      }
+    end
+
   end
 end

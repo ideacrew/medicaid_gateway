@@ -39,5 +39,15 @@ module Medicaid
         aptc_hh_array << aptc_hash.select { |k, _v| aptc_hh_keys.include?(k) }
       end
     end
+
+    def to_event
+      {
+        type: "Determination",
+        created_at: self.created_at,
+        success: true,
+        app_id: self.application_identifier
+      }
+    end
+
   end
 end

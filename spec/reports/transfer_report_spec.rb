@@ -8,35 +8,50 @@ RSpec.describe TransferReport, dbclean: :after_each do
   end
 
   describe "#run" do
-    context 'transfers from enroll' do
-      let!(:transfer) { FactoryBot.create(:transfer) }
-
+    context 'summary of all transfers' do
       before do
         Dir[Rails.root.join("transfer_report_*.csv")].each { |filename| FileUtils.rm_rf(filename) }
+        create_date = DateTime.now.utc - 1.day
+        create :transfer, created_at: create_date
+        create :inbound_transfer, created_at: create_date
+        create :inbound_transfer, failure: "Failed", created_at: create_date
+        create :transfer, failure: "Failed", created_at: create_date
         TransferReport.run
         report_file = Dir[Rails.root.join("transfer_report_*.csv")].first
         @report_content = CSV.read(report_file, headers: true)
       end
 
-      it 'should create medicaid_application_report' do
+      after(:all) do
+        Dir[Rails.root.join("transfer_report_*.csv")].each { |filename| FileUtils.rm_rf(filename) }
+      end
+
+      it 'should create transfer_report' do
         csvs = Dir[Rails.root.join("transfer_report_*.csv")]
         expect(csvs.present?).to eq(true)
       end
 
-      it 'should return proper values for header ApplicationIdentifer' do
-        expect(@report_content['ApplicationIdentifer']).to include(transfer.application_identifier)
+      it 'should return proper values for header Sent' do
+        expect(@report_content['Sent']).to eq ["2"]
       end
 
-      it 'should return proper values for header FamilyIdentifier' do
-        expect(@report_content['FamilyIdentifier']).to include(transfer.family_identifier)
+      it 'should return proper values for header Received' do
+        expect(@report_content['Received']).to eq ["2"]
       end
 
-      it 'should return proper values for header Service' do
-        expect(@report_content['Service']).to include(transfer.service)
+      it 'should return proper values for header SentSuccesses' do
+        expect(@report_content['SentSuccesses']).to eq ["1"]
       end
 
-      it 'should return proper values for header ResponsePayload' do
-        expect(@report_content['ResponsePayload']).to include(transfer.response_payload)
+      it 'should return proper values for header SentFailures' do
+        expect(@report_content['SentFailures']).to eq ["1"]
+      end
+
+      it 'should return proper values for header ReceivedSuccesses' do
+        expect(@report_content['ReceivedSuccesses']).to eq ["1"]
+      end
+
+      it 'should return proper values for header ReceivedFailures' do
+        expect(@report_content['ReceivedFailures']).to eq ["1"]
       end
     end
   end
