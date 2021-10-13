@@ -51,7 +51,7 @@ module Aces
       return Failure("XML error: ID tag missing.") if identity_tag.empty?
 
       transfer = Aces::InboundTransfer.find(transfer_id)
-      transfer.update!(external_id: identity_tag.text)
+      transfer.update!(external_id: identity_tag.text, payload: payload)
       Success(identity_tag.text)
     end
 
