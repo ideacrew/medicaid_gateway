@@ -6,6 +6,13 @@
 <p>Application Identifier: <%= @transfer.application_identifier %></p>
 <p>Family Identifier: <%= @transfer.family_identifier %></p>
 
+<% unless @transfer.failure.blank? %>
+<div class="card bg-danger text-light p-2 mb-3">
+  <h2>Failure Details:</h2>
+  <%= @transfer.failure %>
+</div>
+<% end %>
+
 <% unless @transfer.response_payload.blank? %>
 <h2>Response Payload:</h2>
 <%= raw(ap(JSON.parse(@transfer.response_payload))) %>
@@ -14,11 +21,6 @@
 <% unless @transfer.callback_payload.blank? %>
 <h2>Callback Payload:</h2>
 <%= raw(ap(JSON.parse(@transfer.callback_payload))) %>
-<% end %>
-
-<% unless @transfer.failure.blank? %>
-<h2>Failure Details:</h2>
-<%= @transfer.failure %>
 <% end %>
 
 <%= link_to "See today's account transfers", account_transfers_reports_path %>

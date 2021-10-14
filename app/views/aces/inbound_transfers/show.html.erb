@@ -1,5 +1,5 @@
 <h1>Transfer of <%= @transfer.external_id %> to Enroll</h1>
-<p>Created At: <%= @transfer.created_at %></p>
+<p>Updated At: <%= @transfer.created_at %></p>
 <p>Processed At: <%= @transfer.updated_at %></p>
 <p>Transfer Status: <%= @transfer.failure.nil? ? 'Success' : 'Failure' %></p>
 <p>Ingestion Status: <%= @transfer.result %></p>
@@ -7,14 +7,18 @@
 <p>Family Identifier: <%= @transfer.family_identifier %></p>
 <p>Transfer ID: <%= @transfer.external_id %>
 
+<% unless @transfer.failure.blank? %>
+<div class="card bg-danger text-light p-2 mb-3">
+  <h2>Failure Details:</h2>
+  <%= @transfer.failure %>
+</div>
+<% end %>
+
 <% unless @transfer.payload.blank? %>
 <h2 class="mt-4">Payload:</h2>
 <%= @transfer.payload %>
 <% end %>
 
-<% unless @transfer.failure.blank? %>
-<h2>Failure Details:</h2>
-<%= @transfer.failure %>
-<% end %>
-<br />
+
+
 <%= link_to "See today's account transfers to Enroll", account_transfers_to_enroll_reports_path %>
