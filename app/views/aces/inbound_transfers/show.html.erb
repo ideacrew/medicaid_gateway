@@ -5,6 +5,7 @@
 <p>Ingestion Status: <%= @transfer.result %></p>
 <p>Application Identifier: <%= @transfer.application_identifier %></p>
 <p>Family Identifier: <%= @transfer.family_identifier %></p>
+<p>Transfer ID: <%= @transfer.external_id %>
 
 <% unless @transfer.payload.blank? %>
 <h2 class="mt-4">Payload:</h2>
