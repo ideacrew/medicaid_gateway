@@ -20,8 +20,7 @@ describe Aces::ProcessAtpSoapRequest, "given a soap envelope with an valid xml p
     allow(MedicaidGatewayRegistry[:aces_connection].setting(:aces_atp_caller_username)).to receive(:item).and_return("SOME_SOAP_USER")
     allow(MedicaidGatewayRegistry[:aces_connection]).to receive(:setting).with(:aces_atp_caller_password).and_return(double)
     allow(MedicaidGatewayRegistry[:aces_connection].setting(:aces_atp_caller_password)).to receive(:item).and_return("SOME SOAP PASSWORD")
-    allow(MedicaidGatewayRegistry[:transfer_to_enroll]).to receive(:feature)
-    allow(MedicaidGatewayRegistry[:transfer_to_enroll].feature).to receive(:is_enabled).and_return(false)
+    allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:transfer_to_enroll).and_return(false)
   end
 
   it "payload processing should be successful" do
