@@ -8,7 +8,7 @@ require 'aca_entities/atp/transformers/cv/family'
 module Transfers
   # Transfer an account from ACES to enroll
   class ToEnroll
-    send(:include, Dry::Monads[:result, :do])
+    send(:include, Dry::Monads[:result, :do, :try])
 
     # @param [String] Take in the raw payload and serialize and transform it, then tranfer the result to EA.
     # @return [Dry::Result]
@@ -24,12 +24,16 @@ module Transfers
       record = ::AcaEntities::Serializers::Xml::Medicaid::Atp::AccountTransferRequest.parse(input)
       result = record.is_a?(Array) ? record.first : record
       Success(result)
+    rescue StandardError => e
+      Failure("serializer error #{e}")
     end
 
     def transform_params(result, transfer_id)
       transformed = ::AcaEntities::Atp::Transformers::Cv::Family.transform(result.to_hash(identifier: true))
       update_transfer(transfer_id, transformed[:family][:magi_medicaid_applications][0][:transfer_id])
       Success(transformed)
+    rescue StandardError => e
+      Failure("to_aces transformer #{e}")
     end
 
     def update_transfer(transfer_id, external_id)

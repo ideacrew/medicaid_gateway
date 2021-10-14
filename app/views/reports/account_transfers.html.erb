@@ -12,11 +12,11 @@
 	<tbody>
 		<% @transfers.each do |transfer| %>
 			<tr>
-				<td class="<%= transfer.failure.nil? ? 'table-success' : 'table-danger' %>"><%= transfer.failure.nil? ? 'Sucess' : 'Failure' %></td>
+				<td class="<%= transfer.failure.nil? ? 'table-success' : 'table-danger' %>"><%= transfer.failure.nil? ? 'Sucess' : 'Failure' %>  <%= transfer.failure unless transfer.failure.nil? %></td>
 				<td><%= transfer.created_at %></td>
 				<td><%= transfer.family_identifier %></td>
 				<td><%= transfer.application_identifier %></td>
-				<td><%= transfer.callback_status %></td>
+				<td><span class="fw-bold"><%= transfer.callback_status %></span></td>
 				<td><%= link_to "details", transfer, class: 'btn btn-primary' %></td>
 			</tr>
 		<% end %>
