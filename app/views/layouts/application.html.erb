@@ -27,15 +27,21 @@
             <a class="nav-link" href="/reports/account_transfers">Transfers Sent</a>
           </li>
           <% if Medicaid::Application.all.any? %>
-            <li class="nav-item">
-              <a class="nav-link" href="/reports/account_transfers_to_enroll">Transfers Received</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/reports/medicaid_application_check">Determinations</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/reports/mec_checks">MEC Checks</a>
-            </li>
+            <% if MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll) %>
+              <li class="nav-item">
+                <a class="nav-link" href="/reports/account_transfers_to_enroll">Transfers Received</a>
+              </li>
+            <% end %>
+            <% if MedicaidGatewayRegistry.feature_enabled?(:mitc_determination) %>
+              <li class="nav-item">
+                <a class="nav-link" href="/reports/medicaid_application_check">Determinations</a>
+              </li>
+            <% end %>
+            <% if MedicaidGatewayRegistry.feature_enabled?(:mec_check) %>
+              <li class="nav-item">
+                <a class="nav-link" href="/reports/mec_checks">MEC Checks</a>
+              </li>
+            <% end %>
           <% end %>
         </ul>
       </div>

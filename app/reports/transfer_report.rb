@@ -18,24 +18,36 @@ class TransferReport
     at_sent_successful = at_sent.where(failure: nil).count
     at_sent_failure = at_sent_total - at_sent_successful
 
-    at_received = Aces::InboundTransfer.where(created_at: range).or(updated_at: range)
-    at_received_total = at_received.count
-    at_received_successful = at_received.where(failure: nil).count
-    at_received_failure = at_received_total - at_received_successful
+    if MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll)
+      at_received = Aces::InboundTransfer.where(created_at: range).or(updated_at: range)
+      at_received_total = at_received.count
+      at_received_successful = at_received.where(failure: nil).count
+      at_received_failure = at_received_total - at_received_successful
+    end
 
     report_name = "transfer_report_#{timestamp}.csv"
     FileUtils.touch(report_name)
     CSV.open(report_name, "w") do |csv|
-      csv << %w[DateRange Sent Received SentSuccesses SentFailures ReceivedSuccesses ReceivedFailures]
-      csv << [
-        range,
-        at_sent_total,
-        at_received_total,
-        at_sent_successful,
-        at_sent_failure,
-        at_received_successful,
-        at_received_failure
-      ]
+      if MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll)
+        csv << %w[DateRange Sent Received SentSuccesses SentFailures ReceivedSuccesses ReceivedFailures]
+        csv << [
+          range,
+          at_sent_total,
+          at_received_total,
+          at_sent_successful,
+          at_sent_failure,
+          at_received_successful,
+          at_received_failure
+        ]
+      else
+        csv << %w[DateRange Sent SentSuccesses SentFailures]
+        csv << [
+          range,
+          at_sent_total,
+          at_sent_successful,
+          at_sent_failure
+        ]
+      end
     end
   end
 end
