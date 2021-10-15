@@ -13,42 +13,54 @@ class TransferReport
   def self.run_report(start_on, end_on)
     timestamp = Time.zone.now.to_s
     range = start_on.beginning_of_day..end_on.end_of_day
-    at_sent = Aces::Transfer.where(created_at: range).or(updated_at: range)
-    at_sent_total = at_sent.count
-    at_sent_successful = at_sent.where(failure: nil).count
-    at_sent_failure = at_sent_total - at_sent_successful
-
-    if MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll)
-      at_received = Aces::InboundTransfer.where(created_at: range).or(updated_at: range)
-      at_received_total = at_received.count
-      at_received_successful = at_received.where(failure: nil).count
-      at_received_failure = at_received_total - at_received_successful
-    end
 
     report_name = "transfer_report_#{timestamp}.csv"
     FileUtils.touch(report_name)
     CSV.open(report_name, "w") do |csv|
+      csv << headers
+      row = [range] + transfer_values(range)
+
       if MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll)
-        csv << %w[DateRange Sent Received SentSuccesses SentFailures ReceivedSuccesses ReceivedFailures]
-        csv << [
-          range,
-          at_sent_total,
-          at_received_total,
-          at_sent_successful,
-          at_sent_failure,
-          at_received_successful,
-          at_received_failure
-        ]
-      else
-        csv << %w[DateRange Sent SentSuccesses SentFailures]
-        csv << [
-          range,
-          at_sent_total,
-          at_sent_successful,
-          at_sent_failure
-        ]
+        inbound_vals = inbound_transfer_values(range)
+        row.insert(2, inbound_vals[:total])
+        row << inbound_vals[:successful]
+        row << inbound_vals[:failure]
       end
+
+      csv << row
     end
+  end
+
+  def self.headers
+    if MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll)
+      %w[DateRange Sent Received SentSuccesses SentFailures ReceivedSuccesses ReceivedFailures]
+    else
+      %w[DateRange Sent SentSuccesses SentFailures]
+    end
+  end
+
+  def self.transfer_values(range)
+    at_sent = Aces::Transfer.where(created_at: range).or(updated_at: range)
+    at_sent_total = at_sent.count
+    at_sent_successful = at_sent.where(failure: nil).count
+    at_sent_failure = at_sent_total - at_sent_successful
+    [
+      at_sent_total,
+      at_sent_successful,
+      at_sent_failure
+    ]
+  end
+
+  def self.inbound_transfer_values(range)
+    at_received = Aces::InboundTransfer.where(created_at: range).or(updated_at: range)
+    at_received_total = at_received.count
+    at_received_successful = at_received.where(failure: nil).count
+    at_received_failure = at_received_total - at_received_successful
+    {
+      total: at_received_total,
+      successful: at_received_successful,
+      failure: at_received_failure
+    }
   end
 end
 
