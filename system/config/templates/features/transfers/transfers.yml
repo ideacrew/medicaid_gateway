@@ -1,7 +1,0 @@
----
-registry:
-  - namespace:
-    - :transfers
-    features:
-      - key: :to_ea
-        is_enabled: true
