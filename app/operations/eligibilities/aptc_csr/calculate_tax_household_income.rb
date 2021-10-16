@@ -63,14 +63,36 @@ module Eligibilities
 
       def calculate_member_income(applicant, income_threshold)
         return BigDecimal('0') unless applicant.incomes.present?
-        applicant.incomes.inject(BigDecimal('0')) do |annual_total, income|
-          annual_total + eligible_earned_annual_income(applicant, income, income_threshold)
-        end
+
+        member_income =
+          if applicant.incomes.present?
+            applicant.incomes.inject(BigDecimal('0')) do |annual_total, income|
+              annual_total + eligible_earned_annual_income(applicant, income, income_threshold)
+            end
+          else
+            BigDecimal('0')
+          end
+
+        member_deduction =
+          if applicant.deductions.present?
+            applicant.deductions.inject(BigDecimal('0')) do |annual_total, deduction|
+              annual_total + eligible_annual_deduction(deduction)
+            end
+          else
+            BigDecimal('0')
+          end
+
+        member_income - member_deduction
+      end
+
+      def eligible_annual_deduction(deduction)
+        return BigDecimal('0') unless amount_for_current_year?(deduction)
+        compute_annual_amount(deduction)
       end
 
       def eligible_earned_annual_income(applicant, income, income_threshold)
-        return BigDecimal('0') unless income_for_current_year?(income)
-        annual_tot = compute_annual_income(income)
+        return BigDecimal('0') unless amount_for_current_year?(income)
+        annual_tot = compute_annual_amount(income)
         return annual_tot unless applicant.is_claimed_as_tax_dependent
 
         if income.earned?
@@ -81,47 +103,47 @@ module Eligibilities
         end
       end
 
-      def compute_annual_income(income)
-        income_end_date = calculate_end_date(income)
-        income_start_date = calculate_start_date(income)
-        income_per_day = calculate_income_per_day(income)
+      def compute_annual_amount(evidence)
+        evidence_end_date = calculate_end_date(evidence)
+        evidence_start_date = calculate_start_date(evidence)
+        evidence_per_day = calculate_amount_per_day(evidence)
 
-        ((income_end_date.yday - income_start_date.yday + 1) * income_per_day).round(2)
+        ((evidence_end_date.yday - evidence_start_date.yday + 1) * evidence_per_day).round(2)
       end
 
       # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
-      def calculate_income_per_day(income)
+      def calculate_amount_per_day(evidence)
         no_of_days = @assistance_year_end.yday
-        annual_amnt = case income.frequency_kind.downcase
+        annual_amnt = case evidence.frequency_kind.downcase
                       when 'weekly'
-                        income.amount * 52
+                        evidence.amount * 52
                       when 'monthly'
-                        income.amount * 12
+                        evidence.amount * 12
                       when 'annually', 'once'
-                        income.amount
+                        evidence.amount
                       when 'biweekly'
-                        income.amount * 26
+                        evidence.amount * 26
                       when 'quarterly'
-                        income.amount * 4
+                        evidence.amount * 4
                       when 'semimonthly'
-                        income.amount * 24
+                        evidence.amount * 24
                       when 'hourly'
-                        income.amount * 40 * 52
+                        evidence.amount * 40 * 52
                       when 'daily'
-                        income.amount * 5 * 52
+                        evidence.amount * 5 * 52
                       when 'semiannually'
-                        income.amount * 2
+                        evidence.amount * 2
                       when '13xperyear'
-                        income.amount * 13
+                        evidence.amount * 13
                       when '11xperyear'
-                        income.amount * 11
+                        evidence.amount * 11
                       when '10xperyear'
-                        income.amount * 10
+                        evidence.amount * 10
                       else
                         0
                       end
-        income_per_day = annual_amnt / no_of_days
-        BigDecimal(income_per_day.to_s)
+        amount_per_day = annual_amnt / no_of_days
+        BigDecimal(amount_per_day.to_s)
       end
       # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength
 
@@ -138,13 +160,13 @@ module Eligibilities
         @assistance_year_end
       end
 
-      def income_for_current_year?(income)
+      def amount_for_current_year?(evidence)
         @assistance_year_start = Date.new(@application.assistance_year)
         @assistance_year_end = @assistance_year_start.end_of_year
-        income_end = income.end_on || @assistance_year_end
-        income_date_range = (income.start_on)..income_end
+        evidence_end = evidence.end_on || @assistance_year_end
+        evidence_date_range = (evidence.start_on)..evidence_end
         year_date_range = @assistance_year_start..@assistance_year_end
-        date_ranges_overlap?(income_date_range, year_date_range)
+        date_ranges_overlap?(evidence_date_range, year_date_range)
       end
 
       def date_ranges_overlap?(range_a, range_b)
