@@ -1632,7 +1632,7 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       end
 
       it 'should store annual_tax_household_income' do
-        expect(medicaid_app.aptc_households.first.annual_tax_household_income).to eq(33600.0)
+        expect(medicaid_app.aptc_households.first.annual_tax_household_income).to eq(33_600.0)
       end
 
       it 'should return annual_tax_household_income matching with calculated income' do
