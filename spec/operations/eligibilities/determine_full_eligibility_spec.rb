@@ -1558,6 +1558,92 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     end
   end
 
+  # This test is to make sure the deduction amounts are reduced from annual_tax_household_income
+  context 'cms me_test_scenarios test_six state ME' do
+    include_context 'cms ME me_test_scenarios test_six'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @new_thhms = @application.tax_households.flat_map(&:tax_household_members)
+      @thh = @application.tax_households.first
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    it 'should return tax households with correct effective dates' do
+      expect(@thh.effective_on.year).to eq(@application.assistance_year)
+      expect(@thh.effective_on.year).to eq(Date.today.year.next)
+    end
+
+    context 'for tax_household_members' do
+      let(:kyle_ped) do
+        @new_thhms.detect do |thhm|
+          thhm.applicant_reference.person_hbx_id.to_s == '1000590'
+        end.product_eligibility_determination
+      end
+
+      let(:austin_ped) do
+        @new_thhms.detect do |thhm|
+          thhm.applicant_reference.person_hbx_id.to_s == '1000602'
+        end.product_eligibility_determination
+      end
+
+      it 'should return aqhp, csr result for kyle' do
+        expect(kyle_ped.is_ia_eligible).to eq(true)
+        expect(kyle_ped.is_csr_eligible).to eq(true)
+        expect(kyle_ped.csr).to eq('87')
+      end
+
+      it 'should not return any member determinations for austin' do
+        expect(austin_ped.to_h.values).not_to include(true)
+      end
+    end
+
+    context 'for persistence' do
+      before do
+        medicaid_app.reload
+      end
+
+      it 'should match with hbx_id' do
+        expect(medicaid_app.application_identifier).to eq(application_entity.hbx_id)
+      end
+
+      it 'should match with application request payload' do
+        expect(medicaid_app.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should match with application response payload' do
+        expect(medicaid_app.application_response_payload).to eq(@application.to_json)
+      end
+
+      it 'should match with medicaid request payload' do
+        expect(medicaid_app.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+
+      it 'should store annual_tax_household_income' do
+        expect(medicaid_app.aptc_households.first.annual_tax_household_income).to eq(33_600.0)
+      end
+
+      it 'should return annual_tax_household_income matching with calculated income' do
+        annual_income = @application.applicants.first.incomes.first.amount.to_f * 12
+        annual_deduction = @application.applicants.first.deductions.first.amount.to_f * 12
+        calculated_annual_income = annual_income - annual_deduction
+        expect(medicaid_app.aptc_households.first.annual_tax_household_income).to eq(calculated_annual_income)
+      end
+    end
+  end
+
   # Parent is getting APTC/CSR as expected. Child is getting UQHP instead of APTC/CSR
   # when a person answered 'yes' to Will this person file taxes for 2021? *
   # And answered 'no' to Will this person be claimed as a tax dependent for 2021? *
