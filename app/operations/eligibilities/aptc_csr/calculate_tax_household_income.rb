@@ -62,8 +62,6 @@ module Eligibilities
       end
 
       def calculate_member_income(applicant, income_threshold)
-        return BigDecimal('0') unless applicant.incomes.present?
-
         member_income =
           if applicant.incomes.present?
             applicant.incomes.inject(BigDecimal('0')) do |annual_total, income|
