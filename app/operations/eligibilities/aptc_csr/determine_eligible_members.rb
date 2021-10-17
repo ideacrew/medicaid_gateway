@@ -251,11 +251,9 @@ module Eligibilities
         @application.spouse_relationships(applicant).present?
       end
 
+      # If a member is tax dependent, then they are simply passes 'Tax filing status'
       def eligible_tax_dependent?(applicant)
-        return false unless applicant.is_claimed_as_tax_dependent
-        claiming_applicant_identifier = applicant.claimed_as_tax_dependent_by.person_hbx_id
-        claiming_applicant = applicant_by_reference(claiming_applicant_identifier)
-        claiming_applicant.incomes.present?
+        applicant.is_claimed_as_tax_dependent
       end
 
       def monthly_lcsp_premium(applicant)
