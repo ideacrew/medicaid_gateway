@@ -6,6 +6,6 @@
     "*.erb": "erb"
   },
   "[ruby]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "castwide.solargraph"
   }
 }

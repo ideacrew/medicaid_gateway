@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/ideacrew/aca_entities.git
-  revision: e8d0bc5f7eecaaa53fbc34828693d784aa451539
+  revision: 94aeaec4851cf4091560e67fc32a9fc849358888
   branch: trunk
   specs:
-    aca_entities (0.8.0)
+    aca_entities (0.9.0)
       deep_merge
       dry-monads (~> 1.2)
       dry-struct (~> 1.0)
@@ -13,14 +13,15 @@ GIT
       iso_country_codes
       nokogiri-happymapper
       oj (~> 3.11)
+      rbnacl (~> 7.1)
 
 GIT
   remote: https://github.com/ideacrew/event_source.git
-  revision: f2e41bee53939bb069668b314c904c43e52bdc57
-  branch: trunk
+  revision: 3d69618c16fbbe09912eeba097aedac47d1abc15
+  branch: release_0.5.5
   specs:
-    event_source (0.5.3)
-      bunny (>= 1.7.1)
+    event_source (0.5.5)
+      bunny (~> 2.14)
       deep_merge (~> 1.2.0)
       dry-events (~> 0.3)
       dry-inflector (~> 0.2)
@@ -145,9 +146,16 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     amq-protocol (2.3.2)
     ast (2.4.2)
+    autoprefixer-rails (10.3.3.0)
+      execjs (~> 2)
+    awesome_print (1.9.2)
     bindex (0.8.1)
     bootsnap (1.9.1)
       msgpack (~> 1.0)
+    bootstrap (5.1.0)
+      autoprefixer-rails (>= 9.1.0)
+      popper_js (>= 2.9.3, < 3)
+      sassc-rails (>= 2.0.0)
     bson (4.12.1)
     builder (3.2.4)
     bunny (2.19.0)
@@ -246,6 +254,7 @@ GEM
       tzinfo
     ethon (0.14.0)
       ffi (>= 1.15.0)
+    execjs (2.8.1)
     eye (0.10.0)
       celluloid (~> 0.17.3)
       celluloid-io (~> 0.17.0)
@@ -332,11 +341,12 @@ GEM
       racc (~> 1.4)
     nokogiri-happymapper (0.8.1)
       nokogiri (~> 1.5)
-    oj (3.13.8)
+    oj (3.13.9)
     ox (2.14.5)
     parallel (1.21.0)
     parser (3.0.2.0)
       ast (~> 2.4.1)
+    popper_js (2.9.3)
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -392,6 +402,8 @@ GEM
     rb-fsevent (0.11.0)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    rbnacl (7.1.1)
+      ffi
     rbtree (0.4.4)
     redis (4.4.0)
     redis-namespace (1.8.1)
@@ -411,11 +423,11 @@ GEM
     resque-retry (1.7.6)
       resque (>= 1.25, < 3.0)
       resque-scheduler (~> 4.0)
-    resque-scheduler (4.4.0)
+    resque-scheduler (4.5.0)
       mono_logger (~> 1.0)
       redis (>= 3.3)
-      resque (>= 1.26)
-      rufus-scheduler (~> 3.2)
+      resque (>= 1.27)
+      rufus-scheduler (~> 3.2, < 3.7)
     rexml (3.2.5)
     rspec-core (3.10.1)
       rspec-support (~> 3.10.0)
@@ -443,11 +455,11 @@ GEM
       rubocop-ast (>= 1.2.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.11.0)
+    rubocop-ast (1.12.0)
       parser (>= 3.0.1.1)
     ruby-progressbar (1.11.0)
     ruby2_keywords (0.0.5)
-    rufus-scheduler (3.8.0)
+    rufus-scheduler (3.6.0)
       fugit (~> 1.1, >= 1.1.6)
     sass-rails (6.0.0)
       sassc-rails (~> 2.1, >= 2.1.1)
@@ -522,7 +534,9 @@ PLATFORMS
 
 DEPENDENCIES
   aca_entities!
+  awesome_print
   bootsnap (>= 1.4.4)
+  bootstrap (~> 5.1.0)
   byebug
   capybara (~> 3.12)
   database_cleaner (~> 1.7)

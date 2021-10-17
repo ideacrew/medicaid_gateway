@@ -1,0 +1,17 @@
+---
+registry:
+  - namespace:
+      - :mg_app
+    features:
+      - key: :state_abbreviation
+        is_enabled: true
+        item: "ME"
+      - key: :transfer_to_enroll
+        is_enabled: true
+      - key: :transfer_service
+        is_enabled: true
+        item: "aces"
+      - key: :mitc_determination
+        is_enabled: true
+      - key: :mec_check
+        is_enabled: true

@@ -1,0 +1,157 @@
+<S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope" xmlns:env="http://www.w3.org/2003/05/soap-envelope">
+    <S:Header>
+        <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+            <wsu:Timestamp wsu:Id="TS-11"> <wsu:Created>2021-06-30T22:52:32Z</wsu:Created> <wsu:Expires>2021-06-30T23:17:32Z</wsu:Expires> </wsu:Timestamp>
+            <wsse:UsernameToken xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="UsernameToken-10">
+                <wsse:Username>09.US*.DSH.001.001</wsse:Username> <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest">X89ET7W9eG2rsBehp1kTh36/NBU=</wsse:Password>
+                <wsse:Nonce EncodingType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary">mer2cFBX3oQuiJLppA9vvA==</wsse:Nonce> <wsu:Created>2021-06-30T22:52:32Z</wsu:Created>
+            </wsse:UsernameToken>
+        </wsse:Security>
+    </S:Header>
+    <S:Body
+        xmlns:ns1="http://niem.gov/niem/structures/2.0"
+        xmlns:ns10="http://at.dsh.cms.gov/exchange/1.0"
+        xmlns:ns2="http://hix.cms.gov/0.1/hix-core"
+        xmlns:ns3="http://niem.gov/niem/niem-core/2.0"
+        xmlns:ns4="http://hix.cms.gov/0.1/hix-ee"
+        xmlns:ns5="http://hix.cms.gov/0.1/hix-pm"
+        xmlns:ns6="http://at.dsh.cms.gov/extension/1.0"
+        xmlns:ns7="http://niem.gov/niem/domains/screening/2.1"
+        xmlns:ns8="http://niem.gov/niem/appinfo/2.0"
+        xmlns:ns9="http://niem.gov/niem/appinfo/2.1"
+    >
+        <ns10:AccountTransferRequest xmlns:ns10="http://at.dsh.cms.gov/exchange/1.0" ns6:atVersionText="2.4">
+            <ns6:TransferHeader>
+                <ns6:TransferActivity>
+                    <ns3:ActivityIdentification><ns3:IdentificationID>MET00000000001864028</ns3:IdentificationID></ns3:ActivityIdentification><ns3:ActivityDate><ns3:DateTime>2021-06-30T18:52:32.041-04:00</ns3:DateTime></ns3:ActivityDate>
+                    <ns6:TransferActivityReferralQuantity>1</ns6:TransferActivityReferralQuantity><ns6:RecipientTransferActivityCode>Exchange</ns6:RecipientTransferActivityCode>
+                </ns6:TransferActivity>
+            </ns6:TransferHeader>
+            <ns2:Sender ns1:id="Sender"><ns2:InformationExchangeSystemCategoryCode>MedicaidAgency</ns2:InformationExchangeSystemCategoryCode><ns2:InformationExchangeSystemStateCode>ME</ns2:InformationExchangeSystemStateCode></ns2:Sender>
+            <ns2:Receiver ns1:id="Exchange"><ns2:InformationExchangeSystemCategoryCode>Exchange</ns2:InformationExchangeSystemCategoryCode></ns2:Receiver>
+            <ns4:InsuranceApplication>
+                <ns2:ApplicationCreation>
+                    <ns3:ActivityDate><ns3:DateTime>2021-05-26T00:00:00.000-04:00</ns3:DateTime></ns3:ActivityDate>
+                </ns2:ApplicationCreation>
+                <ns2:ApplicationSubmission>
+                    <ns3:ActivityDate><ns3:DateTime>2021-05-26T00:00:00.000-04:00</ns3:DateTime></ns3:ActivityDate>
+                </ns2:ApplicationSubmission>
+                <ns2:ApplicationIdentification><ns3:IdentificationID>MEA00000000201194396</ns3:IdentificationID></ns2:ApplicationIdentification>
+                <ns4:InsuranceApplicant>
+                    <ns2:RoleOfPersonReference ns1:ref="MEPP0000000200987074"></ns2:RoleOfPersonReference><ns4:InsuranceApplicantFixedAddressIndicator>false</ns4:InsuranceApplicantFixedAddressIndicator>
+                    <ns4:ExchangeEligibility ns1:id="ExchangeEligibility6084717"></ns4:ExchangeEligibility>
+                    <ns4:ReferralActivity>
+                        <ns3:ActivityIdentification><ns3:IdentificationID>MER00000000200987074</ns3:IdentificationID></ns3:ActivityIdentification>
+                        <ns3:ActivityDate><ns3:DateTime>2021-06-30T18:52:32.143-04:00</ns3:DateTime></ns3:ActivityDate><ns4:ReferralActivitySenderReference ns1:ref="Sender"></ns4:ReferralActivitySenderReference>
+                        <ns4:ReferralActivityReceiverReference ns1:ref="Exchange"></ns4:ReferralActivityReceiverReference>
+                        <ns4:ReferralActivityStatus>
+                            <ns2:StatusValidDateRange>
+                                <ns3:StartDate><ns3:Date>2021-06-30-04:00</ns3:Date></ns3:StartDate>
+                            </ns2:StatusValidDateRange>
+                            <ns4:ReferralActivityStatusCode>Initiated</ns4:ReferralActivityStatusCode>
+                        </ns4:ReferralActivityStatus>
+                        <ns4:ReferralActivityEligibilityReasonReference ns1:ref="ExchangeEligibility6084717"></ns4:ReferralActivityEligibilityReasonReference>
+                    </ns4:ReferralActivity>
+                </ns4:InsuranceApplicant>
+                <ns4:InsuranceApplicationRequestingFinancialAssistanceIndicator>true</ns4:InsuranceApplicationRequestingFinancialAssistanceIndicator>
+                <ns4:InsuranceApplicationCoverageRenewalYearQuantity>1</ns4:InsuranceApplicationCoverageRenewalYearQuantity>
+                <ns4:SSFSigner>
+                    <ns2:RoleOfPersonReference ns1:ref="MEPP0000000200987074"></ns2:RoleOfPersonReference>
+                    <ns4:Signature>
+                        <ns2:SignatureDate><ns3:Date>2021-05-26-04:00</ns3:Date></ns2:SignatureDate>
+                    </ns4:Signature>
+                    <ns4:SSFSignerAuthorizedRepresentativeAssociation>
+                        <ns4:Signature xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><ns2:SignatureDate xsi:nil="true"></ns2:SignatureDate></ns4:Signature>
+                    </ns4:SSFSignerAuthorizedRepresentativeAssociation>
+                    <ns4:SSFAttestation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <ns4:SSFAttestationCollectionsAgreementIndicator xsi:nil="true"></ns4:SSFAttestationCollectionsAgreementIndicator>
+                        <ns4:SSFAttestationMedicaidObligationsIndicator xsi:nil="true"></ns4:SSFAttestationMedicaidObligationsIndicator><ns4:SSFAttestationNonPerjuryIndicator>true</ns4:SSFAttestationNonPerjuryIndicator>
+                        <ns4:SSFAttestationNotIncarceratedIndicator>true</ns4:SSFAttestationNotIncarceratedIndicator><ns4:SSFAttestationInformationChangesIndicator>true</ns4:SSFAttestationInformationChangesIndicator>
+                    </ns4:SSFAttestation>
+                </ns4:SSFSigner>
+                <ns4:InsuranceApplicationAssisterAssociation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><ns3:AssociationBeginDate xsi:nil="true"></ns3:AssociationBeginDate></ns4:InsuranceApplicationAssisterAssociation>
+                <ns4:InsuranceApplicationRequestingMedicaidIndicator>false</ns4:InsuranceApplicationRequestingMedicaidIndicator>
+                <ns4:SSFPrimaryContact><ns2:RoleOfPersonReference ns1:ref="MEPP0000000200987074"></ns2:RoleOfPersonReference><ns4:SSFPrimaryContactPreferenceCode>Mail</ns4:SSFPrimaryContactPreferenceCode></ns4:SSFPrimaryContact>
+                <ns4:InsuranceApplicationTaxReturnAccessIndicator>false</ns4:InsuranceApplicationTaxReturnAccessIndicator>
+            </ns4:InsuranceApplication>
+            <ns4:MedicaidHousehold ns1:id="MedicaidHousehold">
+                <ns4:HouseholdSizeQuantity>1</ns4:HouseholdSizeQuantity><ns4:HouseholdMemberReference ns1:ref="MEPP0000000200987074"></ns4:HouseholdMemberReference>
+                <ns4:MedicaidHouseholdEffectivePersonQuantity>1</ns4:MedicaidHouseholdEffectivePersonQuantity>
+            </ns4:MedicaidHousehold>
+            <ns2:Person ns1:id="MEPP0000000200987074">
+                <ns3:PersonBirthDate><ns3:Date>1999-10-11-05:00</ns3:Date></ns3:PersonBirthDate><ns3:PersonName><ns3:PersonGivenName>GERALD</ns3:PersonGivenName><ns3:PersonSurName>testQA</ns3:PersonSurName></ns3:PersonName>
+                <ns3:PersonSexText>Male</ns3:PersonSexText><ns3:PersonSSNIdentification><ns3:IdentificationID>125623458</ns3:IdentificationID></ns3:PersonSSNIdentification><ns3:PersonUSCitizenIndicator>true</ns3:PersonUSCitizenIndicator>
+                <ns2:TribalAugmentation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                    <ns2:PersonAmericanIndianOrAlaskaNativeIndicator>false</ns2:PersonAmericanIndianOrAlaskaNativeIndicator><ns3:LocationStateUSPostalServiceCode xsi:nil="true"></ns3:LocationStateUSPostalServiceCode>
+                </ns2:TribalAugmentation>
+                <ns2:PersonAugmentation>
+                    <ns2:PersonContactInformationAssociation>
+                        <ns3:AssociationBeginDate><ns3:Date>2021-05-26-04:00</ns3:Date></ns3:AssociationBeginDate><ns3:ContactInformationIsPrimaryIndicator>true</ns3:ContactInformationIsPrimaryIndicator>
+                        <ns2:ContactInformation>
+                            <ns3:ContactMailingAddress>
+                                <ns3:StructuredAddress>
+                                    <ns3:LocationStreet><ns3:StreetFullText>Fender Street</ns3:StreetFullText></ns3:LocationStreet><ns3:LocationCityName>Gibsonville</ns3:LocationCityName>
+                                    <ns3:LocationStateUSPostalServiceCode>ME</ns3:LocationStateUSPostalServiceCode><ns3:LocationPostalCode>01234</ns3:LocationPostalCode>
+                                </ns3:StructuredAddress>
+                            </ns3:ContactMailingAddress>
+                        </ns2:ContactInformation>
+                        <ns2:ContactInformationCategoryCode>Home</ns2:ContactInformationCategoryCode>
+                    </ns2:PersonContactInformationAssociation>
+                    <ns2:PersonContactInformationAssociation>
+                        <ns3:AssociationBeginDate><ns3:Date>2021-05-26-04:00</ns3:Date></ns3:AssociationBeginDate><ns3:ContactInformationIsPrimaryIndicator>false</ns3:ContactInformationIsPrimaryIndicator>
+                        <ns2:ContactInformation>
+                            <ns3:ContactMailingAddress>
+                                <ns3:StructuredAddress>
+                                    <ns3:LocationStreet><ns3:StreetFullText>Fender Street</ns3:StreetFullText></ns3:LocationStreet><ns3:LocationCityName>Gibsonville</ns3:LocationCityName>
+                                    <ns3:LocationStateUSPostalServiceCode>ME</ns3:LocationStateUSPostalServiceCode><ns3:LocationPostalCode>01234</ns3:LocationPostalCode>
+                                </ns3:StructuredAddress>
+                            </ns3:ContactMailingAddress>
+                        </ns2:ContactInformation>
+                        <ns2:ContactInformationCategoryCode>Mailing</ns2:ContactInformationCategoryCode>
+                    </ns2:PersonContactInformationAssociation>
+                    <ns2:PersonContactInformationAssociation>
+                        <ns3:AssociationBeginDate><ns3:Date>2021-05-26-04:00</ns3:Date></ns3:AssociationBeginDate><ns3:ContactInformationIsPrimaryIndicator>false</ns3:ContactInformationIsPrimaryIndicator>
+                        <ns2:ContactInformation>
+                            <ns3:ContactTelephoneNumber>
+                                <ns3:FullTelephoneNumber><ns3:TelephoneNumberFullID>1231231234</ns3:TelephoneNumberFullID></ns3:FullTelephoneNumber>
+                            </ns3:ContactTelephoneNumber>
+                        </ns2:ContactInformation>
+                        <ns2:ContactInformationCategoryCode>Mobile</ns2:ContactInformationCategoryCode>
+                    </ns2:PersonContactInformationAssociation>
+                    <ns2:PersonContactInformationAssociation>
+                        <ns3:AssociationBeginDate><ns3:Date>2021-05-26-04:00</ns3:Date></ns3:AssociationBeginDate><ns3:ContactInformationIsPrimaryIndicator>false</ns3:ContactInformationIsPrimaryIndicator>
+                        <ns2:ContactInformation><ns3:ContactEmailID>RockOut123@LedZep.com</ns3:ContactEmailID></ns2:ContactInformation><ns2:ContactInformationCategoryCode>Home</ns2:ContactInformationCategoryCode>
+                    </ns2:PersonContactInformationAssociation>
+                    <ns2:PersonEmploymentAssociation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <ns3:AssociationBeginDate xsi:nil="true"></ns3:AssociationBeginDate>
+                        <ns2:Employer ns1:id="MEORG000000209299289">
+                            <ns3:OrganizationName>test</ns3:OrganizationName>
+                            <ns3:OrganizationPrimaryContactInformation>
+                                <ns3:ContactMailingAddress>
+                                    <ns3:StructuredAddress xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                        <ns3:LocationStreet xsi:nil="true"></ns3:LocationStreet><ns3:LocationCityName xsi:nil="true"></ns3:LocationCityName>
+                                        <ns3:LocationStateUSPostalServiceCode xsi:nil="true"></ns3:LocationStateUSPostalServiceCode><ns3:LocationPostalCode xsi:nil="true"></ns3:LocationPostalCode>
+                                    </ns3:StructuredAddress>
+                                </ns3:ContactMailingAddress>
+                            </ns3:OrganizationPrimaryContactInformation>
+                        </ns2:Employer>
+                    </ns2:PersonEmploymentAssociation>
+                    <ns2:PersonPregnancyStatus><ns2:StatusValidDateRange></ns2:StatusValidDateRange><ns2:StatusIndicator>false</ns2:StatusIndicator></ns2:PersonPregnancyStatus>
+                    <ns2:PersonMedicaidIdentification><ns3:IdentificationID>29033683A</ns3:IdentificationID></ns2:PersonMedicaidIdentification>
+                    <ns2:PersonIncome xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <ns2:IncomeFrequency><ns2:FrequencyCode>Annually</ns2:FrequencyCode></ns2:IncomeFrequency><ns2:IncomeAmount>14000</ns2:IncomeAmount><ns2:IncomeHoursPerWeekMeasure>40</ns2:IncomeHoursPerWeekMeasure>
+                        <ns2:IncomeHoursPerPayPeriodMeasure>40</ns2:IncomeHoursPerPayPeriodMeasure><ns2:IncomeDaysPerWeekMeasure>5</ns2:IncomeDaysPerWeekMeasure><ns2:IncomeCategoryCode>Wages</ns2:IncomeCategoryCode>
+                        <ns2:IncomeDate xsi:nil="true"></ns2:IncomeDate><ns2:IncomeSourceOrganizationReference ns1:ref="MEORG000000209299289"></ns2:IncomeSourceOrganizationReference>
+                        <ns2:IncomeSubjectToFederalRestrictionsIndicator>false</ns2:IncomeSubjectToFederalRestrictionsIndicator><ns2:IncomePaymentFrequency><ns2:FrequencyCode>Annually</ns2:FrequencyCode></ns2:IncomePaymentFrequency>
+                        <ns2:IncomeEarnedDateRange>
+                            <ns3:StartDate><ns3:Date>2021-01-01-05:00</ns3:Date></ns3:StartDate>
+                        </ns2:IncomeEarnedDateRange>
+                        <ns2:IncomeEmploymentDescriptionText>Activities Director </ns2:IncomeEmploymentDescriptionText><ns2:IncomeUnemploymentSourceText xsi:nil="true"></ns2:IncomeUnemploymentSourceText>
+                    </ns2:PersonIncome>
+                    <ns2:PersonCHIPIdentification><ns3:IdentificationID>29033683A</ns3:IdentificationID></ns2:PersonCHIPIdentification><ns2:PersonMarriedIndicator>false</ns2:PersonMarriedIndicator>
+                </ns2:PersonAugmentation>
+            </ns2:Person>
+            <ns6:PhysicalHousehold><ns4:HouseholdSizeQuantity>1</ns4:HouseholdSizeQuantity><ns4:HouseholdMemberReference ns1:ref="MEPP0000000200987074"></ns4:HouseholdMemberReference></ns6:PhysicalHousehold>
+        </ns10:AccountTransferRequest>
+    </S:Body>
+</S:Envelope>

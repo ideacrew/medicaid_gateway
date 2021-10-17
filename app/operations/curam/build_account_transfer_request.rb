@@ -41,14 +41,16 @@ module Curam
       result = Try do
         MedicaidGatewayRegistry[:curam_connection].setting(:curam_atp_service_username).item
       end
-      result.or(Failure("Failed to find setting: :curam_connection, :curam_atp_service_username"))
+      return Failure("Failed to find setting: :curam_connection, :curam_atp_service_username") if result.failure?
+      result.nil? ? Failure(":curam_atp_service_username cannot be nil") : result
     end
 
     def read_password_setting
       result = Try do
         MedicaidGatewayRegistry[:curam_connection].setting(:curam_atp_service_password).item
       end
-      result.or(Failure("Failed to find setting: :curam_connection, :curam_atp_service_password"))
+      return Failure("Failed to find setting: :curam_connection, :curam_atp_service_username") if result.failure?
+      result.nil? ? Failure(":curam_atp_service_username cannot be nil") : result
     end
 
     def generate_created

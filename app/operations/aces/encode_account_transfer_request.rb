@@ -45,8 +45,9 @@ module Aces
 
     def encode_soap_body(built, request)
       str = "<\/soap:Header>"
-      pos = built.value!.index(str)
-      Success(built.value!.insert(pos + str.size, "<soap:Body>#{request.raw_body}<\/soap:Body>"))
+      payload = built.value!
+      pos = payload.index(str)
+      Success(payload.insert(pos + str.size, "<soap:Body>#{request.raw_body}<\/soap:Body>"))
     end
 
     def encode_soap_envelope(request)

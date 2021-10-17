@@ -12,12 +12,15 @@ module Aces
 
     # @param [IO] body the body of the request
     # @return [Dry::Result]
-    def call(body)
+    def call(body, transfer_id)
       parsed_payload = yield parse_xml(body)
+      _identifier = yield get_id(parsed_payload, transfer_id)
       _validation_result = yield validate_soap_header(parsed_payload)
       body_node = yield extract_top_body_node(parsed_payload)
       string_payload = yield convert_to_document_string(body_node)
-      run_validations_and_serialize(string_payload)
+      serialized = run_validations_and_serialize(string_payload)
+      _transfer = yield transfer_account(string_payload, transfer_id, serialized)
+      serialized
     end
 
     protected
@@ -29,7 +32,8 @@ module Aces
     end
 
     def run_business_validations(string_payload)
-      Transfers::ExecuteBusinessXmlValidations.new.call(string_payload)
+      validation = Transfers::ExecuteBusinessXmlValidations.new.call(string_payload)
+      validation.success? ? Success(string_payload) : validation
     end
 
     def parse_xml(body)
@@ -38,6 +42,17 @@ module Aces
       end
       return Failure(:xml_parse_failed) if parse_result.success? && parse_result.value!.blank?
       parse_result.or(Failure(:xml_parse_failed))
+    end
+
+    def get_id(payload, transfer_id)
+      parent_node = payload.xpath("//xmlns:TransferActivity", "xmlns" => "http://at.dsh.cms.gov/extension/1.0")
+      identity_tag = parent_node.xpath(".//ns3:IdentificationID", "ns3" => "http://niem.gov/niem/niem-core/2.0")
+
+      return Failure("XML error: ID tag missing.") if identity_tag.empty?
+
+      transfer = Aces::InboundTransfer.find(transfer_id)
+      transfer.update!(external_id: identity_tag.text, payload: payload, result: "Parsed")
+      Success(identity_tag.text)
     end
 
     def validate_soap_header(document)
@@ -68,7 +83,7 @@ module Aces
           end
         end
       end
-      Success(builder.to_xml)
+      validation_result.success? ? Success(builder.to_xml) : Failure(builder.to_xml)
     end
 
     def encode_validation_result(soap_body, validation_result)
@@ -88,6 +103,9 @@ module Aces
       if validation_result.success?
         rmd[:hix].ResponseCode "HS000000"
         rmd[:hix].ResponseDescriptionText "Success"
+      elsif validation_result.failure.to_s == "validator_crashed"
+        rmd[:hix].ResponseCode "HE001111"
+        rmd[:hix].ResponseDescriptionText "Validator Crashed"
       else
         rmd[:hix].ResponseCode "HE001111"
         rmd[:hix].ResponseDescriptionText "One or More Rules Failed Validation"
@@ -108,6 +126,12 @@ module Aces
         error_messages = validation_failure.map(&:to_s)
         (["Payload Failed XML Schema Validation:"] + error_messages).join("\n")
       end
+    end
+
+    def transfer_account(payload, transfer_id, serialized)
+      return serialized if serialized.failure?
+      return Success(payload) unless MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll)
+      Transfers::ToEnroll.new.call(payload, transfer_id)
     end
   end
 end

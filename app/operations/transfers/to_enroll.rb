@@ -2,17 +2,19 @@
 
 require 'dry/monads'
 require 'dry/monads/do'
+require 'aca_entities/serializers/xml/medicaid/atp'
+require 'aca_entities/atp/transformers/cv/family'
 
 module Transfers
   # Transfer an account from ACES to enroll
   class ToEnroll
-    send(:include, Dry::Monads[:result, :do])
+    send(:include, Dry::Monads[:result, :do, :try])
 
     # @param [String] Take in the raw payload and serialize and transform it, then tranfer the result to EA.
     # @return [Dry::Result]
-    def call(params)
+    def call(params, transfer_id)
       payload = yield create_transfer(params)
-      transformed_params = yield transform_params(payload)
+      transformed_params = yield transform_params(payload, transfer_id)
       initiate_transfer(transformed_params)
     end
 
@@ -22,11 +24,21 @@ module Transfers
       record = ::AcaEntities::Serializers::Xml::Medicaid::Atp::AccountTransferRequest.parse(input)
       result = record.is_a?(Array) ? record.first : record
       Success(result)
+    rescue StandardError => e
+      Failure("serializer error #{e}")
     end
 
-    def transform_params(result)
+    def transform_params(result, transfer_id)
       transformed = ::AcaEntities::Atp::Transformers::Cv::Family.transform(result.to_hash(identifier: true))
+      update_transfer(transfer_id, transformed[:family][:magi_medicaid_applications][0][:transfer_id])
       Success(transformed)
+    rescue StandardError => e
+      Failure("to_aces transformer #{e}")
+    end
+
+    def update_transfer(transfer_id, external_id)
+      transfer = Aces::InboundTransfer.find(transfer_id)
+      transfer.update!(external_id: external_id)
     end
 
     def initiate_transfer(payload)

@@ -13,15 +13,12 @@ module Eligibilities
     # @option opts [Hash] :medicaid_response_payload
     # @return [Dry::Monads::Result]
     def call(params)
-      # { medicaid_application_id: '200000123',
-      #   medicaid_response_payload: medicaid_response_payload }
       medicaid_application = yield find_medicaid_application(params)
       mm_application_entity = yield get_magi_medicaid_application(medicaid_application)
       mm_app_with_medicaid_determination = yield add_medicaid_determination_to_mm_application(mm_application_entity)
       mm_app_with_full_determination = yield determine_all_eligibilities_except_medicaid(mm_app_with_medicaid_determination)
       result = yield determine_event_name_and_publish_payload(mm_app_with_full_determination)
 
-      # { event: event_name, payload: mm_app_with_full_determination }
       Success(result)
     end
 
@@ -109,7 +106,6 @@ module Eligibilities
 
     # rubocop:disable Metrics/CyclomaticComplexity
     def determine_event_name_and_publish_payload(mm_application)
-      # TODO: determine the event name
       peds = mm_application.tax_households.flat_map(&:tax_household_members).map(&:product_eligibility_determination)
       event_name =
         if peds.all?(&:is_ia_eligible)
@@ -133,12 +129,3 @@ module Eligibilities
     # rubocop:enable Metrics/CyclomaticComplexity
   end
 end
-
-# TODO
-#   1. Store magi_medicaid_request_payload, mitc_request_payload, mitc_response_payload and magi_medicaid_request_payload
-#   2. Send out an event.
-#   3. Log all Failure moands for finding failure cases.
-#   4. Resource Registry configurations.
-#   5. Member Level Determinations.
-#   6. Correct MagiMedicaid/MedicaidChip Determinations.
-

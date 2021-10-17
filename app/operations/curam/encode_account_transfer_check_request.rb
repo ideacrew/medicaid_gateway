@@ -8,7 +8,7 @@ module Curam
   # accept.  Currently this is encoded as a soap literal with a SOAP
   # security header.
   class EncodeAccountTransferCheckRequest
-    send(:include, Dry::Monads[:result, :do])
+    send(:include, Dry::Monads[:result, :do, :try])
 
     # @param [Aces::AccountTransferRequest] request
     # @return [Dry::Result<String>]
@@ -40,21 +40,25 @@ module Curam
     end
 
     def encode_soap_envelope(request)
-      builder = Nokogiri::XML::Builder.new do |xml|
-        xml[:soapenv].Envelope({
-                                 "xmlns:soapenv" => "http://schemas.xmlsoap.org/soap/envelope/",
-                                 "xmlns:v1" => "http://xmlns.dhs.dc.gov/dcas/esb/acctransappstatuccheck/V1"
-                               }) do |envelope|
-          encode_soap_header(envelope, request)
-          xml[:soapenv].Body do
-            xml[:v1].AccTransStatusByIdReq do
-              xml[:v1].GLOBALAPPLICATIONID request.global_application_id
-              xml[:v1].LASTWRITTEN request.last_written
+      result = Try do
+        builder = Nokogiri::XML::Builder.new do |xml|
+          xml[:soapenv].Envelope({
+                                   "xmlns:soapenv" => "http://schemas.xmlsoap.org/soap/envelope/",
+                                   "xmlns:v1" => "http://xmlns.dhs.dc.gov/dcas/esb/acctransappstatuccheck/V1"
+                                 }) do |envelope|
+            encode_soap_header(envelope, request)
+            xml[:soapenv].Body do
+              xml[:v1].AccTransStatusByIdReq do
+                xml[:v1].GLOBALAPPLICATIONID request.global_application_id
+                xml[:v1].LASTWRITTEN request.last_written
+              end
             end
           end
         end
+        builder.to_xml
       end
-      Success(builder.to_xml)
+
+      result.success? ? result : Failure("EncodeAccountTransferCheckRequest -> encode_soap_envelope")
     end
 
     def encode_password(password, _created_at)

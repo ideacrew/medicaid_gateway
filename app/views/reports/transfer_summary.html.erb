@@ -1,0 +1,24 @@
+<h1>Account Transfer Summary</h1>
+<p><%= @range %></p>
+<table class="table table-striped table-responsive"  style="table-layout:fixed; width:100%; word-wrap: break-word;">
+	<thead>
+		<th>Sent</th>
+		<th>Received</th>
+		<th>Sent Successes</th>
+		<th>Sent Failures</th>
+		<th>Received Successes</th>
+		<th>Received Failures</th>
+	</thead>
+	<tbody>
+		<tr>
+			<td><%= @at_sent_total %></td>
+			<td><%= @at_received_total %></td>
+			<td><%= @at_sent_successful %></td>
+			<td><%= @at_sent_failure %></td>
+			<td><%= @at_received_successful %></td>
+			<td><%= @at_received_failure %></td>
+		</tr>
+	</tbody>
+</table>
+<%= link_to "Received Details", account_transfers_to_enroll_reports_path(start_on: @start_on, end_on: @end_on), class: 'btn btn-primary' %>
+<%= link_to "Sent Details", account_transfers_reports_path(start_on: @start_on, end_on: @end_on), class: 'btn btn-primary mx-2'  %>

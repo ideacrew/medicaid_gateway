@@ -1,19 +1,23 @@
-<table>
+<h1>Account Transfers To <%= @transfers.first&.service.upcase if @transfers.any? %></h1>
+<p><%= @range %></p>
+<table class="table table-striped table-responsive"  style="table-layout:fixed; width:100%; word-wrap: break-word;">
 	<thead>
-		<th>Service</th>
-		<th>Creation Date</th>
+		<th>Transfer Status</th>
+		<th>Created At</th>
 		<th>Family HBX Id</th>
 		<th>Application HBX Id</th>
-		<th>Response</th>
+		<th>Ingestion Status</th>
+		<th></th>
 	</thead>
 	<tbody>
 		<% @transfers.each do |transfer| %>
 			<tr>
-				<td><%= transfer.service %></td>
+				<td class="<%= transfer.failure.nil? ? 'table-success' : 'table-danger' %>"><%= transfer.failure.nil? ? 'Sucess' : 'Failure' %>  <%= transfer.failure unless transfer.failure.nil? %></td>
 				<td><%= transfer.created_at %></td>
 				<td><%= transfer.family_identifier %></td>
 				<td><%= transfer.application_identifier %></td>
-				<td style="max-width: 800px"><%= transfer.response_payload %></td>
+				<td><span class="fw-bold"><%= transfer.callback_status %></span></td>
+				<td><%= link_to "details", transfer, class: 'btn btn-primary' %></td>
 			</tr>
 		<% end %>
 	</tbody>
