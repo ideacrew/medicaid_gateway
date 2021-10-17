@@ -38,8 +38,11 @@ module Eligibilities
         if child_thhms.count > 3
           eligible_children = child_thhms.sort_by { |k| k[:member_premium] }.last(3)
           eligible_aptc_members = eligible_children
+          children_identifiers = child_thhms.inject([]) do |children_ids, child_thh_hash|
+            children_ids << child_thh_hash[:member_identifier]
+          end
           thhms_hashes.select do |thhm|
-            eligible_aptc_members << thhm unless child_thhms[:member_identifier].include?(thhm[:member_identifier])
+            eligible_aptc_members << thhm unless children_identifiers.include?(thhm[:member_identifier])
           end
         else
           eligible_aptc_members = thhms_hashes
