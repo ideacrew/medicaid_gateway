@@ -3,6 +3,7 @@
 require 'dry/monads'
 require 'dry/monads/do'
 require 'aca_entities/medicaid/mec_check/operations/generate_xml'
+require 'aca_entities/operations/encryption/decrypt'
 
 module Aces
   # Check for the existance of a person in the Medicare system already, and if so did they have coverage.
@@ -12,7 +13,8 @@ module Aces
     # @param [String] hbxid of application
     # @return [Dry::Result]
     def call(person_payload)
-      xml = yield generate_xml(person_payload)
+      ssn = yield decrypt_ssn(person_payload)
+      xml = yield generate_xml(person_payload, ssn)
       _validate_xml = yield validate_xml(xml)
       built_check = yield build_check_request(xml)
       encoded_check = yield encode_check(built_check)
@@ -21,7 +23,13 @@ module Aces
 
     protected
 
-    def generate_xml(payload)
+    def decrypt_ssn(payload)
+      ssn = payload["person"][:person]["person_demographics"]["ssn"]
+      AcaEntities::Operations::Encryption::Decrypt.new.call({ value: ssn })
+    end
+
+    def generate_xml(payload, ssn)
+      payload["person"][:person]["person_demographics"]["ssn"] = ssn
       transfer_request = ::AcaEntities::Medicaid::MecCheck::Operations::GenerateXml.new.call(payload.to_json)
       transfer_request.success? ? transfer_request : Failure("Generate XML failure: #{transfer_request.failure}")
     end
