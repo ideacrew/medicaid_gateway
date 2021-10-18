@@ -9,7 +9,7 @@ RSpec.describe MedicaidApplicationReport, dbclean: :after_each do
 
   describe "#run" do
     context 'application with aptc households' do
-      let!(:application) { FactoryBot.create(:application, :with_aptc_households) }
+      let!(:application) { FactoryBot.create(:application, :with_aptc_households, created_at: Date.today - 1.day) }
 
       before do
         Dir[Rails.root.join("medicaid_application_report_*.csv")].each { |filename| FileUtils.rm_rf(filename) }
@@ -49,7 +49,7 @@ RSpec.describe MedicaidApplicationReport, dbclean: :after_each do
     end
 
     context 'application without aptc households' do
-      let!(:application_no_aptc) { FactoryBot.create(:application) }
+      let!(:application_no_aptc) { FactoryBot.create(:application, created_at: Date.today - 1.day) }
 
       before do
         Dir[Rails.root.join("medicaid_application_report_*.csv")].each { |filename| FileUtils.rm_rf(filename) }
