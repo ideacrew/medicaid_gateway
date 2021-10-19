@@ -17,11 +17,11 @@ GIT
 
 GIT
   remote: https://github.com/ideacrew/event_source.git
-  revision: 3d69618c16fbbe09912eeba097aedac47d1abc15
+  revision: 4ad8aae6c76d0a0fd64907861c9a5f52c17bc47a
   branch: release_0.5.5
   specs:
     event_source (0.5.5)
-      bunny (~> 2.14)
+      bunny (>= 2.14)
       deep_merge (~> 1.2.0)
       dry-events (~> 0.3)
       dry-inflector (~> 0.2)
@@ -252,7 +252,7 @@ GEM
     erubi (1.10.0)
     et-orbi (1.2.5)
       tzinfo
-    ethon (0.14.0)
+    ethon (0.15.0)
       ffi (>= 1.15.0)
     execjs (2.8.1)
     eye (0.10.0)
@@ -279,7 +279,7 @@ GEM
     faraday-excon (1.1.0)
     faraday-net_http (1.0.1)
     faraday-net_http_persistent (1.2.0)
-    faraday_middleware (1.1.0)
+    faraday_middleware (1.2.0)
       faraday (~> 1.0)
     ffi (1.15.4)
     fugit (1.5.2)
@@ -405,7 +405,7 @@ GEM
     rbnacl (7.1.1)
       ffi
     rbtree (0.4.4)
-    redis (4.4.0)
+    redis (4.5.1)
     redis-namespace (1.8.1)
       redis (>= 3.0.4)
     regexp_parser (2.1.1)
