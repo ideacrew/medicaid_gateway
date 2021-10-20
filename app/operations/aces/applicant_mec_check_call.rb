@@ -6,15 +6,16 @@ require 'aca_entities/medicaid/mec_check/operations/generate_xml'
 require 'aca_entities/operations/encryption/decrypt'
 
 module Aces
-  # Check for the existance of a person in the Medicare system already, and if so did they have coverage.
-  class MecCheckCall
+  # Check for the existance of an applicant in the Medicare system already, and if so did they have coverage.
+  class ApplicantMecCheckCall
     send(:include, Dry::Monads[:result, :do])
 
     # @param [String] hbxid of application
     # @return [Dry::Result]
     def call(person_payload)
       ssn = yield decrypt_ssn(person_payload)
-      xml = yield generate_xml(person_payload, ssn)
+      person_hash = yield map_to_person(person_payload, ssn)
+      xml = yield generate_xml(person_hash)
       _validate_xml = yield validate_xml(xml)
       built_check = yield build_check_request(xml)
       encoded_check = yield encode_check(built_check)
@@ -24,12 +25,22 @@ module Aces
     protected
 
     def decrypt_ssn(payload)
-      ssn = payload["person"][:person]["person_demographics"]["encrypted_ssn"]
+      ssn = payload["identifying_information"]["encrypted_ssn"]
       AcaEntities::Operations::Encryption::Decrypt.new.call({ value: ssn })
     end
 
-    def generate_xml(payload, ssn)
-      payload["person"][:person]["person_demographics"]["ssn"] = ssn
+    def map_to_person(payload, ssn)
+      payload["person"] = {}
+      payload["person"]["person"] = {}
+      payload["person"]["person"]["person_demographics"] = {}
+      payload["person"]["person"]["person_name"] = payload["name"]
+      payload["person"]["person"]["person_demographics"]["ssn"] = ssn
+      payload["person"]["person"]["person_demographics"]["dob"] = payload["demographic"]["dob"]
+      payload["person"]["person"]["person_demographics"]["gender"] = payload["demographic"]["gender"]
+      Success(payload)
+    end
+
+    def generate_xml(payload)
       transfer_request = ::AcaEntities::Medicaid::MecCheck::Operations::GenerateXml.new.call(payload.to_json)
       transfer_request.success? ? transfer_request : Failure("Generate XML failure: #{transfer_request.failure}")
     end

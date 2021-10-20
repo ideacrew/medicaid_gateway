@@ -12,8 +12,8 @@ module Aces
 
     # @option opts [Hash] :mec_check
     # @return [Dry::Monads::Result]
-    def call(params)
-      event = yield build_event(params)
+    def call(params, payload_type)
+      event = yield build_event(params, payload_type)
       result = send_to_enroll(event)
 
       Success(result)
@@ -21,8 +21,8 @@ module Aces
 
     private
 
-    def build_event(params)
-      result = event("events.magi_medicaid.mec_check.mec_checked", attributes: params)
+    def build_event(params, payload_type)
+      result = event("events.magi_medicaid.mec_check.mec_checked", attributes: params, headers: { payload_type: payload_type })
       logger.info "MedicaidGateway MEC Check Publisher to enroll, event_key: mec_checked, attributes: #{params.to_h}, result: #{result}"
       logger.info('-' * 100)
       result
