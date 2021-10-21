@@ -24,7 +24,7 @@ module Transfers
 
     def record_transfer(params)
       payload = JSON.parse(params)
-      @service = MedicaidGatewayRegistry[:transfer_service]
+      @service = MedicaidGatewayRegistry[:transfer_service].item
       transfer = Transfers::Create.new.call({
                                               service: @service,
                                               application_identifier: payload["family"]["magi_medicaid_applications"]["hbx_id"] || "not found",
