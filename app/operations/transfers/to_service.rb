@@ -24,10 +24,6 @@ module Transfers
 
     def record_transfer(params)
       payload = JSON.parse(params)
-<<<<<<< HEAD
-=======
-
->>>>>>> c91695c (started encrypting ssns for atp and mec check)
       @service = MedicaidGatewayRegistry[:transfer_service].item
       transfer = Transfers::Create.new.call({
                                               service: @service,
