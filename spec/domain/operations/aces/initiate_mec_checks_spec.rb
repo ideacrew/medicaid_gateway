@@ -41,8 +41,9 @@ describe Aces::InitiateMecChecks, dbclean: :after_each do
   let(:event) { Success(response) }
 
   let(:expected_response) do
-    applicant_ids = JSON.parse(payload)["applicants"].map { |a| a["person_hbx_id"] }
-    applicant_ids.map {|id| [id, "Applicant Not Found"] }.to_h
+    JSON.parse(payload)["applicants"].map do |a|
+      [a["person_hbx_id"],  a["evidences"].empty? ? "not MEC checked" : "Applicant Not Found"]
+    end.to_h
   end
 
   let(:feature_ns) { double }

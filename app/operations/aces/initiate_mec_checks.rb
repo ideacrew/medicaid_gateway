@@ -16,7 +16,7 @@ module Aces
       json = JSON.parse(payload)
       mec_check = yield create_mec_check(json)
       checks    = yield get_applicant_checks(mec_check, json)
-      _results   = yield update_mec_check(mec_check, checks)
+      _results  = yield update_mec_check(mec_check, checks)
 
       publish_to_enroll(mec_check, checks)
     end
@@ -39,24 +39,27 @@ module Aces
     end
 
     def get_applicant_checks(mec_check, json)
-      people = json["applicants"]
       results = {}
+      people = json["applicants"]
       people.each do |person|
-        mc_response = mec_check(person)
-        if mc_response.failure?
-          error_result = {
-            mc_id: mec_check.id,
-            error: "#{mc_response.failure} on Person}"
-          }
-          return Failure(error_result)
-        end
-        response = mc_response.value!
-        p response
         hbx_id = person["person_hbx_id"]
-        results[hbx_id] = response[:code_description]
         evidence = person["evidences"].detect { |evi| evi["key"] == "aces_mec" }
-        evidence["eligibility_results"] = [response]
-        evidence["eligibility_status"] = (response[:mec_verification_code] == "Y") ? :outstanding : :attested
+        if evidence
+          mc_response = mec_check(person)
+          if mc_response.failure?
+            error_result = {
+              mc_id: mec_check.id,
+              error: "#{mc_response.failure} on Person}"
+            }
+            return Failure(error_result)
+          end
+          response = mc_response.value!
+          results[hbx_id] = response[:code_description]
+          evidence["eligibility_results"] = [response]
+          evidence["eligibility_status"] = response[:mec_verification_code] == "Y" ? :outstanding : :attested
+        else
+          results[hbx_id] = "not MEC checked"
+        end
       end
       Success([json, results])
     rescue StandardError => e
@@ -67,8 +70,7 @@ module Aces
       result = call_mec_check(person)
       return Failure(result.failure) if result.failure?
       response = JSON.parse(result.value!.to_json)
-      s_response = serialize_response(response["body"])
-      p s_response
+      serialize_response(response["body"])
     end
 
     def serialize_response(response)
