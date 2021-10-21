@@ -43,7 +43,7 @@ module Subscribers
         Aces::Transfer.new.call(
           {
             application_identifier: response.to_s,
-            family_identifier: result.to_s,
+            family_identifier: result,
             service: "subscriber failure",
             failure: e
           }
