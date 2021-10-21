@@ -24,7 +24,7 @@ module Aces
     protected
 
     def decrypt_ssn(payload)
-      ssn = payload["person"][:person]["person_demographics"]["ssn"]
+      ssn = payload["person"][:person]["person_demographics"]["encrypted_ssn"]
       AcaEntities::Operations::Encryption::Decrypt.new.call({ value: ssn })
     end
 
