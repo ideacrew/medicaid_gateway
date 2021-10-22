@@ -19,7 +19,15 @@
       "date_of_death": null,
       "dob_check": false,
       "is_incarcerated": false,
-      "ethnicity": ["", "", "", "", "", "", ""],
+      "ethnicity": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
       "race": null,
       "tribal_id": null,
       "language_code": "en"
@@ -92,7 +100,9 @@
       {
         "type_name": "Social Security Number",
         "validation_status": "unverified",
-        "applied_roles": ["consumer_role"],
+        "applied_roles": [
+          "consumer_role"
+        ],
         "update_reason": null,
         "rejected": null,
         "external_service": null,
@@ -104,7 +114,9 @@
       {
         "type_name": "Citizenship",
         "validation_status": "unverified",
-        "applied_roles": ["consumer_role"],
+        "applied_roles": [
+          "consumer_role"
+        ],
         "update_reason": null,
         "rejected": null,
         "external_service": null,
@@ -130,7 +142,9 @@
       "last_portal_visited": "/insured/consumer_role/search",
       "preferred_language": "en",
       "profile_type": null,
-      "roles": ["consumer"],
+      "roles": [
+        "consumer"
+      ],
       "timestamps": {
         "created_at": "2021-09-20T15:14:40.269+00:00",
         "modified_at": "2021-09-20T15:16:05.006+00:00"
@@ -150,7 +164,12 @@
         "has_fixed_address": true
       }
     ],
-    "emails": [{ "kind": "home", "address": "newtest@fake.com" }],
+    "emails": [
+      {
+        "kind": "home",
+        "address": "newtest@fake.com"
+      }
+    ],
     "phones": [],
     "documents": [],
     "timestamp": {
