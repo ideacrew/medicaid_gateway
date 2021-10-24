@@ -24,7 +24,7 @@ module Transfers
 
     def record_transfer(params)
       payload = JSON.parse(params)
-      @service = MedicaidGatewayRegistry[:transfer_service]
+      @service = MedicaidGatewayRegistry[:transfer_service].item
       transfer = Transfers::Create.new.call({
                                               service: @service,
                                               application_identifier: payload["family"]["magi_medicaid_applications"]["hbx_id"] || "not found",
@@ -73,7 +73,7 @@ module Transfers
                end
 
       if result.success?
-        update_transfer(transfer_id, result.value!)
+        update_transfer(transfer_id, result.value!, payload)
         Success("Successfully transferred in account")
       else
         error_result = {
@@ -84,16 +84,16 @@ module Transfers
       end
     end
 
-    def update_transfer(transfer_id, response)
+    def update_transfer(transfer_id, response, payload)
       transfer = Aces::Transfer.find(transfer_id)
       response_json = response.to_json
       if @service == "aces"
         xml = Nokogiri::XML(response.to_hash[:body])
         status = xml.xpath('//tns:ResponseDescriptionText', 'tns' => 'http://hix.cms.gov/0.1/hix-core')
         status_text = status.any? ? status.last.text : "N/A"
-        transfer.update!(response_payload: response_json, callback_status: status_text)
+        transfer.update!(response_payload: response_json, callback_status: status_text, payload: payload)
       else
-        transfer.update!(response_payload: response_json)
+        transfer.update!(response_payload: response_json, payload: payload)
       end
     end
 

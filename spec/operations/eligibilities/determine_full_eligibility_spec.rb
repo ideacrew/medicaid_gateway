@@ -1644,6 +1644,120 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     end
   end
 
+  # This test is to make sure the deduction amounts are reduced from annual_tax_household_income
+  context 'cms me_test_scenarios test_seven state ME' do
+    include_context 'cms ME me_test_scenarios test_seven'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @new_thhms = @application.tax_households.flat_map(&:tax_household_members)
+      @thh = @application.tax_households.first
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    it 'should return tax households with correct effective dates' do
+      expect(@thh.effective_on.year).to eq(@application.assistance_year)
+      expect(@thh.effective_on.year).to eq(Date.today.year.next)
+    end
+
+    context 'for tax_household_members' do
+      it 'should return all members as eligible for insurance assistance' do
+        expect(@new_thhms.flat_map(&:product_eligibility_determination).map(&:is_ia_eligible).uniq).to eq([true])
+      end
+    end
+
+    context 'for persistence' do
+      before do
+        medicaid_app.reload
+      end
+
+      it 'should match with hbx_id' do
+        expect(medicaid_app.application_identifier).to eq(application_entity.hbx_id)
+      end
+
+      it 'should match with application request payload' do
+        expect(medicaid_app.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should match with application response payload' do
+        expect(medicaid_app.application_response_payload).to eq(@application.to_json)
+      end
+
+      it 'should match with medicaid request payload' do
+        expect(medicaid_app.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+    end
+  end
+
+  # TaxHousehold effective date calculation when all MedicaidChip or MagiMedicaid
+  context 'cms me_test_scenarios test_eight state ME' do
+    include_context 'cms ME me_test_scenarios test_eight'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @new_thhms = @application.tax_households.flat_map(&:tax_household_members)
+      @thh = @application.tax_households.first
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    it 'should return tax households with correct effective dates' do
+      expect(@thh.effective_on.year).to eq(@application.assistance_year)
+      expect(@thh.effective_on.year).to eq(Date.today.year.next)
+    end
+
+    context 'for tax_household_members' do
+      it 'should return member as eligible for Magi Medicaid Assistance' do
+        expect(@new_thhms.first.product_eligibility_determination.is_magi_medicaid).to be_truthy
+      end
+    end
+
+    context 'for persistence' do
+      before do
+        medicaid_app.reload
+      end
+
+      it 'should match with hbx_id' do
+        expect(medicaid_app.application_identifier).to eq(application_entity.hbx_id)
+      end
+
+      it 'should match with application request payload' do
+        expect(medicaid_app.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should match with application response payload' do
+        expect(medicaid_app.application_response_payload).to eq(@application.to_json)
+      end
+
+      it 'should match with medicaid request payload' do
+        expect(medicaid_app.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+    end
+  end
+
   # Parent is getting APTC/CSR as expected. Child is getting UQHP instead of APTC/CSR
   # when a person answered 'yes' to Will this person file taxes for 2021? *
   # And answered 'no' to Will this person be claimed as a tax dependent for 2021? *

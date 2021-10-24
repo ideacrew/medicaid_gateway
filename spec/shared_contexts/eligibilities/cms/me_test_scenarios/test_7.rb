@@ -78,11 +78,11 @@ RSpec.shared_context 'cms ME me_test_scenarios test_7', :shared_context => :meta
         },
         "addresses" => [{
           "kind" => "home",
-          "address_1" => "123 Main St",
+          "address_1" => "123 Test St",
           "address_2" => nil,
           "address_3" => nil,
           "city" => "Augusta",
-          "county" => "Kennebec",
+          "county" => "Testing",
           "state" => "ME",
           "zip" => "04330",
           "country_name" => nil
@@ -213,11 +213,11 @@ RSpec.shared_context 'cms ME me_test_scenarios test_7', :shared_context => :meta
         },
         "addresses" => [{
           "kind" => "home",
-          "address_1" => "123 Main St",
+          "address_1" => "123 Test St",
           "address_2" => nil,
           "address_3" => nil,
           "city" => "Augusta",
-          "county" => "Kennebec",
+          "county" => "Testing",
           "state" => "ME",
           "zip" => "04330",
           "country_name" => nil
