@@ -1,6 +1,6 @@
 <h1>Account Transfers To Enroll</h1>
-<p><%= @range %></p>
-<table class="table table-striped table-responsive"  style="table-layout:fixed; width:100%; word-wrap: break-word;">
+<%= render partial: "date_range", locals: {start_on: @start_on, end_on: @end_on, session_name: "atp_"} %>
+<table class="table table-striped table-responsive table-overrides">
 	<thead>
 		<th>Transfer Status</th>
 		<th>Creation Date</th>
@@ -13,13 +13,20 @@
 	<tbody>
 		<% @transfers.each do |transfer| %>
 			<tr>
-				<td class="<%= transfer.failure.nil? ? 'table-success' : 'table-danger' %>"><%= transfer.failure.nil? ? 'Success' : 'Failure' %></td>
+				<td class="<%= transfer.successful? ? 'table-success' : 'table-danger' %>"><%= transfer.successful? ? "Success" : "Failure" %></td>
 				<td><%= transfer.created_at %></td>
 				<td><%= transfer.external_id %></td>
 				<td><%= transfer.family_identifier %></td>
 				<td><%= transfer.application_identifier %></td>
 				<td><span class="fw-bold"><%= transfer.result %></span><%= " - #{transfer.failure}" unless transfer.failure.nil? %></td>
-				<td><%= link_to "Details", transfer, class: 'btn btn-primary' %></td>
+				<td>
+				  <%= link_to "Details", transfer, class: 'btn btn-primary' %>
+				  <% if MedicaidGatewayRegistry.feature_enabled?(:resubmit_to_enroll) && transfer.resubmittable? %>
+				  <div class="mt-2" data-reflex="click->Report#resubmit_to_enroll" data-id="<%= transfer.id %>" data-payload="<%= transfer.payload %>">
+				    <button class="btn btn-secondary">Resubmit</button>
+				  </div>
+				  <% end %>
+				</td>
 			</tr>
 		<% end %>
 	</tbody>

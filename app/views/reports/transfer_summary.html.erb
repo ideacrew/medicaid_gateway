@@ -1,24 +1,34 @@
 <h1>Account Transfer Summary</h1>
-<p><%= @range %></p>
-<table class="table table-striped table-responsive"  style="table-layout:fixed; width:100%; word-wrap: break-word;">
+<%= render partial: "date_range", locals: {start_on: @start_on, end_on: @end_on, session_name: "atp_"} %>
+<table class="table table-striped table-responsive table-overrides">
 	<thead>
 		<th>Sent</th>
-		<th>Received</th>
+		<% if MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll) %>
+			<th>Received</th>
+		<% end %>
 		<th>Sent Successes</th>
 		<th>Sent Failures</th>
-		<th>Received Successes</th>
-		<th>Received Failures</th>
+		<% if MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll) %>
+			<th>Received Successes</th>
+			<th>Received Failures</th>
+		<% end %>
 	</thead>
 	<tbody>
 		<tr>
 			<td><%= @at_sent_total %></td>
-			<td><%= @at_received_total %></td>
+			<% if MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll) %>
+				<td><%= @at_received_total %></td>
+			<% end %>
 			<td><%= @at_sent_successful %></td>
 			<td><%= @at_sent_failure %></td>
-			<td><%= @at_received_successful %></td>
-			<td><%= @at_received_failure %></td>
+			<% if MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll) %>
+				<td><%= @at_received_successful %></td>
+				<td><%= @at_received_failure %></td>
+			<% end %>
 		</tr>
 	</tbody>
 </table>
-<%= link_to "Received Details", account_transfers_to_enroll_reports_path(start_on: @start_on, end_on: @end_on), class: 'btn btn-primary' %>
-<%= link_to "Sent Details", account_transfers_reports_path(start_on: @start_on, end_on: @end_on), class: 'btn btn-primary mx-2'  %>
+<% if MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll) %>
+	<%= link_to "Received Details", account_transfers_to_enroll_reports_path, class: 'btn btn-primary' %>
+<% end %>
+<%= link_to "Sent Details", account_transfers_reports_path, class: 'btn btn-primary mx-2'  %>
