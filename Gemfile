@@ -8,8 +8,8 @@ ruby '2.7.2'
 # Mount the Engines
 gem 'mitc_service', path: 'components/mitc_service'
 
-gem 'aca_entities',  git:  'https://github.com/ideacrew/aca_entities.git', branch: 'release_0.10.0'
-gem 'event_source',  git:  'https://github.com/ideacrew/event_source.git', branch: 'release_0.5.5'
+gem 'aca_entities',  git:  'https://github.com/ideacrew/aca_entities.git', branch: 'trunk'
+gem 'event_source',  git:  'https://github.com/ideacrew/event_source.git', branch: 'trunk'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.3'
