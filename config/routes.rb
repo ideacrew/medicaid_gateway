@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+
+  root 'reports#events'
+
   namespace :aces do
     resource :publishing_connectivity_tests, only: [:new, :create]
     resources :inbound_transfers, only: [:show]
@@ -16,6 +18,10 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :medicaid do
+    resources :applications, only: [:show]
+  end
+
   resources :reports, only: [] do
     collection do
       get 'medicaid_applications'
@@ -24,6 +30,7 @@ Rails.application.routes.draw do
       get 'transfer_summary'
       get 'medicaid_application_check'
       get 'mec_checks'
+      get 'events'
     end
   end
 

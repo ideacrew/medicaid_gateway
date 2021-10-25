@@ -13,7 +13,7 @@ describe Curam::CheckPayload, "given a valid account transfer check request", db
 
   let(:id) {"SBM123"}
 
-  let!(:transfer) { FactoryBot.create(:transfer, application_identifier: id) }
+  let!(:transfer) { FactoryBot.create(:transfer, id: id) }
 
   let(:response_body) do
     "<env:Envelope>
@@ -53,13 +53,13 @@ describe Curam::CheckPayload, "given a valid account transfer check request", db
   end
 
   it "initally the transfer should not have a callback status" do
-    updated_transfer = Aces::Transfer.where(application_identifier: id).first
+    updated_transfer = Aces::Transfer.find(id)
     expect(updated_transfer.callback_status).to_not eq "Federal Exchange Inbound Error"
   end
 
   it "calling the check payload should update the transfer callback status" do
     operation.call(id)
-    updated_transfer = Aces::Transfer.where(application_identifier: id).first
+    updated_transfer = Aces::Transfer.find(id)
     expect(updated_transfer.callback_status).to eq "Federal Exchange Inbound Error"
   end
 

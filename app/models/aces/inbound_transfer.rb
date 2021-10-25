@@ -39,5 +39,8 @@ module Aces
       }
     end
 
+    def resubmittable?
+      payload.present? && ['Sent', 'Failed'].include?(result)
+    end
   end
 end
