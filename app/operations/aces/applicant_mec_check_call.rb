@@ -26,7 +26,13 @@ module Aces
 
     def decrypt_ssn(payload)
       ssn = payload["identifying_information"]["encrypted_ssn"]
-      AcaEntities::Operations::Encryption::Decrypt.new.call({ value: ssn })
+      if ssn.blank? 
+        Failure("No SSN")
+      else
+        AcaEntities::Operations::Encryption::Decrypt.new.call({ value: ssn })
+      end
+    rescue StandardError => e
+      Failure("Failed to Decrypt SSN")
     end
 
     def map_to_person(payload, ssn)
