@@ -42,7 +42,7 @@
                 <a class="nav-link" href="/reports/mec_checks">MEC Checks</a>
               </li>
             <% end %>
-          <% end %>
+          <% end %>         
         </ul>
       </div>
       </nav>
@@ -60,5 +60,12 @@
       <% end %>
       <%= yield %>
     </main>
+    
+    <% if user_signed_in? %>
+      <footer class="container border-top mt-3 p-1 d-flex justify-content-center">
+        <%= button_to "logout", destroy_user_session_path, method: :delete, class: 'btn btn-dark' %>
+      </footer>
+    <% end %>
+
   </body>
 </html>
