@@ -66,6 +66,14 @@ class ReportsController < ApplicationController
     @received_from_cms = inbound_transfers.where(to_enroll: false).count
   end
 
+  def resubmit_to_enroll
+    id = params[:id]
+    transfer = Aces::InboundTransfer.find(id)
+    Transfers::ToEnroll.new.call(transfer.payload, id)
+
+    head :ok
+  end
+
   private
 
   def range_from_params
