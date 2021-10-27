@@ -3,9 +3,8 @@
 # Update report pages based on user actions
 class ReportReflex < ApplicationReflex
 
-  def change_date
-    session_name = element.dataset[:session]
-    session[session_name] = Date.parse(element.value)
+  def change_date(session_name, date)
+    session[session_name] = Date.parse(date) ? Date.strptime(date, "%Y-%m-%d") : Date.strptime(date.to_date, "%Y-%m-%d")
   end
 
   def check_payload
