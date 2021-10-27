@@ -33,6 +33,8 @@ gem 'bootstrap', '~> 5.1.0'
 gem 'awesome_print'
 # For interactive pieces
 gem "stimulus_reflex", "~> 3.4"
+# for use accounts
+gem 'devise'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
