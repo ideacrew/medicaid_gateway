@@ -11,7 +11,8 @@ class ReportReflex < ApplicationReflex
     Curam::CheckPayload.new.call(element.dataset[:id])
   end
 
-  def resubmit_to_enroll
-    Transfers::ToEnroll.new.call(element.dataset[:payload], element.dataset[:id])
+  def resubmit_to_enroll(payload, id)
+    # Transfers::ToEnroll.new.call(element.dataset[:payload], element.dataset[:id])
+    Transfers::ToEnroll.new.call(payload, id)
   end
 end
