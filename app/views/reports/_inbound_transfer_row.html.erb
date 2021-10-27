@@ -1,4 +1,4 @@
-<tr id="<%= "inbdound-transfer-row-#{transfer.id}" %>">
+<tr id="<%= "inbound-transfer-row-#{transfer.id}" %>">
     <td class="<%= transfer.successful? ? 'table-success' : 'table-danger' %>"><%= transfer.successful? ? "Success" : "Failure" %></td>
     <td><%= transfer.created_at %></td>
     <td><%= transfer.external_id %></td>
@@ -8,8 +8,7 @@
     <td>
         <%= link_to "Details", transfer, class: 'btn btn-primary' %>
         <% if MedicaidGatewayRegistry.feature_enabled?(:resubmit_to_enroll) && transfer.resubmittable? %>
-            <%# <%= link_to "Resubmit", resubmit_to_enroll_report_path(transfer), class: "btn btn-secondary mt-2", remote: true %>
-            <button class="btn btn-secondary mt-2" data-controller="report" data-action="click->report#resubmit_to_enroll" data-payload="<%= transfer.payload%>" data-id="<%= transfer.id%>" data-reflex="click">
+            <button class="btn btn-secondary mt-2" data-reflex="click->Report#resubmit_to_enroll" data-payload="<%= transfer.payload %>" data-id="<%= transfer.id %>">
                 Resubmit
             </button> 
         <% end %>
@@ -17,3 +16,4 @@
 </tr>
 
 
+     
