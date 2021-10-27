@@ -15,7 +15,7 @@ module Aces
       return Failure({ error: "MEC Check feature not enabled." }) unless MedicaidGatewayRegistry[:mec_check].enabled?
       json = JSON.parse(payload)
       mec_check = yield create_mec_check(json)
-      checks    = yield get_applicant_checks(mec_check, json)
+      checks    = yield get_applicant_checks(json)
       _results  = yield update_mec_check(mec_check, checks)
 
       publish_to_enroll(mec_check, checks)
@@ -38,7 +38,7 @@ module Aces
       Failure({ error: "Failed to save MEC check: #{results.failure}" })
     end
 
-    def get_applicant_checks(mec_check, json)
+    def get_applicant_checks(json)
       results = {}
       people = json["applicants"]
       people.each do |person|
@@ -47,16 +47,13 @@ module Aces
         if evidence
           mc_response = mec_check(person)
           if mc_response.failure?
-            error_result = {
-              mc_id: mec_check.id,
-              error: "#{mc_response.failure} on Person}"
-            }
-            return Failure(error_result)
+            results[hbx_id] = mc_response.failure
+          else
+            response = mc_response.value!
+            results[hbx_id] = response[:code_description]
+            evidence["eligibility_results"] = [response]
+            evidence["eligibility_status"] = response[:mec_verification_code] == "Y" ? :outstanding : :attested
           end
-          response = mc_response.value!
-          results[hbx_id] = response[:code_description]
-          evidence["eligibility_results"] = [response]
-          evidence["eligibility_status"] = response[:mec_verification_code] == "Y" ? :outstanding : :attested
         else
           results[hbx_id] = "not MEC checked"
         end
@@ -78,7 +75,6 @@ module Aces
       body = xml.at_xpath("//xml_ns:VerifyNonESIMECResponse", "xml_ns" => "http://gov.hhs.cms.hix.dsh.ee.nonesi_mec.ext")
       Success(AcaEntities::Medicaid::MecCheck::Operations::GenerateResult.new.call(body.to_xml))
     rescue StandardError => e
-      p e.backtrace
       Failure("Serializing response error => #{e}")
     end
 
