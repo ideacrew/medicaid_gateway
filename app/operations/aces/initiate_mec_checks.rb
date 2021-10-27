@@ -79,7 +79,6 @@ module Aces
     end
 
     def call_mec_check(person)
-      puts "calling mec check"
       Aces::ApplicantMecCheckCall.new.call(person)
     end
 
