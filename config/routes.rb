@@ -33,7 +33,6 @@ Rails.application.routes.draw do
       get 'mec_checks'
       get 'events'
     end
-    get 'resubmit_to_enroll', on: :member
   end
 
 end
