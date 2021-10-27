@@ -50,6 +50,14 @@ class ReportsController < ApplicationController
     @at_received_failure = @at_received_total - @at_received_successful
   end
 
+  def resubmit_to_enroll
+    id = params[:id]
+    transfer = Aces::InboundTransfer.find(id)
+    Transfers::ToEnroll.new.call(transfer.payload, id)
+
+    head :ok
+  end
+
   private
 
   def range_from_params
