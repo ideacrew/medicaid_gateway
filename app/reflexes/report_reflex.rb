@@ -14,4 +14,8 @@ class ReportReflex < ApplicationReflex
   def resubmit_to_enroll
     Transfers::ToEnroll.new.call(element.dataset[:payload], element.dataset[:id])
   end
+
+  def resubmit_to_service
+    Transfers::ToService.new.call(element.dataset[:payload], element.dataset[:id])
+  end
 end
