@@ -7,7 +7,7 @@ module Aces
     include Mongoid::Timestamps
     include CableReady::Broadcaster
 
-    # Unique Identifie. Derived from payload field:
+    # Unique Identifier. Derived from payload field:
     # AccountTransferRequest.InsuranceApplication.ApplicationIdentification.IdentificationID
     field :external_id, type: String
 
@@ -64,11 +64,6 @@ module Aces
 
     after_update do
       row_morph
-      # show_morph
-    end
-
-    def update_morph
-      show_morph
     end
 
     def row_morph
@@ -77,44 +72,35 @@ module Aces
         locals: { transfer: self }
       )
 
-      cable_ready["inbound_transfers"].morph(
+      cable_ready["inbound_transfers"].remove(
         selector: "#inbound-transfer-row-#{id}",
+        html: row_html
+      )
+
+      cable_ready["inbound_transfers"].prepend(
+        selector: 'table tbody',
         html: row_html
       )
 
       cable_ready.broadcast
     end
 
-    def show_morph
-      show_html = ApplicationController.render(
-        partial: "reports/inbound_transfer",
-        locals: { report: self }
+    after_create do
+      create_morph
+    end
+
+    def create_morph
+      row_html = ApplicationController.render(
+        partial: "reports/inbound_transfer_row",
+        locals: { transfer: self }
       )
 
-      cable_ready["inbound_transfers"].morph(
-        selector: "#inbound-transfer-#{id}",
-        html: show_html
+      cable_ready["inbound_transfers"].prepend(
+        selector: 'table tbody',
+        html: row_html
       )
 
       cable_ready.broadcast
     end
-
-    # after_create do
-    #   create_morph
-    # end
-
-    # def create_morph
-    #   row_html = ApplicationController.render(
-    #     partial: "events/row",
-    #     locals: { event: self }
-    #   )
-
-    #   cable_ready['events'].prepend(
-    #     selector: 'table tbody',
-    #     html: row_html
-    #   )
-
-    #   cable_ready.broadcast
-    # end
   end
 end

@@ -87,18 +87,18 @@ class ReportsController < ApplicationController
   end
 
   def applications
-    Medicaid::Application.where(created_at: range).or(updated_at: range)
+    Medicaid::Application.where(created_at: range).or(updated_at: range).order_by(updated_at: :desc)
   end
 
   def transfers
-    Aces::Transfer.where(created_at: range).or(updated_at: range)
+    Aces::Transfer.where(created_at: range).or(updated_at: range).order_by(updated_at: :desc)
   end
 
   def inbound_transfers
-    Aces::InboundTransfer.where(created_at: range).or(updated_at: range)
+    Aces::InboundTransfer.where(created_at: range).or(updated_at: range).order_by(updated_at: :desc)
   end
 
   def checks
-    Aces::MecCheck.where(created_at: range).or(updated_at: range)
+    Aces::MecCheck.where(created_at: range).or(updated_at: range).order_by(updated_at: :desc)
   end
 end

@@ -13,6 +13,7 @@ class ReportReflex < ApplicationReflex
 
   def resubmit_to_enroll
     Transfers::ToEnroll.new.call(element.dataset[:payload], element.dataset[:id])
+    morph :nothing
   end
 
   def resubmit_to_service
