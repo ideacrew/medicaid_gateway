@@ -91,9 +91,9 @@ module Transfers
         xml = Nokogiri::XML(response.to_hash[:body])
         status = xml.xpath('//tns:ResponseDescriptionText', 'tns' => 'http://hix.cms.gov/0.1/hix-core')
         status_text = status.any? ? status.last.text : "N/A"
-        transfer.update!(response_payload: response_json, callback_status: status_text, payload: payload)
+        transfer.update!(response_payload: response_json, callback_status: status_text)
       else
-        transfer.update!(response_payload: response_json, payload: payload)
+        transfer.update!(response_payload: response_json)
       end
     end
 
