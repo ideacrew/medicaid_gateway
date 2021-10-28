@@ -73,7 +73,7 @@ module Transfers
                end
 
       if result.success?
-        update_transfer(transfer_id, result.value!, payload)
+        update_transfer(transfer_id, result.value!)
         Success("Successfully transferred in account")
       else
         error_result = {
@@ -84,7 +84,7 @@ module Transfers
       end
     end
 
-    def update_transfer(transfer_id, response, payload)
+    def update_transfer(transfer_id, response)
       transfer = Aces::Transfer.find(transfer_id)
       response_json = response.to_json
       if @service == "aces"
