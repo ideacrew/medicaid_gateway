@@ -11,7 +11,7 @@
   </head>
 
   <body>
-    <header class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
+    <header class="navbar navbar-expand-lg navbar-dark bg-primary mb-3">
       <nav class="container">
         <div class="" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -42,7 +42,7 @@
                 <a class="nav-link" href="/reports/mec_checks">MEC Checks</a>
               </li>
             <% end %>
-          <% end %>         
+          <% end %>
         </ul>
       </div>
       </nav>
@@ -60,12 +60,10 @@
       <% end %>
       <%= yield %>
     </main>
-    
-    <% if user_signed_in? %>
-      <footer class="container border-top mt-3 p-1 d-flex justify-content-center">
-        <%= button_to "logout", destroy_user_session_path, method: :delete, class: 'btn btn-dark' %>
-      </footer>
-    <% end %>
-
+    <footer class="footer border-top border-primary mt-3 p-2 fixed-bottom">
+      <div class="container">
+        <%= button_to "logout", destroy_user_session_path, method: :delete, class: 'btn btn-secondary' if user_signed_in? %>
+      </div>
+    </footer>
   </body>
 </html>

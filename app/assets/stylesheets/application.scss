@@ -1,3 +1,5 @@
+$primary: #215d91;
+$half: lighten( $primary, 60% );
 @import "bootstrap";
 
 kbd {
@@ -24,3 +26,12 @@ kbd {
   width: 100%;
   word-wrap: break-word;
 }
+
+main {
+  margin-bottom: 5em;
+}
+
+footer {
+  background: $half;
+}
+
