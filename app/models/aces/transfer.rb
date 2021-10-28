@@ -29,8 +29,15 @@ module Aces
     # Record of transfer failure
     field :failure, type: String
 
+    # Full payload to send to service
+    field :outbound_payload, type: String
+
     def successful?
       self.failure.nil?
+    end
+
+    def resubmittable?
+      self.callback_status != 'Success' && outbound_payload.present?
     end
 
     def to_event

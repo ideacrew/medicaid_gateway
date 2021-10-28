@@ -11,22 +11,7 @@
 	</thead>
 	<tbody>
 		<% @transfers.each do |transfer| %>
-			<tr>
-				<td class="<%= transfer.successful? ? 'table-success' : 'table-danger' %>"><%= transfer.successful? ? "Success" : "Failure" %></td>
-				<td><%= transfer.created_at %></td>
-				<td><%= transfer.family_identifier %></td>
-				<td><%= transfer.application_identifier %></td>
-				<td>
-					<% if transfer.service =="curam" && transfer.callback_status.blank? %>
-						<div data-reflex="click->Report#check_payload" data-id="<%= transfer.id %>">
-							<button class="btn btn-secondary">Check Payload</button>
-						</div>
-					<% else %>
-						<%= transfer.callback_status %>
-					<% end %>
-				</td>
-				<td><%= link_to "details", transfer, class: 'btn btn-primary' %></td>
-			</tr>
+			<%= render partial: "transfer_row", locals: { transfer: transfer } %>
 		<% end %>
 	</tbody>
 </table>

@@ -15,5 +15,3 @@ registry:
         is_enabled: true
       - key: :mec_check
         is_enabled: true
-      - key: :resubmit_to_enroll
-        is_enabled: true

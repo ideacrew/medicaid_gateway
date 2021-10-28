@@ -12,8 +12,8 @@ module Transfers
     # @param [String] Take in the raw payload and serialize and transform it, validate it against the schema and schematron,
     # then tranfer the result to ACES.
     # @return [Dry::Result]
-    def call(params)
-      transfer_id = yield record_transfer(params)
+    def call(params, transfer_id = "")
+      transfer_id = yield record_transfer(params, transfer_id)
       xml = yield generate_xml(params, transfer_id)
       validated = yield schema_validation(xml, transfer_id)
       # validated  = yield business_validation(validated)
@@ -22,15 +22,20 @@ module Transfers
 
     private
 
-    def record_transfer(params)
+    def record_transfer(params, transfer_id)
       payload = JSON.parse(params)
       @service = MedicaidGatewayRegistry[:transfer_service].item
-      transfer = Transfers::Create.new.call({
-                                              service: @service,
-                                              application_identifier: payload["family"]["magi_medicaid_applications"]["hbx_id"] || "not found",
-                                              family_identifier: payload["family"]["hbx_id"] || "family_id not found"
-                                            })
-      transfer.success? ? Success(transfer.value!.id) : Failure("Failed to record transfer: #{transfer.failure}")
+      if transfer_id.blank?
+        transfer = Transfers::Create.new.call({
+                                                service: @service,
+                                                application_identifier: payload["family"]["magi_medicaid_applications"]["hbx_id"] || "not found",
+                                                family_identifier: payload["family"]["hbx_id"] || "family_id not found",
+                                                outbound_payload: params
+                                              })
+        transfer.success? ? Success(transfer.value!.id) : Failure("Failed to record transfer: #{transfer.failure}")
+      else
+        Success(transfer_id)
+      end
     end
 
     def generate_xml(params, transfer_id)
@@ -91,11 +96,11 @@ module Transfers
         xml = Nokogiri::XML(response.to_hash[:body])
         status = xml.xpath('//tns:ResponseDescriptionText', 'tns' => 'http://hix.cms.gov/0.1/hix-core')
         status_text = status.any? ? status.last.text : "N/A"
-        transfer.update!(response_payload: response_json, callback_status: status_text)
+        payload = status_text == "Success" ? "" : transfer.outbound_payload
+        transfer.update!(response_payload: response_json, callback_status: status_text, outbound_payload: payload)
       else
         transfer.update!(response_payload: response_json)
       end
     end
-
   end
 end
