@@ -13,7 +13,6 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
 
   let(:feature_ns) { double }
   let(:service_ns) { double }
-  let(:setting) { double(item: "SOME URI") }
 
   let(:response_body) do
     "<env:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\">
@@ -44,9 +43,6 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
         allow(MedicaidGatewayRegistry).to receive(:[]).with(:curam_connection).and_return(feature_ns)
         allow(MedicaidGatewayRegistry).to receive(:[]).with(:transfer_service).and_return(service_ns)
         allow(service_ns).to receive(:item).and_return("curam")
-        allow(feature_ns).to receive(:setting).with(:curam_atp_service_uri).and_return(setting)
-        allow(feature_ns).to receive(:setting).with(:curam_atp_service_username).and_return(setting)
-        allow(feature_ns).to receive(:setting).with(:curam_atp_service_password).and_return(setting)
         allow(transfer).to receive(:initiate_transfer).and_return(event)
         @transfer_count = Aces::Transfer.all.count
         @result = transfer.call(aces_hash)
@@ -61,14 +57,32 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
       end
     end
 
+    context 'to curam when given a transfer id' do
+      before do
+        allow(MedicaidGatewayRegistry).to receive(:[]).with(:curam_connection).and_return(feature_ns)
+        allow(MedicaidGatewayRegistry).to receive(:[]).with(:transfer_service).and_return(service_ns)
+        allow(service_ns).to receive(:item).and_return("curam")
+        allow(transfer).to receive(:initiate_transfer).and_return(event)
+        @transfer = Aces::Transfer.last
+        @transfer_count = Aces::Transfer.all.count
+        @result = transfer.call(aces_hash, @transfer.id)
+      end
+
+      it "should not create a new transfer" do
+        expect(Aces::Transfer.all.count).to eq @transfer_count
+      end
+
+      it "succeeds when given a valid payload" do
+        expect(@result.success?).to be_truthy
+      end
+
+    end
+
     context 'with valid application transfer to aces' do
       before do
         allow(MedicaidGatewayRegistry).to receive(:[]).with(:aces_connection).and_return(feature_ns)
         allow(MedicaidGatewayRegistry).to receive(:[]).with(:transfer_service).and_return(service_ns)
         allow(service_ns).to receive(:item).and_return("aces")
-        allow(feature_ns).to receive(:setting).with(:aces_atp_service_uri).and_return(setting)
-        allow(feature_ns).to receive(:setting).with(:aces_atp_service_username).and_return(setting)
-        allow(feature_ns).to receive(:setting).with(:aces_atp_service_password).and_return(setting)
         allow(transfer).to receive(:initiate_transfer).and_return(event)
         @transfer_count = Aces::Transfer.all.count
         @result = transfer.call(aces_hash)
@@ -85,6 +99,31 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
 
       it "transfer should have a callback status of Success" do
         expect(@transfer.callback_status).to eq "Success"
+      end
+    end
+
+    context 'to aces when given a transfer id' do
+      before do
+        allow(MedicaidGatewayRegistry).to receive(:[]).with(:aces_connection).and_return(feature_ns)
+        allow(MedicaidGatewayRegistry).to receive(:[]).with(:transfer_service).and_return(service_ns)
+        allow(service_ns).to receive(:item).and_return("aces")
+        allow(transfer).to receive(:initiate_transfer).and_return(event)
+        @transfer_count = Aces::Transfer.all.count
+        @transfer = Aces::Transfer.last
+        @transfer.callback_status = "Failure"
+        @result = transfer.call(aces_hash, @transfer.id)
+      end
+
+      it "should not create a new transfer" do
+        expect(Aces::Transfer.all.count).to eq @transfer_count
+      end
+
+      it "succeeds when given a valid payload" do
+        expect(@result.success?).to be_truthy
+      end
+
+      it "updates transfer tp have a callback status of Success" do
+        expect(@transfer.reload.callback_status).to eq "Success"
       end
     end
   end
