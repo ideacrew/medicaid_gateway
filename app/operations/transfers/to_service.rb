@@ -17,7 +17,8 @@ module Transfers
       xml = yield generate_xml(params, transfer_id)
       validated = yield schema_validation(xml, transfer_id)
       # validated  = yield business_validation(validated)
-      initiate_transfer(validated, transfer_id)
+      transfer_response = yield initiate_transfer(validated, transfer_id)
+      update_transfer(transfer_id, transfer_response)
     end
 
     private
@@ -76,17 +77,12 @@ module Transfers
                else
                  Curam::PublishRawPayload.new.call(payload)
                end
-
-      if result.success?
-        update_transfer(transfer_id, result.value!)
-        Success("Successfully transferred in account")
-      else
-        error_result = {
-          transfer_id: transfer_id,
-          failure: "Failed to initiate transfer: #{result.failure}"
-        }
-        Failure(error_result)
-      end
+      return result if result.success?
+      error_result = {
+        transfer_id: transfer_id,
+        failure: "Failed to initiate transfer: #{result.failure}"
+      }
+      Failure(error_result)
     end
 
     def update_transfer(transfer_id, response)
@@ -101,6 +97,7 @@ module Transfers
       else
         transfer.update!(response_payload: response_json)
       end
+      Success("Successfully transferred in account")
     end
   end
 end
