@@ -26,6 +26,8 @@ module Aces
 
     field :failure, type: String
 
+    field :to_enroll, type: Boolean
+
     def successful?
       self.failure.nil?
     end

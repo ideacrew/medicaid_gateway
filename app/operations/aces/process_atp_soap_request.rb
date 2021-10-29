@@ -14,21 +14,25 @@ module Aces
     # @return [Dry::Result]
     def call(body, transfer_id)
       parsed_payload = yield parse_xml(body)
-      _identifier = yield get_id(parsed_payload, transfer_id)
+      identifier = yield get_id(parsed_payload, transfer_id)
       _validation_result = yield validate_soap_header(parsed_payload)
       body_node = yield extract_top_body_node(parsed_payload)
       string_payload = yield convert_to_document_string(body_node)
       serialized = run_validations_and_serialize(string_payload)
-      _transfer = yield transfer_account(string_payload, transfer_id, serialized)
+      _transfer = yield transfer_account(string_payload, transfer_id, serialized) if @to_enroll
       serialized
     end
 
     protected
 
     def run_validations_and_serialize(string_payload)
-      schema_result = validate_document(string_payload)
-      return serialize_response_body(schema_result) unless schema_result.success?
-      serialize_response_body(run_business_validations(string_payload))
+      unless @to_enroll
+        serialize_response_body(Success("not validated"))
+      else 
+        schema_result = validate_document(string_payload)
+        return serialize_response_body(schema_result) unless schema_result.success?
+        serialize_response_body(run_business_validations(string_payload))
+      end
     end
 
     def run_business_validations(string_payload)
@@ -47,11 +51,12 @@ module Aces
     def get_id(payload, transfer_id)
       parent_node = payload.xpath("//xmlns:TransferActivity", "xmlns" => "http://at.dsh.cms.gov/extension/1.0")
       identity_tag = parent_node.xpath(".//ns3:IdentificationID", "ns3" => "http://niem.gov/niem/niem-core/2.0")
-
+      puts identity_tag.text
       return Failure("XML error: ID tag missing.") if identity_tag.empty?
 
       transfer = Aces::InboundTransfer.find(transfer_id)
-      transfer.update!(external_id: identity_tag.text, payload: payload, result: "Parsed")
+      @to_enroll = !identity_tag.text.start_with?("FFE")
+      transfer.update!(external_id: identity_tag.text, payload: payload, result: "Parsed", to_enroll: @to_enroll)
       Success(identity_tag.text)
     end
 
