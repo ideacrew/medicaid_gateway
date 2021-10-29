@@ -73,7 +73,7 @@ module Transfers
 
     def initiate_transfer(payload, transfer_id)
       result = if @service == "aces"
-                 Aces::PublishRawPayload.new.call(payload)
+                 Aces::PublishRawPayload.new.call(payload.value!)
                else
                  Curam::PublishRawPayload.new.call(payload)
                end

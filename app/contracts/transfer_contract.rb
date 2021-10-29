@@ -14,6 +14,7 @@ class TransferContract < Dry::Validation::Contract
     optional(:callback_status).filled(:string)
     optional(:failure).filled(:string)
     optional(:outbound_payload).filled(:string)
+    optional(:xml_payload).filled(:string)
   end
 
   rule(:response_payload) do

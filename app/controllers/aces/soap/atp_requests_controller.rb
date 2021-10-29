@@ -24,11 +24,11 @@ module Aces
 
       def update_transfer(id, request)
         transfer = Aces::InboundTransfer.find(id)
-        if request.success?
-          result_text = transfer.to_enroll ? "Sent to Enroll" : "Waiting to Send"
-        else
-          result_text = "Failed"
-        end
+        result_text = if request.success?
+                        transfer.to_enroll ? "Sent to Enroll" : "Waiting to Send"
+                      else
+                        "Failed"
+                      end
         failure_text = request.failure? ? request.failure : transfer.failure
         transfer.update!(result: result_text, failure: failure_text)
       end

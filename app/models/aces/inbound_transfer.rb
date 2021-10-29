@@ -29,6 +29,14 @@ module Aces
 
     field :to_enroll, type: Boolean
 
+    def from_cms_to_aces?
+      to_enroll && payload.present?
+    end
+
+    def from_cms_to_aces
+      Transfers::FromCms.new.call(self.payload)
+    end
+
     def successful?
       self.failure.nil?
     end

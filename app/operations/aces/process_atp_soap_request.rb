@@ -14,24 +14,24 @@ module Aces
     # @return [Dry::Result]
     def call(body, transfer_id)
       parsed_payload = yield parse_xml(body)
-      identifier = yield get_id(parsed_payload, transfer_id)
+      _identifier = yield get_id(parsed_payload, transfer_id)
       _validation_result = yield validate_soap_header(parsed_payload)
       body_node = yield extract_top_body_node(parsed_payload)
       string_payload = yield convert_to_document_string(body_node)
       serialized = run_validations_and_serialize(string_payload)
-      _transfer = yield transfer_account(string_payload, transfer_id, serialized) if @to_enroll
+      _transfer = yield transfer_account(string_payload, transfer_id, serialized)
       serialized
     end
 
     protected
 
     def run_validations_and_serialize(string_payload)
-      unless @to_enroll
-        serialize_response_body(Success("not validated"))
-      else 
+      if @to_enroll
         schema_result = validate_document(string_payload)
         return serialize_response_body(schema_result) unless schema_result.success?
         serialize_response_body(run_business_validations(string_payload))
+      else
+        serialize_response_body(Success("not validated"))
       end
     end
 
@@ -51,12 +51,11 @@ module Aces
     def get_id(payload, transfer_id)
       parent_node = payload.xpath("//xmlns:TransferActivity", "xmlns" => "http://at.dsh.cms.gov/extension/1.0")
       identity_tag = parent_node.xpath(".//ns3:IdentificationID", "ns3" => "http://niem.gov/niem/niem-core/2.0")
-      puts identity_tag.text
       return Failure("XML error: ID tag missing.") if identity_tag.empty?
 
-      transfer = Aces::InboundTransfer.find(transfer_id)
+      @transfer = Aces::InboundTransfer.find(transfer_id)
       @to_enroll = !identity_tag.text.start_with?("FFE")
-      transfer.update!(external_id: identity_tag.text, payload: payload, result: "Parsed", to_enroll: @to_enroll)
+      @transfer.update!(external_id: identity_tag.text, payload: payload, result: "Parsed", to_enroll: @to_enroll)
       Success(identity_tag.text)
     end
 
@@ -134,9 +133,14 @@ module Aces
     end
 
     def transfer_account(payload, transfer_id, serialized)
-      return serialized if serialized.failure?
-      return Success(payload) unless MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll)
-      Transfers::ToEnroll.new.call(payload, transfer_id)
+      if @to_enroll
+        return serialized if serialized.failure?
+        return Success(payload) unless MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll)
+        Transfers::ToEnroll.new.call(payload, transfer_id)
+      else
+        @transfer.update!(payload: payload)
+        Success(@transfer)
+      end
     end
   end
 end

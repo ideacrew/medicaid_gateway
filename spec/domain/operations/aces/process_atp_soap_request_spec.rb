@@ -7,14 +7,14 @@ describe Aces::ProcessAtpSoapRequest, "given a soap envelope with an valid xml p
     DatabaseCleaner.clean
   end
 
-  let!(:transfer) { FactoryBot.create(:inbound_transfer) }
   let(:xml) { File.read("./spec/test_data/transfer_to_enroll.xml") }
+  let(:cms_xml) { File.read("./spec/test_data/transfer_to_enroll_from_cms.xml") }
 
   let(:operation) { Aces::ProcessAtpSoapRequest.new }
-  let(:result) { operation.call(xml, transfer.id) }
+  let(:feature_ns) { double }
 
   before :each do
-    allow(MedicaidGatewayRegistry).to receive(:[]).with(:aces_connection)
+    allow(MedicaidGatewayRegistry).to receive(:[]).with(:aces_connection).and_return(feature_ns)
     allow(MedicaidGatewayRegistry).to receive(:[]).with(:transfer_to_enroll)
     allow(MedicaidGatewayRegistry[:aces_connection]).to receive(:setting).with(:aces_atp_caller_username).and_return(double)
     allow(MedicaidGatewayRegistry[:aces_connection].setting(:aces_atp_caller_username)).to receive(:item).and_return("SOME_SOAP_USER")
@@ -23,7 +23,32 @@ describe Aces::ProcessAtpSoapRequest, "given a soap envelope with an valid xml p
     allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:transfer_to_enroll).and_return(false)
   end
 
-  it "payload processing should be successful" do
-    expect(result.success?).to be_truthy
+  context 'from aces' do
+    before do
+      @transfer = create :inbound_transfer
+      @result = operation.call(xml, @transfer.id)
+    end
+    it "payload processing should be successful" do
+      expect(@result.success?).to be_truthy
+    end
+
+    it "transfer to_enroll should be true" do
+      expect(@transfer.reload.to_enroll).to eq true
+    end
+  end
+
+  context 'from CMS' do
+    before do
+      @transfer = create :inbound_transfer
+      @result = operation.call(cms_xml, @transfer.id)
+    end
+
+    it "payload processing should be successful" do
+      expect(@result.success?).to be_truthy
+    end
+
+    it "transfer to_enroll should be false" do
+      expect(@transfer.reload.to_enroll).to eq false
+    end
   end
 end

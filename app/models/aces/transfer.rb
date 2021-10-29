@@ -32,6 +32,8 @@ module Aces
     # Full payload to send to service
     field :outbound_payload, type: String
 
+    field :xml_payload, type: String
+
     def successful?
       self.failure.nil?
     end
