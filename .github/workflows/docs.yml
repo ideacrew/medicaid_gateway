@@ -1,8 +1,6 @@
 name: Yardoc
 on:
-  push:
-    branches:
-      - trunk
+  workflow_dispatch:
 
 jobs:
   docs:
