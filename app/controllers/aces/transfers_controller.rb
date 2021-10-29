@@ -2,8 +2,7 @@
 
 module Aces
   # Transfers from Enroll to outside agency
-  class TransfersController < ActionController::Base
-    before_action :authenticate_user!
+  class TransfersController < ApplicationController
     def show
       @transfer = Aces::Transfer.find(params[:id])
       @failure_status = @transfer.failure.nil?

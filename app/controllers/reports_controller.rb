@@ -2,7 +2,6 @@
 
 # ReportsController provides API access to reports
 class ReportsController < ApplicationController
-  before_action :authenticate_user!
 
   def events
     @start_on = start_on || session[:start] || Date.today
