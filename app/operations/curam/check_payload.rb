@@ -43,6 +43,7 @@ module Curam
       status_text = status.any? ? status.last.text : "N/A"
       transfer.update_attribute(:callback_payload, check.to_json)
       transfer.update_attribute(:callback_status, status_text)
+      transfer.update_attribute(:outbound_payload, "") if status_text == "Success"
       Success("Callback response added")
     end
   end

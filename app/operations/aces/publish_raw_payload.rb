@@ -19,7 +19,7 @@ module Aces
     protected
 
     def build_request(raw_payload)
-      Aces::BuildAccountTransferRequest.new.call(raw_payload.value!)
+      Aces::BuildAccountTransferRequest.new.call(raw_payload)
     end
 
     def encode_request(request)

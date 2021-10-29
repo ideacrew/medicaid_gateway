@@ -12,25 +12,31 @@ module Transfers
     # @param [String] Take in the raw payload and serialize and transform it, validate it against the schema and schematron,
     # then tranfer the result to ACES.
     # @return [Dry::Result]
-    def call(params)
-      transfer_id = yield record_transfer(params)
+    def call(params, transfer_id = "")
+      transfer_id = yield record_transfer(params, transfer_id)
       xml = yield generate_xml(params, transfer_id)
       validated = yield schema_validation(xml, transfer_id)
       # validated  = yield business_validation(validated)
-      initiate_transfer(validated, transfer_id)
+      transfer_response = yield initiate_transfer(validated, transfer_id)
+      update_transfer(transfer_id, transfer_response)
     end
 
     private
 
-    def record_transfer(params)
+    def record_transfer(params, transfer_id)
       payload = JSON.parse(params)
       @service = MedicaidGatewayRegistry[:transfer_service].item
-      transfer = Transfers::Create.new.call({
-                                              service: @service,
-                                              application_identifier: payload["family"]["magi_medicaid_applications"]["hbx_id"] || "not found",
-                                              family_identifier: payload["family"]["hbx_id"] || "family_id not found"
-                                            })
-      transfer.success? ? Success(transfer.value!.id) : Failure("Failed to record transfer: #{transfer.failure}")
+      if transfer_id.blank?
+        transfer = Transfers::Create.new.call({
+                                                service: @service,
+                                                application_identifier: payload["family"]["magi_medicaid_applications"]["hbx_id"] || "not found",
+                                                family_identifier: payload["family"]["hbx_id"] || "family_id not found",
+                                                outbound_payload: params
+                                              })
+        transfer.success? ? Success(transfer.value!.id) : Failure("Failed to record transfer: #{transfer.failure}")
+      else
+        Success(transfer_id)
+      end
     end
 
     def generate_xml(params, transfer_id)
@@ -67,21 +73,16 @@ module Transfers
 
     def initiate_transfer(payload, transfer_id)
       result = if @service == "aces"
-                 Aces::PublishRawPayload.new.call(payload)
+                 Aces::PublishRawPayload.new.call(payload.value!)
                else
                  Curam::PublishRawPayload.new.call(payload)
                end
-
-      if result.success?
-        update_transfer(transfer_id, result.value!)
-        Success("Successfully transferred in account")
-      else
-        error_result = {
-          transfer_id: transfer_id,
-          failure: "Failed to initiate transfer: #{result.failure}"
-        }
-        Failure(error_result)
-      end
+      return result if result.success?
+      error_result = {
+        transfer_id: transfer_id,
+        failure: "Failed to initiate transfer: #{result.failure}"
+      }
+      Failure(error_result)
     end
 
     def update_transfer(transfer_id, response)
@@ -91,11 +92,12 @@ module Transfers
         xml = Nokogiri::XML(response.to_hash[:body])
         status = xml.xpath('//tns:ResponseDescriptionText', 'tns' => 'http://hix.cms.gov/0.1/hix-core')
         status_text = status.any? ? status.last.text : "N/A"
-        transfer.update!(response_payload: response_json, callback_status: status_text)
+        payload = status_text == "Success" ? "" : transfer.outbound_payload
+        transfer.update!(response_payload: response_json, callback_status: status_text, outbound_payload: payload)
       else
         transfer.update!(response_payload: response_json)
       end
+      Success("Successfully transferred in account")
     end
-
   end
 end
