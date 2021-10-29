@@ -2,7 +2,7 @@
 
 module Medicaid
   # Determinations from MITC
-  class ApplicationsController < ActionController::Base
+  class ApplicationsController < ApplicationController
     def show
       @application = Medicaid::Application.find(params[:id])
       @application_request_payload = parse_json(@application.application_request_payload)
@@ -16,6 +16,7 @@ module Medicaid
     private
 
     def parse_json(value)
+      return value unless value.present?
       JSON.parse(value)
     rescue JSON::ParserError
       value

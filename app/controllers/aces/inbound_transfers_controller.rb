@@ -2,7 +2,7 @@
 
 module Aces
   # Transfers from an outside source coming into Enroll
-  class InboundTransfersController < ActionController::Base
+  class InboundTransfersController < ApplicationController
     def show
       @transfer = Aces::InboundTransfer.find(params[:id])
       @failure_status = @transfer.failure.nil?
