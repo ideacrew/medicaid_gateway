@@ -11,42 +11,43 @@
   </head>
 
   <body>
-    <header class="navbar navbar-expand-lg navbar-dark bg-primary mb-3">
-      <nav class="container">
-        <div class="" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/">Medicaid Gateway</a>
-          </li>
-          
-          <li class="nav-item">
-            <a class="nav-link" href="/reports/transfer_summary">Transfer Summary</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/reports/account_transfers">Transfers Sent</a>
-          </li>
-          <% if Medicaid::Application.all.any? %>
-            <% if MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll) %>
-              <li class="nav-item">
-                <a class="nav-link" href="/reports/account_transfers_to_enroll">Transfers Received</a>
-              </li>
-            <% end %>
-            <% if MedicaidGatewayRegistry.feature_enabled?(:mitc_determination) %>
-              <li class="nav-item">
-                <a class="nav-link" href="/reports/medicaid_application_check">Determinations</a>
-              </li>
-            <% end %>
-            <% if MedicaidGatewayRegistry.feature_enabled?(:mec_check) %>
-              <li class="nav-item">
-                <a class="nav-link" href="/reports/mec_checks">MEC Checks</a>
-              </li>
-            <% end %>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-3">
+      <div class="container">
+        <a class="navbar-brand" aria-current="page" href="/">Medicaid Gateway</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">              
+            <li class="nav-item">
+              <a class="nav-link" href="/reports/transfer_summary">Transfer Summary</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/reports/account_transfers">Transfers Sent</a>
+            </li>
+            <% if Medicaid::Application.all.any? %>
+              <% if MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll) %>
+                <li class="nav-item">
+                  <a class="nav-link" href="/reports/account_transfers_to_enroll">Transfers Received</a>
+                </li>
+              <% end %>
+              <% if MedicaidGatewayRegistry.feature_enabled?(:mitc_determination) %>
+                <li class="nav-item">
+                  <a class="nav-link" href="/reports/medicaid_application_check">Determinations</a>
+                </li>
+              <% end %>
+              <% if MedicaidGatewayRegistry.feature_enabled?(:mec_check) %>
+                <li class="nav-item">
+                  <a class="nav-link" href="/reports/mec_checks">MEC Checks</a>
+                </li>
+              <% end %>
+            <% end %>         
+          </ul>
+          <% if user_signed_in? %>
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <%= button_to "logout", destroy_user_session_path, method: :delete, class: 'btn btn-secondary' %>
+          </ul>
           <% end %>
-        </ul>
+        </div>
       </div>
-      </nav>
-    </header>
+    </nav>
     <main class="container">
       <% if notice %>
         <div class="alert alert-primary" role="alert">
@@ -59,11 +60,6 @@
         </div>
       <% end %>
       <%= yield %>
-    </main>
-    <footer class="footer border-top border-primary mt-3 p-2 fixed-bottom">
-      <div class="container">
-        <%= button_to "logout", destroy_user_session_path, method: :delete, class: 'btn btn-secondary' if user_signed_in? %>
-      </div>
-    </footer>
+    </main>    
   </body>
 </html>

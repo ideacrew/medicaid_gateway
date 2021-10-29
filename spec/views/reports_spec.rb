@@ -115,7 +115,7 @@ RSpec.describe "Reports", type: :view, dbclean: :after_each do
     end
 
     it "accepts and uses date params" do
-      old_transfer = create :inbound_transfer, created_at: 1.day.ago, updated_at: 1.day.ago
+      old_transfer = create :inbound_transfer, created_at: 1.day.ago, updated_at: 1.day.ago, application_identifier: 'shjdfgdfhsjfg'
       start_on = 2.days.ago.strftime('%m/%d/%Y')
       visit "/reports/account_transfers_to_enroll?start_on=#{start_on}"
 

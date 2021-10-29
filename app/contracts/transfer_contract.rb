@@ -13,6 +13,8 @@ class TransferContract < Dry::Validation::Contract
     optional(:callback_payload).filled(:string)
     optional(:callback_status).filled(:string)
     optional(:failure).filled(:string)
+    optional(:outbound_payload).filled(:string)
+    optional(:xml_payload).filled(:string)
   end
 
   rule(:response_payload) do
@@ -20,6 +22,10 @@ class TransferContract < Dry::Validation::Contract
   end
 
   rule(:callback_payload) do
+    key.failure(text: 'should be a valid JSON string') if key? && !valid_json?(value)
+  end
+
+  rule(:outbound_payload) do
     key.failure(text: 'should be a valid JSON string') if key? && !valid_json?(value)
   end
 
