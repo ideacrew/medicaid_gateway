@@ -5,6 +5,7 @@ module Aces
   class Transfer
     include Mongoid::Document
     include Mongoid::Timestamps
+    include CableReady::Broadcaster
 
     # Unique Identifier(hbx_id) of the application.
     # For example: EA's FinancialAssistance::Application's hbx_id
@@ -51,12 +52,84 @@ module Aces
 
     def to_event
       {
+        id: "transfer-row-#{self.id}",
         type: "Transfer Out",
         created_at: self.created_at,
+        updated_at: self.updated_at,
         success: self.successful?,
         app_id: self.application_identifier
       }
     end
 
+    after_update do
+      row_morph
+      event_row_morph
+    end
+
+    def row_morph
+      row_html = ApplicationController.render(
+        partial: "reports/transfer_row",
+        locals: { transfer: self }
+      )
+
+      cable_ready["transfers"].remove(
+        selector: "#transfer-row-#{id}",
+        html: row_html
+      )
+
+      cable_ready["transfers"].prepend(
+        selector: 'table tbody',
+        html: row_html
+      )
+
+      cable_ready.broadcast
+    end
+
+    def event_row_morph
+      event_html = ApplicationController.render(
+        partial: "reports/event_row",
+        locals: { event: self.to_event }
+      )
+
+      cable_ready["events"].remove(
+        selector: "#event-transfer-row-#{id}",
+        html: event_html
+      )
+
+      cable_ready["events"].prepend(
+        selector: 'table tbody',
+        html: event_html
+      )
+      p cable_ready
+      cable_ready.broadcast
+    end
+
+    after_create do
+      create_morph
+    end
+
+    def create_morph
+      row_html = ApplicationController.render(
+        partial: "reports/transfer_row",
+        locals: { transfer: self }
+      )
+
+      cable_ready["transfers"].prepend(
+        selector: 'table tbody',
+        html: row_html
+      )
+
+      event_html = ApplicationController.render(
+        partial: "reports/event_row",
+        locals: { event: self.to_event }
+      )
+
+      cable_ready["events"].prepend(
+        selector: 'table tbody',
+        html: event_html
+      )
+
+      cable_ready.broadcast
+    end
   end
 end

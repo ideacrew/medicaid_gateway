@@ -12,7 +12,7 @@
       "alternate_name": null
     },
     "person_demographics": {
-      "ssn": "908923111",
+      "encrypted_ssn": "7dHSx2/xzU80JMDt8KNLyogDsPABKMBPlg==\n",
       "no_ssn": false,
       "gender": "female",
       "dob": "1983-07-29",

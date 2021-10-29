@@ -37,6 +37,7 @@ RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_
       end
 
       let(:medicaid_request_payload) do
+        binding.pry
         ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
       end
 

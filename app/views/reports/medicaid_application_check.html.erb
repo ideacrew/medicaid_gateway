@@ -2,7 +2,7 @@
 <h2><% if @application_id %>Only showing those with application id of <%= @application_id %><% end %></h2>
 <h2 class="text-muted mb-3"><%= @applications.count %> determinations during this range</h2>
 <%= render partial: "date_range", locals: {start_on: @start_on, end_on: @end_on, session_name: 'ma_'} %>
-<table class="table table-striped table-responsive mt-3 table-overrides">
+<table class="table table-striped table-responsive mt-3 table-overrides" data-controller="reports" data-reports-channel="DeterminationsChannel">
 	<thead>
 		<tr>
 			<th>Application Identifer</th>

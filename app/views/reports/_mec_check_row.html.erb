@@ -1,0 +1,17 @@
+<tr id="mec-check-row-<%= check.id %>">
+    <td class="<%= check.successful? ? 'table-success' : 'table-danger' %>"><%= check.successful? ? "Success" : "Failure" %></td>
+    <td><%= check.application_identifier %></td>
+    <td><%= check.family_identifier %></td>
+    <td style="max-width: 800px">
+        <% unless check.failure.nil? %>
+            <%= check.failure %>
+        <% end %>
+        <% unless check.applicant_responses.nil? %>
+            <% JSON.parse(check.applicant_responses.to_json).each_with_index do |resp, i| %>
+                <%= raw("<br />") unless i ==0 %>
+                Person <%= resp[0] %>: <%= resp[1] %> 
+            <% end %>
+        <% end %>
+    </td>
+    <td><%= check.created_at %></td>
+</tr>

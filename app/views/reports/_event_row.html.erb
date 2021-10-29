@@ -1,0 +1,7 @@
+<tr id="event-<%= event[:id] %>">
+    <td class="<%= event[:success] ? 'table-success' : 'table-danger' %>"><%= event[:success] ? "Success" : "Failure" %></td>
+    <td><%= event[:type] %></td>
+    <td><%= event[:created_at] %></td>
+    <td><%= event[:updated_at] %></td>
+    <td><%= event[:app_id] %></td>
+</tr>

@@ -7,8 +7,7 @@
   <li class="list-inline-item">MEC Checks: <%= @mec_checks_total %></li>
 </ul>
 <%= render partial: "date_range", locals: {start_on: @start_on, end_on: @end_on, session_name: ""} %>
-
-<table class="table table-striped table-responsive table-overrides">
+<table class="table table-striped table-responsive table-overrides" data-controller="events">
 	<thead>
 		<th>Status</th>
 		<th>Type</th>
@@ -17,12 +16,7 @@
 	</thead>
 	<tbody>
 		<% @events.each do |event| %>
-			<tr>
-				<td class="<%= event[:success] ? 'table-success' : 'table-danger' %>"><%= event[:success] ? "Success" : "Failure" %></td>
-				<td><%= event[:type] %></td>
-				<td><%= event[:created_at] %></td>
-				<td><%= event[:app_id] %></td>
-			</tr>
+			<%= render partial: "event_row", locals: { event: event } %>
 		<% end %>
 	</tbody>
 </table>

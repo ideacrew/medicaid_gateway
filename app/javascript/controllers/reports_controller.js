@@ -6,9 +6,9 @@ import consumer from '../channels/consumer';
 export default class extends Controller {
   connect() {
     StimulusReflex.register(this)
-    const controller = this
+    const channel = this.data.get("channel")
     consumer.subscriptions.create(
-      { channel: 'InboundTransfersChannel' }, {
+      { channel: channel }, {
         received (data) {
           if (data.cableReady) CableReady.perform(data.operations)
         }

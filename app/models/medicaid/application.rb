@@ -7,6 +7,7 @@ module Medicaid
   class Application
     include Mongoid::Document
     include Mongoid::Timestamps
+    include CableReady::Broadcaster
 
     # Unique Identifier(hbx_id) of the incoming application.
     # For example: EA's FinancialAssistance::Application's hbx_id
@@ -52,6 +53,7 @@ module Medicaid
 
     def to_event
       {
+        id: "determination-row-#{self.id}",
         type: "Determination",
         created_at: self.created_at,
         success: self.successful?,
@@ -59,5 +61,45 @@ module Medicaid
       }
     end
 
+    after_update do
+      row_morph
+    end
+
+    def row_morph
+      row_html = ApplicationController.render(
+        partial: "reports/medicaid_application_check_row",
+        locals: { application: self }
+      )
+
+      cable_ready["determinations"].remove(
+        selector: "#medicaid-application-row-#{id}",
+        html: row_html
+      )
+
+      cable_ready["determinations"].prepend(
+        selector: 'table tbody',
+        html: row_html
+      )
+
+      cable_ready.broadcast
+    end
+
+    after_create do
+      create_morph
+    end
+
+    def create_morph
+      row_html = ApplicationController.render(
+        partial: "reports/medicaid_application_check_row",
+        locals: { application: self }
+      )
+
+      cable_ready["determinations"].prepend(
+        selector: 'table tbody',
+        html: row_html
+      )
+
+      cable_ready.broadcast
+    end
   end
 end

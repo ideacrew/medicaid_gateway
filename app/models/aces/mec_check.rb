@@ -5,6 +5,7 @@ module Aces
   class MecCheck
     include Mongoid::Document
     include Mongoid::Timestamps
+    include CableReady::Broadcaster
 
     # Unique Identifier(application_id) of the application.
     # For example: EA's FinancialAssistance::Application's application_id
@@ -29,12 +30,36 @@ module Aces
 
     def to_event
       {
+        id: "check-row-#{self.id}",
         type: "MEC Check",
         created_at: self.created_at,
+        updated_at: self.updated_at,
         success: self.successful?,
         app_id: self.application_identifier
       }
     end
 
+    after_update do
+      row_morph
+    end
+
+    def row_morph
+      row_html = ApplicationController.render(
+        partial: "reports/mec_check_row",
+        locals: { check: self }
+      )
+
+      cable_ready["mec_checks"].remove(
+        selector: "#mec-check-row-#{id}",
+        html: row_html
+      )
+
+      cable_ready["mec_checks"].prepend(
+        selector: 'table tbody',
+        html: row_html
+      )
+
+      cable_ready.broadcast
+    end
   end
 end

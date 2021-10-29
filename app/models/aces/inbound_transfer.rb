@@ -47,6 +47,7 @@ module Aces
 
     def to_event
       {
+        id: "inbound-transfer-row-#{self.id}",
         type: "Transfer In",
         created_at: self.updated_at,
         success: self.successful?,
