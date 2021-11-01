@@ -1,4 +1,5 @@
 <h1>Transfer to <%= @transfer.service.upcase %></h1>
+<p>Origin: <%= @transfer.from_cms ? "CMS" : "EA" %></p>
 <p>Created At: <%= @transfer.created_at %></p>
 <p>Processed At: <%= @transfer.updated_at %></p>
 <p>Transfer Status: <%= @transfer.successful? ? 'Success' : 'Failure' %></p>
@@ -13,19 +14,19 @@
 </div>
 <% end %>
 
-<% unless @transfer.response_payload.blank? %>
+<% unless @response_payload.blank? %>
 <h2>Response Payload:</h2>
-<%= raw(ap(JSON.parse(@transfer.response_payload))) %>
+<%= raw(ap(@response_payload)) %>
 <% end %>
 
-<% unless @transfer.callback_payload.blank? %>
+<% unless @callback_payload.blank? %>
 <h2>Callback Payload:</h2>
-<%= raw(ap(JSON.parse(@transfer.callback_payload))) %>
+<%= raw(ap(@callback_payload)) %>
 <% end %>
 
-<% unless @transfer.failure.blank? %>
-<h2>Failure Details:</h2>
-<%= @transfer.failure %>
+<% unless @outbound_payload.blank? %>
+<h2>Payload from Enroll:</h2>
+<%= raw(ap(@outbound_payload)) %>
 <% end %>
 
 <%= link_to "Received Transfers Report", account_transfers_reports_path, class: 'btn btn-primary' %>

@@ -18,7 +18,7 @@ class TransferReceivedReport
     report_name = "transfer_received_report_#{timestamp}.csv"
     FileUtils.touch(report_name)
     CSV.open(report_name, "w") do |csv|
-      csv << %w[DateRange TransferStatus CreatedAt FamilyHBXId ApplicationHBXId IngestionStatus]
+      csv << %w[DateRange TransferStatus CreatedAt FamilyHBXId ApplicationHBXId IngestionStatus FromCMS]
       break if at_received.blank?
       at_received.each do |transfer|
         csv << [
@@ -27,7 +27,8 @@ class TransferReceivedReport
           transfer.created_at,
           transfer.family_identifier,
           transfer.application_identifier,
-          transfer.result
+          transfer.result,
+          !transfer.to_enroll
         ]
       end
     end

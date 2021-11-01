@@ -13,6 +13,13 @@
         <% end %>
     </td>
     <td>
+        <% if transfer.from_cms %>
+            CMS
+        <% else %>
+            EA
+        <% end %>
+    </td>
+    <td>
         <%= link_to "Details", transfer, class: 'btn btn-primary' %>
         <% if MedicaidGatewayRegistry.feature_enabled?(:resubmit_to_enroll) && transfer.resubmittable? %>
             <br/>
