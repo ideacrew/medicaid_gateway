@@ -35,4 +35,5 @@ ul li.list-inline-item:after {
 
 ul li.list-inline-item:last-child:after {
   content: "";
+  color: $secondary;
 }
