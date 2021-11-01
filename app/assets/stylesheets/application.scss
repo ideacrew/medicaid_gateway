@@ -28,3 +28,11 @@ kbd {
 }
 
 
+ul li.list-inline-item:after {
+  content: "\2022";
+  margin-left: 0.5rem
+}
+
+ul li.list-inline-item:last-child:after {
+  content: "";
+}
