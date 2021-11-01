@@ -45,7 +45,7 @@ class TransferReport
     at_sent_total = at_sent.count
     at_sent_successful = at_sent.where(failure: nil).count
     at_sent_failure = at_sent_total - at_sent_successful
-    at_from_cms = at_sent.transferred_from_cms.count
+    at_from_cms = at_sent.where(from_cms: true).count
     [
       at_sent_total,
       at_sent_successful,
