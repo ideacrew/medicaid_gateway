@@ -1,5 +1,6 @@
 <h1>Account Transfers To <%= MedicaidGatewayRegistry[:transfer_service].item.upcase %></h1>
-<%= render partial: "date_range", locals: {start_on: @start_on, end_on: @end_on, session_name: "atp_"} %>
+<h2 class="text-muted mb-3"><%= @transfers.count %> transfers during this range</h2>
+<%= render partial: "date_range", locals: {start_on: @start_on, end_on: @end_on, session_name: "atp_" } %>
 <table class="table table-striped table-responsive table-overrides">
 	<thead>
 		<th>Transfer Status</th>
