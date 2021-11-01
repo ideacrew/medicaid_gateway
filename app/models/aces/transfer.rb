@@ -34,6 +34,8 @@ module Aces
 
     field :xml_payload, type: String
 
+    field :from_cms, type: Boolean
+
     def successful?
       self.failure.nil?
     end

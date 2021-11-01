@@ -7,7 +7,9 @@ module Aces
 
     XML_NS = {
       "atp" => "http://at.dsh.cms.gov/exchange/1.0",
-      "soap" => "http://www.w3.org/2003/05/soap-envelope"
+      "soap" => "http://www.w3.org/2003/05/soap-envelope",
+      "ns3" => "http://niem.gov/niem/niem-core/2.0",
+      "xmlns" => "http://at.dsh.cms.gov/extension/1.0"
     }.freeze
 
     # @param [IO] body the body of the request
@@ -49,12 +51,14 @@ module Aces
     end
 
     def get_id(payload, transfer_id)
-      parent_node = payload.xpath("//xmlns:TransferActivity", "xmlns" => "http://at.dsh.cms.gov/extension/1.0")
-      identity_tag = parent_node.xpath(".//ns3:IdentificationID", "ns3" => "http://niem.gov/niem/niem-core/2.0")
+      identity_tag = payload.xpath("//xmlns:TransferActivity/ns3:ActivityIdentification/ns3:IdentificationID", XML_NS)
+      recipient_node = payload.xpath("//xmlns:RecipientTransferActivityCode", XML_NS)
+
       return Failure("XML error: ID tag missing.") if identity_tag.empty?
+      return Failure("XML error: RecipientTransferActivityCode missing.") if recipient_node.empty?
 
       @transfer = Aces::InboundTransfer.find(transfer_id)
-      @to_enroll = !identity_tag.text.start_with?("FFE")
+      @to_enroll = recipient_node.text == "Exchange"
       @transfer.update!(external_id: identity_tag.text, payload: payload, result: "Parsed", to_enroll: @to_enroll)
       Success(identity_tag.text)
     end

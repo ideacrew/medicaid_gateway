@@ -26,7 +26,8 @@ module Transfers
                                               service: "CMS to #{@service}",
                                               application_identifier: "N/A",
                                               family_identifier: "N/A",
-                                              xml_payload: params
+                                              xml_payload: params,
+                                              from_cms: true
                                             })
       transfer.success? ? Success(transfer.value!.id) : Failure("Failed to record transfer: #{transfer.failure}")
     end
