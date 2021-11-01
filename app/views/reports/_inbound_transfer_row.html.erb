@@ -7,7 +7,7 @@
     <td><span class="fw-bold"><%= transfer.result %></span><%= " - #{transfer.failure}" unless transfer.failure.nil? %></td>
     <td>
         <%= link_to "Details", transfer, class: 'btn btn-primary' %>
-        <% if transfer.resubmittable? %>
+        <% if MedicaidGatewayRegistry.feature_enabled?(:resubmit_to_enroll) && transfer.resubmittable? %>
             <br/>
             <button class="btn btn-secondary mt-2" data-reflex="click->Report#resubmit_to_enroll" data-payload="<%= transfer.payload %>" data-id="<%= transfer.id %>">
                 Resubmit
