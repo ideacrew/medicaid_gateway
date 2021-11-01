@@ -2,9 +2,9 @@
 <%= render partial: "date_range", locals: {start_on: @start_on, end_on: @end_on, session_name: "atp_"} %>
 <table class="table table-striped table-responsive table-overrides">
 	<thead>
-		<th>Sent</th>
+		<th>Sent<% if @sent_from_cms %><sup class="text-secondary">&starf;</sup><% end %></th>
 		<% if MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll) %>
-			<th>Received</th>
+			<th>Received<% if @received_from_cms %><sup class="text-secondary">&starf;&starf;</sup><% end %></th>
 		<% end %>
 		<th>Sent Successes</th>
 		<th>Sent Failures</th>
@@ -27,7 +27,13 @@
 			<% end %>
 		</tr>
 	</tbody>
+	<caption class="text-secondary">
+	  <% if @sent_from_cms %><sup>&starf;</sup> From CMS: <%= @sent_from_cms %><% end %>
+	  <% if @received_from_cms %><br /><sup>&starf;&starf;</sup> From CMS: <%= @received_from_cms %><% end %>
+	</caption>
 </table>
+
+
 <% if MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll) %>
 	<%= link_to "Received Details", account_transfers_to_enroll_reports_path, class: 'btn btn-primary' %>
 <% end %>

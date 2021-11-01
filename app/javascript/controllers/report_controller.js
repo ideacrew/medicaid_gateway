@@ -14,7 +14,6 @@ export default class extends Controller {
         d = new Date(date)
     d = d.toLocaleDateString("en-US")
     url.searchParams.set(input_name, d)
-    window.history.pushState(null, null, url)
-    this.stimulate('Report#change_date', session_name, date)
+    window.location.replace(url)
   }
 }

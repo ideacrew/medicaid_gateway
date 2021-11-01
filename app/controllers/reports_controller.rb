@@ -8,6 +8,10 @@ class ReportsController < ApplicationController
     @end_on = end_on || session[:end] || Date.today
     events = applications + transfers + inbound_transfers + checks
     @events = events.map(&:to_event).sort_by { |event| event[:created_at] }.reverse
+    @transfers_total = transfers.count
+    @inbound_transfers_total = inbound_transfers.count
+    @determinations_total = applications.count
+    @mec_checks_total = checks.count
   end
 
   def medicaid_applications
@@ -47,6 +51,8 @@ class ReportsController < ApplicationController
     @at_received_total = inbound_transfers.count
     @at_received_successful = inbound_transfers.where(failure: nil).count
     @at_received_failure = @at_received_total - @at_received_successful
+    @sent_from_cms = transfers.where(from_cms: true).count
+    @received_from_cms = inbound_transfers.where(to_enroll: false).count
   end
 
   private

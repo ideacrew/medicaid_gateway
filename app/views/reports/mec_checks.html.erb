@@ -1,4 +1,9 @@
 <h1>Mec Checks</h1>
+<h2 class="text-muted mb-1"><%= @checks.count %> checks during this range</h2>
+<ul class="list-inline h4 mb-3 text-muted">
+  <li class="list-inline-item text-success"><%= @checks.select{ |check| check.successful? }.count %> Successful</li>
+  <li class="list-inline-item text-danger"><%= @checks.select{ |check| !check.successful? }.count %> Failures</li>
+</ul>
 <%= render partial: "date_range", locals: {start_on: @start_on, end_on: @end_on, session_name: "mc_sent_"} %>
 <table class="table table-striped table-overrides">
 	<thead>

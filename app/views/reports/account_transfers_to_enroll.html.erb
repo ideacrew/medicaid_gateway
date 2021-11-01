@@ -1,4 +1,9 @@
 <h1>Account Transfers To Enroll</h1>
+<h2 class="text-muted mb-1"><%= @transfers.count %> transfers during this range</h2>
+<ul class="list-inline h4 mb-3 text-muted">
+  <li class="list-inline-item text-success"><%= @transfers.select{ |transfer| transfer.successful? }.count %> Successful</li>
+  <li class="list-inline-item text-danger"><%= @transfers.select{ |transfer| !transfer.successful? }.count %> Failures</li>
+</ul>
 <%= render partial: "date_range", locals: {start_on: @start_on, end_on: @end_on, session_name: "atp_"} %>
 <table class="table table-striped table-responsive table-overrides" data-controller="inbound-transfers">
 	<thead>
@@ -8,6 +13,7 @@
 		<th>Family HBX Id</th>
 		<th>Application HBX Id</th>
 		<th>Ingestion Status</th>
+		<th>Origin</th>
 		<th></th>
 	</thead>
 	<tbody>
