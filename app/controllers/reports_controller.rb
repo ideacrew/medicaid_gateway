@@ -28,18 +28,24 @@ class ReportsController < ApplicationController
     @start_on = start_on || session[:atp_start] || Date.today
     @end_on = end_on || session[:atp_end] || Date.today
     @transfers = transfers
+    @success_count = @transfers.select(&:successful?).count
+    @fail_count = @transfers.count - @success_count
   end
 
   def account_transfers_to_enroll
     @start_on = start_on || session[:atp_start] || Date.today
     @end_on = end_on || session[:atp_end] || Date.today
     @transfers = inbound_transfers
+    @success_count = @transfers.select(&:successful?).count
+    @fail_count = @transfers.count - @success_count
   end
 
   def mec_checks
     @start_on = start_on || session[:mc_sent_start] || Date.today
     @end_on = session[:mc_sent_end] || Date.today
     @checks = checks
+    @success_count = @checks.select(&:successful?).count
+    @fail_count = @checks.count - @success_count
   end
 
   def transfer_summary
