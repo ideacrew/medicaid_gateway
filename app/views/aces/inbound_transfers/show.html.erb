@@ -1,5 +1,5 @@
 <h1>Transfer of <%= @transfer.external_id %> to Enroll</h1>
-<p>Origin: <%= @transfer.to_enroll ? MedicaidGatewayRegistry.setting(:transfer_service).item : "CMS" %></p>
+<p>Origin: <%= @transfer.to_enroll ? MedicaidGatewayRegistry[:transfer_service].item.upcase : "CMS" %></p>
 <p>Updated At: <%= @transfer.created_at %></p>
 <p>Processed At: <%= @transfer.updated_at %></p>
 <p>Transfer Status: <%= @transfer.successful? ? 'Success' : 'Failure' %></p>
