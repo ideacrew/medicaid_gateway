@@ -47,6 +47,8 @@ class ReportsController < ApplicationController
     @at_received_total = inbound_transfers.count
     @at_received_successful = inbound_transfers.where(failure: nil).count
     @at_received_failure = @at_received_total - @at_received_successful
+    @sent_from_cms = transfers.transferred_from_cms.count
+    @received_from_cms = inbound_transfers.where(to_enroll: false).count
   end
 
   private

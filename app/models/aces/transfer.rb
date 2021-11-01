@@ -32,12 +32,17 @@ module Aces
     # Full payload to send to service
     field :outbound_payload, type: String
 
+    # xml payload from CMS to send to service
     field :xml_payload, type: String
 
     field :from_cms, type: Boolean
 
     def successful?
       self.failure.nil?
+    end
+
+    def from_cms?
+      self.xml_payload.present?
     end
 
     def resubmittable?

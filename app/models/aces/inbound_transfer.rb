@@ -37,6 +37,10 @@ module Aces
       Transfers::FromCms.new.call(self.payload)
     end
 
+    def self.from_cms
+      where(to_enroll: false)
+    end
+
     def successful?
       self.failure.nil?
     end
