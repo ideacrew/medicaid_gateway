@@ -5,6 +5,7 @@
     <td><%= transfer.family_identifier %></td>
     <td><%= transfer.application_identifier %></td>
     <td><span class="fw-bold"><%= transfer.result %></span><%= " - #{transfer.failure}" unless transfer.failure.nil? %></td>
+    <td><%= transfer.to_enroll ? MedicaidGatewayRegistry.setting(:transfer_service).item : "CMS" %></td>
     <td>
         <%= link_to "Details", transfer, class: 'btn btn-primary' %>
         <% if MedicaidGatewayRegistry.feature_enabled?(:resubmit_to_enroll) && transfer.resubmittable? %>

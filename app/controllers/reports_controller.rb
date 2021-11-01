@@ -8,6 +8,10 @@ class ReportsController < ApplicationController
     @end_on = end_on || session[:end] || Date.today
     events = applications + transfers + inbound_transfers + checks
     @events = events.map(&:to_event).sort_by { |event| event[:created_at] }.reverse
+    @transfers_total = transfers.count
+    @inbound_transfers_total = inbound_transfers.count
+    @determinations_total = applications.count
+    @mec_checks_total = checks.count
   end
 
   def medicaid_applications

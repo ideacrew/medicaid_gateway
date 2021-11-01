@@ -25,6 +25,7 @@ class TransferReport
         row.insert(2, inbound_vals[:total])
         row << inbound_vals[:successful]
         row << inbound_vals[:failure]
+        row << inbound_vals[:from_cms]
       end
 
       csv << row
@@ -33,7 +34,7 @@ class TransferReport
 
   def self.headers
     if MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll)
-      %w[DateRange Sent Received SentSuccesses SentFailures ReceivedSuccesses ReceivedFailures]
+      %w[DateRange Sent Received SentSuccesses SentFailures SentFromCMS ReceivedSuccesses ReceivedFailures ReceivedFromCMS]
     else
       %w[DateRange Sent SentSuccesses SentFailures]
     end
@@ -44,10 +45,12 @@ class TransferReport
     at_sent_total = at_sent.count
     at_sent_successful = at_sent.where(failure: nil).count
     at_sent_failure = at_sent_total - at_sent_successful
+    at_from_cms = at_sent.transferred_from_cms.count
     [
       at_sent_total,
       at_sent_successful,
-      at_sent_failure
+      at_sent_failure,
+      at_from_cms
     ]
   end
 
@@ -56,10 +59,12 @@ class TransferReport
     at_received_total = at_received.count
     at_received_successful = at_received.where(failure: nil).count
     at_received_failure = at_received_total - at_received_successful
+    at_received_from_cms = at_received.where(to_enroll: false).count
     {
       total: at_received_total,
       successful: at_received_successful,
-      failure: at_received_failure
+      failure: at_received_failure,
+      from_cms: at_received_from_cms
     }
   end
 end

@@ -1,4 +1,5 @@
 <h1>Transfer to <%= @transfer.service.upcase %></h1>
+<p>Origin: <%= @transfer.from_cms ? "CMS" : "EA" %></p>
 <p>Created At: <%= @transfer.created_at %></p>
 <p>Processed At: <%= @transfer.updated_at %></p>
 <p>Transfer Status: <%= @transfer.successful? ? 'Success' : 'Failure' %></p>
