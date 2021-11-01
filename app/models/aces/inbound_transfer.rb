@@ -30,7 +30,7 @@ module Aces
     field :to_enroll, type: Boolean
 
     def from_cms_to_aces?
-      to_enroll && payload.present?
+      return true unless to_enroll || payload.blank?
     end
 
     def from_cms_to_aces

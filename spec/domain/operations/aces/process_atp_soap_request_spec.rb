@@ -21,6 +21,7 @@ describe Aces::ProcessAtpSoapRequest, "given a soap envelope with an valid xml p
     allow(MedicaidGatewayRegistry[:aces_connection]).to receive(:setting).with(:aces_atp_caller_password).and_return(double)
     allow(MedicaidGatewayRegistry[:aces_connection].setting(:aces_atp_caller_password)).to receive(:item).and_return("SOME SOAP PASSWORD")
     allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:transfer_to_enroll).and_return(false)
+    allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:resubmit_to_enroll).and_return(false)
   end
 
   context 'from aces' do
