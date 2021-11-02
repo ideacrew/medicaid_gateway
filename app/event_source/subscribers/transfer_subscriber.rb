@@ -51,7 +51,7 @@ module Subscribers
       else
         ib_transfer_id = phash["transfer_id"]
         inbound_transfer = Aces::InboundTransfer.where(external_id: ib_transfer_id).last
-        inbound_transfer.update!(failure: true)
+        inbound_transfer.update!(failure: true) if inbound_transfer
       end
       nack(delivery_info.delivery_tag)
       logger.debug "application_submitted_subscriber_error: baacktrace: #{e.backtrace}; nacked"
