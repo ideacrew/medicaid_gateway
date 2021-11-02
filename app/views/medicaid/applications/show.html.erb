@@ -26,7 +26,9 @@
 <% if @application.other_factors == 'No other factors' %>
   <%= @application.other_factors %>
 <% else %>
-  <%= raw(ap(@other_factors)) %>
+<% @other_factors.each do |factor| %>
+  <%= raw(ap(factor)) %>
+<% end %>
 <% end %>
 <hr>
 <%= link_to "Determinations Report", medicaid_application_check_reports_path, class: 'btn btn-primary' %>

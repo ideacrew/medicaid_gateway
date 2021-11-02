@@ -30,7 +30,9 @@ module Transfers
 
     def transform_params(result, transfer_id)
       transformed = ::AcaEntities::Atp::Transformers::Cv::Family.transform(result.to_hash(identifier: true))
-      update_transfer(transfer_id, transformed[:family][:magi_medicaid_applications][0][:transfer_id])
+      uniq_id = "#{transfer_id}_#{transformed[:family][:magi_medicaid_applications][0][:transfer_id]}"
+      update_transfer(transfer_id, uniq_id)
+      transformed[:family][:magi_medicaid_applications][0][:transfer_id] = uniq_id
       Success(transformed)
     rescue StandardError => e
       Failure("to_aces transformer #{e}")

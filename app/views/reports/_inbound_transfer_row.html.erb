@@ -1,7 +1,7 @@
 <tr id="<%= "inbound-transfer-row-#{transfer.id}" %>">
     <td class="<%= transfer.successful? ? 'table-success' : 'table-danger' %>"><%= transfer.successful? ? "Success" : "Failure" %></td>
-    <td><%= transfer.created_at %></td>
-    <td><%= transfer.external_id %></td>
+    <td><%= transfer.updated_at %></td>
+    <td><%=  transfer.external_id.split("_").last if transfer.external_id.present? %></td>
     <td><%= transfer.family_identifier %></td>
     <td><%= transfer.application_identifier %></td>
     <td><span class="fw-bold"><%= transfer.result %></span><%= " - #{transfer.failure}" unless transfer.failure.nil? %></td>

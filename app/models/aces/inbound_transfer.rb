@@ -48,18 +48,22 @@ module Aces
     def to_event
       {
         type: "Transfer In",
-        created_at: self.created_at,
+        created_at: self.updated_at,
         success: self.successful?,
         app_id: self.application_identifier
       }
     end
 
+    def resubmit_to_enroll
+      Transfers::ToEnroll.new.call(payload, id)
+    end
+
     def resubmittable?
-      payload.present? && ['Sent', 'Failed'].include?(result)
+      payload.present? && payload.length > 100 && ['Sent to Enroll', 'Failed'].include?(result)
     end
 
     after_update do
-      row_morph
+      # row_morph
       # show_morph
     end
 

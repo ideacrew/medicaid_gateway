@@ -21,13 +21,14 @@ class ReportsController < ApplicationController
   def medicaid_application_check
     @start_on = start_on || session[:ma_start] || Date.today
     @end_on = end_on || session[:ma_end] || Date.today
-    @applications = applications
+    @applications = applications.order(updated_at: :desc)
+    @applications = @applications.where(application_identifier: params.fetch(:app)) if params.key?(:app)
   end
 
   def account_transfers
     @start_on = start_on || session[:atp_start] || Date.today
     @end_on = end_on || session[:atp_end] || Date.today
-    @transfers = transfers
+    @transfers = transfers.order(updated_at: :desc)
     @success_count = @transfers.select(&:successful?).count
     @fail_count = @transfers.count - @success_count
   end
@@ -35,7 +36,7 @@ class ReportsController < ApplicationController
   def account_transfers_to_enroll
     @start_on = start_on || session[:atp_start] || Date.today
     @end_on = end_on || session[:atp_end] || Date.today
-    @transfers = inbound_transfers
+    @transfers = inbound_transfers.order(updated_at: :desc)
     @success_count = @transfers.select(&:successful?).count
     @fail_count = @transfers.count - @success_count
   end
@@ -43,7 +44,7 @@ class ReportsController < ApplicationController
   def mec_checks
     @start_on = start_on || session[:mc_sent_start] || Date.today
     @end_on = session[:mc_sent_end] || Date.today
-    @checks = checks
+    @checks = checks.order(updated_at: :desc)
     @success_count = @checks.select(&:successful?).count
     @fail_count = @checks.count - @success_count
   end
