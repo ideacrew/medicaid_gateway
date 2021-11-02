@@ -1759,7 +1759,12 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
   end
 
   # BenchmarkPremium health_and_dental_slcsp_premiums
+  # Adult = IA & Child <19 = IA
   context 'cms me_test_scenarios test_nine state ME' do
+    before do
+      allow(Date).to receive(:today).and_return(Date.new(2021, 11, 2))
+    end
+
     include_context 'cms ME me_test_scenarios test_nine'
 
     before do
@@ -1841,7 +1846,12 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
   end
 
   # BenchmarkPremium health_and_ped_dental_slcsp_premiums
+  # Non-applicant adult = N/a & Child <19 = IA
   context 'cms me_test_scenarios test_ten state ME' do
+    before do
+      allow(Date).to receive(:today).and_return(Date.new(2021, 11, 2))
+    end
+
     include_context 'cms ME me_test_scenarios test_ten'
 
     before do
@@ -1886,6 +1896,91 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       it 'should return max_aptc' do
         expect(@thh.max_aptc).to eq(154.0)
         expect(@thh.max_aptc).not_to eq(124.0)
+      end
+    end
+
+    context 'for persistence' do
+      before do
+        medicaid_app.reload
+      end
+
+      it 'should match with hbx_id' do
+        expect(medicaid_app.application_identifier).to eq(application_entity.hbx_id)
+      end
+
+      it 'should match with application request payload' do
+        expect(medicaid_app.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should match with application response payload' do
+        expect(medicaid_app.application_response_payload).to eq(@application.to_json)
+      end
+
+      it 'should match with medicaid request payload' do
+        expect(medicaid_app.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+    end
+  end
+
+  # BenchmarkPremium health_and_ped_dental_slcsp_premiums
+  # Adult = M/C & Child <19 = IA
+  context 'cms me_test_scenarios test_eleven state ME' do
+    before do
+      allow(Date).to receive(:today).and_return(Date.new(2021, 11, 2))
+    end
+
+    include_context 'cms ME me_test_scenarios test_eleven'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @new_thhms = @application.tax_households.flat_map(&:tax_household_members)
+      @thh = @application.tax_households.first
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    it 'should return tax households with correct effective dates' do
+      expect(@thh.effective_on.year).to eq(@application.assistance_year)
+      expect(@thh.effective_on.year).to eq(Date.today.year.next)
+    end
+
+    context 'for tax_household_members' do
+      let(:first_ped) do
+        @new_thhms.detect do |thhm|
+          thhm.applicant_reference.person_hbx_id.to_s == '1006420'
+        end.product_eligibility_determination
+      end
+
+      let(:second_ped) do
+        @new_thhms.detect do |thhm|
+          thhm.applicant_reference.person_hbx_id.to_s == '1006422'
+        end.product_eligibility_determination
+      end
+
+      it 'should return is_magi_medicaid result for first applicant' do
+        expect(first_ped.is_magi_medicaid).to eq(true)
+      end
+
+      it 'should return is_ia_eligible, is_csr_eligible & csr result for second applicant' do
+        expect(second_ped.is_ia_eligible).to eq(true)
+        expect(second_ped.is_csr_eligible).to eq(true)
+        expect(second_ped.csr).to eq('94')
+      end
+
+      it 'should return max_aptc' do
+        expect(@thh.max_aptc).to eq(292.0)
+        expect(@thh.max_aptc).not_to eq(262.0)
       end
     end
 
