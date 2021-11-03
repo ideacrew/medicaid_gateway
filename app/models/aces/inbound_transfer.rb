@@ -34,7 +34,7 @@ module Aces
     end
 
     def from_cms_to_aces
-      Transfers::FromCms.new.call(self.payload)
+      Transfers::FromCms.new.call(self.payload, self.id)
     end
 
     def self.from_cms

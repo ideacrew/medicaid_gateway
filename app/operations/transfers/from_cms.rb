@@ -12,10 +12,10 @@ module Transfers
     # @param [String] Take in the raw payload and serialize and transform it, validate it against the schema and schematron,
     # then tranfer the result to ACES.
     # @return [Dry::Result]
-    def call(params)
+    def call(params, inbound_transfer_id = nil)
       transfer_id = yield record_transfer(params)
       transfer_response = yield initiate_transfer(params, transfer_id)
-      update_transfer(transfer_id, transfer_response)
+      update_transfer(transfer_id, transfer_response, inbound_transfer_id)
     end
 
     private
@@ -43,7 +43,7 @@ module Transfers
       Failure(error_result)
     end
 
-    def update_transfer(transfer_id, response)
+    def update_transfer(transfer_id, response, inbound_transfer_id)
       transfer = Aces::Transfer.find(transfer_id)
       response_json = response.to_json
       if @service == "aces"
@@ -55,7 +55,13 @@ module Transfers
       else
         transfer.update!(response_payload: response_json)
       end
+      update_inbound_transfer(inbound_transfer_id) if inbound_transfer_id.present?
       Success("Successfully transferred account from CMS")
+    end
+
+    def update_inbound_transfer(inbound_transfer_id)
+      transfer = Aces::InboundTransfer.find(inbound_transfer_id)
+      transfer.update!(result: "Relayed", payload: '', failure: nil)
     end
   end
 end
