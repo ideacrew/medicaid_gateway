@@ -6,11 +6,13 @@
 	<thead>
 		<tr>
 			<th>Application Identifer</th>
+			<th>Updated At</th>
 			<th>Medicaid Request Payload</th>
 			<th>Medicaid Response Payload</th>
 			<th>Application Request Payload</th>
             <th>Application Response Payload</th>
             <th>Other Computed Factors</th>
+            <th>Link</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -18,13 +20,14 @@
 			<tr>
 				<td>
 				  <%= application.application_identifier %>
-				  <%= link_to 'Details', application, class: 'btn btn-primary' %>
 				</td>
-				<td><div class="long-payload"><%= application.medicaid_request_payload %></div></td>
-				<td><div class="long-payload"><%= application.medicaid_response_payload %></div></td>
-				<td><div class="long-payload"><%= application.application_request_payload %></div></td>
-				<td><div class="long-payload"><%= application.application_response_payload %></div></td>
-				<td><div class="long-payload"><%= application.other_factors %></div></td>
+				<td><%= application.created_at %></td>
+				<td><%= "✓" if application.medicaid_request_payload %></td>
+				<td><%= "✓" if application.medicaid_response_payload %></td>
+				<td><%= "✓" if application.application_request_payload %></td>
+				<td><%= "✓" if application.application_response_payload %></td>
+				<td><%= application.other_factors == "No other factors" ? "No other factors" : "✓" %></td>
+				<td><%= link_to 'Details', application, class: 'btn btn-primary' %></td>
 			</tr>
 		<% end %>
 	</tbody>

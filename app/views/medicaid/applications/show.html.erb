@@ -15,20 +15,13 @@
 <%= raw(ap(@medicaid_response_payload)) %>
 <hr>
 <h2>APTC Households</h2>
-<% @application.aptc_households.each do |household| %>
-  <% household.attributes.each do |attr_name, attr_value| %>
-    <%= attr_name %>: <%= attr_value %>
-    <br />
-  <% end %>
+<% if @application.aptc_households %>
+  <%= @application.aptc_households %>
 <% end %>
 <hr>
 <h2>Other Factors</h2>
-<% if @application.other_factors == 'No other factors' %>
+<% if @application.other_factors %>
   <%= @application.other_factors %>
-<% else %>
-<% @other_factors.each do |factor| %>
-  <%= raw(ap(factor)) %>
-<% end %>
 <% end %>
 <hr>
 <%= link_to "Determinations Report", medicaid_application_check_reports_path, class: 'btn btn-primary' %>

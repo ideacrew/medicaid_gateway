@@ -21,7 +21,7 @@ namespace :transfer do
       body_node = document.at_xpath("//soap:Envelope/soap:Body/atp:AccountTransferRequest", { atp: atp, soap: soap })
       next unless body_node
       payload = body_node.canonicalize
-      transfer.update!(payload: payload, to_enroll: false, failure: nil, result: "Waiting to Send")
+      transfer.update!(payload: payload, to_enroll: false, failure: nil, result: "Waiting to Relay")
     end
   end
 end
