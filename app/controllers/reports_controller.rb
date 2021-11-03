@@ -23,31 +23,31 @@ class ReportsController < ApplicationController
     @start_on = start_on || session[:ma_start] || Date.today
     @end_on = end_on || session[:ma_end] || Date.today
     @applications = applications.order(updated_at: :desc).page params[:page]
-    @applications = @applications.where(application_identifier: params.fetch(:app)) if params.key?(:app)
+    @applications = applications.where(application_identifier: params.fetch(:app)) if params.key?(:app)
   end
 
   def account_transfers
     @start_on = start_on || session[:atp_start] || Date.today
     @end_on = end_on || session[:atp_end] || Date.today
     @transfers = transfers.order(updated_at: :desc).page params[:page]
-    @success_count = @transfers.select(&:successful?).count
-    @fail_count = @transfers.count - @success_count
+    @success_count = transfers.select(&:successful?).count
+    @fail_count = transfers.count - @success_count
   end
 
   def account_transfers_to_enroll
     @start_on = start_on || session[:atp_start] || Date.today
     @end_on = end_on || session[:atp_end] || Date.today
     @transfers = inbound_transfers.order(updated_at: :desc).page params[:page]
-    @success_count = @transfers.select(&:successful?).count
-    @fail_count = @transfers.count - @success_count
+    @success_count = inbound_transfers.select(&:successful?).count
+    @fail_count = inbound_transfers.count - @success_count
   end
 
   def mec_checks
     @start_on = start_on || session[:mc_sent_start] || Date.today
     @end_on = session[:mc_sent_end] || Date.today
     @checks = checks.order(updated_at: :desc).page params[:page]
-    @success_count = @checks.select(&:successful?).count
-    @fail_count = @checks.count - @success_count
+    @success_count = checks.select(&:successful?).count
+    @fail_count = checks.count - @success_count
   end
 
   def transfer_summary
