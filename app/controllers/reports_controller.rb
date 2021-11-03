@@ -22,8 +22,9 @@ class ReportsController < ApplicationController
   def medicaid_application_check
     @start_on = start_on || session[:ma_start] || Date.today
     @end_on = end_on || session[:ma_end] || Date.today
-    @applications = applications.order(updated_at: :desc).page params[:page]
-    @applications = applications.where(application_identifier: params.fetch(:app)) if params.key?(:app)
+    ordered_applications = applications.order(updated_at: :desc)
+    @applications = ordered_applications.page params[:page]
+    @applications = ordered_applications.where(application_identifier: params.fetch(:app)) if params.key?(:app)
   end
 
   def account_transfers
