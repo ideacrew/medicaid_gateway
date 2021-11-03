@@ -306,6 +306,13 @@ GEM
     iso_country_codes (0.7.8)
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
+    kaminari-actionview (1.2.1)
+      actionview
+      kaminari-core (= 1.2.1)
+    kaminari-core (1.2.1)
+    kaminari-mongoid (1.0.1)
+      kaminari-core (~> 1.0)
+      mongoid
     kgio (2.11.4)
     kostya-sigar (2.0.9)
     listen (3.7.0)
@@ -570,6 +577,8 @@ DEPENDENCIES
   faraday (~> 1.4.1)
   httparty (~> 0.16)
   jbuilder (~> 2.7)
+  kaminari-actionview
+  kaminari-mongoid
   listen (~> 3.3)
   mime-types
   mitc_service!

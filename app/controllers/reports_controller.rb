@@ -7,7 +7,9 @@ class ReportsController < ApplicationController
     @start_on = start_on || session[:start] || Date.today
     @end_on = end_on || session[:end] || Date.today
     events = applications + transfers + inbound_transfers + checks
-    @events = events.map(&:to_event).sort_by { |event| event[:created_at] }.reverse
+    events.map!(&:to_event).sort_by! { |event| event[:created_at] }.reverse!
+    @events_count = events.count
+    @events = Kaminari.paginate_array(events).page params[:page]
     @transfers_total = transfers.count
     @inbound_transfers_total = inbound_transfers.count
     @determinations_total = applications.count
@@ -21,32 +23,33 @@ class ReportsController < ApplicationController
   def medicaid_application_check
     @start_on = start_on || session[:ma_start] || Date.today
     @end_on = end_on || session[:ma_end] || Date.today
-    @applications = applications.order(updated_at: :desc)
-    @applications = @applications.where(application_identifier: params.fetch(:app)) if params.key?(:app)
+    ordered_applications = applications.order(updated_at: :desc)
+    @applications = ordered_applications.page params[:page]
+    @applications = ordered_applications.where(application_identifier: params.fetch(:app)) if params.key?(:app)
   end
 
   def account_transfers
     @start_on = start_on || session[:atp_start] || Date.today
     @end_on = end_on || session[:atp_end] || Date.today
-    @transfers = transfers.order(updated_at: :desc)
-    @success_count = @transfers.select(&:successful?).count
-    @fail_count = @transfers.count - @success_count
+    @transfers = transfers.order(updated_at: :desc).page params[:page]
+    @success_count = transfers.select(&:successful?).count
+    @fail_count = transfers.count - @success_count
   end
 
   def account_transfers_to_enroll
     @start_on = start_on || session[:atp_start] || Date.today
     @end_on = end_on || session[:atp_end] || Date.today
-    @transfers = inbound_transfers.order(updated_at: :desc)
-    @success_count = @transfers.select(&:successful?).count
-    @fail_count = @transfers.count - @success_count
+    @transfers = inbound_transfers.order(updated_at: :desc).page params[:page]
+    @success_count = inbound_transfers.select(&:successful?).count
+    @fail_count = inbound_transfers.count - @success_count
   end
 
   def mec_checks
     @start_on = start_on || session[:mc_sent_start] || Date.today
     @end_on = session[:mc_sent_end] || Date.today
-    @checks = checks.order(updated_at: :desc)
-    @success_count = @checks.select(&:successful?).count
-    @fail_count = @checks.count - @success_count
+    @checks = checks.order(updated_at: :desc).page params[:page]
+    @success_count = checks.select(&:successful?).count
+    @fail_count = checks.count - @success_count
   end
 
   def transfer_summary
