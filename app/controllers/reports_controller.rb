@@ -8,6 +8,7 @@ class ReportsController < ApplicationController
     @end_on = end_on || session[:end] || Date.today
     events = applications + transfers + inbound_transfers + checks
     events.map!(&:to_event).sort_by! { |event| event[:created_at] }.reverse!
+    @events_count = events.count
     @events = Kaminari.paginate_array(events).page params[:page]
     @transfers_total = transfers.count
     @inbound_transfers_total = inbound_transfers.count
