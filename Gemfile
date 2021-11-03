@@ -35,6 +35,9 @@ gem 'awesome_print'
 gem "stimulus_reflex", "~> 3.4"
 # for use accounts
 gem 'devise'
+# Pagination
+gem 'kaminari-mongoid'
+gem 'kaminari-actionview'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
