@@ -7,9 +7,7 @@
   <li class="list-inline-item">MEC Checks: <%= @mec_checks_total %></li>
 </ul>
 <%= render partial: "date_range", locals: {start_on: @start_on, end_on: @end_on, session_name: ""} %>
-<a href="/" class="btn btn-primary">
-	Refresh
-</a>
+
 <table class="table table-striped table-responsive table-overrides" data-controller="events">
 	<thead>
 		<th>Status</th>
@@ -17,7 +15,7 @@
 		<th>Updated At</th>
 		<th>Application Identifier</th>
 	</thead>
-	<tbody>
+	<tbody id="events-table-body">
 		<% @events.each do |event| %>
 			<%= render partial: "event_row", locals: { event: event } %>
 		<% end %>

@@ -16,7 +16,7 @@
 		<th>Origin</th>
 		<th></th>
 	</thead>
-	<tbody>
+	<tbody id="inbound-transfers-table-body">
 		<% @transfers.each do |transfer| %>
 			<%= render partial: "inbound_transfer_row", locals: { transfer: transfer } %>
 		<% end %>

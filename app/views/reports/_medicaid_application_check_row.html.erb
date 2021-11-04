@@ -1,12 +1,10 @@
 <tr id="medicaid-application-row-<%= application.id %>">
-    <td>
-        <%= application.application_identifier %>        
-        <%= link_to 'Details', application, class: 'btn btn-primary' %>
-    </td>
-    <td><%= application.updated_at %></td>
-    <td><div class="long-payload"><%= application.medicaid_request_payload %></div></td>
-    <td><div class="long-payload"><%= application.medicaid_response_payload %></div></td>
-    <td><div class="long-payload"><%= application.application_request_payload %></div></td>
-    <td><div class="long-payload"><%= application.application_response_payload %></div></td>
-    <td><div class="long-payload"><%= application.other_factors %></div></td>
+    <td><%= application.application_identifier %></td>
+    <td><%= application.created_at %></td>
+    <td><%= "✓" if application.medicaid_request_payload %></td>
+    <td><%= "✓" if application.medicaid_response_payload %></td>
+    <td><%= "✓" if application.application_request_payload %></td>
+    <td><%= "✓" if application.application_response_payload %></td>
+    <td><%= application.other_factors == "No other factors" ? "No other factors" : "✓" %></td>
+    <td><%= link_to 'Details', application, class: 'btn btn-primary' %></td>
 </tr>

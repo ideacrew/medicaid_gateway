@@ -13,7 +13,7 @@
 		<th>Result Details</th>
 		<th>Checked On</th>
 	</thead>
-	<tbody>
+	<tbody id="mec-checks-table-body">
 		<% @checks.each do |check| %>
 			<%= render partial: "mec_check_row", locals: { check: check } %>
 		<% end %>

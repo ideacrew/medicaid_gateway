@@ -62,6 +62,7 @@ module Medicaid
     end
 
     after_update do
+      event_row_morph
       row_morph
     end
 
@@ -85,6 +86,7 @@ module Medicaid
     end
 
     after_create do
+      event_row_morph
       create_morph
     end
 
@@ -95,11 +97,29 @@ module Medicaid
       )
 
       cable_ready["determinations"].prepend(
-        selector: 'table tbody',
+        selector: '#determinations-table-body',
         html: row_html
       )
 
-      cable_ready.broadcast("determinations")
+      cable_ready.broadcast
+    end
+
+    def event_row_morph
+      event_html = ApplicationController.render(
+        partial: "reports/event_row",
+        locals: { event: self.to_event }
+      )
+
+      cable_ready["events"].remove(
+        selector: "#event-transfer-row-#{id}",
+        html: event_html
+      )
+
+      cable_ready["events"].prepend(
+        selector: '#events-table-body',
+        html: event_html
+      )
+      cable_ready.broadcast
     end
   end
 end

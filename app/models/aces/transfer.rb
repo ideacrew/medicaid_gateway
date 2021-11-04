@@ -62,10 +62,12 @@ module Aces
     end
 
     after_create do
+      event_row_morph
       row_morph
     end
 
     after_update do
+      event_row_morph
       row_morph
     end
 
@@ -81,29 +83,29 @@ module Aces
       )
 
       cable_ready["transfers"].prepend(
-        selector: 'table tbody',
+        selector: '#transfers-sent-table-body',
         html: row_html
       )
 
-      cable_ready.broadcast("transfers")
+      cable_ready.broadcast
     end
 
-    # def event_row_morph
-    #   event_html = ApplicationController.render(
-    #     partial: "reports/event_row",
-    #     locals: { event: self.to_event }
-    #   )
+    def event_row_morph
+      event_html = ApplicationController.render(
+        partial: "reports/event_row",
+        locals: { event: self.to_event }
+      )
 
-    #   cable_ready["events"].remove(
-    #     selector: "#event-transfer-row-#{id}",
-    #     html: event_html
-    #   )
+      cable_ready["events"].remove(
+        selector: "#event-transfer-row-#{id}",
+        html: event_html
+      )
 
-    #   cable_ready["events"].prepend(
-    #     selector: 'table tbody',
-    #     html: event_html
-    #   )
-    #   cable_ready.broadcast("events")
-    # end
+      cable_ready["events"].prepend(
+        selector: '#events-table-body',
+        html: event_html
+      )
+      cable_ready.broadcast
+    end
   end
 end
