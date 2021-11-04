@@ -18,4 +18,8 @@ class ReportReflex < ApplicationReflex
   def resubmit_to_service
     Transfers::ToService.new.call(element.dataset[:payload], element.dataset[:id])
   end
+
+  def log_reflex
+    cable_ready.console_log(message: "Cable Ready and Stimulus Reflex working!").broadcast
+  end
 end
