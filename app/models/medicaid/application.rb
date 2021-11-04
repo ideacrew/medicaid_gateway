@@ -29,6 +29,16 @@ module Medicaid
     embeds_many :aptc_households, class_name: '::Medicaid::AptcHousehold'
     accepts_nested_attributes_for :aptc_households
 
+    def successful?
+      return true unless application_response_payload.blank?
+    end
+
+    def error_message
+      return unless medicaid_response_payload
+      json = medicaid_response_payload.to_json
+      json["Error"]
+    end
+
     def other_factors
       return 'No other factors' unless self.aptc_households.present?
       aptc_hh_keys = %w[total_household_count annual_tax_household_income csr_annual_income_limit
@@ -44,7 +54,7 @@ module Medicaid
       {
         type: "Determination",
         created_at: self.created_at,
-        success: true,
+        success: self.successful?,
         app_id: self.application_identifier
       }
     end

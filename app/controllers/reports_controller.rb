@@ -25,7 +25,8 @@ class ReportsController < ApplicationController
     @end_on = end_on || session[:ma_end] || Date.today
     ordered_applications = applications.order(updated_at: :desc)
     @applications = ordered_applications.page params[:page]
-    @applications = ordered_applications.where(application_identifier: params.fetch(:app)) if params.key?(:app)
+    @application_id = params.fetch(:app) if params.key?(:app)
+    @applications = ordered_applications.where(application_identifier: params.fetch(:app)).page params[:page] if params.key?(:app)
   end
 
   def account_transfers
