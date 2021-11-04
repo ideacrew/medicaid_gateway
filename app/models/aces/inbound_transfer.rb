@@ -59,11 +59,11 @@ module Aces
     end
 
     def resubmittable?
-      payload.present? && payload.length > 100 && ['Sent to Enroll', 'Failed'].include?(result)
+      payload.present? && payload.length > 100 && ['Sent to Enroll', 'Failed'].include?(result) && to_enroll
     end
 
     after_update do
-      # row_morph
+      row_morph
       # show_morph
     end
 
