@@ -109,13 +109,13 @@ module Aces
 
     def encode_response_codes_and_description(rmd, validation_result)
       if validation_result.success?
-        rmd[:hix].ResponseCode "HS000000"
+        rmd[:hix].ResponseCode "0000"
         rmd[:hix].ResponseDescriptionText "Success"
       elsif validation_result.failure.to_s == "validator_crashed"
-        rmd[:hix].ResponseCode "HE001111"
+        rmd[:hix].ResponseCode "1111"
         rmd[:hix].ResponseDescriptionText "Validator Crashed"
       else
-        rmd[:hix].ResponseCode "HE001111"
+        rmd[:hix].ResponseCode "1111"
         rmd[:hix].ResponseDescriptionText "One or More Rules Failed Validation"
         rmd[:hix].TDSResponseDescriptionText do |text_node|
           text_node.cdata encode_validation_failure(validation_result.failure)
