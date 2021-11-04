@@ -10,10 +10,7 @@ export default class extends Controller {
     const date = event.target.value,
           input_name = event.target.name,
           session_name = event.target.dataset.session
-    let url = new URL(window.location.href),
-        d = new Date(date)
-    d = d.toLocaleDateString("en-US")
-    url.searchParams.set(input_name, d)
-    window.location.replace(url)
+
+    this.stimulate('Report#change_date', session_name, date)
   }
 }
