@@ -99,7 +99,7 @@ module Medicaid
         html: row_html
       )
 
-      cable_ready.broadcast
+      cable_ready.broadcast("determinations")
     end
   end
 end

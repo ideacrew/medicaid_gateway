@@ -8,7 +8,7 @@ export default class extends Controller {
     StimulusReflex.register(this)
 
     consumer.subscriptions.create(
-      { channel: 'EventsController' }, {
+      { channel: 'EventsChannel' }, {
         received (data) {
           if (data.cableReady) CableReady.perform(data.operations)
         }

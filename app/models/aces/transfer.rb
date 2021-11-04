@@ -61,9 +61,12 @@ module Aces
       }
     end
 
+    after_create do
+      row_morph
+    end
+
     after_update do
       row_morph
-      event_row_morph
     end
 
     def row_morph
@@ -82,54 +85,25 @@ module Aces
         html: row_html
       )
 
-      cable_ready.broadcast
+      cable_ready.broadcast("transfers")
     end
 
-    def event_row_morph
-      event_html = ApplicationController.render(
-        partial: "reports/event_row",
-        locals: { event: self.to_event }
-      )
+    # def event_row_morph
+    #   event_html = ApplicationController.render(
+    #     partial: "reports/event_row",
+    #     locals: { event: self.to_event }
+    #   )
 
-      cable_ready["events"].remove(
-        selector: "#event-transfer-row-#{id}",
-        html: event_html
-      )
+    #   cable_ready["events"].remove(
+    #     selector: "#event-transfer-row-#{id}",
+    #     html: event_html
+    #   )
 
-      cable_ready["events"].prepend(
-        selector: 'table tbody',
-        html: event_html
-      )
-      p cable_ready
-      cable_ready.broadcast
-    end
-
-    after_create do
-      create_morph
-    end
-
-    def create_morph
-      row_html = ApplicationController.render(
-        partial: "reports/transfer_row",
-        locals: { transfer: self }
-      )
-
-      cable_ready["transfers"].prepend(
-        selector: 'table tbody',
-        html: row_html
-      )
-
-      event_html = ApplicationController.render(
-        partial: "reports/event_row",
-        locals: { event: self.to_event }
-      )
-
-      cable_ready["events"].prepend(
-        selector: 'table tbody',
-        html: event_html
-      )
-
-      cable_ready.broadcast
-    end
+    #   cable_ready["events"].prepend(
+    #     selector: 'table tbody',
+    #     html: event_html
+    #   )
+    #   cable_ready.broadcast("events")
+    # end
   end
 end

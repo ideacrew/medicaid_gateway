@@ -63,6 +63,10 @@ module Aces
       payload.present? && payload.length > 100 && ['Sent to Enroll', 'Failed'].include?(result) && to_enroll
     end
 
+    after_create do
+      row_morph
+    end
+
     after_update do
       row_morph
     end
@@ -83,25 +87,7 @@ module Aces
         html: row_html
       )
 
-      cable_ready.broadcast
-    end
-
-    after_create do
-      create_morph
-    end
-
-    def create_morph
-      row_html = ApplicationController.render(
-        partial: "reports/inbound_transfer_row",
-        locals: { transfer: self }
-      )
-
-      cable_ready["inbound_transfers"].prepend(
-        selector: 'table tbody',
-        html: row_html
-      )
-
-      cable_ready.broadcast
+      cable_ready.broadcast("inbound_transfers")
     end
   end
 end

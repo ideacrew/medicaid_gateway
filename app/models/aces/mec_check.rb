@@ -39,6 +39,10 @@ module Aces
       }
     end
 
+    after_create do
+      row_morph
+    end
+
     after_update do
       row_morph
     end
@@ -59,7 +63,7 @@ module Aces
         html: row_html
       )
 
-      cable_ready.broadcast
+      cable_ready.broadcast("mec_checks")
     end
   end
 end
