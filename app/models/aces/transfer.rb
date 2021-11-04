@@ -46,7 +46,7 @@ module Aces
     end
 
     def resubmittable?
-      self.callback_status != 'Success' && outbound_payload.present?
+      self.callback_status != "Success" && outbound_payload.present?
     end
 
     def to_event
