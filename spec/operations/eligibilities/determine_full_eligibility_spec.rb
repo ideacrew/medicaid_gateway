@@ -16,7 +16,6 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     # Stub cable ready callbacks to prevent view rendering
     allow_any_instance_of(Medicaid::Application).to receive(:row_morph).and_return('')
     allow_any_instance_of(Medicaid::Application).to receive(:event_row_morph).and_return('')
-    allow_any_instance_of(Medicaid::Application).to receive(:create_morph).and_return('')
   end
 
   it 'should be a container-ready operation' do

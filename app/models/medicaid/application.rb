@@ -61,6 +61,11 @@ module Medicaid
       }
     end
 
+    after_create do
+      event_row_morph
+      row_morph
+    end
+
     after_update do
       event_row_morph
       row_morph
@@ -79,25 +84,6 @@ module Medicaid
 
       cable_ready["determinations"].prepend(
         selector: 'table tbody',
-        html: row_html
-      )
-
-      cable_ready.broadcast
-    end
-
-    after_create do
-      event_row_morph
-      create_morph
-    end
-
-    def create_morph
-      row_html = ApplicationController.render(
-        partial: "reports/medicaid_application_check_row",
-        locals: { application: self }
-      )
-
-      cable_ready["determinations"].prepend(
-        selector: '#determinations-table-body',
         html: row_html
       )
 
