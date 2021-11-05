@@ -3,6 +3,7 @@
 require 'dry/monads'
 require 'dry/monads/do'
 
+# This operation is private to ::Eligibilities::AptcCsr::DetermineEligibility
 module Eligibilities
   module AptcCsr
     # This Operation is to compute the APTC and CSR values for a given TaxHousehold
@@ -24,34 +25,7 @@ module Eligibilities
       private
 
       def determine_slcsp_premiums(aptc_household)
-        aptc_members = aptc_household[:members].select { |mbr| mbr[:aptc_eligible] }
-        return Success(aptc_household) if aptc_members.blank?
-
-        primary_member_identifier = @application.primary_applicant.person_hbx_id
-        member_ids = aptc_members.inject([]) do |ids, mem_hash|
-          ids << mem_hash[:member_identifier]
-        end
-
-        # TODO: Resource Registry Configuration to pick based on benchmark_product_model
-        slcsp_member_premiums =
-          if member_ids.include?(primary_member_identifier)
-            @application.primary_applicant.benchmark_premium.health_only_slcsp_premiums
-          else
-            sorted_members = aptc_members.sort_by { |mbr| mbr[:age_of_applicant] }
-            younger_member = sorted_members.first
-            older_member = sorted_members.last
-            member_identifier = (older_member[:age_of_applicant] > 20 ? older_member : younger_member)[:member_identifier]
-            applicant_by_reference(member_identifier).benchmark_premium.health_only_slcsp_premiums
-          end
-
-        aptc_household[:members].each do |member|
-          next member unless member[:aptc_eligible]
-          member[:benchmark_plan_monthly_premium_amount] = slcsp_member_premiums.detect do |m_premium|
-            m_premium.member_identifier == member[:member_identifier]
-          end.monthly_premium
-        end
-
-        Success(aptc_household)
+        ::Eligibilities::AptcCsr::FindSlcspPremiums.new.call({ aptc_household: aptc_household, application: @application })
       end
 
       def find_affordability_threshold(params)
