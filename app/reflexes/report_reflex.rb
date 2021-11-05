@@ -34,12 +34,13 @@ class ReportReflex < ApplicationReflex
     morph "#fail-count", "#{failure.to_i + 1} Failures" if result == "Failure"
   end
 
+  # rubocop:disable Metrics/ParameterLists
   def increment_event_log(event, total, transfers, inbound_transfers, determinations, mec_checks)
     event = event.split("-")[1]
-    transfers = transfers.split(" ").last.to_i
-    inbound_transfers = inbound_transfers.split(" ").last.to_i
-    determinations = determinations.split(" ").last.to_i
-    mec_checks = mec_checks.split(" ").last.to_i
+    transfers = transfers.split.last.to_i
+    inbound_transfers = inbound_transfers.last.to_i
+    determinations = determinations.last.to_i
+    mec_checks = mec_checks.last.to_i
 
     case event
     when "transfer"
@@ -54,4 +55,5 @@ class ReportReflex < ApplicationReflex
 
     morph "#total-count", "#{total.to_i + 1} events during this range"
   end
+  # rubocop:enable Metrics/ParameterLists
 end
