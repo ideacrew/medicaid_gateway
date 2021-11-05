@@ -9,10 +9,10 @@ export default class extends Controller {
     const channel = this.data.get("channel")
     consumer.subscriptions.create(
       { channel: channel }, {
-        received (data) {
-          if (data.cableReady) CableReady.perform(data.operations)
-        }
+      received(data) {
+        if (data.cableReady) CableReady.perform(data.operations)
       }
+    }
     )
   }
 }

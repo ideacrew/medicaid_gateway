@@ -19,4 +19,10 @@ class ReportReflex < ApplicationReflex
   def resubmit_to_service
     Transfers::ToService.new.call(element.dataset[:payload], element.dataset[:id])
   end
+
+  def increment(total, success, failure, result)
+    morph "#total-count", "#{total.to_i + 1} checks during this range"
+    morph "#success-count", "#{success.to_i + 1} Successful" if result == "Success"
+    morph "#fail-count", "#{failure.to_i + 1} Failures" if result == "Failure"
+  end
 end
