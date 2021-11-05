@@ -1,14 +1,9 @@
 <h1>Mec Checks</h1>
-<div data-controller="report" 
-	 data-action="cable-ready:after-prepend@document->report#increment" 
-	 data-report-total="<%= @checks.count %>"
-	 data-report-success="<%= @success_count %>"
-	 data-report-fail="<%= @fail_count %>"
-	>
+<div data-controller="report" data-action="cable-ready:after-prepend@document->report#increment_counts">
 	<h2 id="total-count" class="text-muted mb-1"><%= @checks.count %> checks during this range</h2>
 	<ul class="list-inline h4 mb-3 text-muted">
-	<li id="success-count" class="list-inline-item text-success"><%= @success_count %> Successful</li>
-	<li id="fail-count" class="list-inline-item text-danger"><%= @fail_count %> Failures</li>
+		<li id="success-count" class="list-inline-item text-success"><%= @success_count %> Successful</li>
+		<li id="fail-count" class="list-inline-item text-danger"><%= @fail_count %> Failures</li>
 	</ul>
 </div>
 <%= render partial: "date_range", locals: {start_on: @start_on, end_on: @end_on, session_name: "mc_sent_"} %>

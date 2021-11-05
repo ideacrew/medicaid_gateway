@@ -20,8 +20,16 @@ class ReportReflex < ApplicationReflex
     Transfers::ToService.new.call(element.dataset[:payload], element.dataset[:id])
   end
 
-  def increment(total, success, failure, result)
-    morph "#total-count", "#{total.to_i + 1} checks during this range"
+  COUNT_MESSAGES = {
+    account_transfers: "transfers during this range",
+    account_transfers_to_enroll: "transfers during this range",
+    mec_checks: "checks during this range",
+    medicaid_application_check: "determinations during this range"
+  }.freeze
+
+  def increment_counts(report, total, success, failure, result)
+    count_text = COUNT_MESSAGES[report.to_sym]
+    morph "#total-count", "#{total.to_i + 1} #{count_text}"
     morph "#success-count", "#{success.to_i + 1} Successful" if result == "Success"
     morph "#fail-count", "#{failure.to_i + 1} Failures" if result == "Failure"
   end

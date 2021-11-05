@@ -14,12 +14,21 @@ export default class extends Controller {
     this.stimulate('Report#change_date', session_name, date)
   }
 
-  increment() {
-    const total = this.data.get("total")
-    const success = this.data.get("success")
-    const fail = this.data.get("fail")
+  increment_counts() {
+    const report = window.location.pathname.split('/').pop()
+    const total = document.querySelector("#total-count").textContent
     const result = document.querySelector("tbody tr td").textContent
 
-    this.stimulate('Report#increment', total, success, fail, result)
+    let success = document.querySelector("#success-count")
+    if (success) {
+      success = success.textContent
+    }
+
+    let fail = document.querySelector("#fail-count")
+    if (fail) {
+      fail = fail.textContent
+    }
+
+    this.stimulate('Report#increment_counts', report, total, success, fail, result)
   }
 }
