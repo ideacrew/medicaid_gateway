@@ -13,14 +13,11 @@ require 'aca_entities/operations/magi_medicaid/create_federal_poverty_level'
 RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_each do
   include Dry::Monads[:result, :do]
 
-  before :suite do
-    # Disable cable ready callbacks
-    Medicaid::Application.skip_callback(:create, :update)
-  end
-
-  after :suite do
-    # Re-enable cable ready callbacks
-    Medicaid::Application.set_callback(:create, :update)
+  before :each do
+    # Stub cable ready callbacks to prevent view rendering
+    allow_any_instance_of(Medicaid::Application).to receive(:row_morph).and_return('')
+    allow_any_instance_of(Medicaid::Application).to receive(:event_row_morph).and_return('')
+    allow_any_instance_of(Medicaid::Application).to receive(:create_morph).and_return('')
   end
 
   let(:event) { Success(double) }

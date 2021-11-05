@@ -11,6 +11,14 @@ require 'aca_entities/magi_medicaid/federal_poverty_level'
 require 'aca_entities/operations/magi_medicaid/create_federal_poverty_level'
 
 RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each do
+
+  before :each do
+    # Stub cable ready callbacks to prevent view rendering
+    allow_any_instance_of(Medicaid::Application).to receive(:row_morph).and_return('')
+    allow_any_instance_of(Medicaid::Application).to receive(:event_row_morph).and_return('')
+    allow_any_instance_of(Medicaid::Application).to receive(:create_morph).and_return('')
+  end
+
   it 'should be a container-ready operation' do
     expect(subject.respond_to?(:call)).to be_truthy
   end
