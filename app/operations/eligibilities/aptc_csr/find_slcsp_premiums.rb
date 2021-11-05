@@ -74,11 +74,7 @@ module Eligibilities
             end
           end
         else
-          aptc_members.inject([]) do |member_premiums, aptc_member|
-            member_identifier = aptc_member[:member_identifier]
-            member_premiums << applicant_by_reference(member_identifier).benchmark_premium.health_only_slcsp_premiums
-            member_premiums.flatten.uniq
-          end
+          fetch_default_slcsp_premiums(aptc_members)
         end
       end
 
