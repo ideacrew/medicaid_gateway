@@ -31,4 +31,15 @@ export default class extends Controller {
 
     this.stimulate('Report#increment_counts', report, total, success, fail, result)
   }
+
+  increment_event_log(){
+    const event = document.querySelector("tbody tr").attributes.getNamedItem("id").value
+    const total = document.querySelector("#total-count").textContent
+    const transfers = document.querySelector("#transfers-count").textContent
+    const inbound_transfers = document.querySelector("#inbound-transfers-count").textContent
+    const determinations = document.querySelector("#determinations-count").textContent
+    const mec_checks = document.querySelector("#mec-checks-count").textContent
+
+    this.stimulate('Report#increment_event_log', event, total, transfers, inbound_transfers, determinations, mec_checks)
+  }
 }

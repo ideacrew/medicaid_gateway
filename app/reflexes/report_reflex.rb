@@ -33,4 +33,25 @@ class ReportReflex < ApplicationReflex
     morph "#success-count", "#{success.to_i + 1} Successful" if result == "Success"
     morph "#fail-count", "#{failure.to_i + 1} Failures" if result == "Failure"
   end
+
+  def increment_event_log(event, total, transfers, inbound_transfers, determinations, mec_checks)
+    event = event.split("-")[1]
+    transfers = transfers.split(" ").last.to_i
+    inbound_transfers = inbound_transfers.split(" ").last.to_i
+    determinations = determinations.split(" ").last.to_i
+    mec_checks = mec_checks.split(" ").last.to_i
+
+    case event
+    when "transfer"
+      morph "#transfers-count", "Transfers Out: #{transfers.to_i + 1}"
+    when "inbound"
+      morph "#inbound-transfers-count", "Transfers In: #{inbound_transfers.to_i + 1}"
+    when "determination"
+      morph "#determinations-count", "Determinations: #{determinations.to_i + 1}"
+    when "check"
+      morph "#mec-checks-count", "MEC Checks: #{mec_checks.to_i + 1}"
+    end
+
+    morph "#total-count", "#{total.to_i + 1} events during this range"
+  end
 end
