@@ -13,6 +13,16 @@ require 'aca_entities/operations/magi_medicaid/create_federal_poverty_level'
 RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_each do
   include Dry::Monads[:result, :do]
 
+  before :suite do
+    # Disable cable ready callbacks
+    Medicaid::Application.skip_callback(:create, :update)
+  end
+
+  after :suite do
+    # Re-enable cable ready callbacks
+    Medicaid::Application.set_callback(:create, :update)
+  end
+
   let(:event) { Success(double) }
   let(:obj)  {MitcService::CallMagiInTheCloud.new}
 
