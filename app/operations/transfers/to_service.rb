@@ -28,7 +28,7 @@ module Transfers
       @service = MedicaidGatewayRegistry[:transfer_service].item
       if transfer_id.blank?
         primary = payload["family"]["family_members"].detect { |fm| fm["is_primary_applicant"] == true }
-        primary_id = primary["hbx_id"]
+        primary_id = primary["hbx_id"] if primary
         transfer = Transfers::Create.new.call({
                                                 service: @service,
                                                 application_identifier: payload["family"]["magi_medicaid_applications"]["hbx_id"] || "not found",
