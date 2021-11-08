@@ -27,7 +27,7 @@ module Transfers
       payload = JSON.parse(params)
       @service = MedicaidGatewayRegistry[:transfer_service].item
       if transfer_id.blank?
-        primary = payload["family"]["family_members"].detect{|fm| fm["is_primary_applicant"] == true}
+        primary = payload["family"]["family_members"].detect { |fm| fm["is_primary_applicant"] == true }
         primary_id = primary["hbx_id"]
         transfer = Transfers::Create.new.call({
                                                 service: @service,
