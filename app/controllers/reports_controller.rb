@@ -23,8 +23,12 @@ class ReportsController < ApplicationController
   def medicaid_application_check
     @start_on = start_on || session_date(session[:ma_start]) || Date.today
     @end_on = end_on || session_date(session[:ma_end]) || Date.today
+
+    @application_ids = Medicaid::Application.all.pluck(:application_identifier).uniq.sort
     @application_id = params.fetch(:app) if params.key?(:app)
-    @applications = if @application_id
+    @app = application_id || session[:app]
+    @applications = ordered_applications.where(application_identifier: @app).page params[:page] if @app
+    @applications = if @app
                       applications.where(application_identifier: @application_id).page params[:page]
                     else
                       applications.order(updated_at: :desc).page params[:page]

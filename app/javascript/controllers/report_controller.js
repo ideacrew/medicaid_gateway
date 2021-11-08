@@ -23,4 +23,15 @@ export default class extends Controller {
 
     this.stimulate('Report#change_dates', sessionName, startDate, endDate)
   }
+
+  app_search(event) {
+    const value = event.target.value
+    this.stimulate('Report#app_search', value)
+  }
+
+  clear_search(event) {
+    var input = document.getElementById("app");
+    input.value = ""
+    this.stimulate('Report#app_search', "")
+  }
 }

@@ -10,6 +10,13 @@ class ReportReflex < ApplicationReflex
   def change_dates(session_name, start_date, end_date)
     session["#{session_name}start"] = Date.parse(start_date) ? Date.strptime(start_date, "%Y-%m-%d") : Date.strptime(start_date.to_date, "%Y-%m-%d")
     session["#{session_name}end"] = Date.parse(end_date) ? Date.strptime(end_date, "%Y-%m-%d") : Date.strptime(end_date.to_date, "%Y-%m-%d")
+
+  def app_search(value)
+    if value == ""
+      session["app"] = nil
+    else
+      session["app"] = value
+    end
   end
 
   def check_payload
