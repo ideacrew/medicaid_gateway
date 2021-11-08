@@ -11,9 +11,8 @@ class TransferReport
   end
 
   def self.run_report(start_on, end_on)
-    timestamp = Time.zone.now.to_s
+    timestamp = Time.zone.now.strftime("%Y%m%d_%H%M%S")
     range = start_on.beginning_of_day..end_on.end_of_day
-
     report_name = "transfer_report_#{timestamp}.csv"
     FileUtils.touch(report_name)
     CSV.open(report_name, "w") do |csv|
