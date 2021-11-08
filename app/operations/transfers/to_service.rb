@@ -27,10 +27,12 @@ module Transfers
       payload = JSON.parse(params)
       @service = MedicaidGatewayRegistry[:transfer_service].item
       if transfer_id.blank?
+        primary = payload["family"]["family_members"].detect{|fm| fm["is_primary_applicant"] == true}
+        primary_id = primary["hbx_id"]
         transfer = Transfers::Create.new.call({
                                                 service: @service,
                                                 application_identifier: payload["family"]["magi_medicaid_applications"]["hbx_id"] || "not found",
-                                                family_identifier: payload["family"]["hbx_id"] || "family_id not found",
+                                                family_identifier: primary_id || "family_id not found",
                                                 outbound_payload: params
                                               })
         transfer.success? ? Success(transfer.value!.id) : Failure("Failed to record transfer: #{transfer.failure}")
