@@ -12,11 +12,7 @@ class ReportReflex < ApplicationReflex
     session["#{session_name}end"] = Date.parse(end_date) ? Date.strptime(end_date, "%Y-%m-%d") : Date.strptime(end_date.to_date, "%Y-%m-%d")
 
   def app_search(value)
-    if value == ""
-      session["app"] = nil
-    else
-      session["app"] = value
-    end
+    session["app"] = value == "" ? nil : value
   end
 
   def check_payload
