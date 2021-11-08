@@ -10,8 +10,7 @@ module Aces
     # For example: EA's FinancialAssistance::Application's hbx_id
     field :application_identifier, type: String
 
-    # Unique Identifier(hbx_id) of the family.
-    # For example: EA's FinancialAssistance::Family's hbx_id
+    # Unique Identifier(hbx_id) of the primary family member
     field :family_identifier, type: String
 
     # Indication of the service the account was transferred to ex. curam or aces
