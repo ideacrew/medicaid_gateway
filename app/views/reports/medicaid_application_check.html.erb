@@ -1,20 +1,21 @@
 <h1>Determinations</h1>
-<label for="app">Application Search</label>
-<div class="input-group mb-3">
-  <input name="app" id="app" data-controller="report" data-action="report#app_search" value="<%= @app %>" list="apps">
-  <div class="input-group-append">
-    <button type="button" class="btn btn-warning" data-controller="report" data-action="report#clear_search">Clear Search</button>
-  </div>
-</div>
-<datalist id="apps">
-  <option value=""></option>
-  <% @application_ids.each do |id| %>
-    <option value="<%= id %>"><%= id %></option>
-  <% end %>
-</datalist>
-
 <h2 class="text-muted mb-3"><%= @applications.count %> determinations during this range</h2>
-<%= render partial: "date_range", locals: {start_on: @start_on, end_on: @end_on, session_name: 'ma_'} %>
+<div class="d-flex justify-content-between">
+	<div class="col">
+		<%= render partial: "date_range", locals: {start_on: @start_on, end_on: @end_on, session_name: 'ma_'} %>
+	</div>
+	<div class="col">
+		<div class="input-group input-group-sm">
+		  <input name="app" id="app" class="form-control" data-controller="report" data-action="report#app_search" value="<%= @app %>" list="apps" placeholder="Search by Application">
+		  
+		  <div class="input-group-append">
+		    <button type="button" class="btn btn-primary <%= 'btn-light text-light' unless @app %>" data-controller="report" data-action="report#clear_search">X</button>
+		  </div>
+
+		</div>
+	</div>
+	
+</div>
 <table class="table table-striped table-responsive mt-3 table-overrides">
 	<thead>
 		<tr>
@@ -30,5 +31,10 @@
 		<% end %>
 	</tbody>
 </table>
-
+<datalist id="apps">
+		  <option value=""></option>
+		  <% @application_ids.each do |id| %>
+		    <option value="<%= id %>"><%= id %></option>
+		  <% end %>
+		</datalist>
 <%= paginate @applications %>
