@@ -11,7 +11,7 @@ class TransferSentReport
   end
 
   def self.run_report(start_on, end_on)
-    timestamp = Time.zone.now.to_s
+    timestamp = Time.zone.now.strftime("%Y%m%d_%H%M%S")
     range = start_on.beginning_of_day..end_on.end_of_day
     at_sent = Aces::Transfer.where(created_at: range).or(updated_at: range)
 
