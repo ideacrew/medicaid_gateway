@@ -12,6 +12,16 @@ module Aces
       "xmlns" => "http://at.dsh.cms.gov/extension/1.0"
     }.freeze
 
+    CMS_RESPONSES = {
+      failure: "1111",
+      success: "0000"
+    }.freeze
+
+    SERVICE_RESPONSES = {
+      failure: "HE001111",
+      success: "HS000000"
+    }.freeze
+
     # @param [IO] body the body of the request
     # @return [Dry::Result]
     def call(body, transfer_id)
@@ -108,14 +118,15 @@ module Aces
     end
 
     def encode_response_codes_and_description(rmd, validation_result)
+      responses = @to_enroll ? SERVICE_RESPONSES : CMS_RESPONSES
       if validation_result.success?
-        rmd[:hix].ResponseCode "0000"
+        rmd[:hix].ResponseCode responses[:success]
         rmd[:hix].ResponseDescriptionText "Success"
       elsif validation_result.failure.to_s == "validator_crashed"
-        rmd[:hix].ResponseCode "1111"
+        rmd[:hix].ResponseCode responses[:failure]
         rmd[:hix].ResponseDescriptionText "Validator Crashed"
       else
-        rmd[:hix].ResponseCode "1111"
+        rmd[:hix].ResponseCode responses[:failure]
         rmd[:hix].ResponseDescriptionText "One or More Rules Failed Validation"
         rmd[:hix].TDSResponseDescriptionText do |text_node|
           text_node.cdata encode_validation_failure(validation_result.failure)
