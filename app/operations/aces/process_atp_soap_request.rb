@@ -13,13 +13,13 @@ module Aces
     }.freeze
 
     CMS_RESPONSES = {
-      "failure": "1111",
-      "success": "0000"
+      failure: "1111",
+      success: "0000"
     }.freeze
 
     SERVICE_RESPONSES = {
-      "failure": "HE001111",
-      "success": "HS000000"
+      failure: "HE001111",
+      success: "HS000000"
     }.freeze
 
     # @param [IO] body the body of the request
