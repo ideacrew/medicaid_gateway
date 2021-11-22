@@ -8,7 +8,11 @@ namespace :transfer do
     end_on = ENV['end_on'].present? ? Date.strptime(ENV['end_on'].to_s, "%m/%d/%Y") : Date.today
     range = start_on.beginning_of_day..end_on.end_of_day
     transfers = Aces::InboundTransfer.where(created_at: range).select(&:from_cms_to_aces?)
-    transfers.map(&:from_cms_to_aces)
+    transfers.map do |transfer|
+      result = transfer.from_cms_to_aces
+      transfer.update!(failure: result.failure) if result.failure?
+      result
+    end
   end
   task :initial_cms_payloads => :environment do
     # for initial payloads pre-fix: RAILS_ENV=production bundle exec rake transfer:initial_cms_payloads
