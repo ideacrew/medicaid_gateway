@@ -9,6 +9,7 @@ require 'csv'
 # transfers: RAILS_ENV=production bundle exec rake reports:account_transfer start_on="06/21/2021" end_on='06/22/202'
 # sent transfer details: RAILS_ENV=production bundle exec rake reports:account_transfer_sent start_on="06/21/2021" end_on='06/22/202'
 # received transfer details: RAILS_ENV=production bundle exec rake reports:account_transfer_received start_on="06/21/2021" end_on='06/22/202'
+# determination failures: RAILS_ENV=production bundle exec rake reports:determination_failures start_on="06/21/2021" end_on='06/22/202'
 namespace :reports do
   task :medicaid_application => :environment do
     MedicaidApplicationReport.run
@@ -21,5 +22,8 @@ namespace :reports do
   end
   task :account_transfer_received => :environment do
     TransferReceivedReport.run
+  end
+  task :determination_failures => :environment do
+    DeterminationFailuresReport.run
   end
 end
