@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/ideacrew/aca_entities.git
-  revision: 4c77aa9fb24bfe45ccc662ffdfeb7d3f171a8637
-  branch: trunk
+  revision: 28c822a15abb30aaad4dd9aee9ea365ede4ce248
+  branch: 180268623_medicaid_household_income
   specs:
     aca_entities (0.9.0)
       deep_merge
