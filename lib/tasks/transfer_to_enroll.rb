@@ -1,0 +1,16 @@
+# frozen_string_literal: true
+
+# RAILS_ENV=production bundle exec rake send:to_enroll start_on="06/21/2021" end_on='06/22/202'
+namespace :send do
+  task :to_enroll => :environment do
+    # get all inbound transfers from the given time range that are from cms and have a payload then transfer them to aces
+    start_on = ENV['start_on'].present? ? Date.strptime(ENV['start_on'].to_s, "%m/%d/%Y") : Date.today
+    end_on = ENV['end_on'].present? ? Date.strptime(ENV['end_on'].to_s, "%m/%d/%Y") : Date.today
+    range = start_on.beginning_of_day..end_on.end_of_day
+    transfers = Aces::InboundTransfer.where(created_at: range).select(&:waiting_to_transfer?)
+    external_ids = transfers.map(&:external_id).uniq
+    external_ids.map do |external_id|
+      Transfers::ToEnrollBatch.new.call(external_id)
+    end
+  end
+end

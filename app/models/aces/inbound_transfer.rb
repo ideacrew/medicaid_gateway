@@ -33,6 +33,11 @@ module Aces
       return true unless to_enroll || payload.blank?
     end
 
+    def from_aces_to_enroll?
+      return false unless waiting_to_transfer
+      # return true unless from_cms || payload.blank?
+    end
+
     def from_cms_to_aces
       Transfers::FromCms.new.call(self.payload, self.id)
     end
@@ -41,8 +46,16 @@ module Aces
       where(to_enroll: false)
     end
 
+    def self.from_aces
+      where(to_enroll: true)
+    end
+
     def successful?
       self.failure.nil?
+    end
+
+    def waiting_to_transfer?
+      result == "Waiting to Transfer"
     end
 
     def to_event
@@ -59,7 +72,7 @@ module Aces
     end
 
     def resubmittable?
-      payload.present? && payload.length > 100 && ['Sent to Enroll', 'Failed'].include?(result) && to_enroll
+      payload.present? && payload.length > 100 && ['Sent to Enroll', 'Failed', 'Waiting to Transfer'].include?(result) && to_enroll
     end
 
     after_update do

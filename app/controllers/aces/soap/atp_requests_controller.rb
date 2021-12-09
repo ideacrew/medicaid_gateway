@@ -25,7 +25,7 @@ module Aces
       def update_transfer(id, request)
         transfer = Aces::InboundTransfer.find(id)
         result_text = if request.success?
-                        transfer.to_enroll ? "Sent to Enroll" : "Waiting to Relay"
+                        transfer.to_enroll ? "Waiting to Transfer" : "Waiting to Relay"
                       else
                         "Failed"
                       end
