@@ -5,11 +5,11 @@ require "#{Rails.root}/app/reports/transfer_report"
 
 require 'csv'
 
-# medicaid: RAILS_ENV=production bundle exec rake reports:medicaid_application start_on="06/21/2021" end_on='06/22/202'
-# transfers: RAILS_ENV=production bundle exec rake reports:account_transfer start_on="06/21/2021" end_on='06/22/202'
-# sent transfer details: RAILS_ENV=production bundle exec rake reports:account_transfer_sent start_on="06/21/2021" end_on='06/22/202'
-# received transfer details: RAILS_ENV=production bundle exec rake reports:account_transfer_received start_on="06/21/2021" end_on='06/22/202'
-# determination failures: RAILS_ENV=production bundle exec rake reports:determination_failures start_on="06/21/2021" end_on='06/22/202'
+# medicaid: RAILS_ENV=production bundle exec rake reports:medicaid_application start_on="06/21/2021" end_on='06/22/2021'
+# transfers: RAILS_ENV=production bundle exec rake reports:account_transfer start_on="06/21/2021" end_on='06/22/2021'
+# sent transfer details: RAILS_ENV=production bundle exec rake reports:account_transfer_sent start_on="06/21/2021" end_on='06/22/2021'
+# received transfer details: RAILS_ENV=production bundle exec rake reports:account_transfer_received start_on="06/21/2021" end_on='06/22/2021'
+# determination failures: RAILS_ENV=production bundle exec rake reports:determination_failures start_on="06/21/2021" end_on='06/22/2021'
 namespace :reports do
   task :medicaid_application => :environment do
     MedicaidApplicationReport.run

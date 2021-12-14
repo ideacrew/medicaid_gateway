@@ -14,7 +14,7 @@ module Transfers
       transfers = yield get_transfers(transfer_id)
       payload = yield get_payload(transfers)
       transformed_params = yield transform_params(payload, transfers)
-      initiate_transfer(transformed_params)
+      initiate_transfer(transformed_params, transfers)
     end
 
     private
@@ -68,9 +68,9 @@ module Transfers
       Failure("transform_params error #{e}")
     end
 
-    def initiate_transfer(payload)
+    def initiate_transfer(payload, transfers)
       transfer = Transfers::InitiateTransferToEnroll.new.call(payload)
-      transfer.success? ? Success("Transferred accounts to Enroll") : Failure(transfer)
+      transfer.success? ? Success(transfers) : Failure(transfer)
     end
   end
 end
