@@ -19,7 +19,7 @@ module Transfers
     def get_transfers(params)
       transfer_id = params["transfer_id"]
       transfer = Aces::InboundTransfer.where(external_id: transfer_id)
-      transfer ? Success(transfer) : Failure("Failed to find inbound transfer record for: #{transfer_id}")
+      transfer&.any? ? Success(transfer) : Failure("Failed to find inbound transfer record for: #{transfer_id}")
     end
 
     def update_transfer(params, transfers)

@@ -15,19 +15,20 @@ module Transfers
       payload = yield get_payload(transfers)
       transformed_params = yield transform_params(payload, transfers)
       initiate_transfer(transformed_params, transfers)
+      Success(transfers)
     end
 
     private
 
     def get_transfers(transfer_id)
-      inbound_transfers = Aces::InboundTransfer.all.select{|t| t.external_id == transfer_id }
+      inbound_transfers = Aces::InboundTransfer.where(external_id: transfer_id)
       Success(inbound_transfers)
     rescue StandardError => e
       Failure("get transfers error: #{e}")
     end
 
     def get_payload(inbound_transfers)
-      payloads = inbound_transfers.map {|xfer| xfer.payload }
+      payloads = inbound_transfers.map(&:payload)
       return unless payloads
       transfers = []
       payloads.each do |payload|
@@ -36,7 +37,7 @@ module Transfers
         transfers << (transfer.success? ? transfer.value!.to_hash(identifier: true) : transfer)
       end
 
-      applicants = transfers.map{|t| t[:insurance_application][:insurance_applicants]}
+      applicants = transfers.map { |t| t[:insurance_application][:insurance_applicants] }
       return Success(transfers.first) unless applicants
       applicants.each do |applicant|
         transfers.first[:insurance_application][:insurance_applicants][applicant.keys.first] = applicant[applicant.keys.first]
@@ -56,13 +57,13 @@ module Transfers
 
     def transform_params(result, transfers)
       transformed = ::AcaEntities::Atp::Transformers::Cv::Family.transform(result)
-      
-      uniq_id = "#{DateTime.now.strftime("%Y%m%d_%H%M%S")}_#{transformed[:family][:magi_medicaid_applications][0][:transfer_id]}"
+
+      @uniq_id = "#{DateTime.now.strftime('%Y%m%d_%H%M%S')}_#{transformed[:family][:magi_medicaid_applications][0][:transfer_id]}"
       transfers.each do |transfer|
-        transfer.update!(external_id: uniq_id)
+        transfer.update!(external_id: @uniq_id)
       end
-      transformed[:family][:magi_medicaid_applications][0][:transfer_id] = uniq_id
-      
+      transformed[:family][:magi_medicaid_applications][0][:transfer_id] = @uniq_id
+
       Success(transformed)
     rescue StandardError => e
       Failure("transform_params error #{e}")
