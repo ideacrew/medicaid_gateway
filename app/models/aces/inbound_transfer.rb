@@ -33,21 +33,12 @@ module Aces
       return true unless to_enroll || payload.blank?
     end
 
-    def from_aces_to_enroll?
-      return false unless waiting_to_transfer
-      # return true unless from_cms || payload.blank?
-    end
-
     def from_cms_to_aces
       Transfers::FromCms.new.call(self.payload, self.id)
     end
 
     def self.from_cms
       where(to_enroll: false)
-    end
-
-    def self.from_aces
-      where(to_enroll: true)
     end
 
     def successful?
