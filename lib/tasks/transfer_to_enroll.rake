@@ -14,7 +14,6 @@ namespace :send do
       result = Transfers::ToEnrollBatch.new.call(external_id)
       if result.success?
         result.value![0]&.each { |transfer| transfer.update!(result: 'Sent to Enroll') }
-        p result.value![1][:family][:magi_medicaid_applications].first[:applicants].count
       else
         trs = Aces::InboundTransfer.all.select {|t| t.external_id == external_id }
         next unless trs.present?
