@@ -11,7 +11,7 @@ namespace :send do
     transfers = Aces::InboundTransfer.where(created_at: range).select(&:waiting_to_transfer?)
     external_ids = transfers.map(&:external_id).uniq
     external_ids.map do |external_id|
-      result = Transfers::ToEnrollBatch.new.call(external_id)
+      result = Transfers::ToEnrollBatch.new.call(external_id, transfers.select {|t| t.external_id == external_id })
       if result.success?
         result.value![0]&.each { |transfer| transfer.update!(result: 'Sent to Enroll') }
       else

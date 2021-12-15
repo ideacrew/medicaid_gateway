@@ -10,8 +10,8 @@ module Transfers
     send(:include, Dry::Monads[:result, :do, :try])
     # @param [String] Application ID from ACES
     # @return [Dry::Result]
-    def call(transfer_id)
-      transfers = yield get_transfers(transfer_id)
+    def call(transfer_id, itransfers = [])
+      transfers = yield get_transfers(transfer_id, itransfers)
       payload = yield get_payload(transfers)
       transformed_params = yield transform_params(payload, transfers)
       initiate_transfer(transformed_params, transfers)
@@ -20,8 +20,9 @@ module Transfers
 
     private
 
-    def get_transfers(transfer_id)
-      inbound_transfers = Aces::InboundTransfer.all.select {|t| t.external_id == transfer_id }
+    def get_transfers(transfer_id, itransfers)
+      return Success(itransfers) if itransfers.any?
+      inbound_transfers = Aces::InboundTransfer.all.select(&:waiting_to_transfer?).select {|t| t.external_id == transfer_id }
       return Failure("no transfers found") unless inbound_transfers
       Success(inbound_transfers)
     rescue StandardError => e
