@@ -2,7 +2,7 @@
 
 # RAILS_ENV=production bundle exec rake send:to_enroll start_on="06/21/2021" end_on='06/22/202'
 namespace :send do
-  desc 'get all inbound transfers from the given time range that are from aces and transfers complete applications to enroll'
+  desc 'get all inbound transfers from the given time range that are from aces and transfer complete applications to enroll'
   task :to_enroll => :environment do
 
     start_on = ENV['start_on'].present? ? Date.strptime(ENV['start_on'].to_s, "%m/%d/%Y") : Date.today
@@ -17,7 +17,7 @@ namespace :send do
       else
         trs = Aces::InboundTransfer.all.select {|t| t.external_id == external_id }
         next unless trs.present?
-        trs.each { |transfer| transfer.update!(result: 'Failure', failure: result.failure) }
+        trs&.each { |transfer| transfer.update!(result: 'Failure', failure: result.failure) }
       end
     end
   end
