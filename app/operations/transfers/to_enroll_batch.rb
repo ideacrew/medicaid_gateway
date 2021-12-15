@@ -15,13 +15,14 @@ module Transfers
       payload = yield get_payload(transfers)
       transformed_params = yield transform_params(payload, transfers)
       initiate_transfer(transformed_params, transfers)
-      Success(transfers)
+      Success([transfers, transformed_params])
     end
 
     private
 
     def get_transfers(transfer_id)
-      inbound_transfers = Aces::InboundTransfer.where(external_id: transfer_id)
+      inbound_transfers = Aces::InboundTransfer.all.select {|t| t.external_id == transfer_id }
+      return Failure("no transfers found") unless inbound_transfers
       Success(inbound_transfers)
     rescue StandardError => e
       Failure("get transfers error: #{e}")
@@ -36,15 +37,24 @@ module Transfers
         transfer = create_transfer(payload)
         transfers << (transfer.success? ? transfer.value!.to_hash(identifier: true) : transfer)
       end
-
-      applicants = transfers.map { |t| t[:insurance_application][:insurance_applicants] }
-      return Success(transfers.first) unless applicants
-      applicants.each do |applicant|
-        transfers.first[:insurance_application][:insurance_applicants][applicant.keys.first] = applicant[applicant.keys.first]
-      end
-      Success(transfers.first)
+      primary = merge_payloads(transfers)
+      inbound_transfers.first.update!(payload: primary)
+      Success(primary)
     rescue StandardError => e
       Failure("get_payload error: #{e}")
+    end
+
+    def merge_payloads(transfers)
+      primary = transfers.first
+      people = transfers.map { |t| t[:record][:people] }
+      people&.each do |person|
+        primary[:record][:people][person.keys.first] = person[person.keys.first]
+      end
+      applicants = transfers.map { |t| t[:insurance_application][:insurance_applicants] }
+      applicants&.each do |applicant|
+        primary[:insurance_application][:insurance_applicants][applicant.keys.first] = applicant[applicant.keys.first]
+      end
+      primary
     end
 
     def create_transfer(input)
@@ -63,7 +73,6 @@ module Transfers
         transfer.update!(external_id: @uniq_id)
       end
       transformed[:family][:magi_medicaid_applications][0][:transfer_id] = @uniq_id
-
       Success(transformed)
     rescue StandardError => e
       Failure("transform_params error #{e}")
@@ -71,7 +80,7 @@ module Transfers
 
     def initiate_transfer(payload, transfers)
       transfer = Transfers::InitiateTransferToEnroll.new.call(payload)
-      transfer.success? ? Success(transfers) : Failure(transfer)
+      transfer.success? ? Success(transfers) : Failure("failed to initiate_transfer")
     end
   end
 end
