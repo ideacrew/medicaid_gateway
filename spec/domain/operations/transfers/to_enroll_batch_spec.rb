@@ -20,7 +20,7 @@ describe Transfers::ToEnrollBatch, "given a soap envelope with an valid xml payl
     end
 
     it 'should return success message' do
-      expect(@result).to_not be_success
+      expect(@result.failure).to eq("no transfers found")
     end
   end
 

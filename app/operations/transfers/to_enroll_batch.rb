@@ -23,7 +23,7 @@ module Transfers
     def get_transfers(transfer_id, itransfers)
       return Success(itransfers) if itransfers.any?
       inbound_transfers = Aces::InboundTransfer.all.select(&:waiting_to_transfer?).select {|t| t.external_id == transfer_id }
-      return Failure("no transfers found") unless inbound_transfers
+      return Failure("no transfers found") unless inbound_transfers.present?
       Success(inbound_transfers)
     rescue StandardError => e
       Failure("get transfers error: #{e}")
