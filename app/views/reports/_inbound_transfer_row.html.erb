@@ -4,6 +4,7 @@
     <td><%=  transfer.external_id.split("_").last if transfer.external_id.present? %></td>
     <td><%= transfer.family_identifier %></td>
     <td><%= transfer.application_identifier %></td>
+    <td><%= transfer.applicants&.join("\n") %></td>
     <td><span class="fw-bold"><%= transfer.result %></span><%= " - #{transfer.failure}" unless transfer.failure.nil? %></td>
     <td><%= transfer.to_enroll ? MedicaidGatewayRegistry[:transfer_service].item.upcase : "CMS" %></td>
     <td>

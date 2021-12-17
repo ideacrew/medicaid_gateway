@@ -11,6 +11,7 @@ class InboundTransferContract < Dry::Validation::Contract
     optional(:payload).filled(:string)
     optional(:result).filled(:string)
     optional(:external_id).filled(:string)
+    optional(:applicants).filled(:array)
     optional(:to_enroll).filled(:bool)
   end
 end
