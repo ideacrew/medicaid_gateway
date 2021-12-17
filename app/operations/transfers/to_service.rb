@@ -18,7 +18,7 @@ module Transfers
       validated = yield schema_validation(xml, transfer_id)
       # validated  = yield business_validation(validated)
       transfer_response = yield initiate_transfer(validated, transfer_id)
-      update_transfer(transfer_id, transfer_response)
+      update_transfer(transfer_response)
     end
 
     private
@@ -43,7 +43,10 @@ module Transfers
 
     def generate_xml(params, transfer_id)
       transfer_request = AcaEntities::Atp::Operations::Aces::GenerateXml.new.call(params)
+      @transfer = Aces::Transfer.find(transfer_id)
       if transfer_request.success?
+        xml = transfer_request.value!
+        @transfer.update!(xml_payload: xml)
         Success(transfer_request)
       else
         error_result = {
@@ -87,17 +90,16 @@ module Transfers
       Failure(error_result)
     end
 
-    def update_transfer(transfer_id, response)
-      transfer = Aces::Transfer.find(transfer_id)
+    def update_transfer(response)
       response_json = response.to_json
       if @service == "aces"
         xml = Nokogiri::XML(response.to_hash[:body])
         status = xml.xpath('//tns:ResponseDescriptionText', 'tns' => 'http://hix.cms.gov/0.1/hix-core')
         status_text = status.any? ? status.last.text : "N/A"
-        payload = status_text == "Success" ? "" : transfer.outbound_payload
-        transfer.update!(response_payload: response_json, callback_status: status_text, outbound_payload: payload)
+        payload = status_text == "Success" ? "" : @transfer.outbound_payload
+        @transfer.update!(response_payload: response_json, callback_status: status_text, outbound_payload: payload)
       else
-        transfer.update!(response_payload: response_json)
+        @transfer.update!(response_payload: response_json)
       end
       Success("Successfully transferred in account")
     end
