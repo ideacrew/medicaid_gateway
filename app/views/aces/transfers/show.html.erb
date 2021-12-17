@@ -29,4 +29,9 @@
 <%= raw(ap(@outbound_payload)) %>
 <% end %>
 
+<% unless @transfer.xml_payload.blank? %>
+<h2>XML Payload to send to service:</h2>
+<%= @transfer.xml_payload %>
+<% end %>
+
 <%= link_to "Received Transfers Report", account_transfers_reports_path, class: 'btn btn-primary' %>
