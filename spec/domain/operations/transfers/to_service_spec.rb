@@ -141,7 +141,8 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
       end
 
       it 'should fail when no applicants are applying for coverage' do
-        expect(@result.failure).to eq "Application does not contain any applicants applying for coverage."
+        error_message = @result.failure[:failure]
+        expect(error_message).to eq "Application does not contain any applicants applying for coverage."
       end
     end
   end

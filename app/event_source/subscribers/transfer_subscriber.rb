@@ -28,7 +28,7 @@ module Subscribers
         logger.debug "application_submitted_subscriber_message; acked"
       else
         errors = result.failure
-        error = result.failure[:error]
+        error = result.failure[:failure]
         if transfer
           transfer_id = result.failure[:transfer_id]
           outbound_transfer = Aces::Transfer.find(transfer_id)
