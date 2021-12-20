@@ -23,7 +23,7 @@ module Transfers
     def get_transfers(transfer_id, itransfers)
       return Success(itransfers) if itransfers.any?
       inbound_transfers = Aces::InboundTransfer.all.select(&:waiting_to_transfer?).select {|t| t.external_id == transfer_id }
-      return Failure("no transfers found") unless inbound_transfers
+      return Failure("no transfers found") unless inbound_transfers&.any?
       Success(inbound_transfers)
     rescue StandardError => e
       Failure("get transfers error: #{e}")
@@ -31,7 +31,7 @@ module Transfers
 
     def get_payload(inbound_transfers)
       payloads = inbound_transfers.map(&:payload)
-      return unless payloads
+      return Failure("no payloads") unless payloads.present?
       transfers = []
       payloads.each do |payload|
         next if payload.nil?
@@ -71,7 +71,8 @@ module Transfers
       @uniq_id = "#{DateTime.now.strftime('%Y%m%d_%H%M%S')}_#{transformed[:family][:magi_medicaid_applications][0][:transfer_id]}"
       applicants = transformed[:family][:magi_medicaid_applications][0][:applicants]
       applicants = applicants&.map { |a| "#{a[:name][:first_name]}: #{a[:transfer_referral_reason]}" }
-      transfers.each do |transfer|
+      transfers&.each do |transfer|
+        next unless transfer.present?
         transfer.update!(external_id: @uniq_id, applicants: applicants)
       end
       transformed[:family][:magi_medicaid_applications][0][:transfer_id] = @uniq_id
