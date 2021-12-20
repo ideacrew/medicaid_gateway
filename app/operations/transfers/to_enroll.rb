@@ -31,16 +31,19 @@ module Transfers
     def transform_params(result, transfer_id)
       transformed = ::AcaEntities::Atp::Transformers::Cv::Family.transform(result.to_hash(identifier: true))
       uniq_id = "#{transfer_id}_#{transformed[:family][:magi_medicaid_applications][0][:transfer_id]}"
-      update_transfer(transfer_id, uniq_id)
+      application = transformed.dig(:family, :magi_medicaid_applications)
+      applicants = application&.first&.dig(:applicants)&.select {|a| a[:is_applying_coverage]}
+      applicants = applicants&.map { |a| "#{a[:name][:first_name]}: #{a[:transfer_referral_reason]}" }
+      update_transfer(transfer_id, uniq_id, applicants)
       transformed[:family][:magi_medicaid_applications][0][:transfer_id] = uniq_id
       Success(transformed)
     rescue StandardError => e
       Failure("to_aces transformer #{e}")
     end
 
-    def update_transfer(transfer_id, external_id)
+    def update_transfer(transfer_id, external_id, applicants)
       transfer = Aces::InboundTransfer.find(transfer_id)
-      transfer.update!(external_id: external_id)
+      transfer.update!(external_id: external_id, applicants: applicants)
     end
 
     def initiate_transfer(payload)
