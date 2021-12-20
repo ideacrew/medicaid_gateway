@@ -9,6 +9,8 @@ module Aces
       "atp" => "http://at.dsh.cms.gov/exchange/1.0",
       "soap" => "http://www.w3.org/2003/05/soap-envelope",
       "ns3" => "http://niem.gov/niem/niem-core/2.0",
+      "ns2" => "http://hix.cms.gov/0.1/hix-ee",
+      "hix-core" => "http://hix.cms.gov/0.1/hix-core",
       "xmlns" => "http://at.dsh.cms.gov/extension/1.0"
     }.freeze
 
@@ -43,7 +45,9 @@ module Aces
         return serialize_response_body(schema_result) unless schema_result.success?
         serialize_response_body(run_business_validations(string_payload))
       else
-        serialize_response_body(Success("not validated"))
+        payload = serialize_response_body(Success("not validated"))
+        @transfer.update!(payload: payload)
+        payload
       end
     end
 
@@ -61,7 +65,7 @@ module Aces
     end
 
     def get_id(payload, transfer_id)
-      identity_tag = payload.xpath("//xmlns:TransferActivity/ns3:ActivityIdentification/ns3:IdentificationID", XML_NS)
+      identity_tag = payload.xpath("//ns2:InsuranceApplication/hix-core:ApplicationIdentification/ns3:IdentificationID", XML_NS)
       recipient_node = payload.xpath("//xmlns:RecipientTransferActivityCode", XML_NS)
 
       return Failure("XML error: ID tag missing.") if identity_tag.empty?
@@ -150,6 +154,7 @@ module Aces
     def transfer_account(payload, transfer_id, serialized)
       if @to_enroll
         return serialized if serialized.failure?
+        return Success(payload) if MedicaidGatewayRegistry.feature_enabled?(:bulk_transfer_to_enroll)
         return Success(payload) unless MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll)
         Transfers::ToEnroll.new.call(payload, transfer_id)
       else
@@ -157,5 +162,6 @@ module Aces
         Success(@transfer)
       end
     end
+
   end
 end

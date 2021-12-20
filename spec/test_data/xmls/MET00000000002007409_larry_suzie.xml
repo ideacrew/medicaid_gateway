@@ -1,0 +1,442 @@
+<S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope"
+    xmlns:env="http://www.w3.org/2003/05/soap-envelope">
+    <S:Header>
+        <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
+            xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+            <wsu:Timestamp wsu:Id="TS-11">
+                <wsu:Created>2021-12-07T02:31:08Z</wsu:Created>
+                <wsu:Expires>2021-12-07T02:56:08Z</wsu:Expires>
+            </wsu:Timestamp>
+            <wsse:UsernameToken xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="UsernameToken-10">
+                <wsse:Username>mesbmprod</wsse:Username>
+                <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest">Txb5QWPo9Gp0CZqtOie7dnFpQq4=</wsse:Password>
+                <wsse:Nonce EncodingType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary">aNrG8eeI8pRr6nVD4doNWQ==</wsse:Nonce>
+                <wsu:Created>2021-12-07T02:31:08Z</wsu:Created>
+            </wsse:UsernameToken>
+        </wsse:Security>
+    </S:Header>
+    <S:Body xmlns:ns1="http://niem.gov/niem/structures/2.0"
+        xmlns:ns10="http://at.dsh.cms.gov/exchange/1.0"
+        xmlns:ns2="http://hix.cms.gov/0.1/hix-ee"
+        xmlns:ns3="http://hix.cms.gov/0.1/hix-core"
+        xmlns:ns4="http://at.dsh.cms.gov/extension/1.0"
+        xmlns:ns5="http://niem.gov/niem/niem-core/2.0"
+        xmlns:ns6="http://niem.gov/niem/domains/screening/2.1"
+        xmlns:ns7="http://hix.cms.gov/0.1/hix-pm"
+        xmlns:ns8="http://niem.gov/niem/appinfo/2.0"
+        xmlns:ns9="http://niem.gov/niem/appinfo/2.1">
+        <ns10:AccountTransferRequest xmlns:ns10="http://at.dsh.cms.gov/exchange/1.0" ns4:atVersionText="2.4">
+            <ns4:TransferHeader>
+                <ns4:TransferActivity>
+                    <ns5:ActivityIdentification>
+                        <ns5:IdentificationID>MET00000000002007409</ns5:IdentificationID>
+                    </ns5:ActivityIdentification>
+                    <ns5:ActivityDate>
+                        <ns5:DateTime>2021-12-06T21:31:07.647-05:00</ns5:DateTime>
+                    </ns5:ActivityDate>
+                    <ns4:TransferActivityReferralQuantity>1</ns4:TransferActivityReferralQuantity>
+                    <ns4:RecipientTransferActivityCode>Exchange</ns4:RecipientTransferActivityCode>
+                </ns4:TransferActivity>
+            </ns4:TransferHeader>
+            <ns3:Sender ns1:id="Sender">
+                <ns3:InformationExchangeSystemCategoryCode>MedicaidAgency</ns3:InformationExchangeSystemCategoryCode>
+                <ns3:InformationExchangeSystemStateCode>ME</ns3:InformationExchangeSystemStateCode>
+            </ns3:Sender>
+            <ns3:Receiver ns1:id="Exchange">
+                <ns3:InformationExchangeSystemCategoryCode>Exchange</ns3:InformationExchangeSystemCategoryCode>
+            </ns3:Receiver>
+            <ns2:InsuranceApplication>
+                <ns3:ApplicationCreation>
+                    <ns5:ActivityDate>
+                        <ns5:DateTime>2020-02-20T00:00:00.000-05:00</ns5:DateTime>
+                    </ns5:ActivityDate>
+                </ns3:ApplicationCreation>
+                <ns3:ApplicationSubmission>
+                    <ns5:ActivityDate>
+                        <ns5:DateTime>2020-02-20T00:00:00.000-05:00</ns5:DateTime>
+                    </ns5:ActivityDate>
+                </ns3:ApplicationSubmission>
+                <ns3:ApplicationIdentification>
+                    <ns5:IdentificationID>MEA00000000201055555</ns5:IdentificationID>
+                </ns3:ApplicationIdentification>
+                <ns2:InsuranceApplicant>
+                    <ns3:RoleOfPersonReference ns1:ref="MEPP0000000200928414" />
+                    <ns2:InsuranceApplicantFixedAddressIndicator>false</ns2:InsuranceApplicantFixedAddressIndicator>
+                    <ns2:ExchangeEligibility ns1:id="ExchangeEligibility6351516" />
+                    <ns2:MedicaidMAGIEligibility ns1:id="MEE000000214982339">
+                        <ns2:EligibilityDateRange>
+                            <ns5:StartDate>
+                                <ns5:Date>2022-01-01-05:00</ns5:Date>
+                            </ns5:StartDate>
+                        </ns2:EligibilityDateRange>
+                        <ns2:EligibilityEstablishingSystem>
+                            <ns3:InformationExchangeSystemCategoryCode>MedicaidAgency</ns3:InformationExchangeSystemCategoryCode>
+                            <ns3:InformationExchangeSystemStateCode>ME</ns3:InformationExchangeSystemStateCode>
+                        </ns2:EligibilityEstablishingSystem>
+                        <ns2:MedicaidHouseholdReference ns1:ref="MedicaidHousehold" />
+                        <ns2:MedicaidMAGIIncomeEligibilityBasis>
+                            <ns3:StatusIndicator>true</ns3:StatusIndicator>
+                            <ns2:EligibilityBasisStatusCode>Complete</ns2:EligibilityBasisStatusCode>
+                        </ns2:MedicaidMAGIIncomeEligibilityBasis>
+                        <ns2:MedicaidMAGIResidencyEligibilityBasis>
+                            <ns3:StatusIndicator>true</ns3:StatusIndicator>
+                            <ns2:EligibilityBasisStatusCode>Complete</ns2:EligibilityBasisStatusCode>
+                        </ns2:MedicaidMAGIResidencyEligibilityBasis>
+                        <ns2:MedicaidHouseholdSizeEligibilityBasis>
+                            <ns3:StatusIndicator>true</ns3:StatusIndicator>
+                            <ns2:EligibilityBasisStatusCode>Complete</ns2:EligibilityBasisStatusCode>
+                            <ns2:MedicaidHouseholdSizeEligibilityBasisVerificationMethod>1</ns2:MedicaidHouseholdSizeEligibilityBasisVerificationMethod>
+                        </ns2:MedicaidHouseholdSizeEligibilityBasis>
+                        <ns2:MedicaidMAGIParentCaretakerCategoryEligibilityBasis>
+                            <ns3:StatusIndicator>true</ns3:StatusIndicator>
+                            <ns2:EligibilityBasisStatusCode>Complete</ns2:EligibilityBasisStatusCode>
+                        </ns2:MedicaidMAGIParentCaretakerCategoryEligibilityBasis>
+                        <ns2:MedicaidMAGICitizenOrImmigrantEligibilityBasis>
+                            <ns3:StatusIndicator>true</ns3:StatusIndicator>
+                            <ns2:EligibilityBasisStatusCode>Complete</ns2:EligibilityBasisStatusCode>
+                        </ns2:MedicaidMAGICitizenOrImmigrantEligibilityBasis>
+                        <ns2:MedicaidMAGISSNVerificationEligibilityBasis>
+                            <ns3:StatusIndicator>true</ns3:StatusIndicator>
+                            <ns2:EligibilityBasisStatusCode>Complete</ns2:EligibilityBasisStatusCode>
+                        </ns2:MedicaidMAGISSNVerificationEligibilityBasis>
+                    </ns2:MedicaidMAGIEligibility>
+                    <ns2:ReferralActivity>
+                        <ns5:ActivityIdentification>
+                            <ns5:IdentificationID>MER00000000200928414</ns5:IdentificationID>
+                        </ns5:ActivityIdentification>
+                        <ns5:ActivityDate>
+                            <ns5:DateTime>2021-12-06T21:31:07.731-05:00</ns5:DateTime>
+                        </ns5:ActivityDate>
+                        <ns2:ReferralActivitySenderReference ns1:ref="Sender" />
+                        <ns2:ReferralActivityReceiverReference ns1:ref="Exchange" />
+                        <ns2:ReferralActivityStatus>
+                            <ns3:StatusValidDateRange>
+                                <ns5:StartDate>
+                                    <ns5:Date>2021-12-06-05:00</ns5:Date>
+                                </ns5:StartDate>
+                            </ns3:StatusValidDateRange>
+                            <ns2:ReferralActivityStatusCode>Initiated</ns2:ReferralActivityStatusCode>
+                        </ns2:ReferralActivityStatus>
+                        <ns2:ReferralActivityEligibilityReasonReference ns1:ref="ExchangeEligibility6351516" />
+                    </ns2:ReferralActivity>
+                </ns2:InsuranceApplicant>
+                <ns2:InsuranceApplicationRequestingFinancialAssistanceIndicator>true</ns2:InsuranceApplicationRequestingFinancialAssistanceIndicator>
+                <ns2:InsuranceApplicationCoverageRenewalYearQuantity>1</ns2:InsuranceApplicationCoverageRenewalYearQuantity>
+                <ns2:SSFSigner>
+                    <ns3:RoleOfPersonReference ns1:ref="MEPP0000000200912569" />
+                    <ns2:Signature>
+                        <ns3:SignatureDate>
+                            <ns5:Date>2020-02-20-05:00</ns5:Date>
+                        </ns3:SignatureDate>
+                    </ns2:Signature>
+                    <ns2:SSFSignerAuthorizedRepresentativeAssociation>
+                        <ns2:Signature xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                            <ns3:SignatureDate xsi:nil="true" />
+                        </ns2:Signature>
+                    </ns2:SSFSignerAuthorizedRepresentativeAssociation>
+                    <ns2:SSFAttestation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <ns2:SSFAttestationCollectionsAgreementIndicator xsi:nil="true" />
+                        <ns2:SSFAttestationMedicaidObligationsIndicator xsi:nil="true" />
+                        <ns2:SSFAttestationNonPerjuryIndicator>true</ns2:SSFAttestationNonPerjuryIndicator>
+                        <ns2:SSFAttestationNotIncarceratedIndicator>true</ns2:SSFAttestationNotIncarceratedIndicator>
+                        <ns2:SSFAttestationInformationChangesIndicator>true</ns2:SSFAttestationInformationChangesIndicator>
+                    </ns2:SSFAttestation>
+                </ns2:SSFSigner>
+                <ns2:InsuranceApplicationAssisterAssociation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                    <ns5:AssociationBeginDate xsi:nil="true" />
+                </ns2:InsuranceApplicationAssisterAssociation>
+                <ns2:InsuranceApplicationRequestingMedicaidIndicator>false</ns2:InsuranceApplicationRequestingMedicaidIndicator>
+                <ns2:SSFPrimaryContact>
+                    <ns3:RoleOfPersonReference ns1:ref="MEPP0000000200912569" />
+                    <ns2:SSFPrimaryContactPreferenceCode>Mail</ns2:SSFPrimaryContactPreferenceCode>
+                </ns2:SSFPrimaryContact>
+                <ns2:InsuranceApplicationTaxReturnAccessIndicator>false</ns2:InsuranceApplicationTaxReturnAccessIndicator>
+            </ns2:InsuranceApplication>
+            <ns2:MedicaidHousehold ns1:id="MedicaidHousehold">
+                <ns2:HouseholdSizeQuantity>2</ns2:HouseholdSizeQuantity>
+                <ns2:HouseholdMemberReference ns1:ref="MEPP0000000200928414" />
+                <ns2:HouseholdMemberReference ns1:ref="MEPP0000000200912569" />
+                <ns2:MedicaidHouseholdEffectivePersonQuantity>2</ns2:MedicaidHouseholdEffectivePersonQuantity>
+            </ns2:MedicaidHousehold>
+            <ns3:Person ns1:id="MEPP0000000200928414">
+                <ns5:PersonBirthDate>
+                    <ns5:Date>1998-07-03-04:00</ns5:Date>
+                </ns5:PersonBirthDate>
+                <ns5:PersonName>
+                    <ns5:PersonGivenName>SUZIE</ns5:PersonGivenName>
+                    <ns5:PersonSurName>FOOT</ns5:PersonSurName>
+                </ns5:PersonName>
+                <ns5:PersonSexText>Female</ns5:PersonSexText>
+                <ns5:PersonSSNIdentification>
+                    <ns5:IdentificationID>787994321</ns5:IdentificationID>
+                </ns5:PersonSSNIdentification>
+                <ns5:PersonUSCitizenIndicator>true</ns5:PersonUSCitizenIndicator>
+                <ns3:TribalAugmentation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                    <ns3:PersonAmericanIndianOrAlaskaNativeIndicator>false</ns3:PersonAmericanIndianOrAlaskaNativeIndicator>
+                    <ns5:LocationStateUSPostalServiceCode xsi:nil="true" />
+                </ns3:TribalAugmentation>
+                <ns3:PersonAugmentation>
+                    <ns3:PersonAssociation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <ns5:AssociationBeginDate xsi:nil="true" />
+                        <ns5:PersonReference ns1:ref="MEPP0000000200912569" />
+                        <ns3:FamilyRelationshipCode>01</ns3:FamilyRelationshipCode>
+                    </ns3:PersonAssociation>
+                    <ns3:PersonContactInformationAssociation>
+                        <ns5:AssociationBeginDate>
+                            <ns5:Date>2021-03-17-04:00</ns5:Date>
+                        </ns5:AssociationBeginDate>
+                        <ns5:ContactInformationIsPrimaryIndicator>false</ns5:ContactInformationIsPrimaryIndicator>
+                        <ns3:ContactInformation>
+                            <ns5:ContactMailingAddress>
+                                <ns5:StructuredAddress>
+                                    <ns5:LocationStreet>
+                                        <ns5:StreetFullText>9 Portugal Lane</ns5:StreetFullText>
+                                    </ns5:LocationStreet>
+                                    <ns5:AddressSecondaryUnitText>Apt 4</ns5:AddressSecondaryUnitText>
+                                    <ns5:LocationCityName>Lewiston</ns5:LocationCityName>
+                                    <ns5:LocationStateUSPostalServiceCode>ME</ns5:LocationStateUSPostalServiceCode>
+                                    <ns5:LocationCountryISO3166Alpha3Code>USA</ns5:LocationCountryISO3166Alpha3Code>
+                                    <ns5:LocationPostalCode>04240</ns5:LocationPostalCode>
+                                </ns5:StructuredAddress>
+                            </ns5:ContactMailingAddress>
+                        </ns3:ContactInformation>
+                        <ns3:ContactInformationCategoryCode>Home</ns3:ContactInformationCategoryCode>
+                    </ns3:PersonContactInformationAssociation>
+                    <ns3:PersonContactInformationAssociation>
+                        <ns5:AssociationBeginDate>
+                            <ns5:Date>2021-03-17-04:00</ns5:Date>
+                        </ns5:AssociationBeginDate>
+                        <ns5:ContactInformationIsPrimaryIndicator>false</ns5:ContactInformationIsPrimaryIndicator>
+                        <ns3:ContactInformation>
+                            <ns5:ContactMailingAddress>
+                                <ns5:StructuredAddress>
+                                    <ns5:LocationStreet>
+                                        <ns5:StreetFullText>9 Portugal Lane</ns5:StreetFullText>
+                                    </ns5:LocationStreet>
+                                    <ns5:AddressSecondaryUnitText>Apt 4</ns5:AddressSecondaryUnitText>
+                                    <ns5:LocationCityName>Lewiston</ns5:LocationCityName>
+                                    <ns5:LocationStateUSPostalServiceCode>ME</ns5:LocationStateUSPostalServiceCode>
+                                    <ns5:LocationCountryISO3166Alpha3Code>USA</ns5:LocationCountryISO3166Alpha3Code>
+                                    <ns5:LocationPostalCode>04240</ns5:LocationPostalCode>
+                                </ns5:StructuredAddress>
+                            </ns5:ContactMailingAddress>
+                        </ns3:ContactInformation>
+                        <ns3:ContactInformationCategoryCode>Mailing</ns3:ContactInformationCategoryCode>
+                    </ns3:PersonContactInformationAssociation>
+                    <ns3:PersonContactInformationAssociation>
+                        <ns5:AssociationBeginDate>
+                            <ns5:Date>2021-12-04-05:00</ns5:Date>
+                        </ns5:AssociationBeginDate>
+                        <ns5:ContactInformationIsPrimaryIndicator>false</ns5:ContactInformationIsPrimaryIndicator>
+                        <ns3:ContactInformation>
+                            <ns5:ContactTelephoneNumber>
+                                <ns5:FullTelephoneNumber>
+                                    <ns5:TelephoneNumberFullID>9785556814</ns5:TelephoneNumberFullID>
+                                </ns5:FullTelephoneNumber>
+                            </ns5:ContactTelephoneNumber>
+                        </ns3:ContactInformation>
+                        <ns3:ContactInformationCategoryCode>Home</ns3:ContactInformationCategoryCode>
+                    </ns3:PersonContactInformationAssociation>
+                    <ns3:PersonContactInformationAssociation>
+                        <ns5:AssociationBeginDate>
+                            <ns5:Date>2021-11-18-05:00</ns5:Date>
+                        </ns5:AssociationBeginDate>
+                        <ns5:ContactInformationIsPrimaryIndicator>false</ns5:ContactInformationIsPrimaryIndicator>
+                        <ns3:ContactInformation>
+                            <ns5:ContactTelephoneNumber>
+                                <ns5:FullTelephoneNumber>
+                                    <ns5:TelephoneNumberFullID>2075557393</ns5:TelephoneNumberFullID>
+                                </ns5:FullTelephoneNumber>
+                            </ns5:ContactTelephoneNumber>
+                        </ns3:ContactInformation>
+                        <ns3:ContactInformationCategoryCode>Mobile</ns3:ContactInformationCategoryCode>
+                    </ns3:PersonContactInformationAssociation>
+                    <ns3:PersonContactInformationAssociation>
+                        <ns5:AssociationBeginDate>
+                            <ns5:Date>2020-12-16-05:00</ns5:Date>
+                        </ns5:AssociationBeginDate>
+                        <ns5:ContactInformationIsPrimaryIndicator>false</ns5:ContactInformationIsPrimaryIndicator>
+                        <ns3:ContactInformation>
+                            <ns5:ContactEmailID>suziefoot@test.com</ns5:ContactEmailID>
+                        </ns3:ContactInformation>
+                        <ns3:ContactInformationCategoryCode>Home</ns3:ContactInformationCategoryCode>
+                    </ns3:PersonContactInformationAssociation>
+                    <ns3:PersonPregnancyStatus>
+                        <ns3:StatusValidDateRange />
+                        <ns3:StatusIndicator>false</ns3:StatusIndicator>
+                        <ns3:PregnancyStatusExpectedBabyQuantity>0</ns3:PregnancyStatusExpectedBabyQuantity>
+                    </ns3:PersonPregnancyStatus>
+                    <ns3:PersonMedicaidIdentification>
+                        <ns5:IdentificationID>78501433A</ns5:IdentificationID>
+                    </ns3:PersonMedicaidIdentification>
+                    <ns3:PersonCHIPIdentification>
+                        <ns5:IdentificationID>78501433A</ns5:IdentificationID>
+                    </ns3:PersonCHIPIdentification>
+                    <ns3:PersonMarriedIndicator>false</ns3:PersonMarriedIndicator>
+                </ns3:PersonAugmentation>
+            </ns3:Person>
+            <ns3:Person ns1:id="MEPP0000000200912569">
+                <ns5:PersonBirthDate>
+                    <ns5:Date>1993-02-10-05:00</ns5:Date>
+                </ns5:PersonBirthDate>
+                <ns5:PersonName>
+                    <ns5:PersonGivenName>LARRY</ns5:PersonGivenName>
+                    <ns5:PersonMiddleName>L</ns5:PersonMiddleName>
+                    <ns5:PersonSurName>FOOT</ns5:PersonSurName>
+                </ns5:PersonName>
+                <ns5:PersonSexText>Male</ns5:PersonSexText>
+                <ns5:PersonSSNIdentification>
+                    <ns5:IdentificationID>234556789</ns5:IdentificationID>
+                </ns5:PersonSSNIdentification>
+                <ns5:PersonUSCitizenIndicator>true</ns5:PersonUSCitizenIndicator>
+                <ns3:TribalAugmentation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                    <ns3:PersonAmericanIndianOrAlaskaNativeIndicator>false</ns3:PersonAmericanIndianOrAlaskaNativeIndicator>
+                    <ns5:LocationStateUSPostalServiceCode xsi:nil="true" />
+                </ns3:TribalAugmentation>
+                <ns3:PersonAugmentation>
+                    <ns3:PersonAssociation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <ns5:AssociationBeginDate xsi:nil="true" />
+                        <ns5:PersonReference ns1:ref="MEPP0000000200928414" />
+                        <ns3:FamilyRelationshipCode>01</ns3:FamilyRelationshipCode>
+                    </ns3:PersonAssociation>
+                    <ns3:PersonContactInformationAssociation>
+                        <ns5:AssociationBeginDate>
+                            <ns5:Date>2021-12-01-05:00</ns5:Date>
+                        </ns5:AssociationBeginDate>
+                        <ns5:ContactInformationIsPrimaryIndicator>true</ns5:ContactInformationIsPrimaryIndicator>
+                        <ns3:ContactInformation>
+                            <ns5:ContactMailingAddress>
+                                <ns5:StructuredAddress>
+                                    <ns5:LocationStreet>
+                                        <ns5:StreetFullText>77 Silver St</ns5:StreetFullText>
+                                    </ns5:LocationStreet>
+                                    <ns5:LocationCityName>Hollywood</ns5:LocationCityName>
+                                    <ns5:LocationStateUSPostalServiceCode>ME</ns5:LocationStateUSPostalServiceCode>
+                                    <ns5:LocationCountryISO3166Alpha3Code>USA</ns5:LocationCountryISO3166Alpha3Code>
+                                    <ns5:LocationPostalCode>04240</ns5:LocationPostalCode>
+                                </ns5:StructuredAddress>
+                            </ns5:ContactMailingAddress>
+                        </ns3:ContactInformation>
+                        <ns3:ContactInformationCategoryCode>Home</ns3:ContactInformationCategoryCode>
+                    </ns3:PersonContactInformationAssociation>
+                    <ns3:PersonContactInformationAssociation>
+                        <ns5:AssociationBeginDate>
+                            <ns5:Date>2021-12-01-05:00</ns5:Date>
+                        </ns5:AssociationBeginDate>
+                        <ns5:ContactInformationIsPrimaryIndicator>false</ns5:ContactInformationIsPrimaryIndicator>
+                        <ns3:ContactInformation>
+                            <ns5:ContactMailingAddress>
+                                <ns5:StructuredAddress>
+                                    <ns5:LocationStreet>
+                                        <ns5:StreetFullText>77 Silver St</ns5:StreetFullText>
+                                    </ns5:LocationStreet>
+                                    <ns5:LocationCityName>Hollywood</ns5:LocationCityName>
+                                    <ns5:LocationStateUSPostalServiceCode>ME</ns5:LocationStateUSPostalServiceCode>
+                                    <ns5:LocationCountryISO3166Alpha3Code>USA</ns5:LocationCountryISO3166Alpha3Code>
+                                    <ns5:LocationPostalCode>04240</ns5:LocationPostalCode>
+                                </ns5:StructuredAddress>
+                            </ns5:ContactMailingAddress>
+                        </ns3:ContactInformation>
+                        <ns3:ContactInformationCategoryCode>Mailing</ns3:ContactInformationCategoryCode>
+                    </ns3:PersonContactInformationAssociation>
+                    <ns3:PersonContactInformationAssociation>
+                        <ns5:AssociationBeginDate>
+                            <ns5:Date>2021-01-08-05:00</ns5:Date>
+                        </ns5:AssociationBeginDate>
+                        <ns5:ContactInformationIsPrimaryIndicator>false</ns5:ContactInformationIsPrimaryIndicator>
+                        <ns3:ContactInformation>
+                            <ns5:ContactTelephoneNumber>
+                                <ns5:FullTelephoneNumber>
+                                    <ns5:TelephoneNumberFullID>2075558096</ns5:TelephoneNumberFullID>
+                                </ns5:FullTelephoneNumber>
+                            </ns5:ContactTelephoneNumber>
+                        </ns3:ContactInformation>
+                        <ns3:ContactInformationCategoryCode>Mobile</ns3:ContactInformationCategoryCode>
+                    </ns3:PersonContactInformationAssociation>
+                    <ns3:PersonContactInformationAssociation>
+                        <ns5:AssociationBeginDate>
+                            <ns5:Date>2021-03-31-04:00</ns5:Date>
+                        </ns5:AssociationBeginDate>
+                        <ns5:ContactInformationIsPrimaryIndicator>false</ns5:ContactInformationIsPrimaryIndicator>
+                        <ns3:ContactInformation>
+                            <ns5:ContactTelephoneNumber>
+                                <ns5:FullTelephoneNumber>
+                                    <ns5:TelephoneNumberFullID>2075558096</ns5:TelephoneNumberFullID>
+                                </ns5:FullTelephoneNumber>
+                            </ns5:ContactTelephoneNumber>
+                        </ns3:ContactInformation>
+                        <ns3:ContactInformationCategoryCode>Home</ns3:ContactInformationCategoryCode>
+                    </ns3:PersonContactInformationAssociation>
+                    <ns3:PersonContactInformationAssociation>
+                        <ns5:AssociationBeginDate>
+                            <ns5:Date>2021-01-08-05:00</ns5:Date>
+                        </ns5:AssociationBeginDate>
+                        <ns5:ContactInformationIsPrimaryIndicator>false</ns5:ContactInformationIsPrimaryIndicator>
+                        <ns3:ContactInformation>
+                            <ns5:ContactEmailID>larryfoot@test.com</ns5:ContactEmailID>
+                        </ns3:ContactInformation>
+                        <ns3:ContactInformationCategoryCode>Home</ns3:ContactInformationCategoryCode>
+                    </ns3:PersonContactInformationAssociation>
+                    <ns3:PersonEmploymentAssociation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <ns5:AssociationBeginDate xsi:nil="true" />
+                        <ns3:Employer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ns1:id="MEORG000000209373388">
+                            <ns5:OrganizationName xsi:nil="true" />
+                            <ns5:OrganizationPrimaryContactInformation>
+                                <ns5:ContactMailingAddress>
+                                    <ns5:StructuredAddress xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                        <ns5:LocationStreet xsi:nil="true" />
+                                        <ns5:LocationCityName xsi:nil="true" />
+                                        <ns5:LocationStateUSPostalServiceCode>ME</ns5:LocationStateUSPostalServiceCode>
+                                        <ns5:LocationPostalCode xsi:nil="true" />
+                                    </ns5:StructuredAddress>
+                                </ns5:ContactMailingAddress>
+                            </ns5:OrganizationPrimaryContactInformation>
+                        </ns3:Employer>
+                    </ns3:PersonEmploymentAssociation>
+                    <ns3:PersonPregnancyStatus>
+                        <ns3:StatusValidDateRange />
+                        <ns3:StatusIndicator>false</ns3:StatusIndicator>
+                    </ns3:PersonPregnancyStatus>
+                    <ns3:PersonMedicaidIdentification>
+                        <ns5:IdentificationID>58345123A</ns5:IdentificationID>
+                    </ns3:PersonMedicaidIdentification>
+                    <ns3:PersonIncome xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <ns3:IncomeFrequency>
+                            <ns3:FrequencyCode>Monthly</ns3:FrequencyCode>
+                        </ns3:IncomeFrequency>
+                        <ns3:IncomeAmount>794</ns3:IncomeAmount>
+                        <ns3:IncomeHoursPerWeekMeasure xsi:nil="true" />
+                        <ns3:IncomeHoursPerPayPeriodMeasure xsi:nil="true" />
+                        <ns3:IncomeDaysPerWeekMeasure xsi:nil="true" />
+                        <ns3:IncomeCategoryCode>Unspecified</ns3:IncomeCategoryCode>
+                        <ns3:IncomeDate xsi:nil="true" />
+                        <ns3:IncomeSourceOrganizationReference ns1:ref="MEORG000000209373388" />
+                        <ns3:IncomeSubjectToFederalRestrictionsIndicator>false</ns3:IncomeSubjectToFederalRestrictionsIndicator>
+                        <ns3:IncomePaymentFrequency>
+                            <ns3:FrequencyCode>Monthly</ns3:FrequencyCode>
+                        </ns3:IncomePaymentFrequency>
+                        <ns3:IncomeEarnedDateRange>
+                            <ns5:StartDate>
+                                <ns5:Date>2021-05-01-04:00</ns5:Date>
+                            </ns5:StartDate>
+                            <ns5:EndDate>
+                                <ns5:Date>2021-12-31-05:00</ns5:Date>
+                            </ns5:EndDate>
+                        </ns3:IncomeEarnedDateRange>
+                        <ns3:IncomeEmploymentDescriptionText xsi:nil="true" />
+                        <ns3:IncomeUnemploymentSourceText xsi:nil="true" />
+                    </ns3:PersonIncome>
+                    <ns3:PersonCHIPIdentification>
+                        <ns5:IdentificationID>58345123A</ns5:IdentificationID>
+                    </ns3:PersonCHIPIdentification>
+                    <ns3:PersonMarriedIndicator>false</ns3:PersonMarriedIndicator>
+                </ns3:PersonAugmentation>
+            </ns3:Person>
+            <ns4:PhysicalHousehold>
+                <ns2:HouseholdSizeQuantity>2</ns2:HouseholdSizeQuantity>
+                <ns2:HouseholdMemberReference ns1:ref="MEPP0000000200928414" />
+                <ns2:HouseholdMemberReference ns1:ref="MEPP0000000200912569" />
+            </ns4:PhysicalHousehold>
+        </ns10:AccountTransferRequest>
+    </S:Body>
+</S:Envelope>

@@ -24,6 +24,7 @@ describe Aces::ProcessAtpSoapRequest, "given a soap envelope with an valid xml p
     allow(MedicaidGatewayRegistry[:transfer_service]).to receive(:item).and_return("SERVICE")
     allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:transfer_to_enroll).and_return(false)
     allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:resubmit_to_enroll).and_return(false)
+    allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:bulk_transfer_to_enroll).and_return(false)
   end
 
   context 'from aces' do
