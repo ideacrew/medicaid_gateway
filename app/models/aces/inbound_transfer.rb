@@ -47,6 +47,10 @@ module Aces
       self.failure.nil?
     end
 
+    def waiting_to_transfer?
+      result == "Waiting to Transfer"
+    end
+
     def to_event
       {
         type: "Transfer In",
@@ -61,7 +65,7 @@ module Aces
     end
 
     def resubmittable?
-      payload.present? && payload.length > 100 && ['Sent to Enroll', 'Failed'].include?(result) && to_enroll
+      payload.present? && payload.length > 100 && ['Sent to Enroll', 'Failed', 'Waiting to Transfer'].include?(result) && to_enroll
     end
 
     after_update do

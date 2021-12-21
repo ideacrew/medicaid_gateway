@@ -19,6 +19,13 @@ describe Transfers::AddEnrollResponse, dbclean: :after_each do
   let(:transfer_id) { "tr123" }
   let(:operation) { Transfers::AddEnrollResponse.new }
 
+  context "failure" do
+    it "should fail if the inbound transfer record does not exist" do
+      result = operation.call(params.stringify_keys)
+      expect(result.success?).not_to be_truthy
+    end
+  end
+
   context "success" do
     before :each do
       @inbound_transfer = create :inbound_transfer, external_id: transfer_id
@@ -32,13 +39,6 @@ describe Transfers::AddEnrollResponse, dbclean: :after_each do
     it "should update the inbound transfer record" do
       updated_application = Aces::InboundTransfer.find(@inbound_transfer.id)
       expect(updated_application.application_identifier).to eq "5678"
-    end
-  end
-
-  context "failure" do
-    it "should fail if the inbound transfer record does not exist" do
-      result = operation.call(params.stringify_keys)
-      expect(result.success?).not_to be_truthy
     end
   end
 end
