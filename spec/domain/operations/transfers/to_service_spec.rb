@@ -128,4 +128,23 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
     end
   end
 
+  context 'failure' do
+    context 'with no applicants applying for coverage' do
+      before do
+        payload = JSON.parse(aces_hash)
+        non_applicants = payload.dig("family", "magi_medicaid_applications", "applicants").each do |applicant|
+          applicant["is_applying_coverage"] = false
+        end
+        payload["family"]["magi_medicaid_applications"]["applicants"] = non_applicants
+        params = payload.to_json
+        @result = transfer.call(params)
+      end
+
+      it 'should fail when no applicants are applying for coverage' do
+        error_message = @result.failure[:failure]
+        expect(error_message).to eq "Application does not contain any applicants applying for coverage."
+      end
+    end
+  end
+
 end

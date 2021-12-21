@@ -14,6 +14,7 @@ module Transfers
     # @return [Dry::Result]
     def call(params, transfer_id = "")
       transfer_id = yield record_transfer(params, transfer_id)
+      _valid_applicants = yield validate_applicants(params, transfer_id)
       xml = yield generate_xml(params, transfer_id)
       validated = yield schema_validation(xml, transfer_id)
       # validated  = yield business_validation(validated)
@@ -39,6 +40,21 @@ module Transfers
       else
         Success(transfer_id)
       end
+    end
+
+    def validate_applicants(params, transfer_id)
+      payload = JSON.parse(params)
+      applicants = payload.dig("family", "magi_medicaid_applications", "applicants")
+      result = applicants&.each_with_object([]) do |applicant, collect|
+        collect << applicant["is_applying_coverage"]
+      end
+      return Success("Valid applicants.") if result.include?(true)
+
+      error_result = {
+        transfer_id: transfer_id,
+        failure: "Application does not contain any applicants applying for coverage."
+      }
+      Failure(error_result)
     end
 
     def generate_xml(params, transfer_id)
