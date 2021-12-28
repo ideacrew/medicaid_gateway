@@ -22,7 +22,7 @@ module Subscribers
           mec_check = Aces::MecCheck.find(mc_id)
           mec_check.update!(failure: error)
         end
-        nack(delivery_info.delivery_tag)
+        ack(delivery_info.delivery_tag)
         logger.debug "application_submitted_subscriber_message; nacked due to: #{error}"
       end
     rescue StandardError => e
@@ -35,7 +35,7 @@ module Subscribers
           failure: e
         }
       )
-      nack(delivery_info.delivery_tag)
+      ack(delivery_info.delivery_tag)
       logger.debug "application_submitted_subscriber_error: backtrace: #{e.backtrace}; nacked"
     end
   end
