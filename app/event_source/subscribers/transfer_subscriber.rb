@@ -34,8 +34,8 @@ module Subscribers
           outbound_transfer = Aces::Transfer.find(transfer_id)
           outbound_transfer.update!(failure: error)
         end
-        nack(delivery_info.delivery_tag)
-        logger.debug "application_submitted_subscriber_message; nacked due to:#{errors}"
+        ack(delivery_info.delivery_tag)
+        logger.debug "application_submitted_subscriber_message; acked (nacked) due to:#{errors}"
       end
     rescue StandardError => e
       # In the case of subscriber error, saving details for reporting purposes, repurposing existing fields.
@@ -53,8 +53,8 @@ module Subscribers
         inbound_transfer = Aces::InboundTransfer.where(external_id: ib_transfer_id).last
         inbound_transfer&.update!(failure: true)
       end
-      nack(delivery_info.delivery_tag)
-      logger.debug "application_submitted_subscriber_error: baacktrace: #{e.backtrace}; nacked"
+      ack(delivery_info.delivery_tag)
+      logger.debug "application_submitted_subscriber_error: baacktrace: #{e.backtrace}; acked (nacked)"
     end
   end
 end
