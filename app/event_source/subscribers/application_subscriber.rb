@@ -24,11 +24,11 @@ module Subscribers
       else
         errors = result.failure.errors.to_h
         ack(delivery_info.delivery_tag)
-        logger.debug "application_submitted_subscriber_message; nacked due to:#{errors}"
+        logger.debug "application_submitted_subscriber_message; acked (nacked) due to:#{errors}"
       end
     rescue StandardError => e
       ack(delivery_info.delivery_tag)
-      logger.debug "application_submitted_subscriber_error: baacktrace: #{e.backtrace}; nacked"
+      logger.debug "application_submitted_subscriber_error: baacktrace: #{e.backtrace}; acked (nacked)"
     end
 
     # subscribe(:on_enroll_iap_applications) do |_delivery_info, _metadata, request|
