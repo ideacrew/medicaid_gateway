@@ -199,7 +199,7 @@ RSpec.shared_context 'cms ME me_test_scenarios test_twelve', :shared_context => 
         "job_coverage_ended_in_past_3_months" => true,
         "job_coverage_end_date" => nil,
         "medicaid_and_chip" => {
-          "not_eligible_in_last_90_days" => true, "denied_on" => nil, "ended_as_change_in_eligibility" => false, "hh_income_or_size_changed" => false, "medicaid_or_chip_coverage_end_date" => nil, "ineligible_due_to_immigration_in_last_5_years" => false, "immigration_status_changed_since_ineligibility" => false
+          "not_eligible_in_last_90_days" => false, "denied_on" => nil, "ended_as_change_in_eligibility" => true, "hh_income_or_size_changed" => false, "medicaid_or_chip_coverage_end_date" => nil, "ineligible_due_to_immigration_in_last_5_years" => false, "immigration_status_changed_since_ineligibility" => false
         },
         "other_health_service" => {
           "has_received" => false, "is_eligible" => false

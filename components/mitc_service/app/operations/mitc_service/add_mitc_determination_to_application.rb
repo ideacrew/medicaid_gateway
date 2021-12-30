@@ -127,7 +127,14 @@ module MitcService
       end
     end
 
+    def applicant_is_not_applying_coverage?(mm_app_hash, member_identifier)
+      applicant = mm_app_hash[:applicants].detect { |appli_hash| appli_hash[:person_hbx_id] == member_identifier }
+      !applicant[:is_applying_coverage]
+    end
+
     def bypass_mitc_determination?(mm_app_hash, member_identifier)
+      return if applicant_is_not_applying_coverage?(mm_app_hash, member_identifier)
+
       mm_applicant = applicant_by_reference(mm_app_hash, member_identifier)
       medicaid_and_chip = mm_applicant[:medicaid_and_chip]
       return false if medicaid_and_chip.blank?
