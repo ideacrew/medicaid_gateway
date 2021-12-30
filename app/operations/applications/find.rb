@@ -22,9 +22,9 @@ module Applications
     private
 
     def find(application_identifier)
-      application = ::Medicaid::Application.find_by(application_identifier: application_identifier) rescue nil
-
-      application ? Success(application) : Failure("Application not found for #{application_identifier}")
+      Success(::Medicaid::Application.find_by!(application_identifier: application_identifier))
+    rescue StandardError
+      Failure("Application not found for #{application_identifier}")
     end
   end
 end

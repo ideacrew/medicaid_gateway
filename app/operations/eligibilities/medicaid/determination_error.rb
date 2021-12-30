@@ -24,9 +24,7 @@ module Eligibilities
       private
 
       def publish_event(error_message)
-        event("events.determinations.error",
-              attributes: { error: error_message }
-        ).publish
+        event("events.determinations.error", attributes: { error: error_message }).publish
       end
 
       # We need to find the app that may have already been created or
