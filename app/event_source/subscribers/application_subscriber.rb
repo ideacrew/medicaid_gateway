@@ -22,11 +22,13 @@ module Subscribers
         ack(delivery_info.delivery_tag)
         logger.debug "application_submitted_subscriber_message; acked"
       else
-        errors = result.failure.errors.to_h
+        failure = result.failure
+        ::Eligibilities::Medicaid::DeterminationError.new.call(failure, payload)
         ack(delivery_info.delivery_tag)
-        logger.debug "application_submitted_subscriber_message; acked (nacked) due to:#{errors}"
+        logger.debug "application_submitted_subscriber_message; acked (nacked) due to:#{failure.errors.to_h}"
       end
     rescue StandardError => e
+      ::Eligibilities::Medicaid::DeterminationError.new.call(e, payload)
       ack(delivery_info.delivery_tag)
       logger.debug "application_submitted_subscriber_error: baacktrace: #{e.backtrace}; acked (nacked)"
     end
