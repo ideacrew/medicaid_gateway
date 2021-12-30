@@ -128,7 +128,7 @@ RSpec.shared_context 'cms ME me_test_scenarios test_twelve', :shared_context => 
           "amount" => 0, "taxable_interest" => 0, "tax_exempt_interest" => 0, "taxable_refunds" => 0, "alimony" => 0, "capital_gain_or_loss" => 0, "pensions_and_annuities_taxable_amount" => 0, "farm_income_or_loss" => 0, "unemployment_compensation" => 0, "other_income" => 0, "magi_deductions" => 0, "adjusted_gross_income" => 0, "deductible_part_of_self_employment_tax" => 0, "ira_deduction" => 0, "student_loan_interest_deduction" => 0, "tution_and_fees" => 0, "other_magi_eligible_income" => 0
         },
         "mitc_relationships" => [{
-          "other_id" => 1640813885682948,
+          "other_id" => 1_640_813_885_682_948,
           "attest_primary_responsibility" => "Y",
           "relationship_code" => "03"
         }],
@@ -250,7 +250,7 @@ RSpec.shared_context 'cms ME me_test_scenarios test_twelve', :shared_context => 
           "amount" => 0, "taxable_interest" => 0, "tax_exempt_interest" => 0, "taxable_refunds" => 0, "alimony" => 0, "capital_gain_or_loss" => 0, "pensions_and_annuities_taxable_amount" => 0, "farm_income_or_loss" => 0, "unemployment_compensation" => 0, "other_income" => 0, "magi_deductions" => 0, "adjusted_gross_income" => 0, "deductible_part_of_self_employment_tax" => 0, "ira_deduction" => 0, "student_loan_interest_deduction" => 0, "tution_and_fees" => 0, "other_magi_eligible_income" => 0
         },
         "mitc_relationships" => [{
-          "other_id" => 1640813631642881,
+          "other_id" => 1_640_813_631_642_881,
           "attest_primary_responsibility" => "N",
           "relationship_code" => "04"
         }],
@@ -303,18 +303,18 @@ RSpec.shared_context 'cms ME me_test_scenarios test_twelve', :shared_context => 
       }, "mitc_households" => [{
         "household_id" => "1",
         "people" => [{
-          "person_id" => 1640813631642881
+          "person_id" => 1_640_813_631_642_881
         }, {
-          "person_id" => 1640813885682948
+          "person_id" => 1_640_813_885_682_948
         }]
       }], "mitc_tax_returns" => [{
         "filers" => [{
-          "person_id" => 1640813631642881
+          "person_id" => 1_640_813_631_642_881
         }],
         "dependents" => []
       }, {
         "filers" => [{
-          "person_id" => 1640813885682948
+          "person_id" => 1_640_813_885_682_948
         }],
         "dependents" => []
       }], "submitted_at" => today.to_s
@@ -333,15 +333,15 @@ RSpec.shared_context 'cms ME me_test_scenarios test_twelve', :shared_context => 
   let(:mitc_string_response) do
     {
       "Determination Date" => today.to_s, "Applicants" => [{
-        "Person ID" => 1640813631642881,
+        "Person ID" => 1_640_813_631_642_881,
         "Medicaid Household" => {
-          "People" => [1640813631642881], "MAGI" => 0, "MAGI as Percentage of FPL" => 0, "Size" => 1
+          "People" => [1_640_813_631_642_881], "MAGI" => 0, "MAGI as Percentage of FPL" => 0, "Size" => 1
         },
         "Medicaid Eligible" => "Y",
         "CHIP Eligible" => "N",
         "CHIP Ineligibility Reason" => ["Applicant did not meet the requirements for any CHIP category"],
         "Category" => "Parent Caretaker Category",
-        "Category Threshold" => 13524,
+        "Category Threshold" => 13_524,
         "CHIP Category" => "None",
         "CHIP Category Threshold" => 0,
         "Determinations" => {
@@ -403,7 +403,7 @@ RSpec.shared_context 'cms ME me_test_scenarios test_twelve', :shared_context => 
         },
         "Other Outputs" => {
           "Qualified Children List" => [{
-            "Person ID" => 1640813885682948,
+            "Person ID" => 1_640_813_885_682_948,
             "Determinations" => {
               "Dependent Age" => {
                 "Indicator" => "Y"
