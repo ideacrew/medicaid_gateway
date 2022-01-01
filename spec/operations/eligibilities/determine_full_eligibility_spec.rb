@@ -35,6 +35,10 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
 
   # Dwayne is UQHP eligible and eligible for non_magi_reasons
   context 'cms simle test_case_a' do
+    before do
+      allow(Date).to receive(:today).and_return(Date.new(2021, 12, 1))
+    end
+
     include_context 'cms ME simple_scenarios test_case_a'
 
     before do
@@ -277,6 +281,10 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
 
   # Gerald is APTC and CSR eligible
   context 'cms simle test_case_d' do
+    before do
+      allow(Date).to receive(:today).and_return(Date.new(2021, 12, 1))
+    end
+
     include_context 'cms ME simple_scenarios test_case_d'
 
     before do
@@ -1703,6 +1711,10 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
 
   # TaxHousehold effective date calculation when all MedicaidChip or MagiMedicaid
   context 'cms me_test_scenarios test_eight state ME' do
+    before do
+      allow(Date).to receive(:today).and_return(Date.new(2021, 12, 1))
+    end
+
     include_context 'cms ME me_test_scenarios test_eight'
 
     before do

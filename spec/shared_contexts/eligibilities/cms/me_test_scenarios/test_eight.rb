@@ -2,8 +2,8 @@
 
 # rubocop:disable Layout/LineLength
 RSpec.shared_context 'cms ME me_test_scenarios test_eight', :shared_context => :metadata do
-  let(:assistance_year) { Date.today.year.next }
-  let(:oe_start_on) { Date.today.beginning_of_month }
+  let(:assistance_year) { 2022 }
+  let(:oe_start_on) { Date.new(2021, 11, 1) }
   let(:aptc_effective_date) { Date.new(assistance_year) }
 
   let(:app_params) do
