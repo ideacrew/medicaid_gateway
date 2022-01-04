@@ -1,7 +1,17 @@
 <div class="mt-2 mb-3">
-    <label for="start_on">Start On:</label>
-    <input type="date" id="start_on" name="start_on" value="<%= start_on %>" data-session="<%= session_name %>start" data-controller="report" data-action="report#change_date">
-    <label for="end_on" class="ms-2">End On:</label>
-    <input type="date" id="end_on" name="end_on" value="<%= end_on %>" data-session="<%= session_name %>end" data-controller="report" data-action="report#change_date">
+    <!-- COMMENTED CODE REQUIRES STIMULUS REFLEX AND ITS DEPENDENCIES -->
+    <%# <label for="start_on">Start On:</label> %>
+    <%# <input type="date" id="start_on" name="start_on" value="<%= start_on " data-session="<%= session_name start" data-controller="report" data-action="report#change_date"> %>
+    <%# <label for="end_on" class="ms-2">End On:</label> %>
+    <%# <input type="date" id="end_on" name="end_on" value="<%= end_on " data-session="<%= session_name end" data-controller="report" data-action="report#change_date"> %>
+
+    <form class="d-inline"> 
+        <label for="start_on">Start On:</label>
+        <input type="date" id="start_on" name="start_on" value="<%= start_on %>" action=<%= action %> method="get" data-remote="true">
+    </form>
+    <form class="d-inline"> 
+        <label for="end_on">End On:</label>
+        <input type="date" id="end_on" name="end_on" value="<%= end_on %>" action=<%= action %> method="get" data-remote="true">
+    </form>
     <p class="d-inline ms-1"><%= "as of #{Time.current.to_formatted_s(:time)} UTC" if end_on.today? %></p>
 </div>

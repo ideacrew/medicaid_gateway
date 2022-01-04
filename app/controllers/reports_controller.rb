@@ -25,8 +25,18 @@ class ReportsController < ApplicationController
     @end_on = end_on || session[:ma_end] || Date.today
     ordered_applications = applications.order(updated_at: :desc)
     @applications = ordered_applications.page params[:page]
-    @application_id = params.fetch(:app) if params.key?(:app)
-    @applications = ordered_applications.where(application_identifier: params.fetch(:app)).page params[:page] if params.key?(:app)
+    url = "#{medicaid_application_check_reports_path}/?start_on=#{@start_on}&end_on=#{@end_on}"
+
+    if params.key?(:app)
+      @application_id = params.fetch(:app)
+      @applications = ordered_applications.where(application_identifier: @application_id).page params[:page]
+      url_with_app = url + "&app=#{@application_id}"
+    end
+
+    respond_to do |format|
+      format.html
+      format.js {render :js => "window.location = '#{url_with_app || url}'"}
+    end
   end
 
   def account_transfers
@@ -75,11 +85,13 @@ class ReportsController < ApplicationController
   end
 
   def start_on
-    Date.strptime(params.fetch(:start_on), "%m/%d/%Y") if params.key?(:start_on)
+    # Date.strptime(params.fetch(:start_on), "%m/%d/%Y") if params.key?(:start_on)
+    Date.strptime(params.fetch(:start_on), "%Y-%m-%d") if params.key?(:start_on)
   end
 
   def end_on
-    Date.strptime(params.fetch(:end_on), "%m/%d/%Y") if params.key?(:end_on)
+    # Date.strptime(params.fetch(:end_on), "%m/%d/%Y") if params.key?(:end_on)
+    Date.strptime(params.fetch(:end_on), "%Y-%m-%d") if params.key?(:end_on)
   end
 
   def range
