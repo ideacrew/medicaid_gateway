@@ -14,5 +14,8 @@
   "version": "0.1.0",
   "devDependencies": {
     "webpack-dev-server": "^3"
+  },
+  "scripts": {
+    "build:docker": "docker build -f .docker/production/Dockerfile.gha -t mg-test --network=\"host\" ."
   }
 }

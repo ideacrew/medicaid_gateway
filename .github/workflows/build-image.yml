@@ -142,7 +142,6 @@ jobs:
           build-args: |
             ENROLL_DB_HOST=172.17.0.1
             RABBITMQ_URL=amqp://172.17.0.1:5672
-            RABBITMQ_HOST=amqp://172.17.0.1
 
       - name: Scan Docker image
         if: github.event_name != 'pull_request'
