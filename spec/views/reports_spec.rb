@@ -35,7 +35,7 @@ RSpec.describe "Reports", type: :view, dbclean: :after_each do
 
     it "accepts and uses date params" do
       old_transfer = create :transfer, created_at: 1.day.ago, updated_at: 1.day.ago
-      start_on = 2.days.ago.strftime('%m/%d/%Y')
+      start_on = 2.days.ago.strftime('%Y-%m-%d')
       visit "/reports/events?start_on=#{start_on}"
 
       expect(page).to have_content(old_transfer.application_identifier)
@@ -68,7 +68,7 @@ RSpec.describe "Reports", type: :view, dbclean: :after_each do
 
     it "accepts and uses date params"  do
       old_application = create :application, created_at: 1.day.ago, updated_at: 1.day.ago
-      start_on = 2.days.ago.strftime('%m/%d/%Y')
+      start_on = 2.days.ago.strftime('%Y-%m-%d')
       visit "/reports/medicaid_application_check?start_on=#{start_on}"
       expect(page).to have_content(old_application.application_identifier)
     end
@@ -92,7 +92,7 @@ RSpec.describe "Reports", type: :view, dbclean: :after_each do
 
     it "accepts and uses date params" do
       old_transfer = create :transfer, created_at: 1.day.ago, updated_at: 1.day.ago
-      start_on = 2.days.ago.strftime('%m/%d/%Y')
+      start_on = 2.days.ago.strftime('%Y-%m-%d')
       visit "/reports/account_transfers?start_on=#{start_on}"
 
       expect(page).to have_content(old_transfer.application_identifier)
@@ -116,7 +116,7 @@ RSpec.describe "Reports", type: :view, dbclean: :after_each do
 
     it "accepts and uses date params" do
       old_transfer = create :inbound_transfer, created_at: 1.day.ago, updated_at: 1.day.ago, application_identifier: 'shjdfgdfhsjfg'
-      start_on = 2.days.ago.strftime('%m/%d/%Y')
+      start_on = 2.days.ago.strftime('%Y-%m-%d')
       visit "/reports/account_transfers_to_enroll?start_on=#{start_on}"
 
       expect(page).to have_content(old_transfer.application_identifier)
@@ -139,7 +139,7 @@ RSpec.describe "Reports", type: :view, dbclean: :after_each do
 
     it "accepts and uses date params" do
       old_mc = create :mec_check, created_at: 1.day.ago, updated_at: 1.day.ago
-      start_on = 2.days.ago.strftime('%m/%d/%Y')
+      start_on = 2.days.ago.strftime('%Y-%m-%d')
       visit "/reports/mec_checks?start_on=#{start_on}"
 
       expect(page).to have_content(old_mc.application_identifier)

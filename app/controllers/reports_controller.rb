@@ -14,6 +14,12 @@ class ReportsController < ApplicationController
     @inbound_transfers_total = inbound_transfers.count
     @determinations_total = applications.count
     @mec_checks_total = checks.count
+
+    url = "#{events_reports_path}/?start_on=#{@start_on}&end_on=#{@end_on}"
+    respond_to do |format|
+      format.html
+      format.js {render :js => "window.location = '#{url}'"}
+    end
   end
 
   def medicaid_applications
@@ -25,8 +31,8 @@ class ReportsController < ApplicationController
     @end_on = end_on || session[:ma_end] || Date.today
     ordered_applications = applications.order(updated_at: :desc)
     @applications = ordered_applications.page params[:page]
-    url = "#{medicaid_application_check_reports_path}/?start_on=#{@start_on}&end_on=#{@end_on}"
 
+    url = "#{medicaid_application_check_reports_path}/?start_on=#{@start_on}&end_on=#{@end_on}"
     if params.key?(:app)
       @application_id = params.fetch(:app)
       @applications = ordered_applications.where(application_identifier: @application_id).page params[:page]
@@ -45,6 +51,12 @@ class ReportsController < ApplicationController
     @transfers = transfers.order(updated_at: :desc).page params[:page]
     @success_count = transfers.select(&:successful?).count
     @fail_count = transfers.count - @success_count
+
+    url = "#{account_transfers_reports_path}/?start_on=#{@start_on}&end_on=#{@end_on}"
+    respond_to do |format|
+      format.html
+      format.js {render :js => "window.location = '#{url}'"}
+    end
   end
 
   def account_transfers_to_enroll
@@ -53,6 +65,12 @@ class ReportsController < ApplicationController
     @transfers = inbound_transfers.order(updated_at: :desc).page params[:page]
     @success_count = inbound_transfers.select(&:successful?).count
     @fail_count = inbound_transfers.count - @success_count
+
+    url = "#{account_transfers_to_enroll_reports_path}/?start_on=#{@start_on}&end_on=#{@end_on}"
+    respond_to do |format|
+      format.html
+      format.js {render :js => "window.location = '#{url}'"}
+    end
   end
 
   def mec_checks
@@ -61,6 +79,12 @@ class ReportsController < ApplicationController
     @checks = checks.order(updated_at: :desc).page params[:page]
     @success_count = checks.select(&:successful?).count
     @fail_count = checks.count - @success_count
+
+    url = "#{mec_checks_reports_path}/?start_on=#{@start_on}&end_on=#{@end_on}"
+    respond_to do |format|
+      format.html
+      format.js {render :js => "window.location = '#{url}'"}
+    end
   end
 
   def transfer_summary
@@ -74,6 +98,12 @@ class ReportsController < ApplicationController
     @at_received_failure = @at_received_total - @at_received_successful
     @sent_from_cms = transfers.where(from_cms: true).count
     @received_from_cms = inbound_transfers.where(to_enroll: false).count
+
+    url = "#{transfer_summary_reports_path}/?start_on=#{@start_on}&end_on=#{@end_on}"
+    respond_to do |format|
+      format.html
+      format.js {render :js => "window.location = '#{url}'"}
+    end
   end
 
   private
