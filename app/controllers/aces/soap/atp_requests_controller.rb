@@ -5,7 +5,7 @@ module Aces
     # Accepts and processes requests to OpenHBX that originate from the ACES
     # system.
     class AtpRequestsController < ApplicationController
-      # skip_before_action :verify_authenticity_token, only: [:wsdl, :service]
+      skip_before_action :verify_authenticity_token, only: [:wsdl, :service]
       # skip_before_action :authenticate_user!, only: [:wsdl, :service]
 
       def wsdl
