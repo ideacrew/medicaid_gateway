@@ -139,6 +139,11 @@ jobs:
           # More: https://github.com/moby/buildkit#--export-cache-options
           # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+          build-args: |
+            MEDICAID_GATEWAY_DB_HOST_DEFAULT=172.17.0.1
+            RABBITMQ_URL_DEFAULT=amqp://172.17.0.1:5672
+            RABBITMQ_HOST_DEFAULT=amqp://172.17.0.1
+            RABBITMQ_URL_EVENT_SOURCE_DEFAULT=amqp://172.17.0.1
 
       - name: Scan Docker image
         if: github.event_name != 'pull_request'

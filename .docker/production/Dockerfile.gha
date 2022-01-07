@@ -49,25 +49,6 @@ ENV BUNDLE_RETRY=3
 
 ENV LANG=C.UTF-8
 
-# GHA Approved Config
-ARG MEDICAID_GATEWAY_DB_HOST_DEFAULT=172.17.0.1
-ARG MEDICAID_GATEWAY_DB_PORT_DEFAULT=27017
-ARG MEDICAID_GATEWAY_DB_NAME_DEFAULT=medicaid_gateway_production
-ARG RABBITMQ_URL_DEFAULT=amqp://172.17.0.1:5672
-ARG RABBITMQ_URL_EVENT_SOURCE_DEFAULT=amqp://172.17.0.1
-ARG RABBITMQ_HOST_DEFAULT=amqp://172.17.0.1
-ARG RABBITMQ_PORT_DEFAULT=5672
-ARG RABBITMQ_VHOST_DEFAULT=event_source
-
-ENV MEDICAID_GATEWAY_DB_HOST=$MEDICAID_GATEWAY_DB_HOST_DEFAULT
-ENV MEDICAID_GATEWAY_DB_PORT=$MEDICAID_GATEWAY_DB_PORT_DEFAULT
-ENV MEDICAID_GATEWAY_DB_NAME=$MEDICAID_GATEWAY_DB_NAME_DEFAULT
-ENV RABBITMQ_URL=$RABBITMQ_URL_DEFAULT
-ENV RABBITMQ_URL_EVENT_SOURCE=$RABBITMQ_URL_EVENT_SOURCE_DEFAULT
-ENV RABBITMQ_HOST=$RABBITMQ_HOST_DEFAULT
-ENV RABBITMQ_PORT=$RABBITMQ_PORT_DEFAULT
-ENV RABBITMQ_VHOST=$RABBITMQ_VHOST_DEFAULT
-
 ENV HOME=/medicaid_gateway
 
 ENV PATH=$HOME/bin:$BUNDLE_BIN:$GEM_HOME/gems/bin:$PATH
@@ -84,6 +65,9 @@ RUN mkdir $HOME \
 
 # Configure app home directory
 WORKDIR $HOME
+
+ENV RAILS_ENV=production
+ENV NODE_ENV=production
 
 ###############################################################################
 ###       Builder. Adds node and Yarn. Not necessary in production.         ###
@@ -125,19 +109,38 @@ RUN apt-get update -qq \
 
 FROM builder as prod_gems_and_assets
 
-COPY --chown=nonroot:nonroot ./Gemfile $HOME/Gemfile
-COPY --chown=nonroot:nonroot ./Gemfile.lock $HOME/Gemfile.lock
+# GHA Approved Config
+ARG MEDICAID_GATEWAY_DB_HOST_DEFAULT=localhost
+ARG MEDICAID_GATEWAY_DB_PORT_DEFAULT=27017
+ARG MEDICAID_GATEWAY_DB_NAME_DEFAULT=medicaid_gateway_production
+ARG RABBITMQ_URL_DEFAULT=amqp://localhost:5672
+ARG RABBITMQ_URL_EVENT_SOURCE_DEFAULT=amqp://localhost
+ARG RABBITMQ_HOST_DEFAULT=amqp://localhost
+ARG RABBITMQ_PORT_DEFAULT=5672
+ARG RABBITMQ_VHOST_DEFAULT=event_source
+ENV MEDICAID_GATEWAY_DB_HOST=$MEDICAID_GATEWAY_DB_HOST_DEFAULT
+ENV MEDICAID_GATEWAY_DB_PORT=$MEDICAID_GATEWAY_DB_PORT_DEFAULT
+ENV MEDICAID_GATEWAY_DB_NAME=$MEDICAID_GATEWAY_DB_NAME_DEFAULT
+ENV RABBITMQ_URL=$RABBITMQ_URL_DEFAULT
+ENV RABBITMQ_URL_EVENT_SOURCE=$RABBITMQ_URL_EVENT_SOURCE_DEFAULT
+ENV RABBITMQ_HOST=$RABBITMQ_HOST_DEFAULT
+ENV RABBITMQ_PORT=$RABBITMQ_PORT_DEFAULT
+ENV RABBITMQ_VHOST=$RABBITMQ_VHOST_DEFAULT
+
+COPY --chown=nonroot:nonroot package.json $HOME/
+COPY --chown=nonroot:nonroot yarn.lock $HOME/
+
+RUN yarn install \
+  && (rm -rf /tmp/* || true)
+
 
 COPY --chown=nonroot:nonroot ./components/mitc_service/Gemfile $HOME/components/mitc_service/Gemfile
 COPY --chown=nonroot:nonroot ./components/mitc_service/Gemfile.lock $HOME/components/mitc_service/Gemfile.lock
 COPY --chown=nonroot:nonroot ./components/mitc_service/mitc_service.gemspec $HOME/components/mitc_service/mitc_service.gemspec
 COPY --chown=nonroot:nonroot ./components/mitc_service/lib/mitc_service/version.rb $HOME/components/mitc_service/lib/mitc_service/version.rb
 
-COPY --chown=nonroot:nonroot package.json $HOME/
-COPY --chown=nonroot:nonroot yarn.lock $HOME/
-
-ENV RAILS_ENV=production
-ENV NODE_ENV=production
+COPY --chown=nonroot:nonroot ./Gemfile $HOME/Gemfile
+COPY --chown=nonroot:nonroot ./Gemfile.lock $HOME/Gemfile.lock
 
 RUN apt-get update -qq \
   && apt-get install -yq --no-install-recommends \
@@ -149,16 +152,10 @@ RUN apt-get update -qq \
 RUN bundle config set --local without 'development test' \
   && bundle install
 
-RUN yarn install \
-  && (rm -rf /tmp/* || true)
-
 COPY --chown=nonroot:nonroot . $HOME
 COPY --chown=nonroot:nonroot ./.docker/config/master.key $HOME/config
 COPY --chown=nonroot:nonroot ./.docker/config/credentials.yml.enc $HOME/config
 COPY --chown=nonroot:nonroot ./.docker/config/mongoid.yml $HOME/config
-
-ENV RAILS_ENV=production
-ENV NODE_ENV=production
 
 RUN bundle exec rake assets:precompile
 
@@ -185,6 +182,3 @@ COPY --chown=nonroot:nonroot ./.docker/config/credentials.yml.enc $HOME/config
 COPY --chown=nonroot:nonroot ./.docker/config/master.key $HOME/config
 
 USER nonroot
-
-ENV RAILS_ENV=production
-ENV NODE_ENV=production
