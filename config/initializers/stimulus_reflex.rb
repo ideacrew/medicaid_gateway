@@ -19,11 +19,11 @@ StimulusReflex.configure do |config|
   # eg. if your connection is `identified_by :current_user` and your User model
   # has an email attribute, you can access r.email (it will display `-` if the user isn't logged in)
   # Learn more at: https://docs.stimulusreflex.com/troubleshooting#stimulusreflex-logging
-
-  config.logging = proc {
-    "[#{session_id}] #{operation_counter.magenta} #{reflex_info.green} -> #{selector.cyan} via #{mode} Morph (#{operation.yellow})"
-  }
-
+  if ENV["MG_DEBUG"]
+    config.logging = proc {
+      "[#{session_id}] #{operation_counter.magenta} #{reflex_info.green} -> #{selector.cyan} via #{mode} Morph (#{operation.yellow})"
+    }
+  end
   # Optimized for speed, StimulusReflex doesn't enable Rack middleware by default.
   # If you are using Page Morphs and your app uses Rack middleware to rewrite part of the request path,
   # you must enable those middleware modules in StimulusReflex.

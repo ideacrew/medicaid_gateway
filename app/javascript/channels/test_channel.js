@@ -1,11 +1,14 @@
 import consumer from './consumer'
 
-consumer.subscriptions.create('TestChannel', {
-  connected () {
-    this.send({ message: 'Client is live' })
-  },
+// TestChannel is created only in lower envs for debugging purposes
+if (String(process.env.MG_DEBUG) === 'true') {
+    consumer.subscriptions.create('TestChannel', {
+        connected() {
+            this.send({ message: 'Client is live' })
+        },
 
-  received (data) {
-    console.log(data)
-  }
-})
+        received(data) {
+            console.log(data)
+        }
+    })
+}
