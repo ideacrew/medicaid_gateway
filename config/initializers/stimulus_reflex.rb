@@ -20,8 +20,9 @@ StimulusReflex.configure do |config|
   # has an email attribute, you can access r.email (it will display `-` if the user isn't logged in)
   # Learn more at: https://docs.stimulusreflex.com/troubleshooting#stimulusreflex-logging
 
-  # config.logging = proc { "[#{session_id}] #{operation_counter.magenta} #{reflex_info.green} -> #{selector.cyan} via #{mode} Morph
-  # (#{operation.yellow})" }
+  config.logging = proc {
+    "[#{session_id}] #{operation_counter.magenta} #{reflex_info.green} -> #{selector.cyan} via #{mode} Morph (#{operation.yellow})"
+  }
 
   # Optimized for speed, StimulusReflex doesn't enable Rack middleware by default.
   # If you are using Page Morphs and your app uses Rack middleware to rewrite part of the request path,
