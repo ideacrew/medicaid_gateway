@@ -7,7 +7,7 @@ require 'aca_entities/magi_medicaid/contracts/federal_poverty_level_contract'
 require 'aca_entities/magi_medicaid/federal_poverty_level'
 require 'aca_entities/operations/magi_medicaid/create_federal_poverty_level'
 
-describe Applications::Create, dbclean: :after_each do
+describe Applications::CreateOrUpdate, dbclean: :after_each do
   include_context 'setup magi_medicaid application with two applicants'
 
   let(:application_request_payload) do
@@ -30,6 +30,28 @@ describe Applications::Create, dbclean: :after_each do
     end
 
     it 'should create only one Application' do
+      expect(::Medicaid::Application.all.count).to eq(1)
+    end
+
+    it 'should persisted the data' do
+      expect(@result.success.persisted?).to eq true
+    end
+  end
+
+  context 'update application' do
+    before do
+      ::Medicaid::Application.new(application_identifier: application_request_payload.to_h[:hbx_id].to_s).save!
+
+      @result = subject.call({ application_identifier: application_request_payload.to_h[:hbx_id].to_s,
+                               application_request_payload: application_request_payload.to_json,
+                               medicaid_request_payload: medicaid_request_payload.to_json })
+    end
+
+    it 'should return success' do
+      expect(@result).to be_success
+    end
+
+    it 'should update existing Application and not create new applications' do
       expect(::Medicaid::Application.all.count).to eq(1)
     end
 

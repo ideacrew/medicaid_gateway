@@ -4,18 +4,18 @@ require 'dry/monads'
 require 'dry/monads/do'
 
 module Applications
-  # Operation creates persitance application object with
+  # Operation creates or updates an application object with
   # application_identifier, application_request_payload & medicaid_request_payload
   # params only.
-  class Create
+  class CreateOrUpdate
     include Dry::Monads[:result, :do]
 
     # @param [Hash] opts The options to create application object
     # @option opts [Hash] :params Medicaid Application params
     # @return [Dry::Monads::Result]
     def call(params)
-      values = yield validate_params(params)
-      application = yield persist(values)
+      values      = yield validate_params(params)
+      application = yield create_or_update(values)
 
       Success(application)
     end
@@ -32,8 +32,10 @@ module Applications
       end
     end
 
-    def persist(values)
-      application = ::Medicaid::Application.new(values)
+    # Create or Update Medicaid Application
+    def create_or_update(values)
+      application = ::Medicaid::Application.where(application_identifier: values[:application_identifier]).first || ::Medicaid::Application.new
+      application.assign_attributes(values)
 
       if application.save
         Success(application)
