@@ -21,6 +21,7 @@
     "sarif",
     "slackapi",
     "vhost",
-    "YELLR"
+    "YELLR",
+    "rabbitmq"
   ]
 }
