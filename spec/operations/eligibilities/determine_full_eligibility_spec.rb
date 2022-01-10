@@ -2072,6 +2072,52 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     end
   end
 
+  # Ichra Affordable test
+  context 'cms me_test_scenarios test_thirteen state ME' do
+    include_context 'cms ME me_test_scenarios test_thirteen'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @new_thhms = @application.tax_households.flat_map(&:tax_household_members)
+      @thh = @application.tax_households.first
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    context 'for persistence' do
+      before do
+        medicaid_app.reload
+      end
+
+      it 'should match with hbx_id' do
+        expect(medicaid_app.application_identifier).to eq(application_entity.hbx_id)
+      end
+
+      it 'should match with application request payload' do
+        expect(medicaid_app.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should match with application response payload' do
+        expect(medicaid_app.application_response_payload).to eq(@application.to_json)
+      end
+
+      it 'should match with medicaid request payload' do
+        expect(medicaid_app.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+    end
+  end
+
   # Parent is getting APTC/CSR as expected. Child is getting UQHP instead of APTC/CSR
   # when a person answered 'yes' to Will this person file taxes for 2021? *
   # And answered 'no' to Will this person be claimed as a tax dependent for 2021? *
