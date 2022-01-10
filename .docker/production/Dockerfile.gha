@@ -133,7 +133,6 @@ COPY --chown=nonroot:nonroot yarn.lock $HOME/
 RUN yarn install \
   && (rm -rf /tmp/* || true)
 
-
 COPY --chown=nonroot:nonroot ./components/mitc_service/Gemfile $HOME/components/mitc_service/Gemfile
 COPY --chown=nonroot:nonroot ./components/mitc_service/Gemfile.lock $HOME/components/mitc_service/Gemfile.lock
 COPY --chown=nonroot:nonroot ./components/mitc_service/mitc_service.gemspec $HOME/components/mitc_service/mitc_service.gemspec

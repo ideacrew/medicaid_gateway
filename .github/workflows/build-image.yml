@@ -5,10 +5,6 @@ on:
   push:
     branches:
       - "trunk"
-      - "release_*"
-      - "dockerfile-gha"
-    tags:
-      - "v*"
   pull_request:
     branches:
       - "trunk"
@@ -39,7 +35,7 @@ jobs:
         id: prep
         run: |
           SHORT_SHA=$(echo $GITHUB_SHA | head -c7)
-          TAG=${{ env.GIT_BRANCH_NAME }}-$(echo $GITHUB_SHA | head -c7)
+          TAG=$(echo $GITHUB_SHA | head -c7)
           IMAGE="public.ecr.aws/ideacrew/medicaid_gateway"
           echo ::set-output name=tagged_image::${IMAGE}:${TAG}
           echo ::set-output name=tag::${TAG}
@@ -48,7 +44,7 @@ jobs:
           echo ::set-output name=short_sha::$SHORT_SHA
 
   # Uses buildx to build and push the image
-  build-and-upload-image-v2:
+  build-and-upload-image:
     needs: [prep]
     runs-on: ubuntu-latest
     services:
@@ -155,11 +151,11 @@ jobs:
           fail-build: false
           severity-cutoff: critical
 
-      # - name: upload Anchore scan SARIF report
-      #   if: github.event_name != 'pull_request'
-      #   uses: github/codeql-action/upload-sarif@v1
-      #   with:
-      #     sarif_file: ${{ steps.scan.outputs.sarif }}
+      - name: upload Anchore scan SARIF report
+        if: github.event_name != 'pull_request'
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
 
       - name: Move cache
         run: |
