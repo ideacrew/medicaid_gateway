@@ -9,12 +9,12 @@ import controller from '../controllers/application_controller'
 
 const application = Application.start()
 const context = require.context("controllers", true, /_controller\.js$/)
-const debug_mode = String(process.env.MG_DEBUG)
+const debug_mode = process.env.MG_DEBUG
 application.load(definitionsFromContext(context))
 
 if (debug_mode === 'true') {
-    // Enable debugging in lower envs
-    StimulusReflex.initialize(application, { consumer, controller, isolate: true, debug: debug_mode })
+    // Enable debugging in prod-like lower envs
+    StimulusReflex.initialize(application, { consumer, controller, isolate: true, debug: true })
 } else {
     StimulusReflex.debug = process.env.RAILS_ENV === 'development'
 }
