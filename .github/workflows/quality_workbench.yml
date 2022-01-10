@@ -84,27 +84,6 @@ jobs:
           docker exec rabbitmq rabbitmqctl add_vhost /
           docker exec rabbitmq rabbitmqctl add_vhost event_source
           docker exec rabbitmq rabbitmqctl set_permissions -p event_source guest ".*" ".*" ".*"
-      # - name: Boot RabbitMQ
-      #   run: |
-      #     sudo apt-key adv --keyserver "hkps://keys.openpgp.org" --recv-keys "0x0A9AF2115F4687BD29803A206B73A36E6026DFCA"
-      #     sudo apt-key adv --keyserver "keyserver.ubuntu.com" --recv-keys "F77F1EDA57EBB1CC"
-      #     curl -1sLf 'https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey' | sudo apt-key add -
-
-      #     sudo tee /etc/apt/sources.list.d/rabbitmq.list <<EOF
-
-      #     ## Provides modern Erlang/OTP releases
-      #     ##
-      #     deb http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu bionic main
-      #     deb-src http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu bionic main
-
-      #     sudo apt-get update -y
-
-      #     ## Install Erlang packages
-      #     sudo apt-get install -y erlang-base \
-      #                   erlang-asn1 erlang-crypto erlang-eldap erlang-ftp erlang-inets \
-      #                   erlang-mnesia erlang-os-mon erlang-parsetools erlang-public-key \
-      #                   erlang-runtime-tools erlang-snmp erlang-ssl \
-      #                   erlang-syntax-tools erlang-tftp erlang-tools erlang-xmerl
       - uses: wbari/start-mongoDB@v0.2
         with:
           mongoDBVersion: "4.2"
@@ -139,7 +118,7 @@ jobs:
           echo bundle config
           bundle config path vendor/bundle
           NODE_ENV=test RAILS_ENV=test ./bin/webpack
-      - name: set etc host
-        run: sudo bash -c "echo '127.0.0.1 rabbitmq mongodb' >> /etc/hosts"
+      # - name: set etc host
+      #   run: sudo bash -c "echo '127.0.0.1 rabbitmq mongodb' >> /etc/hosts"
       - name: run tests
         run: bundle exec rspec
