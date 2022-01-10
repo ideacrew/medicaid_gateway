@@ -10,5 +10,18 @@
   },
   "[json]": {
     "editor.defaultFormatter": "vscode.json-language-features"
-  }
+  },
+  "cSpell.words": [
+    "amqp",
+    "Anchore",
+    "buildx",
+    "codeql",
+    "rabbitmq",
+    "rabbitmqctl",
+    "sarif",
+    "slackapi",
+    "vhost",
+    "YELLR",
+    "rabbitmq"
+  ]
 }
