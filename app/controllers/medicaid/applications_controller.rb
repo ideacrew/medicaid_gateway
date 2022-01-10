@@ -15,7 +15,7 @@ module Medicaid
     private
 
     def find_application(params)
-      Medicaid::Application.find(params[:id]) || Medicaid::Application.where(application_identifier: params[:id]).last
+      Medicaid::Application.where(id: params[:id]).first || Medicaid::Application.where(application_identifier: params[:id]).last
     end
 
     def parse_json(value)
