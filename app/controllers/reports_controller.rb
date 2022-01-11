@@ -43,6 +43,10 @@ class ReportsController < ApplicationController
     @transfers = inbound_transfers.order(updated_at: :desc).page params[:page]
     @success_count = inbound_transfers.select(&:successful?).count
     @fail_count = inbound_transfers.count - @success_count
+  rescue StandardError => e
+    puts "account_transfers_to_enroll action"
+    puts e.backtrace.join("\n")
+    raise e
   end
 
   def mec_checks
