@@ -4,7 +4,7 @@ module Medicaid
   # Determinations from MITC
   class ApplicationsController < ApplicationController
     def show
-      @application = Medicaid::Application.find(params[:id])
+      @application = find_application(params)
       @application_request_payload = parse_json(@application.application_request_payload)
       @application_response_payload = parse_json(@application.application_response_payload)
       @medicaid_request_payload = parse_json(@application.medicaid_request_payload)
@@ -13,6 +13,10 @@ module Medicaid
     end
 
     private
+
+    def find_application(params)
+      Medicaid::Application.where(id: params[:id]).first || Medicaid::Application.where(application_identifier: params[:id]).last
+    end
 
     def parse_json(value)
       return value unless value.present?

@@ -232,9 +232,8 @@ module Eligibilities
 
       def monthly_lcsp_premium(applicant)
         applicant.benchmark_premium.health_only_lcsp_premiums.detect do |member_premium|
-          next member_premium if member_premium[:member_identifier] != applicant.person_hbx_id.to_s
-          member_premium[:monthly_premium]
-        end
+          member_premium.member_identifier == applicant.person_hbx_id.to_s
+        end.monthly_premium
       end
 
       def all_ichra_affordable?(applicant)
