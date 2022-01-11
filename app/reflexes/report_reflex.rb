@@ -9,13 +9,16 @@ class ReportReflex < ApplicationReflex
 
   def check_payload
     Curam::CheckPayload.new.call(element.dataset[:id])
+    morph :nothing
   end
 
   def resubmit_to_enroll
     Transfers::ToEnroll.new.call(element.dataset[:payload], element.dataset[:id])
+    morph :nothing
   end
 
   def resubmit_to_service
     Transfers::ToService.new.call(element.dataset[:payload], element.dataset[:id])
+    morph :nothing
   end
 end
