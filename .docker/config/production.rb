@@ -6,7 +6,7 @@ Rails.application.configure do
   # Code is not reloaded between requests.
   config.cache_classes = true
   # config.cache_store = :memory_store
-  config.cache_store = :redis_cache_store, { driver: :hiredis, url: ENV.fetch("REDIS_HOST_MEDICAID_GATEWAY") }
+  config.cache_store = :redis_cache_store, { driver: :hiredis, url: "redis://#{ENV['REDIS_HOST_MEDICAID_GATEWAY']}:6379/1" }
 
   config.session_store :redis_session_store,
                        key: "_session_production",
@@ -16,7 +16,7 @@ Rails.application.configure do
                          expire_after: 1.year,
                          ttl: 1.year,
                          key_prefix: "app:session:",
-                         url: ENV.fetch("REDIS_HOST_MEDICAID_GATEWAY")
+                         url: "redis://#{ENV['REDIS_HOST_MEDICAID_GATEWAY']}:6379/1"
                        }
 
   # Eager load code on boot. This eager loads most of Rails and
