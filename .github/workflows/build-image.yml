@@ -22,11 +22,11 @@ jobs:
   prep:
     runs-on: ubuntu-latest
     outputs:
-      alphaImage: ${{ steps.prep.outputs.alpha_image }}
       taggedImage: ${{ steps.prep.outputs.tagged_image }}
       tag: ${{ steps.prep.outputs.tag }}
       registry: ${{ steps.prep.outputs.registry }}
       shortSha: ${{ steps.prep.outputs.short_sha}}
+      branchName: ${{ steps.prep.outputs.branch_name }}
     steps:
       - name: Git branch name
         id: git-branch-name
@@ -40,8 +40,8 @@ jobs:
           echo ::set-output name=tagged_image::${IMAGE}:${TAG}
           echo ::set-output name=tag::${TAG}
           echo ::set-output name=registry::public.ecr.aws
-          echo ::set-output name=alpha_image::${IMAGE}:${TAG}-alpha
           echo ::set-output name=short_sha::$SHORT_SHA
+          echo ::set-output name=branch_name::${{ env.GIT_BRANCH_NAME }}
 
   # Uses buildx to build and push the image
   build-and-upload-image:
@@ -146,7 +146,7 @@ jobs:
         id: scan
         uses: anchore/scan-action@main
         with:
-          image: ${{ needs.prep.outputs.alphaImage }}
+          image: ${{ needs.prep.outputs.taggedImage }}
           acs-report-enable: true
           fail-build: false
           severity-cutoff: critical
@@ -162,16 +162,16 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-  # notify-slack:
-  #   if: github.event_name != 'pull_request'
-  #   needs: [prep, build-and-upload-image]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Post to a Slack channel
-  #       id: slack
-  #       uses: slackapi/slack-github-action@v1.16.0
-  #       with:
-  #         channel-id: "docker-images"
-  #         slack-message: "New image pushed: ${{ needs.prep.outputs.taggedImage }} built from <https://github.com/ideacrew/medicaid_gateway/commit/${{ needs.prep.outputs.shortSha }}|${{ needs.prep.outputs.shortSha }}>"
-  #       env:
-  #         SLACK_BOT_TOKEN: ${{ secrets.YELLR_BOT_TOKEN }}
+  notify-slack:
+    if: github.event_name != 'pull_request'
+    needs: [prep, build-and-upload-image]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post to a Slack channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.16.0
+        with:
+          channel-id: "docker-images"
+          slack-message: "New image pushed: ${{ needs.prep.outputs.taggedImage }} built from <https://github.com/ideacrew/medicaid_gateway/commit/${{ needs.prep.outputs.shortSha }}|${{ needs.prep.outputs.shortSha }}> on `${{ needs.prep.outputs.branchName }}`"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.YELLR_BOT_TOKEN }}
