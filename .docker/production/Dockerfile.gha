@@ -180,4 +180,4 @@ COPY --chown=nonroot:nonroot ./.docker/config/unicorn.rb $HOME/config
 COPY --chown=nonroot:nonroot ./.docker/config/credentials.yml.enc $HOME/config
 COPY --chown=nonroot:nonroot ./.docker/config/master.key $HOME/config
 
-USER nonroot
+USER nonroot 
