@@ -6,7 +6,6 @@ Rails.application.configure do
   # Code is not reloaded between requests.
   config.cache_classes = true
   # config.cache_store = :memory_store
-  config.cache_store = :mem_cache_store
   config.session_store :cache_store,
                        key: "_session",
                        compress: true,
