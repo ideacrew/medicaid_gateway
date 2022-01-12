@@ -128,7 +128,7 @@ jobs:
           load: false
 
           ### Adding -alpha to the image tag while this is in testing ###
-          tags: ${{ needs.prep.outputs.alphaImage }}
+          tags: ${{ needs.prep.outputs.taggedImage }}
 
           cache-from: type=local,src=/tmp/.buildx-cache
           # Note the mode=max here
