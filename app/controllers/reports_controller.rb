@@ -4,8 +4,8 @@
 class ReportsController < ApplicationController
 
   def events
-    @start_on = start_on || session[:start] || Date.today
-    @end_on = end_on || session[:end] || Date.today
+    @start_on = start_on || session_date(session[:start]) || Date.today
+    @end_on = end_on || session_date(session[:end]) || Date.today
     events = applications + transfers + inbound_transfers + checks
     events.map!(&:to_event).sort_by! { |event| event[:created_at] }.reverse!
     @events_count = events.count
@@ -21,8 +21,8 @@ class ReportsController < ApplicationController
   end
 
   def medicaid_application_check
-    @start_on = start_on || session[:ma_start] || Date.today
-    @end_on = end_on || session[:ma_end] || Date.today
+    @start_on = start_on || session_date(session[:ma_start]) || Date.today
+    @end_on = end_on || session_date(session[:ma_end]) || Date.today
     ordered_applications = applications.order(updated_at: :desc)
     @applications = ordered_applications.page params[:page]
     @application_id = params.fetch(:app) if params.key?(:app)
@@ -30,32 +30,32 @@ class ReportsController < ApplicationController
   end
 
   def account_transfers
-    @start_on = start_on || session[:atp_start] || Date.today
-    @end_on = end_on || session[:atp_end] || Date.today
+    @start_on = start_on || session_date(session[:atp_start]) || Date.today
+    @end_on = end_on || session_date(session[:atp_end]) || Date.today
     @transfers = transfers.order(updated_at: :desc).page params[:page]
     @success_count = transfers.select(&:successful?).count
     @fail_count = transfers.count - @success_count
   end
 
   def account_transfers_to_enroll
-    @start_on = start_on || session[:atp_start] || Date.today
-    @end_on = end_on || session[:atp_end] || Date.today
+    @start_on = start_on || session_date(session[:atp_start]) || Date.today
+    @end_on = end_on || session_date(session[:atp_end]) || Date.today
     @transfers = inbound_transfers.order(updated_at: :desc).page params[:page]
     @success_count = inbound_transfers.select(&:successful?).count
     @fail_count = inbound_transfers.count - @success_count
   end
 
   def mec_checks
-    @start_on = start_on || session[:mc_sent_start] || Date.today
-    @end_on = session[:mc_sent_end] || Date.today
+    @start_on = start_on || session_date(session[:mc_sent_start]) || Date.today
+    @end_on = end_on || session_date(session[:mc_sent_end]) || Date.today
     @checks = checks.order(updated_at: :desc).page params[:page]
     @success_count = checks.select(&:successful?).count
     @fail_count = checks.count - @success_count
   end
 
   def transfer_summary
-    @start_on = start_on || session[:atp_start] || Date.today
-    @end_on = end_on || session[:atp_end] || Date.today
+    @start_on = start_on || session_date(session[:atp_start]) || Date.today
+    @end_on = end_on || session_date(session[:atp_end]) || Date.today
     @at_sent_total = transfers.count
     @at_sent_successful = transfers.where(failure: nil).count
     @at_sent_failure = @at_sent_total - @at_sent_successful
@@ -100,5 +100,11 @@ class ReportsController < ApplicationController
 
   def checks
     Aces::MecCheck.where(created_at: range).or(updated_at: range)
+  end
+
+  def session_date(date)
+    return unless date
+    return date if date.is_a? Date
+    Date.parse(date, "%Y-%m-%d")
   end
 end
