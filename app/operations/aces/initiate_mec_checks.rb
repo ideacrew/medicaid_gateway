@@ -43,7 +43,7 @@ module Aces
       people = json["applicants"]
       people.each do |person|
         hbx_id = person["person_hbx_id"]
-        evidence = person["evidences"].detect { |evi| evi["key"] == "aces_mec" }
+        evidence = person["local_mec_evidence"]
         if evidence
           mc_response = mec_check(person)
           if mc_response.failure?
@@ -51,8 +51,8 @@ module Aces
           else
             response = mc_response.value!
             results[hbx_id] = response[:code_description]
-            evidence["eligibility_results"] = [response]
-            evidence["eligibility_status"] = response[:mec_verification_code] == "Y" ? :outstanding : :attested
+            evidence["request_results"] = [response]
+            evidence["aasm_state"] = response[:mec_verification_code] == "Y" ? :outstanding : :attested
           end
         else
           results[hbx_id] = "not MEC checked"
