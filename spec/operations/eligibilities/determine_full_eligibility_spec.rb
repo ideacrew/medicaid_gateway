@@ -183,8 +183,9 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
         expect(@aptc_household.assistance_year).to eq(Date.today.year)
       end
 
-      it 'should match fpl_percent' do
-        expect(@aptc_household.fpl_percent).to eq(180.83)
+      it 'should return a valid fpl_percent' do
+        expect(@aptc_household.fpl_percent).not_to be_zero
+        expect(@aptc_household.fpl_percent).not_to be_nil
       end
     end
   end
@@ -394,8 +395,9 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
         expect(@aptc_household.assistance_year).to eq(Date.today.year)
       end
 
-      it 'should match fpl_percent' do
-        expect(@aptc_household.fpl_percent).to eq(125.39)
+      it 'should return valid fpl_percent' do
+        expect(@aptc_household.fpl_percent).not_to be_zero
+        expect(@aptc_household.fpl_percent).not_to be_nil
       end
 
       it 'should match member_identifier' do
@@ -1701,7 +1703,7 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     end
   end
 
-  # TaxHousehold effective date calculation when all MedicaidChip or MagiMedicaid
+  # TaxHousehold effective date calculation
   context 'cms me_test_scenarios test_eight state ME' do
     include_context 'cms ME me_test_scenarios test_eight'
 
@@ -1722,8 +1724,8 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     end
 
     context 'for tax_household_members' do
-      it 'should return member as eligible for Magi Medicaid Assistance' do
-        expect(@new_thhms.first.product_eligibility_determination.is_magi_medicaid).to be_truthy
+      it 'should return member as eligible for Insurance Assistance' do
+        expect(@new_thhms.first.product_eligibility_determination.is_ia_eligible).to be_truthy
       end
     end
 
@@ -1982,6 +1984,107 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
         expect(@thh.max_aptc).to eq(292.0)
         expect(@thh.max_aptc).not_to eq(262.0)
       end
+    end
+
+    context 'for persistence' do
+      before do
+        medicaid_app.reload
+      end
+
+      it 'should match with hbx_id' do
+        expect(medicaid_app.application_identifier).to eq(application_entity.hbx_id)
+      end
+
+      it 'should match with application request payload' do
+        expect(medicaid_app.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should match with application response payload' do
+        expect(medicaid_app.application_response_payload).to eq(@application.to_json)
+      end
+
+      it 'should match with medicaid request payload' do
+        expect(medicaid_app.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+    end
+  end
+
+  # NonApplicant with partial answers to Applicant related questions
+  context 'cms me_test_scenarios test_twelve state ME' do
+    before do
+      allow(Date).to receive(:today).and_return(Date.new(2021, 11, 2))
+    end
+
+    include_context 'cms ME me_test_scenarios test_twelve'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @new_thhms = @application.tax_households.flat_map(&:tax_household_members)
+      @thh = @application.tax_households.first
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    it 'should return tax households with correct effective dates' do
+      expect(@thh.effective_on.year).to eq(@application.assistance_year)
+      expect(@thh.effective_on.year).to eq(Date.today.year.next)
+    end
+
+    context 'for persistence' do
+      before do
+        medicaid_app.reload
+      end
+
+      it 'should match with hbx_id' do
+        expect(medicaid_app.application_identifier).to eq(application_entity.hbx_id)
+      end
+
+      it 'should match with application request payload' do
+        expect(medicaid_app.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should match with application response payload' do
+        expect(medicaid_app.application_response_payload).to eq(@application.to_json)
+      end
+
+      it 'should match with medicaid request payload' do
+        expect(medicaid_app.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+    end
+  end
+
+  # Ichra Affordable test
+  context 'cms me_test_scenarios test_thirteen state ME' do
+    include_context 'cms ME me_test_scenarios test_thirteen'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @new_thhms = @application.tax_households.flat_map(&:tax_household_members)
+      @thh = @application.tax_households.first
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
     end
 
     context 'for persistence' do

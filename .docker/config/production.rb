@@ -6,6 +6,18 @@ Rails.application.configure do
   # Code is not reloaded between requests.
   config.cache_classes = true
   # config.cache_store = :memory_store
+  config.cache_store = :redis_cache_store, { driver: :hiredis, url: "redis://#{ENV['REDIS_HOST_MEDICAID_GATEWAY']}:6379/1" }
+
+  config.session_store :redis_session_store,
+                       key: "_session_production",
+                       serializer: :json,
+                       redis: {
+                         driver: :hiredis,
+                         expire_after: 1.year,
+                         ttl: 1.year,
+                         key_prefix: "app:session:",
+                         url: "redis://#{ENV['REDIS_HOST_MEDICAID_GATEWAY']}:6379/1"
+                       }
 
   # Eager load code on boot. This eager loads most of Rails and
   # your application in memory, allowing both threaded web servers
@@ -28,7 +40,7 @@ Rails.application.configure do
   config.serve_static_files = false
 
   # Compress JavaScripts and CSS.
-  #config.assets.js_compressor = Uglifier.new(harmony: true)
+  # config.assets.js_compressor = Uglifier.new(harmony: true)
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
@@ -66,12 +78,11 @@ Rails.application.configure do
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
   # config.cache_store = :redis_store, { :host => "localhost",
-                                     #:port => 6379,
-                                     #:db => 0,
-                                     #:password => "mysecret",
-                                     #:namespace => "cache",
-                                     #:expires_in => 90.minutes }
-
+  # :port => 6379,
+  # :db => 0,
+  # :password => "mysecret",
+  # :namespace => "cache",
+  # :expires_in => 90.minutes }
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.action_controller.asset_host = 'http://assets.example.com'
@@ -90,9 +101,8 @@ Rails.application.configure do
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
 
-# Mongoid logger levels
-Mongoid.logger.level = Logger::ERROR
-Mongo::Logger.logger.level = Logger::ERROR
-
+  # Mongoid logger levels
+  Mongoid.logger.level = Logger::ERROR
+  Mongo::Logger.logger.level = Logger::ERROR
 
 end

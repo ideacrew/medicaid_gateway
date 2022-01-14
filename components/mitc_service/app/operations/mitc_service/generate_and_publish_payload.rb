@@ -39,9 +39,9 @@ module MitcService
     end
 
     def persist_medicaid_application(mm_application, mitc_request_payload)
-      ::Applications::Create.new.call({ application_identifier: mm_application.hbx_id,
-                                        application_request_payload: mm_application.to_json,
-                                        medicaid_request_payload: mitc_request_payload.to_json })
+      ::Applications::CreateOrUpdate.new.call({ application_identifier: mm_application.hbx_id,
+                                                application_request_payload: mm_application.to_json,
+                                                medicaid_request_payload: mitc_request_payload.to_json })
     end
 
     def publish_mitc_request_payload(mitc_request_payload)
