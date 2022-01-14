@@ -42,7 +42,7 @@ describe Aces::InitiateMecChecks, dbclean: :after_each do
 
   let(:expected_response) do
     JSON.parse(payload)["applicants"].map do |a|
-      [a["person_hbx_id"],  a["evidences"].empty? ? "not MEC checked" : "Applicant Not Found"]
+      [a["person_hbx_id"],  a["local_mec_evidence"].blank? ? "not MEC checked" : "Applicant Not Found"]
     end.to_h
   end
 
