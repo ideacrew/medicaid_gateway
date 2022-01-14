@@ -10,7 +10,7 @@ module ApplicationCable
     def connect
       # self.current_user = find_verified_user
       self.session_id = request.session.id
-      # reject_unauthorized_connection unless session_id
+      reject_unauthorized_connection unless session_id
     end
 
     protected
