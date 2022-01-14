@@ -8,10 +8,10 @@ module Subscribers
     subscribe(:on_enroll_iap_mec_check) do |delivery_info, metadata, response|
       payload_type = metadata[:headers]["payload_type"]
       result = if payload_type == "person"
-           Aces::InitiateMecCheck.new.call(response)
-         else
-           Aces::InitiateMecChecks.new.call(response)
-         end
+                 Aces::InitiateMecCheck.new.call(response)
+               else
+                 Aces::InitiateMecChecks.new.call(response)
+               end
       if result.success?
         ack(delivery_info.delivery_tag)
         logger.debug "application_submitted_subscriber_message; acked"
