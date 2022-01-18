@@ -5,28 +5,20 @@
 <table class="table table-striped table-responsive mt-3 table-overrides">
 	<thead>
 		<tr>
+			<th>Status</th>
 			<th>Application Identifer</th>
 			<th>Updated At</th>
-			<th>Medicaid Request Payload</th>
-			<th>Medicaid Response Payload</th>
-			<th>Application Request Payload</th>
-            <th>Application Response Payload</th>
-            <th>Other Computed Factors</th>
             <th>Link</th>
 		</tr>
 	</thead>
 	<tbody>
 		<% @applications.each do |application| %>
 			<tr>
+				<td class="<%= application.successful? ? 'table-success' : 'table-danger' %>"><%= application.successful? ? "Success" : "Failure" %></td>
 				<td>
 				  <%= application.application_identifier %>
 				</td>
 				<td><%= application.created_at %></td>
-				<td><%= "✓" if application.medicaid_request_payload %></td>
-				<td><%= "✓" if application.medicaid_response_payload %></td>
-				<td><%= "✓" if application.application_request_payload %></td>
-				<td><%= "✓" if application.application_response_payload %></td>
-				<td><%= application.other_factors == "No other factors" ? "No other factors" : "✓" %></td>
 				<td><%= link_to 'Details', application, class: 'btn btn-primary' %></td>
 			</tr>
 		<% end %>
