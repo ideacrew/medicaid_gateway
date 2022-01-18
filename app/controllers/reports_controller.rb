@@ -87,7 +87,7 @@ class ReportsController < ApplicationController
   end
 
   def applications
-    Medicaid::Application.where(created_at: range).or(updated_at: range).only(:application_identifier, :created_at, :_id, :application_response_payload)
+    Medicaid::Application.where(created_at: range).or(updated_at: range).only(:application_identifier, :created_at, :application_response_payload)
   end
 
   def transfers
