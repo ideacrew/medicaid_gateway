@@ -155,7 +155,10 @@ COPY --chown=nonroot:nonroot . $HOME
 COPY --chown=nonroot:nonroot ./.docker/config/master.key $HOME/config
 COPY --chown=nonroot:nonroot ./.docker/config/credentials.yml.enc $HOME/config
 COPY --chown=nonroot:nonroot ./.docker/config/mongoid.yml $HOME/config
+# The CLIENT variable is required to build an image specific to the client
+ARG CLIENT
 
+RUN bundle exec rake configuration:client_configuration_toggler client=$CLIENT
 RUN bundle exec rake assets:precompile
 
 ################################################################

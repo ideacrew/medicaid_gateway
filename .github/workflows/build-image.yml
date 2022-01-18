@@ -47,6 +47,9 @@ jobs:
   build-and-upload-image:
     needs: [prep]
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        client: ['dc', 'me']
     services:
       rabbitmq:
         image: rabbitmq:latest
@@ -128,7 +131,7 @@ jobs:
           load: false
 
           ### Adding -alpha to the image tag while this is in testing ###
-          tags: ${{ needs.prep.outputs.taggedImage }}
+          tags: ${{ needs.prep.outputs.taggedImage }}-${{ matrix.client }}
 
           cache-from: type=local,src=/tmp/.buildx-cache
           # Note the mode=max here
@@ -140,13 +143,14 @@ jobs:
             RABBITMQ_URL_DEFAULT=amqp://172.17.0.1:5672
             RABBITMQ_HOST_DEFAULT=amqp://172.17.0.1
             RABBITMQ_URL_EVENT_SOURCE_DEFAULT=amqp://172.17.0.1
+            CLIENT=${{ matrix.client }}
 
       - name: Scan Docker image
         if: github.event_name != 'pull_request'
         id: scan
         uses: anchore/scan-action@main
         with:
-          image: ${{ needs.prep.outputs.taggedImage }}
+          image: ${{ needs.prep.outputs.taggedImage }}-${{ matrix.client }}
           acs-report-enable: true
           fail-build: false
           severity-cutoff: critical
@@ -166,12 +170,15 @@ jobs:
     if: github.event_name != 'pull_request'
     needs: [prep, build-and-upload-image]
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        client: ['dc', 'me']
     steps:
       - name: Post to a Slack channel
         id: slack
         uses: slackapi/slack-github-action@v1.16.0
         with:
           channel-id: "docker-images"
-          slack-message: "New image pushed: ${{ needs.prep.outputs.taggedImage }} built from <https://github.com/ideacrew/medicaid_gateway/commit/${{ needs.prep.outputs.shortSha }}|${{ needs.prep.outputs.shortSha }}> on `${{ needs.prep.outputs.branchName }}`"
+          slack-message: "New image pushed: ${{ needs.prep.outputs.taggedImage }}-${{ matrix.client }} built from <https://github.com/ideacrew/medicaid_gateway/commit/${{ needs.prep.outputs.shortSha }}|${{ needs.prep.outputs.shortSha }}> on `${{ needs.prep.outputs.branchName }}`"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.YELLR_BOT_TOKEN }}

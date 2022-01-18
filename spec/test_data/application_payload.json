@@ -210,8 +210,7 @@
             },
             "mitc_relationships": [],
             "mitc_is_required_to_file_taxes": true,
-            "evidences": [
-                {
+            "local_mec_evidence": {
                     "key": "aces_mec",
                     "title": "ACES MEC",
                     "description": null,
@@ -220,7 +219,6 @@
                     "updated_by": null,
                     "eligibility_results": []
                 }
-            ]
         },
         {
             "name": {
@@ -423,7 +421,7 @@
             },
             "mitc_relationships": [],
             "mitc_is_required_to_file_taxes": true,
-            "evidences": [
+            "local_mec_evidence":
                 {
                     "key": "aces_mec",
                     "title": "ACES MEC",
@@ -433,7 +431,6 @@
                     "updated_by": null,
                     "eligibility_results": []
                 }
-            ]
         },
         {
             "name": {
@@ -635,8 +632,7 @@
                 "other_magi_eligible_income": 0
             },
             "mitc_relationships": [],
-            "mitc_is_required_to_file_taxes": true,
-            "evidences": []
+            "mitc_is_required_to_file_taxes": true
         }
     ],
     "tax_households": [
