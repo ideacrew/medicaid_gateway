@@ -19,25 +19,27 @@ ENV BUNDLER_VERSION=$BUNDLER_VERSION
 # https://stackoverflow.com/questions/61815233/install-java-runtime-in-debian-based-docker-image
 RUN mkdir -p /usr/share/man/man1 /usr/share/man/man2
 
-# Basic packages needed because we're using the slim image
-RUN apt-get update && \
-    apt-get -yq dist-upgrade && \
-    apt-get install -y git gcc curl openssl libyaml-dev libyaml-cpp-dev libyaml-cpp0.6 libffi-dev libffi6 libreadline-dev libsodium-dev \
-                       zlibc libgdbm-dev libncurses-dev autoconf fontconfig unzip zip sshpass bzip2 libxrender1 libxext6 \
-                       build-essential ca-certificates openjdk-11-jre ruby-dalli && \
-    apt-get autoremove -y
-
-# Add NodeJS to sources list
-ARG NODE_MAJOR=12
-RUN curl -sL https://deb.nodesource.com/setup_$NODE_MAJOR.x | bash -
-
-# Install Nodejs
-RUN apt-get update -qq \
-  && apt-get install -yq --no-install-recommends \
-  nodejs \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-  && truncate -s 0 /var/log/*log
+# Only install what's needed that isn't in the base image
+# https://github.com/docker-library/ruby/blob/master/2.7/slim-buster/Dockerfile
+RUN apt-get update \
+    && apt-get -yq dist-upgrade \
+    && apt-get install -y \
+      fontconfig \
+      libffi6 \
+      libsodium-dev \
+      libxext6 \
+      libxrender1 \
+      libyaml-cpp0.6 \
+      openjdk-11-jre \
+      openssl \
+      ruby-dalli \
+      sshpass \
+      unzip \
+      zip \
+      zlibc \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && truncate -s 0 /var/log/*log
 
 # Configure bundler and PATH, install bundler version
 ENV GEM_HOME=/usr/local/bundle
@@ -75,17 +77,15 @@ ENV NODE_ENV=production
 
 FROM base as builder
 
-ARG NODE_MAJOR=12
+ARG NODE_MAJOR=14
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update -qq \
-  && apt-get install -yq --no-install-recommends \
-  build-essential \
-  curl \
-  libpq-dev \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-  && truncate -s 0 /var/log/*log
+RUN apt-get update -qq && \
+    apt-get install -yq --no-install-recommends \
+      curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && truncate -s 0 /var/log/*log
 
 # Add NodeJS to sources list
 RUN curl -sL https://deb.nodesource.com/setup_$NODE_MAJOR.x | bash -
@@ -97,8 +97,11 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
 # Install Nodejs & Yarn
 RUN apt-get update -qq \
   && apt-get install -yq --no-install-recommends \
-  nodejs \
-  yarn \
+    build-essential \
+    git \
+    libpq-dev \
+    nodejs \
+    yarn \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
   && truncate -s 0 /var/log/*log
