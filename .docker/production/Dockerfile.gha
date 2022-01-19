@@ -19,6 +19,18 @@ ENV BUNDLER_VERSION=$BUNDLER_VERSION
 # https://stackoverflow.com/questions/61815233/install-java-runtime-in-debian-based-docker-image
 RUN mkdir -p /usr/share/man/man1 /usr/share/man/man2
 
+RUN apt-get update -qq && \
+    apt-get install -yq --no-install-recommends \
+      curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && truncate -s 0 /var/log/*log
+
+ARG NODE_MAJOR=14
+
+# Add NodeJS to sources list
+RUN curl -sL https://deb.nodesource.com/setup_$NODE_MAJOR.x | bash -
+
 # Only install what's needed that isn't in the base image
 # https://github.com/docker-library/ruby/blob/master/2.7/slim-buster/Dockerfile
 RUN apt-get update \
@@ -30,6 +42,7 @@ RUN apt-get update \
       libxext6 \
       libxrender1 \
       libyaml-cpp0.6 \
+      nodejs \
       openjdk-11-jre \
       openssl \
       ruby-dalli \
@@ -77,18 +90,7 @@ ENV NODE_ENV=production
 
 FROM base as builder
 
-ARG NODE_MAJOR=14
 ARG DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update -qq && \
-    apt-get install -yq --no-install-recommends \
-      curl \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && truncate -s 0 /var/log/*log
-
-# Add NodeJS to sources list
-RUN curl -sL https://deb.nodesource.com/setup_$NODE_MAJOR.x | bash -
 
 # Add Yarn to the sources list
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
@@ -100,7 +102,6 @@ RUN apt-get update -qq \
     build-essential \
     git \
     libpq-dev \
-    nodejs \
     yarn \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
@@ -112,7 +113,7 @@ RUN apt-get update -qq \
 
 FROM builder as prod_gems_and_assets
 
-# GHA Approved Config
+# Defaults set for local builds, overwritten in GHA
 ARG MEDICAID_GATEWAY_DB_HOST_DEFAULT=localhost
 ARG MEDICAID_GATEWAY_DB_PORT_DEFAULT=27017
 ARG MEDICAID_GATEWAY_DB_NAME_DEFAULT=medicaid_gateway_production
