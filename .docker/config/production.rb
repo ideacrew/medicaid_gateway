@@ -6,13 +6,16 @@ Rails.application.configure do
   # Code is not reloaded between requests.
   config.cache_classes = true
   # config.cache_store = :memory_store
-  config.cache_store = :redis_cache_store, { driver: :hiredis, url: "redis://#{ENV['REDIS_HOST_MEDICAID_GATEWAY']}:6379/1" }
+  config.cache_store = :redis_cache_store, {
+    # driver: :hiredis,
+    url: "redis://#{ENV['REDIS_HOST_MEDICAID_GATEWAY']}:6379/1"
+  }
 
   config.session_store :redis_session_store,
                        key: "_session_production",
                        serializer: :json,
                        redis: {
-                         driver: :hiredis,
+                         #  driver: :hiredis,
                          expire_after: 1.year,
                          ttl: 1.year,
                          key_prefix: "app:session:",
