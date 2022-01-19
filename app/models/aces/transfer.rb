@@ -36,6 +36,10 @@ module Aces
 
     field :from_cms, type: Boolean
 
+    index({ created_at: -1, updated_at: -1 })
+    index({ created_at: 1 })
+    index({ application_identifier: 1 })
+
     def successful?
       self.failure.nil?
     end
