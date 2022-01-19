@@ -23,6 +23,10 @@ module Aces
     # Record of failure point in the MEC check process
     field :failure, type: String
 
+    index({ created_at: -1, updated_at: -1 })
+    index({ created_at: 1 })
+    index({ application_identifier: 1 })
+
     def successful?
       self.failure.nil?
     end

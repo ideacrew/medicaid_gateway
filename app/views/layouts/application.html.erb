@@ -40,7 +40,7 @@
               <% end %>
             <% end %>         
           </ul>
-          <% if user_signed_in? %>
+          <% if !@stimulus_reflex && user_signed_in? %>
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
             <%= button_to "logout", destroy_user_session_path, method: :delete, class: 'btn btn-secondary' %>
           </ul>

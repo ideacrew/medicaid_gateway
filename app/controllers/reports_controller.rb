@@ -23,10 +23,12 @@ class ReportsController < ApplicationController
   def medicaid_application_check
     @start_on = start_on || session_date(session[:ma_start]) || Date.today
     @end_on = end_on || session_date(session[:ma_end]) || Date.today
-    ordered_applications = applications.order(updated_at: :desc)
-    @applications = ordered_applications.page params[:page]
     @application_id = params.fetch(:app) if params.key?(:app)
-    @applications = ordered_applications.where(application_identifier: params.fetch(:app)).page params[:page] if params.key?(:app)
+    @applications = if @application_id
+                      applications.where(application_identifier: @application_id).page params[:page]
+                    else
+                      applications.order(updated_at: :desc).page params[:page]
+                    end
   end
 
   def account_transfers
@@ -87,7 +89,7 @@ class ReportsController < ApplicationController
   end
 
   def applications
-    Medicaid::Application.where(created_at: range).or(updated_at: range).only(:application_identifier, :created_at, :application_response_payload)
+    Medicaid::Application.only(:application_identifier, :created_at, :application_response_payload).where(created_at: range).or(updated_at: range)
   end
 
   def transfers
