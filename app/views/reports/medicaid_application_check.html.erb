@@ -13,14 +13,7 @@
 	</thead>
 	<tbody>
 		<% @applications.each do |application| %>
-			<tr>
-				<td class="<%= application.successful? ? 'table-success' : 'table-danger' %>"><%= application.successful? ? "Success" : "Failure" %></td>
-				<td>
-				  <%= application.application_identifier %>
-				</td>
-				<td><%= application.created_at %></td>
-				<td><%= link_to 'Details', application, class: 'btn btn-primary' %></td>
-			</tr>
+			<%= render partial: "determination_row", locals: { determination: application } %>
 		<% end %>
 	</tbody>
 </table>
