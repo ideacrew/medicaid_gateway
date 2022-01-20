@@ -7,6 +7,8 @@ ARG RUBY_VERSION=2.7.2
 FROM ruby:$RUBY_VERSION-slim-buster as base
 LABEL author="IdeaCrew"
 
+ENV USERNAME=medicaid_gateway
+
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Taken from Gemfile.lock
@@ -72,11 +74,11 @@ RUN gem update --system
 RUN rm -f /usr/local/bin/ruby/gems/*/specifications/default/bundler-*.gemspec
 RUN gem install bundler -v $BUNDLER_VERSION
 
-RUN groupadd --gid 1001 nonroot \
-  && useradd --uid 1001 --gid nonroot --shell /bin/bash --create-home nonroot
+RUN groupadd --gid 1001 $USERNAME \
+  && useradd --uid 1001 --gid $USERNAME --shell /bin/bash --create-home $USERNAME
 
 RUN mkdir $HOME \
-  && chown -R nonroot:nonroot $HOME
+  && chown -R $USERNAME:$USERNAME $HOME
 
 # Configure app home directory
 WORKDIR $HOME
@@ -113,6 +115,8 @@ RUN apt-get update -qq \
 
 FROM builder as prod_gems_and_assets
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 # Defaults set for local builds, overwritten in GHA
 ARG MEDICAID_GATEWAY_DB_HOST_DEFAULT=localhost
 ARG MEDICAID_GATEWAY_DB_PORT_DEFAULT=27017
@@ -131,19 +135,19 @@ ENV RABBITMQ_HOST=$RABBITMQ_HOST_DEFAULT
 ENV RABBITMQ_PORT=$RABBITMQ_PORT_DEFAULT
 ENV RABBITMQ_VHOST=$RABBITMQ_VHOST_DEFAULT
 
-COPY --chown=nonroot:nonroot package.json $HOME/
-COPY --chown=nonroot:nonroot yarn.lock $HOME/
+COPY --chown=$USERNAME:$USERNAME package.json $HOME/
+COPY --chown=$USERNAME:$USERNAME yarn.lock $HOME/
 
 RUN yarn install \
   && (rm -rf /tmp/* || true)
 
-COPY --chown=nonroot:nonroot ./components/mitc_service/Gemfile $HOME/components/mitc_service/Gemfile
-COPY --chown=nonroot:nonroot ./components/mitc_service/Gemfile.lock $HOME/components/mitc_service/Gemfile.lock
-COPY --chown=nonroot:nonroot ./components/mitc_service/mitc_service.gemspec $HOME/components/mitc_service/mitc_service.gemspec
-COPY --chown=nonroot:nonroot ./components/mitc_service/lib/mitc_service/version.rb $HOME/components/mitc_service/lib/mitc_service/version.rb
+COPY --chown=$USERNAME:$USERNAME ./components/mitc_service/Gemfile $HOME/components/mitc_service/Gemfile
+COPY --chown=$USERNAME:$USERNAME ./components/mitc_service/Gemfile.lock $HOME/components/mitc_service/Gemfile.lock
+COPY --chown=$USERNAME:$USERNAME ./components/mitc_service/mitc_service.gemspec $HOME/components/mitc_service/mitc_service.gemspec
+COPY --chown=$USERNAME:$USERNAME ./components/mitc_service/lib/mitc_service/version.rb $HOME/components/mitc_service/lib/mitc_service/version.rb
 
-COPY --chown=nonroot:nonroot ./Gemfile $HOME/Gemfile
-COPY --chown=nonroot:nonroot ./Gemfile.lock $HOME/Gemfile.lock
+COPY --chown=$USERNAME:$USERNAME ./Gemfile $HOME/Gemfile
+COPY --chown=$USERNAME:$USERNAME ./Gemfile.lock $HOME/Gemfile.lock
 
 RUN apt-get update -qq \
   && apt-get install -yq --no-install-recommends \
@@ -155,15 +159,27 @@ RUN apt-get update -qq \
 RUN bundle config set --local without 'development test' \
   && bundle install
 
-COPY --chown=nonroot:nonroot . $HOME
-COPY --chown=nonroot:nonroot ./.docker/config/master.key $HOME/config
-COPY --chown=nonroot:nonroot ./.docker/config/credentials.yml.enc $HOME/config
-COPY --chown=nonroot:nonroot ./.docker/config/mongoid.yml $HOME/config
+COPY --chown=$USERNAME:$USERNAME . $HOME
+COPY --chown=$USERNAME:$USERNAME ./.docker/config/master.key $HOME/config
+COPY --chown=$USERNAME:$USERNAME ./.docker/config/credentials.yml.enc $HOME/config
+COPY --chown=$USERNAME:$USERNAME ./.docker/config/mongoid.yml $HOME/config
 # The CLIENT variable is required to build an image specific to the client
 ARG CLIENT
 
 RUN bundle exec rake configuration:client_configuration_toggler client=$CLIENT
-RUN bundle exec rake assets:precompile
+RUN bundle exec rake assets:precompile \
+  && yarn cache clean \
+  && (rm -rf /tmp/* || true) \
+  # Cleanup
+  && rm -rf $BUNDLE_PATH/*.gem \
+  && find $BUNDLE_PATH/ruby -name "*.c" -delete \
+  && find $BUNDLE_PATH/ruby -name "*.o" -delete \
+  && find $BUNDLE_PATH/ruby -name ".git"  -type d -prune -execdir rm -rf {} +
+
+# https://github.com/rubygems/rubygems/issues/3225
+RUN rm -rf $GEM_HOME/bundle/ruby/*/cache
+
+# Cleanup stuff?
 
 ################################################################
 ###                     Deployable image                     ###
@@ -172,19 +188,19 @@ RUN bundle exec rake assets:precompile
 FROM base as deploy
 
 # Copy prebuilt gems
-COPY --chown=nonroot:nonroot --from=prod_gems_and_assets $BUNDLE_PATH $BUNDLE_PATH
+COPY --chown=$USERNAME:$USERNAME --from=prod_gems_and_assets $BUNDLE_PATH $BUNDLE_PATH
 
 # Copy all app code again (sans gems, node_modules, assets)
-COPY --chown=nonroot:nonroot . $HOME
+COPY --chown=$USERNAME:$USERNAME . $HOME
 
 # Copy prebuilt assets
-COPY --chown=nonroot:nonroot --from=prod_gems_and_assets $HOME/public $HOME/public
+COPY --chown=$USERNAME:$USERNAME --from=prod_gems_and_assets $HOME/public $HOME/public
 
 # Copy environment-based config files
-COPY --chown=nonroot:nonroot ./.docker/config/mongoid.yml $HOME/config
-COPY --chown=nonroot:nonroot ./.docker/config/production.rb $HOME/config/environments
-COPY --chown=nonroot:nonroot ./.docker/config/unicorn.rb $HOME/config
-COPY --chown=nonroot:nonroot ./.docker/config/credentials.yml.enc $HOME/config
-COPY --chown=nonroot:nonroot ./.docker/config/master.key $HOME/config
+COPY --chown=$USERNAME:$USERNAME ./.docker/config/mongoid.yml $HOME/config
+COPY --chown=$USERNAME:$USERNAME ./.docker/config/production.rb $HOME/config/environments
+COPY --chown=$USERNAME:$USERNAME ./.docker/config/unicorn.rb $HOME/config
+COPY --chown=$USERNAME:$USERNAME ./.docker/config/credentials.yml.enc $HOME/config
+COPY --chown=$USERNAME:$USERNAME ./.docker/config/master.key $HOME/config
 
-USER nonroot 
+USER $USERNAME 
