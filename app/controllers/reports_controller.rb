@@ -40,8 +40,8 @@ class ReportsController < ApplicationController
   end
 
   def account_transfers_to_enroll
-    @start_on = start_on || session_date(session[:atp_start]) || Date.today
-    @end_on = end_on || session_date(session[:atp_end]) || Date.today
+    @start_on = start_on || session_date(session[:inbound_start]) || Date.today
+    @end_on = end_on || session_date(session[:inbound_end]) || Date.today
     @transfers = inbound_transfers.order(updated_at: :desc).page params[:page]
     @success_count = inbound_transfers.select(&:successful?).count
     @fail_count = inbound_transfers.count - @success_count
@@ -56,8 +56,8 @@ class ReportsController < ApplicationController
   end
 
   def transfer_summary
-    @start_on = start_on || session_date(session[:atp_start]) || Date.today
-    @end_on = end_on || session_date(session[:atp_end]) || Date.today
+    @start_on = start_on || session_date(session[:ts_start]) || Date.today
+    @end_on = end_on || session_date(session[:ts_end]) || Date.today
     @at_sent_total = transfers.count
     @at_sent_successful = transfers.where(failure: nil).count
     @at_sent_failure = @at_sent_total - @at_sent_successful
