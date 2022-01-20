@@ -31,9 +31,8 @@ module Aces
 
     field :to_enroll, type: Boolean
 
-    index({ created_at: -1, updated_at: -1 })
-    index({ created_at: 1 })
-    index({ application_identifier: 1 })
+    index({ created_at: 1, updated_at: 1 })
+    index({ updated_at: 1 })
 
     def from_cms_to_aces?
       return true unless to_enroll || payload.blank?
