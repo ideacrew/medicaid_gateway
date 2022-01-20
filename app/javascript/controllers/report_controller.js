@@ -2,6 +2,8 @@ import { Controller } from 'stimulus'
 import StimulusReflex from 'stimulus_reflex'
 
 export default class extends Controller {
+  static targets = ["startDate", "endDate"]
+  
   connect() {
     StimulusReflex.register(this)
   }
@@ -12,5 +14,13 @@ export default class extends Controller {
           session_name = event.target.dataset.session
 
     this.stimulate('Report#change_date', session_name, date)
+  }
+
+  change_dates(event) {
+    const startDate = this.startDateTarget.value,
+          endDate = this.endDateTarget.value,
+          sessionName = event.target.dataset.session
+
+    this.stimulate('Report#change_dates', sessionName, startDate, endDate)
   }
 }

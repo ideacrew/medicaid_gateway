@@ -7,6 +7,11 @@ class ReportReflex < ApplicationReflex
     session[session_name] = Date.parse(date) ? Date.strptime(date, "%Y-%m-%d") : Date.strptime(date.to_date, "%Y-%m-%d")
   end
 
+  def change_dates(session_name, start_date, end_date)
+    session["#{session_name}start"] = Date.parse(start_date) ? Date.strptime(start_date, "%Y-%m-%d") : Date.strptime(start_date.to_date, "%Y-%m-%d")
+    session["#{session_name}end"] = Date.parse(end_date) ? Date.strptime(end_date, "%Y-%m-%d") : Date.strptime(end_date.to_date, "%Y-%m-%d")
+  end
+
   def check_payload
     Curam::CheckPayload.new.call(element.dataset[:id])
   end
