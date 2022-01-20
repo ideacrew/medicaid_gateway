@@ -8,8 +8,6 @@ module Medicaid
     include Mongoid::Document
     include Mongoid::Timestamps
 
-    default_scope {order(created_at: :desc)}
-
     # Unique Identifier(hbx_id) of the incoming application.
     # For example: EA's FinancialAssistance::Application's hbx_id
     field :application_identifier, type: String
