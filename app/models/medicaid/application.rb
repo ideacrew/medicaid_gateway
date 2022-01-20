@@ -29,9 +29,8 @@ module Medicaid
     embeds_many :aptc_households, class_name: '::Medicaid::AptcHousehold'
     accepts_nested_attributes_for :aptc_households
 
-    index({ created_at: -1, updated_at: -1 })
-    index({ created_at: 1 })
-    index({ application_identifier: 1 })
+    index({ created_at: 1, updated_at: 1 })
+    index({ updated_at: 1 })
 
     def successful?
       return true unless application_response_payload.blank?
