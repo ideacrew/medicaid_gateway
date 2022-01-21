@@ -13,8 +13,10 @@ RSpec.describe 'Changing system config files based on client config templates', 
 
   let(:rake) { Rake::Task["configuration:client_configuration_toggler"] }
   let(:feature_file) { YAML.load_file("system/config/templates/features/features.yml") }
+  let(:integration_file) { YAML.load_file("system/config/templates/features/integration/integration.yml") }
   let(:features) { feature_file["registry"].first["features"] }
   let(:state_abbreviation) { features.find { |f| f["key"] == :state_abbreviation }["item"] }
+  let(:namespace) { integration_file["registry"].first["namespace"].first }
 
   before :each do
     rake.reenable
@@ -65,6 +67,10 @@ RSpec.describe 'Changing system config files based on client config templates', 
       it "should set the state abbreviation to 'DC' in the system config feature file" do
         expect(state_abbreviation).to eq 'DC'
       end
+
+      it "should set the namespace to :curam_integration in the system config integration file" do
+        expect(namespace).to eq :curam_integration
+      end
     end
 
     context "when client is set to ME" do
@@ -83,6 +89,10 @@ RSpec.describe 'Changing system config files based on client config templates', 
 
       it "should set the state abbreviation to 'ME' in the system config feature file" do
         expect(state_abbreviation).to eq 'ME'
+      end
+
+      it "should set the namespace to :aces_integration in the system config integration file" do
+        expect(namespace).to eq :aces_integration
       end
     end
   end
