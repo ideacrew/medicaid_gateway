@@ -12,7 +12,7 @@ registry:
         is_enabled: true
         item: "curam"
       - key: :mitc_determination
-        is_enabled: false
+        is_enabled: true
       - key: :mec_check
         is_enabled: false
       - key: :resubmit_to_enroll
