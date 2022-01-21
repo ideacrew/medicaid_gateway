@@ -68,8 +68,8 @@ module Types
     },
     {
       medicaid_year: 2022,
-      annual_poverty_guideline: BigDecimal(12_880.to_s),
-      annual_per_person_amount: BigDecimal(4_540.to_s)
+      annual_poverty_guideline: BigDecimal(13_590.to_s),
+      annual_per_person_amount: BigDecimal(4_720.to_s)
     }
   ].freeze
 
