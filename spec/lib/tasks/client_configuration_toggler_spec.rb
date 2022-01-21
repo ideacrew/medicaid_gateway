@@ -32,8 +32,8 @@ RSpec.describe 'Changing system config files based on client config templates', 
       it "should raise RuntimeError" do
         ENV['client'] = nil
         error_message = "Please set your target client as an arguement. " \
-        "The rake command should look like:" \
-        " RAILS_ENV=production bundle exec rake configuration:client_configuration_toggler client='me'"
+                        "The rake command should look like:" \
+                        " RAILS_ENV=production bundle exec rake configuration:client_configuration_toggler client='me'"
         expect { rake.invoke }.to raise_error(RuntimeError, error_message)
       end
     end
@@ -54,12 +54,12 @@ RSpec.describe 'Changing system config files based on client config templates', 
         rake.invoke
       end
 
-      it "should create the curam_integration directory in system config" do
-        expect(Dir.exist?("system/config/templates/features/curam_integration/")).to eq true
+      it "should create the integration directory in system config" do
+        expect(Dir.exist?("system/config/templates/features/integration/")).to eq true
       end
 
-      it "should create the curam_integration config file in system config" do
-        expect(File.exist?("system/config/templates/features/curam_integration/curam_integration.yml")).to eq true
+      it "should create the integration config file in system config" do
+        expect(File.exist?("system/config/templates/features/integration/integration.yml")).to eq true
       end
 
       it "should set the state abbreviation to 'DC' in the system config feature file" do
@@ -73,12 +73,12 @@ RSpec.describe 'Changing system config files based on client config templates', 
         rake.invoke
       end
 
-      it "should create the aces_integration directory in system config" do
-        expect(Dir.exist?("system/config/templates/features/aces_integration/")).to eq true
+      it "should create the integration directory in system config" do
+        expect(Dir.exist?("system/config/templates/features/integration/")).to eq true
       end
 
-      it "should create the aces_integration config file in system config" do
-        expect(File.exist?("system/config/templates/features/aces_integration/aces_integration.yml")).to eq true
+      it "should create the integration config file in system config" do
+        expect(File.exist?("system/config/templates/features/integration/integration.yml")).to eq true
       end
 
       it "should set the state abbreviation to 'ME' in the system config feature file" do
