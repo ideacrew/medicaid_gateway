@@ -1,0 +1,18 @@
+<div>
+	<h3>New Outbound Transfer</h3>
+
+	<div>
+		<%= form_for :transfer, url: aces_transfers_path, method: 'post' do |f| %>
+			<div>
+				<strong>
+					<%= f.label 'Payload:' %>
+				</strong>
+				<%= f.text_area :outbound_payload, style: 'width: 100%;', rows: '20' %>
+			</div>
+
+			<div class="mt-3">
+				<%= f.submit 'Submit Transfer', class: 'btn btn-primary' %>
+			</div>
+		<% end %>
+	</div>
+</div>
