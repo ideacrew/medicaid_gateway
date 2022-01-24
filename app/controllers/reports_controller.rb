@@ -71,7 +71,8 @@ class ReportsController < ApplicationController
   def update_transfer_requested # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     @start_on = start_on || session_date(session[:inbound_start]) || Date.today
     @end_on = end_on || session_date(session[:inbound_end]) || Date.today
-    external_ids = inbound_transfers.select(&:waiting_to_transfer?)&.map(&:external_id)&.uniq
+    transfers = inbound_transfers.select(&:waiting_to_transfer?)
+    external_ids = transfers&.map(&:external_id)&.uniq
     external_ids&.map do |external_id|
       result = Transfers::ToEnrollBatch.new.call(external_id, transfers.select {|t| t.external_id == external_id })
       if result.success?
