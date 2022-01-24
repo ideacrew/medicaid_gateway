@@ -1,0 +1,18 @@
+<div>
+	<h3>New Inbound Transfer</h3>
+
+	<div>
+		<%= form_for :inbound_transfer, url: aces_inbound_transfers_path, method: 'post' do |f| %>
+			<div>
+				<strong>
+					<%= f.label 'Payload:' %>
+				</strong>
+				<%= f.text_area :payload, style: 'width: 100%;', rows: '25' %>
+			</div>
+			<%= hidden_field_tag :result, 'Received' %>
+			<div class="mt-3">
+				<%= f.submit 'Submit Transfer', class: 'btn btn-primary' %>
+			</div>
+		<% end %>
+	</div>
+</div>
