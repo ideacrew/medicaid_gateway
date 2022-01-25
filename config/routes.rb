@@ -8,7 +8,7 @@ Rails.application.routes.draw do
 
   namespace :aces do
     resource :publishing_connectivity_tests, only: [:new, :create]
-    resources :inbound_transfers, only: [:show]
+    resources :inbound_transfers, only: [:show, :new, :create]
     resources :transfers, only: [:show, :new, :create]
     namespace :soap do
       resource :atp_requests, only: [] do
@@ -33,6 +33,7 @@ Rails.application.routes.draw do
       get 'medicaid_application_check'
       get 'mec_checks'
       get 'events'
+      put 'update_transfer_requested'
     end
   end
 end

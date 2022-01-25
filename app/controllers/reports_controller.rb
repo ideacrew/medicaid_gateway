@@ -68,6 +68,23 @@ class ReportsController < ApplicationController
     @received_from_cms = inbound_transfers.where(to_enroll: false).count
   end
 
+  def update_transfer_requested # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    @start_on = start_on || session_date(session[:inbound_start]) || Date.today
+    @end_on = end_on || session_date(session[:inbound_end]) || Date.today
+    transfers = inbound_transfers.select(&:waiting_to_transfer?)
+    external_ids = transfers&.map(&:external_id)&.uniq
+    external_ids&.map do |external_id|
+      result = Transfers::ToEnrollBatch.new.call(external_id, transfers.select {|t| t.external_id == external_id })
+      if result.success?
+        result.value![0]&.each { |transfer| transfer.update!(result: 'Sent to Enroll') }
+      else
+        trs = Aces::InboundTransfer.all.select {|t| t.external_id == external_id }
+        trs&.each { |transfer| transfer.update!(result: 'Failure', failure: result.failure) } if trs.present?
+      end
+    end
+    redirect_to account_transfers_to_enroll_reports_path
+  end
+
   private
 
   def range_from_params
