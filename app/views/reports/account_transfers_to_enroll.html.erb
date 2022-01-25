@@ -26,5 +26,5 @@
 
 <%= paginate @transfers %>
 
-<%= link_to 'Create new inbound transfers', new_aces_inbound_transfer_path, class: 'btn btn-secondary float-end' %><%= button_to 'Trigger Bulk Transfers to Enroll', update_transfer_requested_reports_path, method: :put, class: 'btn btn-warning' if MedicaidGatewayRegistry.feature_enabled?(:bulk_transfer_to_enroll) %>
-<br />
+<%= link_to 'New Transfer Test', new_aces_inbound_transfer_path, class: 'btn btn-secondary float-end mb-3' %>
+<%= button_to 'Trigger Bulk Transfers to Enroll', update_transfer_requested_reports_path, method: :put, class: 'btn btn-warning  mb-3' if MedicaidGatewayRegistry.feature_enabled?(:bulk_transfer_to_enroll) %>
