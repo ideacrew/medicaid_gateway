@@ -1398,6 +1398,7 @@ module Aces
         }
       end
 
+      let(:outbound_payload_json) { File.read("spec/test_data/application_and_family.json") }
       let(:aces_connection) { double('Aces Connection') }
 
       before :each do
@@ -1412,10 +1413,18 @@ module Aces
         post :create, params: { transfer: { :outbound_payload => outbound_payload.to_s } }
       end
 
-      context 'with valid payload' do
+      context 'with valid payload - hash format' do
         it 'redirects with success flash ' do
           expect(response).to have_http_status(:redirect)
-          expect(flash[:success]).to match(/Successfully send payload/)
+          expect(flash[:success]).to match(/Successfully sent payload/)
+        end
+      end
+
+      context 'with valid payload - JSON format' do
+        it 'redirects with success flash ' do
+          post :create, params: { transfer: { :outbound_payload => outbound_payload_json } }
+          expect(response).to have_http_status(:redirect)
+          expect(flash[:success]).to match(/Successfully sent payload/)
         end
       end
 
