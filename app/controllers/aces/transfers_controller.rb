@@ -16,10 +16,12 @@ module Aces
     end
 
     def create
-      result = ::Transfers::ToService.new.call(JSON.generate(instance_eval(params[:transfer][:outbound_payload])))
+      payload = params.dig(:transfer, :outbound_payload)
+      parsed = valid_json(payload) ? payload : JSON.generate(instance_eval(payload))
+      result = ::Transfers::ToService.new.call(parsed)
 
       if result.success?
-        flash[:success] = 'Successfully send payload'
+        flash[:success] = 'Successfully sent payload'
         redirect_to account_transfers_reports_path
       else
         error = result.failure[:failure]
@@ -34,6 +36,14 @@ module Aces
     end
 
     private
+
+    def valid_json(value)
+      return false unless value.present?
+      JSON.parse(value)
+      true
+    rescue JSON::ParserError
+      false
+    end
 
     def parse_json(value)
       return value unless value.present?
