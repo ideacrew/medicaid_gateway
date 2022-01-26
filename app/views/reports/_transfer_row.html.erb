@@ -23,9 +23,10 @@
         <%= link_to "Details", transfer, class: 'btn btn-primary' %>
         <% if transfer.resubmittable? %>
             <br/>
-            <button class="btn btn-secondary mt-2" data-reflex="click->Report#resubmit_to_service" data-payload="<%= transfer.outbound_payload %>" data-id="<%= transfer.id %>">
-                Resubmit
-            </button> 
+            <!-- <button class="btn btn-secondary mt-2" data-reflex="click->Report#resubmit_to_service" data-payload="<%= transfer.outbound_payload %>" data-id="<%= transfer.id %>">  -->
+             <%= button_to 'Resubmit', resubmit_to_service_reports_path(id: transfer.id), method: :put, class: 'btn btn-secondary mt-2'%> 
+                <%# Resubmit %>
+            <%# </button>  %>
         <% end %>
     </td>
 </tr>

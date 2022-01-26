@@ -34,6 +34,7 @@ Rails.application.routes.draw do
       get 'mec_checks'
       get 'events'
       put 'update_transfer_requested'
+      put 'resubmit_to_service'
     end
   end
 end

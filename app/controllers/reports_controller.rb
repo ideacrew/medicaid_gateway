@@ -85,6 +85,21 @@ class ReportsController < ApplicationController
     redirect_to account_transfers_to_enroll_reports_path
   end
 
+  def resubmit_to_service
+    @start_on = start_on || session_date(session[:inbound_start]) || Date.today
+    @end_on = end_on || session_date(session[:inbound_end]) || Date.today
+    transfer_id = params[:id]
+    transfer = Aces::Transfer.find(transfer_id)
+    payload = transfer.outbound_payload
+    result = Transfers::ToService.new.call(payload, transfer_id)
+    if result.success?
+      flash[:notice] = result.value!
+    else
+      flash[:alert] = result.failure[:failure]
+    end
+    redirect_to account_transfers_reports_path
+  end
+
   private
 
   def range_from_params
