@@ -1414,17 +1414,17 @@ module Aces
       end
 
       context 'with valid payload - hash format' do
-        it 'redirects with success flash ' do
+        it 'redirects with notice flash ' do
           expect(response).to have_http_status(:redirect)
-          expect(flash[:success]).to match(/Successfully sent payload/)
+          expect(flash[:notice]).to match(/Successfully sent payload/)
         end
       end
 
       context 'with valid payload - JSON format' do
-        it 'redirects with success flash ' do
+        it 'redirects with notice flash ' do
           post :create, params: { transfer: { :outbound_payload => outbound_payload_json } }
           expect(response).to have_http_status(:redirect)
-          expect(flash[:success]).to match(/Successfully sent payload/)
+          expect(flash[:notice]).to match(/Successfully sent payload/)
         end
       end
 
@@ -1433,9 +1433,9 @@ module Aces
           {}
         end
 
-        it 'redirects with error flash' do
+        it 'redirects with alert flash' do
           expect(response).to have_http_status(:redirect)
-          expect(flash[:error]).to match(/Exception raised/)
+          expect(flash[:alert]).to match(/Exception raised/)
         end
       end
     end
