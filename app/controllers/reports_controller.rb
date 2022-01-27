@@ -97,7 +97,7 @@ class ReportsController < ApplicationController
     else
       flash[:alert] = result.failure[:failure]
     end
-    redirect_to account_transfers_reports_path
+    redirect_to transfer
   end
 
   private

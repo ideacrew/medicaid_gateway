@@ -22,23 +22,21 @@ RSpec.describe ReportsController, type: :controller, dbclean: :after_each do
     end
 
     context "successful resubmission" do
-      before do
-        put :resubmit_to_service, params: { id: transfer.id }
-      end
+      subject { put :resubmit_to_service, params: { id: transfer.id } }
+
       it "should flash notice message" do
         subject
         expect(flash[:notice]).to match(/Successfully transferred in account/)
       end
 
-      it "should redirect to Transfers report page" do
-        expect(subject).to redirect_to(account_transfers_reports_path)
+      it "should redirect to transfer show page" do
+        expect(subject).to redirect_to(aces_transfer_path(transfer))
       end
     end
 
     context "failed resubmission" do
-      before do
-        put :resubmit_to_service, params: { id: missing_payload_tansfer.id }
-      end
+      subject { put :resubmit_to_service, params: { id: missing_payload_tansfer.id } }
+
       it "should flash alert message" do
         subject
         expect(flash[:alert]).to match(/Application does not contain any applicants applying for coverage./)
