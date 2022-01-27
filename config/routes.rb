@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   namespace :aces do
     resource :publishing_connectivity_tests, only: [:new, :create]
     resources :inbound_transfers, only: [:show, :new, :create]
-    resources :transfers, only: [:show]
+    resources :transfers, only: [:show, :new, :create]
     namespace :soap do
       resource :atp_requests, only: [] do
         collection do
@@ -34,6 +34,7 @@ Rails.application.routes.draw do
       get 'mec_checks'
       get 'events'
       put 'update_transfer_requested'
+      put 'resubmit_to_service'
     end
   end
 end

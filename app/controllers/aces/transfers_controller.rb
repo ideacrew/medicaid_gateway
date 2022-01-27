@@ -12,7 +12,38 @@ module Aces
       render layout: "application"
     end
 
+    def new
+    end
+
+    def create
+      payload = params.dig(:transfer, :outbound_payload)
+      parsed = valid_json(payload) ? payload : JSON.generate(instance_eval(payload))
+      result = ::Transfers::ToService.new.call(parsed)
+
+      if result.success?
+        flash[:success] = 'Successfully sent payload'
+        redirect_to account_transfers_reports_path
+      else
+        error = result.failure[:failure]
+        outbound_transfer = Aces::Transfer.find(result.failure[:transfer_id])
+        outbound_transfer.update!(failure: error)
+        flash[:error] = "Error: #{error}"
+        redirect_to new_aces_transfer_path
+      end
+    rescue StandardError => e
+      flash[:error] = "Exception raised: #{e}"
+      redirect_to new_aces_transfer_path
+    end
+
     private
+
+    def valid_json(value)
+      return false unless value.present?
+      JSON.parse(value)
+      true
+    rescue JSON::ParserError
+      false
+    end
 
     def parse_json(value)
       return value unless value.present?

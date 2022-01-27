@@ -48,7 +48,7 @@ module Transfers
       result = applicants&.each_with_object([]) do |applicant, collect|
         collect << applicant["is_applying_coverage"]
       end
-      return Success("Valid applicants.") if result.include?(true)
+      return Success("Valid applicants.") if result&.include?(true)
 
       error_result = {
         transfer_id: transfer_id,
