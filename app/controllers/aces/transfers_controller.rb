@@ -21,17 +21,17 @@ module Aces
       result = ::Transfers::ToService.new.call(parsed)
 
       if result.success?
-        flash[:success] = 'Successfully sent payload'
+        flash[:notice] = 'Successfully sent payload'
         redirect_to account_transfers_reports_path
       else
         error = result.failure[:failure]
         outbound_transfer = Aces::Transfer.find(result.failure[:transfer_id])
         outbound_transfer.update!(failure: error)
-        flash[:error] = "Error: #{error}"
+        flash[:alert] = "Error: #{error}"
         redirect_to new_aces_transfer_path
       end
     rescue StandardError => e
-      flash[:error] = "Exception raised: #{e}"
+      flash[:alert] = "Exception raised: #{e}"
       redirect_to new_aces_transfer_path
     end
 
