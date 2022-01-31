@@ -40,7 +40,7 @@ RUN apt-get update \
     && apt-get install -y \
       fontconfig \
       libffi6 \
-      libsodium-dev \
+      libsodium23 \
       libxext6 \
       libxrender1 \
       libyaml-cpp0.6 \
@@ -203,7 +203,7 @@ COPY --chown=$USERNAME:$USERNAME . $HOME
 COPY --chown=$USERNAME:$USERNAME --from=prod_gems_and_assets $HOME/public $HOME/public
 
 # Copy state-specific configs
-COPY --chown=$USERNAME:$USERNAME --from=prod_gems_and_assets $HOME/system/config $HOME/system/config`
+COPY --chown=$USERNAME:$USERNAME --from=prod_gems_and_assets $HOME/system/config $HOME/system/config
 
 # Copy environment-based config files
 COPY --chown=$USERNAME:$USERNAME ./.docker/config/mongoid.yml $HOME/config
