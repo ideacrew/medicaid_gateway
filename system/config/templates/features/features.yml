@@ -19,3 +19,5 @@ registry:
         is_enabled: false
       - key: :bulk_transfer_to_enroll
         is_enabled: true
+      - key: :fpl_overrides
+        is_enabled: false

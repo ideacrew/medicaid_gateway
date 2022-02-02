@@ -19,4 +19,17 @@ registry:
         is_enabled: false
       - key: :bulk_transfer_to_enroll
         is_enabled: false
-
+      - key: :fpl_overrides
+        is_enabled: true
+        item: [
+                {
+                  medicaid_year: 2021,
+                  annual_poverty_guideline: BigDecimal(12_760.to_s),
+                  annual_per_person_amount: BigDecimal(4_480.to_s)
+                },
+                {
+                  medicaid_year: 2022,
+                  annual_poverty_guideline: BigDecimal(12_880.to_s),
+                  annual_per_person_amount: BigDecimal(4_540.to_s)
+                }
+              ]

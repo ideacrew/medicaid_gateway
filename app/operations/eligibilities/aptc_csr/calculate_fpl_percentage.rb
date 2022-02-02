@@ -34,10 +34,19 @@ module Eligibilities
         @tax_household = params[:tax_household]
         aptc_household = params[:aptc_household]
         fpl_year = find_fpl_year
-
         fpl_data = ::Types::FederalPovertyLevels.detect do |fpl_hash|
           fpl_hash[:medicaid_year] == fpl_year
         end
+
+        # if the state does not use the default FPL values, check for an override for that year
+        if MedicaidGatewayRegistry.feature_enabled?(:fpl_overrides)
+          overrides = MedicaidGatewayRegistry[:fpl_overrides].item
+          override = overrides.detect do |fpl_hash|
+            fpl_hash[:medicaid_year] == fpl_year
+          end
+          fpl_data = override.deep_symbolize_keys if override
+        end
+
         total_annual_poverty_guideline = fpl_data[:annual_poverty_guideline] +
                                          ((aptc_household[:total_household_count] - 1) * fpl_data[:annual_per_person_amount])
         fpl_percent = aptc_household[:annual_tax_household_income].div(total_annual_poverty_guideline, 0) * 100
