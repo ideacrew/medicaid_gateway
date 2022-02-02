@@ -2,11 +2,6 @@
 
 require 'dry/monads'
 require 'dry/monads/do'
-require 'types'
-require 'aca_entities/magi_medicaid/contracts/create_federal_poverty_level_contract'
-require 'aca_entities/magi_medicaid/contracts/federal_poverty_level_contract'
-require 'aca_entities/magi_medicaid/federal_poverty_level'
-require 'aca_entities/operations/magi_medicaid/create_federal_poverty_level'
 
 module Eligibilities
   module AptcCsr

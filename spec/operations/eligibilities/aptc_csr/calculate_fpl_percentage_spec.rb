@@ -2,6 +2,11 @@
 
 require 'rails_helper'
 require File.join(Rails.root, 'spec/shared_contexts/eligibilities/magi_medicaid_application_data')
+require 'types'
+require 'aca_entities/magi_medicaid/contracts/create_federal_poverty_level_contract'
+require 'aca_entities/magi_medicaid/contracts/federal_poverty_level_contract'
+require 'aca_entities/magi_medicaid/federal_poverty_level'
+require 'aca_entities/operations/magi_medicaid/create_federal_poverty_level'
 
 describe Eligibilities::AptcCsr::CalculateFplPercentage do
   include_context 'setup magi_medicaid application with two applicants'
