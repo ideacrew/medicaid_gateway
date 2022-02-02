@@ -15,7 +15,7 @@ module Subscribers
     # event_source branch: release_0.5.2
     subscribe(:on_enroll_iap_transfers) do |delivery_info, _metadata, response|
       transfer = delivery_info.routing_key == "enroll.iap.transfers.transfer_account"
-      phash = JSON.parse(response)
+      phash = JSON.parse(response, symbolize_names: true)
 
       result = if transfer
                  ::Transfers::ToService.new.call(JSON.generate(phash.except("service")))
