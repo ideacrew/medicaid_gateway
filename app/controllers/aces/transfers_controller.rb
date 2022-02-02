@@ -17,7 +17,7 @@ module Aces
 
     def create
       payload = params.dig(:transfer, :outbound_payload)
-      parsed = valid_json(payload) ? payload : JSON.generate(instance_eval(payload))
+      parsed = valid_json(payload) ? payload : JSON.generate(instance_eval(payload), symbolize_names: true)
       result = ::Transfers::ToService.new.call(parsed)
 
       if result.success?

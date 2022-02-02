@@ -113,9 +113,9 @@ module Transfers
         status = xml.xpath('//tns:ResponseDescriptionText', 'tns' => 'http://hix.cms.gov/0.1/hix-core')
         status_text = status.any? ? status.last.text : "N/A"
         payload = status_text == "Success" ? "" : @transfer.outbound_payload
-        @transfer.update!(response_payload: response_json, callback_status: status_text, outbound_payload: payload)
+        @transfer.update!(response_payload: response_json, callback_status: status_text, outbound_payload: payload, failure: nil)
       else
-        @transfer.update!(response_payload: response_json)
+        @transfer.update!(response_payload: response_json, callback_status: status_text, failure: nil)
       end
       Success("Successfully transferred in account")
     end
