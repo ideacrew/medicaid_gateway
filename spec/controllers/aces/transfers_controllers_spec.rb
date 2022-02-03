@@ -1263,7 +1263,7 @@ module Aces
                     currency_iso: "USD"
                   },
                   is_insurance_assistance_eligible: nil,
-                  annual_tax_household_income: "72332.0",
+                  annual_tax_household_income: {"cents": "72332.0"},
                   tax_household_members: [
                     {
                       applicant_reference: {
