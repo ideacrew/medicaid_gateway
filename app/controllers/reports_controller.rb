@@ -23,11 +23,11 @@ class ReportsController < ApplicationController
   def medicaid_application_check
     @start_on = start_on || session[:ma_start] || Date.today
     @end_on = end_on || session[:ma_end] || Date.today
-    @application_ids = applications.distinct(:application_identifier).uniq.sort
+    @application_ids = Medicaid::Application.all.distinct(:application_identifier).uniq.sort
     application_id = params.fetch(:app) if params.key?(:app)
     @app = application_id || session[:app]
     @applications = if @app
-                      applications.where(application_identifier: @application_id).page params[:page]
+                      Medicaid::Application.where(application_identifier: @app).page params[:page]
                     else
                       applications.order(updated_at: :desc).page params[:page]
                     end
@@ -123,11 +123,7 @@ class ReportsController < ApplicationController
   end
 
   def applications
-<<<<<<< HEAD
     Medicaid::Application.only(:application_identifier, :created_at, :application_response_payload).where(created_at: range).or(updated_at: range)
-=======
-    Medicaid::Application.where(created_at: range).or(updated_at: range).only(:application_identifier, :created_at, :application_response_payload).order(updated_at: :desc)
->>>>>>> 38bcf02 (controller cleanup)
   end
 
   def transfers
