@@ -63,7 +63,7 @@ RSpec.describe "Reports", type: :view, dbclean: :after_each do
     it "shows the previous 24 hours without params"  do
       old_application = create :application, created_at: 1.day.ago, updated_at: 1.day.ago
       visit '/reports/medicaid_application_check'
-      expect(page).to_not have_content(old_application.application_identifier)
+      expect(page).to_not have_css('td', text: old_application.application_identifier)
     end
 
     it "accepts and uses date params"  do

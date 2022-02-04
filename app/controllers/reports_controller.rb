@@ -123,7 +123,7 @@ class ReportsController < ApplicationController
   end
 
   def applications
-    Medicaid::Application.only(:application_identifier, :created_at, :application_response_payload).where(created_at: range).or(updated_at: range)
+    Medicaid::Application.only(:application_identifier, :created_at, :application_response_payload, :medicaid_response_payload).where(created_at: range).or(updated_at: range)
   end
 
   def transfers
