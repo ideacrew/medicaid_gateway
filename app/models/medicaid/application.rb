@@ -26,6 +26,12 @@ module Medicaid
     # For Example: In DC's case the external system is MitC
     field :medicaid_response_payload, type: String
 
+    # Stores error messages from failed operations
+    field :failure, type: String, default: nil
+
+    # Stores exceptions from failed operations
+    field :exception, type: Hash, default: nil
+
     embeds_many :aptc_households, class_name: '::Medicaid::AptcHousehold'
     accepts_nested_attributes_for :aptc_households
 
@@ -33,6 +39,7 @@ module Medicaid
     index({ updated_at: 1 })
 
     def successful?
+      # TODO: Update this to account for new failure and exception fields
       return true unless application_response_payload.blank?
     end
 
