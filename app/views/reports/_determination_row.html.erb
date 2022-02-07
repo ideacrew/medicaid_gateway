@@ -2,6 +2,7 @@
     <td class="<%= determination.successful? ? 'table-success' : 'table-danger' %>"><%= determination.successful? ? "Success" : "Failure" %></td>
     <td><%= determination.application_identifier %></td>
     <td><%= determination.created_at %></td>
+    <td><%= determination.error_message %></td>
     <td>
         <%= link_to 'Details', determination, class: 'btn btn-primary' %>
     </td>

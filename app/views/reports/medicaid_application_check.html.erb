@@ -1,13 +1,34 @@
-<h1>Determinations</h1>
-<h2><% if @application_id %>Only showing those with application id of <%= @application_id %><% end %></h2>
-<h2 class="text-muted mb-3"><%= @applications.count %> determinations during this range</h2>
-<%= render partial: "date_range", locals: {start_on: @start_on, end_on: @end_on, session_name: 'ma_'} %>
+<div class="container p-0">
+  <div class="row">
+    <div class="col-8">
+      <h1>Determinations</h1>
+    </div>
+    <div class="col">
+      <div class="input-group input-group-sm pb-3">
+        <input name="app" id="app" class="form-control" data-controller="report" data-action="report#app_search" value="<%= @app %>" list="apps" placeholder="Search by Application">
+        <div class="input-group-append">
+        <% if @app %>
+          <button type="button" class="btn btn-primary" data-controller="report" data-action="report#clear_search">X</button>
+        <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% unless @app %>
+  <h2 class="text-muted mb-3"><%= @applications.count %> determinations during this range</h2>
+  <%= render partial: "date_range", locals: {start_on: @start_on, end_on: @end_on, session_name: 'ma_'} %>
+<% end %>
+
+
 <table class="table table-striped table-responsive mt-3 table-overrides">
 	<thead>
 		<tr>
 			<th>Status</th>
 			<th>Application Identifer</th>
 			<th>Updated At</th>
+			<th>Failure</th>
             <th>Link</th>
 		</tr>
 	</thead>
@@ -17,5 +38,10 @@
 		<% end %>
 	</tbody>
 </table>
-
+<datalist id="apps">
+  <option value=""></option>
+  <% @application_ids.each do |id| %>
+    <option value="<%= id %>"><%= id %></option>
+  <% end %>
+</datalist>
 <%= paginate @applications %>
