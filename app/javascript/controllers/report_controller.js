@@ -20,18 +20,20 @@ export default class extends Controller {
     const startDate = this.startDateTarget.value,
           endDate = this.endDateTarget.value,
           sessionName = event.target.dataset.session
-
+    window.history.replaceState(null, null, window.location.pathname)
     this.stimulate('Report#change_dates', sessionName, startDate, endDate)
   }
 
   app_search(event) {
     const value = event.target.value
+    window.history.replaceState(null, null, window.location.pathname)
     this.stimulate('Report#app_search', value)
   }
 
   clear_search(event) {
     var input = document.getElementById("app");
     input.value = ""
+    window.history.replaceState(null, null, window.location.pathname)
     this.stimulate('Report#app_search', "")
   }
 }
