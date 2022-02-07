@@ -11,7 +11,12 @@ class TransferReport
   end
 
   def self.run_report(start_on, end_on)
-    timestamp = Time.zone.now.strftime("%Y%m%d_%H%M%S")
+    yesterday = Date.yesterday
+    timestamp = if start_on == yesterday && end_on == yesterday
+                  yesterday.strftime("%Y_%m_%d")
+                else
+                  "#{start_on.strftime('%Y_%m_%d')}_to_#{end_on.strftime('%Y_%m_%d')}"
+                end
     range = start_on.beginning_of_day..end_on.end_of_day
     report_name = "transfer_report_#{timestamp}.csv"
     FileUtils.touch(report_name)
