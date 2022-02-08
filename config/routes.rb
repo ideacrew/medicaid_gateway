@@ -35,6 +35,7 @@ Rails.application.routes.draw do
       get 'events'
       put 'update_transfer_requested'
       put 'resubmit_to_service'
+      put 'resubmit_to_enroll'
     end
   end
 end

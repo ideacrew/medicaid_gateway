@@ -102,6 +102,22 @@ class ReportsController < ApplicationController
     redirect_to transfer
   end
 
+  def resubmit_to_enroll
+    @start_on = start_on || session_date(session[:inbound_start]) || Date.today
+    @end_on = end_on || session_date(session[:inbound_end]) || Date.today
+    transfer_id = params[:id]
+    inbound_transfer = Aces::InboundTransfer.find(transfer_id)
+    payload = inbound_transfer.payload
+    result = Aces::ProcessAtpSoapRequest.new.call(payload, transfer_id)
+
+    if result.success?
+      flash[:notice] = result.value!
+    else
+      flash[:alert] = "Resubmit failed! - #{result.failure}"
+    end
+    redirect_to inbound_transfer
+  end
+
   private
 
   def range_from_params

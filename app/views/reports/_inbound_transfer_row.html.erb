@@ -11,9 +11,7 @@
         <%= link_to "Details", transfer, class: 'btn btn-primary' %>
         <% if transfer.resubmittable? %>
             <br/>
-            <button class="btn btn-secondary mt-2" data-reflex="click->Report#resubmit_to_enroll" data-payload="<%= transfer.payload %>" data-id="<%= transfer.id %>">
-                Resubmit
-            </button> 
+             <%= button_to 'Resubmit', resubmit_to_enroll_reports_path(id: transfer.id), method: :put, class: 'btn btn-secondary mt-2'%> 
         <% end %>
     </td>
 </tr>
