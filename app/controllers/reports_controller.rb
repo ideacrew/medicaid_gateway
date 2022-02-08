@@ -111,7 +111,7 @@ class ReportsController < ApplicationController
     result = Aces::ProcessAtpSoapRequest.new.call(payload, transfer_id)
 
     if result.success?
-      flash[:notice] = result.value!
+      flash[:notice] = "Successfully resubmitted to Enroll"
     else
       flash[:alert] = "Resubmit failed! - #{result.failure}"
     end
