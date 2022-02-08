@@ -47,7 +47,7 @@ RSpec.describe ReportsController, type: :controller, dbclean: :after_each do
 
   describe "PUT resubmit_to_enroll" do
     let(:user) { FactoryBot.create(:user) }
-    let(:inbound_transfer) { create :inbound_transfer}
+    let(:inbound_transfer) { create :inbound_transfer, :to_enroll}
     let(:process_atp_soap_request) { instance_double(Aces::ProcessAtpSoapRequest) }
     let(:body) { File.read("./spec/test_data/Simple_Test_Case_L_New.xml") }
 
@@ -61,10 +61,20 @@ RSpec.describe ReportsController, type: :controller, dbclean: :after_each do
 
       before do
         allow(process_atp_soap_request).to receive(:call).with(inbound_transfer.payload, inbound_transfer.id).and_return(Success(body))
+        subject
+      end
+
+      it "should record success message on the Inbound Transfer object result" do
+
+        inbound_transfer.reload
+        expect(inbound_transfer.result).to match(/Waiting to Transfer/)
+      end
+
+      it "should set failure to nil on the Inbound Transfer object" do
+        expect(inbound_transfer.failure).to eq(nil)
       end
 
       it "should flash notice message" do
-        subject
         expect(flash[:notice]).to match(/Successfully resubmitted to Enroll/)
       end
 
@@ -78,10 +88,19 @@ RSpec.describe ReportsController, type: :controller, dbclean: :after_each do
 
       before do
         allow(process_atp_soap_request).to receive(:call).with(inbound_transfer.payload, inbound_transfer.id).and_return(Failure(""))
+        subject
+      end
+
+      it "should record failure message on the Inbound Transfer object result" do
+        inbound_transfer.reload
+        expect(inbound_transfer.result).to match(/Failed/)
+      end
+
+      it "should update failure text on the Inbound Transfer object" do
+        expect(inbound_transfer.failure).to eq(nil)
       end
 
       it "should flash alert message" do
-        subject
         expect(flash[:alert]).to match(/Resubmit failed! - /)
       end
     end

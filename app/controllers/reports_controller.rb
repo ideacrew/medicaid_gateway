@@ -110,6 +110,14 @@ class ReportsController < ApplicationController
     payload = inbound_transfer.payload
     result = Aces::ProcessAtpSoapRequest.new.call(payload, transfer_id)
 
+    result_text = if result.success?
+                    inbound_transfer.to_enroll ? "Waiting to Transfer" : "Waiting to Relay"
+                  else
+                    "Failed"
+                  end
+    failure_text = result.failure? ? result.failure : inbound_transfer.failure
+    inbound_transfer.update!(result: result_text, failure: failure_text)
+
     if result.success?
       flash[:notice] = "Successfully resubmitted to Enroll"
     else
