@@ -3,6 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe ReportsController, type: :controller, dbclean: :after_each do
+  include Dry::Monads[:result, :do]
 
   describe "PUT resubmit_to_service" do
     let(:user) { FactoryBot.create(:user) }
@@ -40,6 +41,67 @@ RSpec.describe ReportsController, type: :controller, dbclean: :after_each do
       it "should flash alert message" do
         subject
         expect(flash[:alert]).to match(/Application does not contain any applicants applying for coverage./)
+      end
+    end
+  end
+
+  describe "PUT resubmit_to_enroll" do
+    let(:user) { FactoryBot.create(:user) }
+    let(:inbound_transfer) { create :inbound_transfer, :to_enroll}
+    let(:process_atp_soap_request) { instance_double(Aces::ProcessAtpSoapRequest) }
+    let(:body) { File.read("./spec/test_data/Simple_Test_Case_L_New.xml") }
+
+    before :each do
+      allow(Aces::ProcessAtpSoapRequest).to receive(:new).and_return(process_atp_soap_request)
+      sign_in user
+    end
+
+    context "successful resubmission" do
+      subject { put :resubmit_to_enroll, params: { id: inbound_transfer.id } }
+
+      before do
+        allow(process_atp_soap_request).to receive(:call).with(inbound_transfer.payload, inbound_transfer.id).and_return(Success(body))
+        subject
+      end
+
+      it "should record success message on the Inbound Transfer object result" do
+
+        inbound_transfer.reload
+        expect(inbound_transfer.result).to match(/Waiting to Transfer/)
+      end
+
+      it "should set failure to nil on the Inbound Transfer object" do
+        expect(inbound_transfer.failure).to eq(nil)
+      end
+
+      it "should flash notice message" do
+        expect(flash[:notice]).to match(/Successfully resubmitted to Enroll/)
+      end
+
+      it "should redirect to inbound transfer show page" do
+        expect(subject).to redirect_to(aces_inbound_transfer_path(inbound_transfer))
+      end
+    end
+
+    context "failed resubmission" do
+      subject { put :resubmit_to_enroll, params: { id: inbound_transfer.id } }
+
+      before do
+        allow(process_atp_soap_request).to receive(:call).with(inbound_transfer.payload, inbound_transfer.id).and_return(Failure(""))
+        subject
+      end
+
+      it "should record failure message on the Inbound Transfer object result" do
+        inbound_transfer.reload
+        expect(inbound_transfer.result).to match(/Failed/)
+      end
+
+      it "should update failure text on the Inbound Transfer object" do
+        expect(inbound_transfer.failure).to eq(nil)
+      end
+
+      it "should flash alert message" do
+        expect(flash[:alert]).to match(/Resubmit failed! - /)
       end
     end
   end
