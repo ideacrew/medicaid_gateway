@@ -20,8 +20,14 @@ describe Transfers::AddEnrollResponse, dbclean: :after_each do
   let(:operation) { Transfers::AddEnrollResponse.new }
 
   context "failure" do
+    it "should fail if the param keys are not symbolized" do
+      invalid_params = params.stringify_keys
+      result = operation.call(invalid_params)
+      expect(result.failure).to eq("Param keys must be symbols. Found non-symbol keys: #{invalid_params.keys}")
+    end
+
     it "should fail if the inbound transfer record does not exist" do
-      result = operation.call(params.stringify_keys)
+      result = operation.call(params)
       expect(result.success?).not_to be_truthy
     end
   end
@@ -29,7 +35,7 @@ describe Transfers::AddEnrollResponse, dbclean: :after_each do
   context "success" do
     before :each do
       @inbound_transfer = create :inbound_transfer, external_id: transfer_id
-      @result = operation.call(params.stringify_keys)
+      @result = operation.call(params)
     end
 
     it "should update the inbound transfer with the response details from enroll" do

@@ -18,7 +18,7 @@ module Subscribers
       phash = JSON.parse(response, symbolize_names: true)
 
       result = if transfer
-                 ::Transfers::ToService.new.call(JSON.generate(phash.except("service")))
+                 ::Transfers::ToService.new.call(JSON.generate(phash.except(:service)))
                else
                  ::Transfers::AddEnrollResponse.new.call(phash)
                end
@@ -49,7 +49,7 @@ module Subscribers
           }
         )
       else
-        ib_transfer_id = phash["transfer_id"]
+        ib_transfer_id = phash[:transfer_id]
         inbound_transfer = Aces::InboundTransfer.where(external_id: ib_transfer_id).last
         inbound_transfer&.update!(failure: true)
       end
