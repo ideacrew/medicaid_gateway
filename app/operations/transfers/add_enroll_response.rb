@@ -10,23 +10,29 @@ module Transfers
 
     # Takes the params, finds the inbound transfer and updates with response details from enroll
     def call(params)
-      transfers = yield get_transfers(params)
+      valid_params = yield validate_params(params)
+      transfers = yield get_transfers(valid_params)
       update_transfer(params, transfers)
     end
 
     private
 
+    def validate_params(params)
+      invalid_keys = params.keys.filter {|key| key.class != Symbol}
+      invalid_keys.empty? ? Success(params) : Failure("Param keys must be symbols. Found non-symbol keys: #{invalid_keys}")
+    end
+
     def get_transfers(params)
-      transfer_id = params["transfer_id"]
+      transfer_id = params[:transfer_id]
       transfer = Aces::InboundTransfer.where(external_id: transfer_id)
       transfer&.any? ? Success(transfer) : Failure("Failed to find inbound transfer record for: #{transfer_id}")
     end
 
     def update_transfer(params, transfers)
       result = Try do
-        params["payload"] = "" if params["result"] == "Success"
+        params[:payload] = "" if params["result"] == "Success"
         transfers.each do |transfer|
-          transfer.update!(params.except("transfer_id"))
+          transfer.update!(params.except(:transfer_id))
         end
       end
       result.success? ? Success(transfers) : Failure("Failed to update transfer")
