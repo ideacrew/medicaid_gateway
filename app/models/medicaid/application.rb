@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'types'
+
 module Medicaid
   # Application is a one to one mapping to the Incoming Application(EA's FinancialAssistance::Application).
   # Object to store request payloads, response payloads, and
@@ -40,6 +42,35 @@ module Medicaid
       return unless medicaid_response_payload
       json = medicaid_response_payload.to_json
       json["Error"]
+    end
+
+    def application_response_payload_json
+      return unless application_response_payload
+      JSON.parse(application_response_payload, symbolize_names: true)
+    end
+
+    def assistance_year
+      return unless application_request_payload
+      params = JSON.parse(application_request_payload, symbolize_names: true)
+      params[:assistance_year]
+    end
+
+    def fpl
+      return unless assistance_year
+      fpl_year = assistance_year - 1
+      fpl_data = ::Types::FederalPovertyLevels.detect do |fpl_hash|
+        fpl_hash[:medicaid_year] == fpl_year
+      end
+      { medicaid_year: assistance_year,
+        annual_poverty_guideline: fpl_data[:annual_poverty_guideline],
+        annual_per_person_amount: fpl_data[:annual_per_person_amount] }
+    end
+
+    def benchmarks
+      return unless application_response_payload_json
+      applicants = application_response_payload_json[:applicants]
+      return unless applicants
+      applicants.map { |a| a[:benchmark_premium][:health_only_slcsp_premiums] }.flatten
     end
 
     def other_factors

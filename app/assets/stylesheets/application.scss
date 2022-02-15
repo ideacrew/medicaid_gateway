@@ -37,3 +37,57 @@ ul li.list-inline-item:last-child:after {
   content: "";
   color: $secondary;
 }
+
+/* css only accordion */
+.accordion {
+  overflow: hidden;
+}
+
+.accordion_panel {
+  width: 100%;
+  overflow: hidden;
+  &-label {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    cursor: pointer;
+    padding: .5em;
+    background: $primary;
+    color: white;
+    border-bottom: 4px solid white;
+    &:hover {
+      background: $secondary;
+    }
+    &::after {
+      content: "\276F";
+      width: 1em;
+      height: 1em;
+      text-align: center;
+      transition: all .35s;
+    }
+  }
+  &-content {
+    max-height: 0;
+    padding: 0 1em;
+    transition: all .35s;
+  }
+}
+
+.accordion input {
+  position: absolute;
+  opacity: 0;
+  z-index: -1;
+}
+
+.accordion input:checked {
+  + .accordion_panel-label {
+    &::after {
+      transform: rotate(90deg);
+    }
+  }
+  ~ .accordion_panel-content {
+    /* "magic" number that is absurdly big to accomodate huge payloads */
+    max-height: 1000000vh;
+    padding: 1em;
+  }
+}
