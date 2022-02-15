@@ -71,15 +71,6 @@ ul li.list-inline-item:last-child:after {
     padding: 0 1em;
     transition: all .35s;
   }
-  &-close {
-    display: flex;
-    justify-content: flex-end;
-    padding: 1em;
-    font-size: 0.75em;
-    cursor: pointer;
-    &:hover {
-    }
-  }
 }
 
 .accordion input {
