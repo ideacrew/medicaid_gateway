@@ -1,30 +1,97 @@
 <h1>Determination of Application <%= @application.application_identifier %></h1>
-<p>Created At: <%= @application.created_at %></p>
-<p>Processed At: <%= @application.updated_at %></p>
+<p><b>Created At:</b> <%= @application.created_at %> &bull; <b>Updated At:</b> <%= @application.updated_at %></p>
 
-<h2>Application Request Payload:</h2>
-<%= raw(ap(@application_request_payload)) %>
-<hr>
-<h2>Application Response Payload:</h2>
-<%= raw(ap(@application_response_payload)) %>
-<hr>
-<h2>Medicaid Request Payload:</h2>
-<%= raw(ap(@medicaid_request_payload)) %>
-<hr>
-<h2>Medicaid Response Payload:</h2>
-<%= raw(ap(@medicaid_response_payload)) %>
-<hr>
+<% unless @application.error_message.blank? %>
+<div class="card bg-danger text-light p-2 mb-3">
+  <h2>Error Details:</h2>
+  <%= @application.error_message %>
+</div>
+<% end %>
+
+<% unless @application_response_payload.blank? %>
+<ul class="list-group list-group-horizontal mb-1">
+  <li class="list-group-item list-group-item-primary"><h5 class="m-0">FPL</h5></li>
+  <% @application.fpl.each do |k, v| %>
+    <li class="list-group-item"><b><%= k.to_s.humanize.titleize %>:</b> <%= v %></li>
+  <% end %>
+</ul>
+
+<table class="table table-responsive table-overrides mb-5">
+  <thead>
+    <tr>
+      <th>Member HBX</th>
+      <th>SLCSP</th>
+      <th>FPL %</th>
+      <th>MAGI Medicaid Eligible</th>
+      <th>APTC</th>
+      <th>Expected Contribution %</th>
+      <th>CSR</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @application.application_response_payload_json[:tax_households].each do |thh| %>
+      <% thh[:tax_household_members].each do |thm| %>
+        <% mm_eligible = thm[:product_eligibility_determination][:is_magi_medicaid] %>
+        <tr>
+          <td><%= thm[:applicant_reference][:person_hbx_id] %></td>
+          <td><% benchmark = @application.benchmarks.detect{ |a| a[:member_identifier] == thm[:applicant_reference][:person_hbx_id]} %>
+            <%= benchmark[:monthly_premium] if benchmark %>
+          </td>
+          <td><%= thm[:product_eligibility_determination][:magi_as_percentage_of_fpl] %>%</td>
+          <td><%= thm[:product_eligibility_determination][:is_magi_medicaid] %></td>
+          <td><%= thh[:max_aptc] unless mm_eligible %></td>
+          <td><%=  @application.aptc_households.last.contribution_percent unless mm_eligible %></td>
+          <td><%= thm[:product_eligibility_determination][:csr] if thm[:product_eligibility_determination][:is_csr_eligible] %></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
+<% end %>
+
+<h2>Payloads (click name to see in hide/show)</h2>
+<div class="accordion mb-5">
+  <div class="accordion_panel">
+    <input type="checkbox" id="chck1" checked>
+    <label class="accordion_panel-label" for="chck1"><h3>Application Request Payload (from Enroll)</h3></label>
+    <div class="accordion_panel-content">
+      <%= raw(ap(@application_request_payload)) %>
+    </div>
+  </div>
+  <div class="accordion_panel">
+    <input type="checkbox" id="chck2" checked>
+    <label class="accordion_panel-label" for="chck2"><h3>Medicaid Request Payload (to MitC)</h3></label>
+    <div class="accordion_panel-content">
+      <%= raw(ap(@medicaid_request_payload)) %>
+    </div>
+  </div>
+  <div class="accordion_panel">
+    <input type="checkbox" id="chck3" checked>
+    <label class="accordion_panel-label" for="chck3"><h3>Medicaid Response Payload (from MitC)</h3></label>
+    <div class="accordion_panel-content">
+      <%= raw(ap(@medicaid_response_payload)) %>
+    </div>
+  </div>
+  <div class="accordion_panel">
+    <input type="checkbox" id="chck4" checked>
+    <label class="accordion_panel-label" for="chck4"><h3>Application Response Payload (to Enroll)</h3></label>
+    <div class="accordion_panel-content">
+      <%= raw(ap(@application_response_payload)) %>
+    </div>
+  </div>
+</div>
+
 <h2>APTC Households</h2>
 <% if @application.aptc_households && @application.aptc_households.any? %>
+
 <% @application.aptc_households.each do |household| %>
-  <% household.attributes.each do |attr_name, attr_value| %>
-    <%= attr_name %>: <%= attr_value %>
-    <br />
-  <% end %>
+  <%= raw(ap(household.attributes)) %>
 <% end %>
+
 <% end %>
 <hr>
+<% if @application.other_factors %>
 <h2>Other Factors</h2>
-  <%= @application.other_factors if @application.other_factors  %>
-<hr>
+  <%= raw(ap(@application.other_factors)) if @application.other_factors  %>
+<% end %>
 <%= link_to "Determinations Report", medicaid_application_check_reports_path, class: 'btn btn-primary' %>
