@@ -62,5 +62,21 @@ module Medicaid
       }
     end
 
+    def application_request_payload_hash
+      # TODO: handle failure/format
+      JSON.parse(application_request_payload)
+    end
+
+    def primary_applicant
+      application_request_payload_hash["applicants"]&.detect {|applicant| applicant["is_primary_applicant"]}
+    end
+
+    def primary_hbx_id
+      primary_applicant["person_hbx_id"]
+    end
+
+    def submitted_at
+      application_request_payload_hash["submitted_at"]
+    end
   end
 end
