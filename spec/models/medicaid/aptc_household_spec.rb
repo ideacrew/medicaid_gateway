@@ -68,5 +68,9 @@ RSpec.describe ::Medicaid::AptcHousehold, type: :model do
     it 'should be findable' do
       expect(application.reload.aptc_households.find(@aptc_household.id)).to be_a(::Medicaid::AptcHousehold)
     end
+
+    it 'should be able to calculate the expected contribution percentage' do
+      expect(@aptc_household.contribution_percent.to_i).to eq(49)
+    end
   end
 end
