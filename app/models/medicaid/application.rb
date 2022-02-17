@@ -66,6 +66,14 @@ module Medicaid
         annual_per_person_amount: fpl_data[:annual_per_person_amount] }
     end
 
+    def irs_consent_details
+      return unless application_request_payload
+      params = JSON.parse(application_request_payload, symbolize_names: true)
+      { is_renewal_authorized: params[:is_renewal_authorized],
+        renewed_through: params[:years_to_renew]
+      }
+    end
+
     def benchmarks
       return unless application_response_payload_json
       applicants = application_response_payload_json[:applicants]

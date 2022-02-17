@@ -7,16 +7,15 @@
   <%= @application.error_message %>
 </div>
 <% end %>
-
-<% unless @application_response_payload.blank? %>
+<% unless @application_response_payload.blank? || @application.application_response_payload_json[:tax_households].nil? %>
 <ul class="list-group list-group-horizontal mb-1">
-  <li class="list-group-item list-group-item-primary"><h5 class="m-0">FPL</h5></li>
-  <% @application.fpl.each do |k, v| %>
+  <li class="list-group-item <%= @application.irs_consent_details[:is_renewal_authorized] ? 'list-group-item-success' : 'list-group-item-warning' %>"><h5 class="m-0">IRS</h5></li>
+   <% @application&.irs_consent_details&.each do |k, v| %>
     <li class="list-group-item"><b><%= k.to_s.humanize.titleize %>:</b> <%= v %></li>
   <% end %>
 </ul>
 
-<table class="table table-responsive table-overrides mb-5">
+<table class="table table-responsive table-overrides mb-2">
   <thead>
     <tr>
       <th>Member HBX</th>
@@ -31,23 +30,32 @@
   <tbody>
     <% @application.application_response_payload_json[:tax_households].each do |thh| %>
       <% thh[:tax_household_members].each do |thm| %>
+          <% if thm[:product_eligibility_determination] %>
         <% mm_eligible = thm[:product_eligibility_determination][:is_magi_medicaid] %>
-        <tr>
-          <td><%= thm[:applicant_reference][:person_hbx_id] %></td>
-          <td><% benchmark = @application.benchmarks.detect{ |a| a[:member_identifier] == thm[:applicant_reference][:person_hbx_id]} %>
-            <%= benchmark[:monthly_premium] if benchmark %>
-          </td>
-          <td><%= thm[:product_eligibility_determination][:magi_as_percentage_of_fpl] %>%</td>
-          <td><%= thm[:product_eligibility_determination][:is_magi_medicaid] %></td>
-          <td><%= thh[:max_aptc] unless mm_eligible %></td>
-          <td><%=  @application.aptc_households.last.contribution_percent unless mm_eligible %></td>
-          <td><%= thm[:product_eligibility_determination][:csr] if thm[:product_eligibility_determination][:is_csr_eligible] %></td>
-        </tr>
+          <tr>
+            <td><%= thm[:applicant_reference][:person_hbx_id] %></td>
+            <td><% benchmark = @application.benchmarks.detect{ |a| a[:member_identifier] == thm[:applicant_reference][:person_hbx_id]} %>
+              <%= benchmark[:monthly_premium] if benchmark %>
+            </td>
+            <td><%= thm[:product_eligibility_determination][:magi_as_percentage_of_fpl] %>%</td>
+            <td><%= thm[:product_eligibility_determination][:is_magi_medicaid] %></td>
+            <td><%= thh[:max_aptc] unless mm_eligible %></td>
+            <td><%=  @application.aptc_households.last.contribution_percent unless mm_eligible %></td>
+            <td><%= thm[:product_eligibility_determination][:csr] if thm[:product_eligibility_determination][:is_csr_eligible] %></td>
+          </tr>
+        <% end %>
       <% end %>
     <% end %>
   </tbody>
 </table>
 <% end %>
+
+<ul class="list-group list-group-horizontal mb-5">
+  <li class="list-group-item list-group-item-primary"><h5 class="m-0">FPL</h5></li>
+  <% @application.fpl&.each do |k, v| %>
+    <li class="list-group-item"><b><%= k.to_s.humanize.titleize %>:</b> <%= v %></li>
+  <% end %>
+</ul>
 
 <h2>Payloads (click name to see in hide/show)</h2>
 <div class="accordion mb-5">
