@@ -7,7 +7,7 @@ RSpec.describe "Reports", type: :view, dbclean: :after_each do
     DatabaseCleaner.clean
   end
 
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :with_hbx_staff_role) }
 
   before :each do
     login_as(user)
