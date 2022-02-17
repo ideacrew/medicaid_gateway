@@ -70,8 +70,7 @@ module Medicaid
       return unless application_request_payload
       params = JSON.parse(application_request_payload, symbolize_names: true)
       { is_renewal_authorized: params[:is_renewal_authorized],
-        renewed_through: params[:years_to_renew]
-      }
+        renewed_through: params[:years_to_renew] }
     end
 
     def benchmarks
