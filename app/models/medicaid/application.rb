@@ -28,11 +28,16 @@ module Medicaid
     # For Example: In DC's case the external system is MitC
     field :medicaid_response_payload, type: String
 
+    # Submission date and time of the Incoming Application
+    # field :submitted_at, type: DateTime
+
     embeds_many :aptc_households, class_name: '::Medicaid::AptcHousehold'
     accepts_nested_attributes_for :aptc_households
 
     index({ created_at: 1, updated_at: 1 })
     index({ updated_at: 1 })
+
+    after_save :check_submitted_at
 
     def successful?
       return true unless application_response_payload.blank?
@@ -45,8 +50,11 @@ module Medicaid
     end
 
     def application_response_payload_json
-      return unless application_response_payload
+      return {} if application_response_payload.nil?
+      # return unless application_response_payload
       JSON.parse(application_response_payload, symbolize_names: true)
+    rescue JSON::ParserError => _e
+      {}
     end
 
     def assistance_year
@@ -68,9 +76,57 @@ module Medicaid
 
     def benchmarks
       return unless application_response_payload_json
-      applicants = application_response_payload_json[:applicants]
-      return unless applicants
+      # applicants = application_response_payload_json[:applicants]
+      # return unless applicants
       applicants.map { |a| a[:benchmark_premium][:health_only_slcsp_premiums] }.flatten
+    end
+
+    def primary_applicant
+      application_response_payload_json[:applicants]&.detect {|applicant| applicant[:is_primary_applicant]}
+    end
+
+    def primary_hbx_id
+      primary_applicant[:person_hbx_id]
+    end
+
+    def submitted_at
+      submitted_at = application_response_payload_json[:submitted_at]
+      DateTime.parse(submitted_at) unless submitted_at.nil?
+    end
+
+    def applicants
+      application_response_payload_json[:applicants] || []
+    end
+
+    def non_magi_medicaid_eligible?(member_identifier)
+      tax_households = application_response_payload_json[:tax_households]
+      tax_households.each do |household|
+        members = household[:tax_household_members]
+        members.each do |member|
+          if member_identifier.to_s == member[:applicant_reference][:person_hbx_id]&.to_s
+            return member[:product_eligibility_determination][:is_non_magi_medicaid_eligible]
+          end
+        end
+      end
+      "#{member_identifier} not found"
+    end
+
+    def attestation(member_identifier)
+      applicants.each do |applicant|
+        return applicant[:attestation] if member_identifier.to_s == applicant[:person_hbx_id]&.to_s
+      end
+      [:is_self_attested_blind, :is_self_attested_disabled].collect { |item| [item, "#{member_identifier} not found"] }.to_h
+    end
+
+    def daily_living_help?(member_identifier)
+      applicants.each do |applicant|
+        return applicant[:has_daily_living_help] if member_identifier.to_s == applicant[:person_hbx_id]&.to_s
+      end
+      "#{member_identifier} not found"
+    end
+
+    def full_medicaid_determination
+      application_response_payload_json[:full_medicaid_determination]
     end
 
     def other_factors
@@ -93,21 +149,12 @@ module Medicaid
       }
     end
 
-    def application_request_payload_hash
-      # TODO: handle failure/format
-      JSON.parse(application_request_payload)
-    end
+    def check_submitted_at
+      return unless submitted_at.nil? && application_response_payload_json
 
-    def primary_applicant
-      application_request_payload_hash["applicants"]&.detect {|applicant| applicant["is_primary_applicant"]}
-    end
-
-    def primary_hbx_id
-      primary_applicant["person_hbx_id"]
-    end
-
-    def submitted_at
-      application_request_payload_hash["submitted_at"]
+      submitted_at_string = application_response_payload_json[:submitted_at]
+      parsed_submitted_at = DateTime.parse(submitted_at_string) if submitted_at_string
+      self.update(submitted_at: parsed_submitted_at) if parsed_submitted_at
     end
   end
 end

@@ -29,7 +29,9 @@ class ReportsController < ApplicationController
     @applications = if @app
                       Medicaid::Application.where(application_identifier: @app).page params[:page]
                     else
-                      applications.order(updated_at: :desc).page params[:page]
+                      # applications.order(updated_at: :desc).page params[:page]
+                      @count = applications.map(&:aptc_households).flatten.map(&:aptc_household_members).flatten.count
+                      Kaminari.paginate_array(applications).page params[:page]
                     end
   end
 
@@ -147,8 +149,11 @@ class ReportsController < ApplicationController
   end
 
   def applications
-    Medicaid::Application.only(:application_identifier, :created_at, :application_response_payload, :medicaid_response_payload)
-                         .where(created_at: range).or(updated_at: range)
+    # Medicaid::Application.only(:application_identifier, :created_at, :application_response_payload, :medicaid_response_payload,
+    #  :aptc_households).where(:submitted_at => { :'$gte' => range.first, :'$lte' => range.last })
+    #  .where(created_at: range).or(updated_at: range)
+    Medicaid::Application.only(:application_identifier, :created_at, :application_response_payload, :medicaid_response_payload,
+                               :aptc_households).select {|application| range.include?(application.submitted_at)}
   end
 
   def transfers

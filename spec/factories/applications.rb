@@ -13,5 +13,11 @@ FactoryBot.define do
         [FactoryBot.build(:aptc_household)]
       end
     end
+
+    trait :with_aptc_households_and_members do
+      aptc_households do
+        [FactoryBot.build(:aptc_household, :with_aptc_household_members)]
+      end
+    end
   end
 end

@@ -17,7 +17,7 @@
 </div>
 
 <% unless @app %>
-  <h2 class="text-muted mb-3"><%= @applications.count %> determinations during this range</h2>
+  <h2 class="text-muted mb-3"><%= @count %> determinations during this range</h2>
   <%= render partial: "date_range", locals: {start_on: @start_on, end_on: @end_on, session_name: 'ma_'} %>
 <% end %>
 

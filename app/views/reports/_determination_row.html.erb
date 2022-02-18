@@ -7,13 +7,13 @@
     <td><%= aptc_household.maximum_aptc_amount %></td>
     <td><%= aptc_household_member.csr %></td>
     <td><%= aptc_household_member.magi_medicaid_eligible %></td>
-    <td>Non Magi</td><%# TODO: add field to thm? %>
+    <td><%= determination.non_magi_medicaid_eligible?(aptc_household_member.member_identifier) %></td>
     <td><%= aptc_household_member.totally_ineligible %></td>
-    <td><%= determination.submitted_at %></td>
-    <td>Full Medicaid Applied?</td><%# TODO: add field based on full_medicaid_determination ? %>
-    <td>Blind</td><%# TODO %>
-    <td>Disabled</td><%# TODO %>
-    <td>Help With Daily Living</td><%# TODO %>
+    <td><%= determination.submitted_at %></td>    
+    <td><%= determination.full_medicaid_determination %></td><%# TODO: add field based on full_medicaid_determination ? %>
+    <td><%= determination.attestation(aptc_household_member.member_identifier)[:is_self_attested_blind] %></td>
+    <td><%= determination.attestation(aptc_household_member.member_identifier)[:is_self_attested_disabled] %></td>
+    <td><%= determination.daily_living_help?(aptc_household_member.member_identifier) %></td>
     <td> 
         <%= link_to 'Details', determination, class: 'btn btn-primary btn-sm' %>
     </td>
