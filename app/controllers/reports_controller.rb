@@ -30,7 +30,8 @@ class ReportsController < ApplicationController
                       Medicaid::Application.where(application_identifier: @app).page params[:page]
                     else
                       @count = applications.map(&:aptc_households).flatten.map(&:aptc_household_members).flatten.count
-                      Kaminari.paginate_array(applications).page params[:page]
+                      ordered_applications = applications.sort_by(&:submitted_at).reverse
+                      Kaminari.paginate_array(ordered_applications).page params[:page]
                     end
   end
 
