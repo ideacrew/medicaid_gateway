@@ -28,16 +28,11 @@ module Medicaid
     # For Example: In DC's case the external system is MitC
     field :medicaid_response_payload, type: String
 
-    # Submission date and time of the Incoming Application
-    # field :submitted_at, type: DateTime
-
     embeds_many :aptc_households, class_name: '::Medicaid::AptcHousehold'
     accepts_nested_attributes_for :aptc_households
 
     index({ created_at: 1, updated_at: 1 })
     index({ updated_at: 1 })
-
-    after_save :check_submitted_at
 
     def successful?
       return true unless application_response_payload.blank?
@@ -50,11 +45,8 @@ module Medicaid
     end
 
     def application_response_payload_json
-      return {} if application_response_payload.nil?
-      # return unless application_response_payload
+      return unless application_response_payload
       JSON.parse(application_response_payload, symbolize_names: true)
-    rescue JSON::ParserError => _e
-      {}
     end
 
     def assistance_year
@@ -76,8 +68,6 @@ module Medicaid
 
     def benchmarks
       return unless application_response_payload_json
-      # applicants = application_response_payload_json[:applicants]
-      # return unless applicants
       applicants.map { |a| a[:benchmark_premium][:health_only_slcsp_premiums] }.flatten
     end
 
@@ -147,14 +137,6 @@ module Medicaid
         success: self.successful?,
         app_id: self.application_identifier
       }
-    end
-
-    def check_submitted_at
-      return unless submitted_at.nil? && application_response_payload_json
-
-      submitted_at_string = application_response_payload_json[:submitted_at]
-      parsed_submitted_at = DateTime.parse(submitted_at_string) if submitted_at_string
-      self.update(submitted_at: parsed_submitted_at) if parsed_submitted_at
     end
   end
 end

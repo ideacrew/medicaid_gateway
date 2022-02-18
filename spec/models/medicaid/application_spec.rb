@@ -83,8 +83,6 @@ RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
     let(:application) { FactoryBot.create(:application, :with_aptc_households_and_members)}
 
     before do
-      # @application = described_class.new(input_params)
-      # @application.save!
       application.update(input_params)
     end
 
@@ -124,20 +122,4 @@ RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
       expect(application.daily_living_help?(member_identifier)).to eq("false")
     end
   end
-
-  # context 'after_save callback' do
-  #   let(:application) {FactoryBot.create(:application)}
-
-  #   describe '#check_submitted_at' do
-  #     it 'should do nothing if application response payload does not contain submitted_at field' do
-  #       expect(application.submitted_at).to eq(nil)
-  #     end
-
-  #     it 'should update the submitted_at field after saving if present in application response payload' do
-  #       date_time = DateTime.now.to_s
-  #       application.update(application_response_payload: "{\"us_state\":\"DC\",\"hbx_id\":\"200000123\", \"submitted_at\": \"#{date_time}\"}")
-  #       expect(application.submitted_at).to eq(DateTime.parse(date_time))
-  #     end
-  #   end
-  # end
 end
