@@ -37,4 +37,10 @@ class User
   # field :unlock_token,    type: String # Only if unlock strategy is :email or :both
   # field :locked_at,       type: Time
   include Mongoid::Timestamps
+
+  embeds_one :hbx_staff_role, cascade_callbacks: true
+
+  def permission
+    hbx_staff_role&.permission
+  end
 end
