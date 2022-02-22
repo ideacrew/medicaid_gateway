@@ -21,6 +21,7 @@ class ReportsController < ApplicationController
   end
 
   def medicaid_application_check
+    authorize :user, :determinations?
     @start_on = start_on || session_date(session[:ma_start]) || Date.today
     @end_on = end_on || session_date(session[:ma_end]) || Date.today
     @application_ids = Medicaid::Application.all.distinct(:application_identifier).uniq.sort
@@ -34,6 +35,7 @@ class ReportsController < ApplicationController
   end
 
   def account_transfers
+    authorize :user, :transfers_sent?
     @start_on = start_on || session_date(session[:atp_start]) || Date.today
     @end_on = end_on || session_date(session[:atp_end]) || Date.today
     @transfers = transfers.order(updated_at: :desc).page params[:page]
@@ -42,6 +44,7 @@ class ReportsController < ApplicationController
   end
 
   def account_transfers_to_enroll
+    authorize :user, :transfers_received?
     @start_on = start_on || session_date(session[:inbound_start]) || Date.today
     @end_on = end_on || session_date(session[:inbound_end]) || Date.today
     @transfers = inbound_transfers.order(updated_at: :desc).page params[:page]
@@ -50,6 +53,7 @@ class ReportsController < ApplicationController
   end
 
   def mec_checks
+    authorize :user
     @start_on = start_on || session_date(session[:mc_sent_start]) || Date.today
     @end_on = end_on || session_date(session[:mc_sent_end]) || Date.today
     @checks = checks.order(updated_at: :desc).page params[:page]
@@ -58,6 +62,7 @@ class ReportsController < ApplicationController
   end
 
   def transfer_summary
+    authorize :user
     @start_on = start_on || session_date(session[:ts_start]) || Date.today
     @end_on = end_on || session_date(session[:ts_end]) || Date.today
     @at_sent_total = transfers.count
