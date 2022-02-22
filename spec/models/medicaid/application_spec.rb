@@ -43,7 +43,9 @@ RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
   context 'with a detailed application response payload' do
     let(:application_response_payload) do
       "{ \"assistance_year\": #{Date.today.year},
-        \"applicants\": [#{applicants}]
+        \"applicants\": [#{applicants}],
+        \"is_renewal_authorized\": true,
+        \"years_to_renew\": #{Date.today.year + 4}
       }"
     end
 
@@ -74,6 +76,10 @@ RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
 
     it 'should find the premium from the application response payload' do
       expect(@application.benchmarks.first[:monthly_premium]).to eq("563.75")
+    end
+
+    it 'should find the irs consent details from the application request payload' do
+      expect(@application.irs_consent_details[:is_renewal_authorized]).to eq(true)
     end
   end
 end
