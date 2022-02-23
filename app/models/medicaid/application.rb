@@ -61,7 +61,7 @@ module Medicaid
       fpl_data = ::Types::FederalPovertyLevels.detect do |fpl_hash|
         fpl_hash[:medicaid_year] == fpl_year
       end
-      { medicaid_year: assistance_year,
+      { medicaid_year: fpl_year,
         annual_poverty_guideline: fpl_data[:annual_poverty_guideline],
         annual_per_person_amount: fpl_data[:annual_per_person_amount] }
     end
