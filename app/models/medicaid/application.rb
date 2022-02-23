@@ -67,9 +67,16 @@ module Medicaid
       fpl_data = ::Types::FederalPovertyLevels.detect do |fpl_hash|
         fpl_hash[:medicaid_year] == fpl_year
       end
-      { medicaid_year: assistance_year,
+      { medicaid_year: fpl_year,
         annual_poverty_guideline: fpl_data[:annual_poverty_guideline],
         annual_per_person_amount: fpl_data[:annual_per_person_amount] }
+    end
+
+    def irs_consent_details
+      return unless application_request_payload
+      params = JSON.parse(application_request_payload, symbolize_names: true)
+      { is_renewal_authorized: params[:is_renewal_authorized],
+        renewed_through: params[:years_to_renew] }
     end
 
     def benchmarks

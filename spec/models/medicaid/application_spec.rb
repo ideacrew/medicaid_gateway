@@ -99,5 +99,9 @@ RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
     it 'should find the daily living help indicator for the applicant from the application response payload' do
       expect(application.daily_living_help?(@person_hbx_id)).to eq(false)
     end
+
+    it 'should find the irs consent details from the application request payload' do
+      expect(@application.irs_consent_details[:is_renewal_authorized]).to eq(true)
+    end
   end
 end

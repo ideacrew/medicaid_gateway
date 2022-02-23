@@ -105,4 +105,139 @@ RSpec.describe ReportsController, type: :controller, dbclean: :after_each do
       end
     end
   end
+
+  describe 'GET account_transfers' do
+    before :each do
+      sign_in user
+      get :account_transfers
+    end
+
+    context 'user without permission' do
+      let(:user) { FactoryBot.create(:user) }
+
+      it 'should flash no permissions message' do
+        expect(flash[:notice]).to match(/Access not allowed/)
+      end
+
+      it 'should redirect to root' do
+        expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context 'user with permission' do
+      let(:user) { FactoryBot.create(:user, :with_hbx_staff_role) }
+
+      it 'should return success' do
+        expect(response.status).to be(200)
+      end
+    end
+  end
+
+  describe 'GET account_transfers_to_enroll' do
+    before :each do
+      sign_in user
+      get :account_transfers_to_enroll
+    end
+
+    context 'user without permission' do
+      let(:user) { FactoryBot.create(:user) }
+
+      it 'should flash no permissions message' do
+        expect(flash[:notice]).to match(/Access not allowed/)
+      end
+
+      it 'should redirect to root' do
+        expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context 'user with permission' do
+      let(:user) { FactoryBot.create(:user, :with_hbx_staff_role) }
+
+      it 'should return success' do
+        expect(response.status).to be(200)
+      end
+    end
+  end
+
+  describe 'GET mec_checks' do
+    before :each do
+      sign_in user
+      get :mec_checks
+    end
+
+    context 'user without permission' do
+      let(:user) { FactoryBot.create(:user) }
+
+      it 'should flash no permissions message' do
+        expect(flash[:notice]).to match(/Access not allowed/)
+      end
+
+      it 'should redirect to root' do
+        expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context 'user with permission' do
+      let(:user) { FactoryBot.create(:user, :with_hbx_staff_role) }
+
+      it 'should return success' do
+        expect(response.status).to be(200)
+      end
+    end
+  end
+
+  describe 'GET transfer_summary' do
+    before :each do
+      sign_in user
+      get :transfer_summary
+    end
+
+    context 'user without permission' do
+      let(:user) { FactoryBot.create(:user) }
+
+      it 'should flash no permissions message' do
+        expect(flash[:notice]).to match(/Access not allowed/)
+      end
+
+      it 'should redirect to root' do
+        expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context 'user with permission' do
+      let(:user) { FactoryBot.create(:user, :with_hbx_staff_role) }
+
+      it 'should return success' do
+        expect(response.status).to be(200)
+      end
+    end
+  end
+
+  describe 'GET medicaid_application_check' do
+    before :each do
+      sign_in user
+      get :medicaid_application_check
+    end
+
+    context 'user without permission' do
+      let(:user) { FactoryBot.create(:user) }
+
+      it 'should flash no permissions message' do
+        expect(flash[:notice]).to match(/Access not allowed/)
+      end
+
+      it 'should redirect to root' do
+        expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context 'user with permission' do
+      let(:user) { FactoryBot.create(:user, :with_hbx_staff_role) }
+
+      it 'should return success' do
+        expect(response.status).to be(200)
+      end
+    end
+  end
 end
