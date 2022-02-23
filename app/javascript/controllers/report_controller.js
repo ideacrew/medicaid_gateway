@@ -12,7 +12,7 @@ export default class extends Controller {
     const date = event.target.value,
           input_name = event.target.name,
           session_name = event.target.dataset.session
-
+          
     this.stimulate('Report#change_date', session_name, date)
   }
 

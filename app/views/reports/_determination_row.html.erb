@@ -1,20 +1,9 @@
 <tr id="<%= "determination-row-#{determination.id}" %>">
-    <td><%= determination.primary_hbx_id %></td>
+    <td class="<%= determination.successful? ? 'table-success' : 'table-danger' %>"><%= determination.successful? ? "Success" : "Failure" %></td>
     <td><%= determination.application_identifier %></td>
-    <td><%= aptc_household_member.age_of_applicant %></td>
-    <td><%= aptc_household_member.uqhp_eligible %></td>
-    <td><%= aptc_household_member.aptc_eligible && aptc_household_member.csr_eligible %></td>
-    <td><%= aptc_household.maximum_aptc_amount %></td>
-    <td><%= aptc_household_member.csr %></td>
-    <td><%= aptc_household_member.magi_medicaid_eligible %></td>
-    <td><%= determination.non_magi_medicaid_eligible?(aptc_household_member.member_identifier) %></td>
-    <td><%= aptc_household_member.totally_ineligible %></td>
-    <td><%= determination.submitted_at %></td>    
-    <td><%= determination.full_medicaid_determination %></td><%# TODO: add field based on full_medicaid_determination ? %>
-    <td><%= determination.attestation(aptc_household_member.member_identifier)[:is_self_attested_blind] %></td>
-    <td><%= determination.attestation(aptc_household_member.member_identifier)[:is_self_attested_disabled] %></td>
-    <td><%= determination.daily_living_help?(aptc_household_member.member_identifier) %></td>
-    <td> 
-        <%= link_to 'Details', determination, class: 'btn btn-primary btn-sm' %>
+    <td><%= determination.created_at %></td>
+    <td><%= determination.error_message %></td>
+    <td>
+        <%= link_to 'Details', determination, class: 'btn btn-primary' %>
     </td>
 </tr>
