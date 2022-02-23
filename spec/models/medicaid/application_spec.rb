@@ -43,47 +43,18 @@ RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
   end
 
   context 'with a detailed application response payload' do
-    # let(:application_response_payload) do
-    #   "{ \"assistance_year\": #{Date.today.year},
-    #     \"applicants\": [#{applicants}],
-    #     \"tax_households\": [#{tax_households}],
-    #     \"submitted_at\": \"#{Date.today.beginning_of_day}\"
-    #   }"
-    # end
-
-    # let(:applicants) do
-    #   "{ \"benchmark_premium\": { \"health_only_slcsp_premiums\":
-    #   [{ \"member_identifier\": \"#{member_identifier}\", \"monthly_premium\": \"563.75\" }] },
-    #   \"attestation\":  #{attestation}, \"person_hbx_id\": \"#{member_identifier}\",
-    #   \"has_daily_living_help\": \"false\", \"is_primary_applicant\": \"true\"}"
-    # end
-
-    # let(:tax_households) do
-    #   "{ \"tax_household_members\": [{\"applicant_reference\":
-    #   {\"person_hbx_id\": \"#{member_identifier}\"}, \"product_eligibility_determination\":
-    #   {\"is_non_magi_medicaid_eligible\": \"true\"} }] }"
-    # end
-
-    # let(:attestation) do
-    #   "{\"is_incarcerated\": \"false\", \"is_self_attested_disabled\": \"false\",
-    #   \"is_self_attested_blind\": \"false\",
-    #   \"is_self_attested_long_term_care\": \"false\"}"
-    # end
-
     let(:application) { FactoryBot.create(:application, :with_aptc_households_and_members)}
     let(:magi_medicaid_application_json) { JSON.generate(magi_medicaid_application) }
+    let(:medicaid_applicants) do
+      "[{\"Person ID\":#{applicant_hash[:person_hbx_id]}}, {\"Person ID\":#{applicant2_hash[:person_hbx_id]}}]"
+    end
     let(:input_params) do
       { application_identifier: '100004',
         application_request_payload: magi_medicaid_application_json,
         application_response_payload: magi_medicaid_application_json,
-        # application_request_payload: application_response_payload.to_s,
-        # application_response_payload: application_response_payload.to_s,
-        medicaid_request_payload: "{\"Applicants\":[{\"Person ID\":21209944}]}",
-        medicaid_response_payload: "{\"Applicants\":[{\"Person ID\":21209944}]}" }
+        medicaid_request_payload: "{\"Applicants\":#{medicaid_applicants}",
+        medicaid_response_payload: "{\"Applicants\":#{medicaid_applicants}}" }
     end
-    # let(:application_response_entity) { application.application_response_entity }
-    # let(:person_hbx_id) { applicant_hash[:person_hbx_id] }
-    # let(:tax_household_member) { application_response_entity.tax_households.first.tax_household_members.first }
 
     before do
       application.update(input_params)
@@ -102,7 +73,6 @@ RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
     end
 
     it 'should find the premium from the application response payload' do
-      # expect(application.benchmarks.first[:monthly_premium]).to eq("563.75")
       expect(application.benchmarks.first.monthly_premium).to eq(@slcsp_premium)
     end
 

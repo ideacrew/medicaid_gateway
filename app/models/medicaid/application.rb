@@ -74,12 +74,11 @@ module Medicaid
 
     def benchmarks
       return unless application_response_payload_json
-      # applicants.map { |a| a[:benchmark_premium][:health_only_slcsp_premiums] }.flatten
       applicants.map { |a| a.benchmark_premium.health_only_slcsp_premiums }.flatten
     end
 
     def primary_applicant
-      applicants.detect {|applicant| applicant.is_primary_applicant}
+      applicants.detect(&:is_primary_applicant)
     end
 
     def primary_hbx_id

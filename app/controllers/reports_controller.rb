@@ -129,7 +129,8 @@ class ReportsController < ApplicationController
   def daily_iap_determinations
     @start_on = session_date(session[:daily_iap_date]) || Date.today
     @end_on = @start_on
-    @count = daily_report_applications.map(&:application_response_entity).compact.map(&:tax_households).flatten.map(&:tax_household_members).flatten.count
+    @count = daily_report_applications.map(&:application_response_entity).compact.map(&:tax_households).flatten
+                                      .map(&:tax_household_members).flatten.count
     sorted_applications = daily_report_applications.sort_by {|app| app.application_response_entity&.submitted_at}.reverse
     @applications = Kaminari.paginate_array(sorted_applications).page params[:page]
   end
