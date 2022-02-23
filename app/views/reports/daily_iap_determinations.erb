@@ -10,7 +10,7 @@
   <h2 class="text-muted mb-3"><%= @count %> determinations on this day</h2>
   <div class="mt-2 mb-3" data-controller="report">
     <label for="daily_iap_date">Report Date:</label>
-    <input type="date" id="daily_iap_date" name="daily_iap_date" value="<%= @daily_iap_date %>" data-action="report#change_date" data-session="daily_iap_date">            
+    <input type="date" id="daily_iap_date" name="daily_iap_date" value="<%= @start_on %>" data-action="report#change_date" data-session="daily_iap_date">            
 </div>
 <% end %>
 
@@ -41,7 +41,7 @@
 		  <% application.application_response_entity.tax_households.each do |household| %>
 			<% household.tax_household_members.each do |member| %>
 			  <% next unless member %>
-			  <%= render partial: "daily_iap_determination_row", locals: { determination: application, entity: application.application_response_entity, applicant: member, tax_household: household } %>
+			  <%= render partial: "daily_iap_determination_row", locals: { determination: application, applicant: member, tax_household: household } %>
 			<% end %>
 		  <% end %>
 		<% end %>

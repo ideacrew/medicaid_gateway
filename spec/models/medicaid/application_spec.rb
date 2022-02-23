@@ -43,7 +43,7 @@ RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
   end
 
   context 'with a detailed application response payload' do
-    let(:application) { FactoryBot.create(:application, :with_aptc_households_and_members)}
+    let(:application) { FactoryBot.create(:application)}
     let(:magi_medicaid_application_json) { JSON.generate(magi_medicaid_application) }
     let(:medicaid_applicants) do
       "[{\"Person ID\":#{applicant_hash[:person_hbx_id]}}, {\"Person ID\":#{applicant2_hash[:person_hbx_id]}}]"
@@ -101,7 +101,7 @@ RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
     end
 
     it 'should find the irs consent details from the application request payload' do
-      expect(@application.irs_consent_details[:is_renewal_authorized]).to eq(true)
+      expect(application.irs_consent_details[:is_renewal_authorized]).to eq(true)
     end
   end
 end

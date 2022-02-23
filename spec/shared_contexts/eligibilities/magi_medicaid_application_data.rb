@@ -307,7 +307,9 @@ RSpec.shared_context 'setup magi_medicaid application with two applicants', :sha
       mitc_households: mitc_households,
       mitc_tax_returns: [tax_return_hash],
       submitted_at: Date.today.to_datetime,
-      full_medicaid_determination: true }
+      full_medicaid_determination: true,
+      is_renewal_authorized: true,
+      years_to_renew: Date.today.year + 4 }
   end
 
   let(:mm_application_entity) do
