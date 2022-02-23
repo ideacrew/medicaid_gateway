@@ -8,6 +8,7 @@
 
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
   </head>
 
   <body data-turbolinks="false">
@@ -29,8 +30,12 @@
                 </li>
               <% end %>
               <% if MedicaidGatewayRegistry.feature_enabled?(:mitc_determination) %>
-                <li class="nav-item">
-                  <a class="nav-link" href="/reports/medicaid_application_check">Determinations</a>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Determinations</a>
+                    <div class="dropdown-menu">
+                        <a href="/reports/medicaid_application_check" class="dropdown-item">Determination Events</a>
+                        <a href="/reports/daily_iap_determinations" class="dropdown-item">Daily IAP Determinations</a>
+                    </div>
                 </li>
               <% end %>
               <% if MedicaidGatewayRegistry.feature_enabled?(:mec_check) %>
