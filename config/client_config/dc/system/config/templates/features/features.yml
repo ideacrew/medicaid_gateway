@@ -33,3 +33,5 @@ registry:
                   annual_per_person_amount: BigDecimal(4_540.to_s)
                 }
               ]
+      - key: :daily_determination_report
+        is_enabled: true
