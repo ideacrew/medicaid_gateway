@@ -52,7 +52,9 @@ module Medicaid
     def application_response_entity
       return unless application_response_payload_json
       result = ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(application_response_payload_json)
-      result.value! unless result.failure?
+      application_entity = result.value! if result.success?
+      Rails.logger.error {"Failed to initialize application #{application_identifier} - #{result.failure.errors.to_h}"}  if result.failure?
+      application_entity
     end
 
     def assistance_year

@@ -166,8 +166,9 @@ class ReportsController < ApplicationController
   end
 
   def daily_report_applications
-    Medicaid::Application.only(:application_identifier, :created_at, :application_response_payload, :medicaid_response_payload,
-                               :aptc_households).select {|app| range.cover?(app.application_response_entity&.submitted_at)}
+    Medicaid::Application.only(:application_identifier, :application_response_payload).select do |app|
+      range.cover?(app.application_response_entity&.submitted_at)
+    end
   end
 
   def transfers
