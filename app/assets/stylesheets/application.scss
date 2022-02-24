@@ -27,6 +27,14 @@ kbd {
   word-wrap: break-word;
 }
 
+.daily-determinations thead {  
+  font-size: small;
+  word-wrap: normal;
+}
+
+.daily-determinations tbody{  
+  font-size: small;  
+}
 
 ul li.list-inline-item:after {
   content: "\2022";
