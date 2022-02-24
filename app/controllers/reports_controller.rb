@@ -136,7 +136,7 @@ class ReportsController < ApplicationController
     @end_on = @start_on
     @count = daily_report_applications.map(&:application_response_entity).compact.map(&:tax_households).flatten
                                       .map(&:tax_household_members).flatten.count
-    sorted_applications = daily_report_applications.sort_by {|app| app.application_response_entity&.submitted_at}.reverse
+    sorted_applications = daily_report_applications.sort_by(&:submitted_at).reverse
     @applications = Kaminari.paginate_array(sorted_applications).page params[:page]
   end
 
@@ -167,7 +167,7 @@ class ReportsController < ApplicationController
 
   def daily_report_applications
     Medicaid::Application.only(:application_identifier, :application_response_payload).select do |app|
-      range.cover?(app.application_response_entity&.submitted_at)
+      range.cover?(app.submitted_at)
     end
   end
 

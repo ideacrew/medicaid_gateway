@@ -81,7 +81,7 @@ RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
     end
 
     it 'should find the submission date and time from the application response payload' do
-      expect(@application_response_entity.submitted_at).to eq(Date.today.to_datetime)
+      expect(application.submitted_at).to eq(Date.today.to_datetime)
     end
 
     it 'should find the applicants from the application response payload' do

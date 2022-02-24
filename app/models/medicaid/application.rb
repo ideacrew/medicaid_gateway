@@ -116,6 +116,10 @@ module Medicaid
       applicants.detect {|applicant| applicant.person_hbx_id == person_hbx_id}&.age_of_applicant
     end
 
+    def submitted_at
+      application_response_entity&.submitted_at || Date.today.beginning_of_year
+    end
+
     def other_factors
       return 'No other factors' unless self.aptc_households.present?
       aptc_hh_keys = %w[total_household_count annual_tax_household_income csr_annual_income_limit
