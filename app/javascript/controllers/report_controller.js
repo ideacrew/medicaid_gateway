@@ -7,8 +7,9 @@ export default class extends Controller {
   connect() {
     StimulusReflex.register(this)
 
-    document.addEventListener('click', function(e){   
-      if (!document.getElementsByClassName('dropdown')[0].contains(e.target)){
+    document.addEventListener('click', function(e){
+      let elements = document.getElementsByClassName('dropdown')
+      if (elements.length != 0 && !elements[0].contains(e.target)){
         let dropdownMenu = document.getElementsByClassName("dropdown-menu")[0]
         console.log(dropdownMenu.classList.contains("show"))
         if (dropdownMenu.classList.contains("show")) {
