@@ -6,6 +6,17 @@ export default class extends Controller {
   
   connect() {
     StimulusReflex.register(this)
+
+    document.addEventListener('click', function(e){
+      let elements = document.getElementsByClassName('dropdown')
+      if (elements.length != 0 && !elements[0].contains(e.target)){
+        let dropdownMenu = document.getElementsByClassName("dropdown-menu")[0]
+        console.log(dropdownMenu.classList.contains("show"))
+        if (dropdownMenu.classList.contains("show")) {
+          dropdownMenu.classList.toggle("show")
+        }        
+      } 
+    })
   }
 
   change_date(event) {
@@ -35,5 +46,9 @@ export default class extends Controller {
     input.value = ""
     window.history.replaceState(null, null, window.location.pathname)
     this.stimulate('Report#app_search', "")
+  }
+
+  toggle_determinations_menu(event) {
+    document.getElementById("determinations_menu").classList.toggle("show")
   }
 }

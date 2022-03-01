@@ -29,9 +29,19 @@
                 </li>
               <% end %>
               <% if MedicaidGatewayRegistry.feature_enabled?(:mitc_determination) %>
-                <li class="nav-item">
-                  <a class="nav-link" href="/reports/medicaid_application_check">Determinations</a>
-                </li>
+                <% if MedicaidGatewayRegistry.feature_enabled?(:daily_determination_report) %>                
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-controller="report" data-action="report#toggle_determinations_menu">Determinations</a>
+                    <div class="dropdown-menu" id="determinations_menu">
+                        <a href="/reports/medicaid_application_check" class="dropdown-item">Determination Events</a>
+                        <a href="/reports/daily_iap_determinations" class="dropdown-item">Daily IAP Determinations</a>
+                    </div>
+                  </li>
+                <% else %>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/reports/medicaid_application_check">Determinations</a>
+                  </li>
+                <% end %>
               <% end %>
               <% if MedicaidGatewayRegistry.feature_enabled?(:mec_check) %>
                 <li class="nav-item">

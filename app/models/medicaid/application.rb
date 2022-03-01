@@ -49,6 +49,14 @@ module Medicaid
       JSON.parse(application_response_payload, symbolize_names: true)
     end
 
+    def application_response_entity
+      return unless application_response_payload_json
+      result = ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(application_response_payload_json)
+      application_entity = result.value! if result.success?
+      Rails.logger.error {"Failed to initialize application #{application_identifier} - #{result.failure.errors.to_h}"}  if result.failure?
+      application_entity
+    end
+
     def assistance_year
       return unless application_request_payload
       params = JSON.parse(application_request_payload, symbolize_names: true)
@@ -75,9 +83,41 @@ module Medicaid
 
     def benchmarks
       return unless application_response_payload_json
-      applicants = application_response_payload_json[:applicants]
-      return unless applicants
-      applicants.map { |a| a[:benchmark_premium][:health_only_slcsp_premiums] }.flatten
+      applicants.map { |a| a.benchmark_premium.health_only_slcsp_premiums }.flatten
+    end
+
+    def primary_applicant
+      applicants.detect(&:is_primary_applicant)
+    end
+
+    def primary_hbx_id
+      primary_applicant.person_hbx_id
+    end
+
+    def applicants
+      application_response_entity&.applicants || []
+    end
+
+    def attestation_for(member_identifier)
+      applicants.each do |applicant|
+        return applicant.attestation.to_h if member_identifier.to_s == applicant[:person_hbx_id]&.to_s
+      end
+      [:is_self_attested_blind, :is_self_attested_disabled].collect { |item| [item, "#{member_identifier} not found"] }.to_h
+    end
+
+    def daily_living_help?(member_identifier)
+      applicants.each do |applicant|
+        return applicant.has_daily_living_help if member_identifier.to_s == applicant[:person_hbx_id]&.to_s
+      end
+      "#{member_identifier} not found"
+    end
+
+    def age_of_applicant(person_hbx_id)
+      applicants.detect {|applicant| applicant.person_hbx_id == person_hbx_id}&.age_of_applicant
+    end
+
+    def submitted_at
+      application_response_entity&.submitted_at || Date.today.beginning_of_year
     end
 
     def other_factors
@@ -99,6 +139,5 @@ module Medicaid
         app_id: self.application_identifier
       }
     end
-
   end
 end

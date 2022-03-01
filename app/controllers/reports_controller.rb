@@ -131,6 +131,15 @@ class ReportsController < ApplicationController
     redirect_to inbound_transfer
   end
 
+  def daily_iap_determinations
+    @start_on = session_date(session[:daily_iap_date]) || Date.today
+    @end_on = @start_on
+    @count = daily_report_applications.map(&:application_response_entity).compact.map(&:tax_households).flatten
+                                      .map(&:tax_household_members).flatten.count
+    sorted_applications = daily_report_applications.sort_by(&:submitted_at).reverse
+    @applications = Kaminari.paginate_array(sorted_applications).page params[:page]
+  end
+
   private
 
   def range_from_params
@@ -154,6 +163,12 @@ class ReportsController < ApplicationController
   def applications
     Medicaid::Application.only(:application_identifier, :created_at, :application_response_payload, :medicaid_response_payload)
                          .where(created_at: range).or(updated_at: range)
+  end
+
+  def daily_report_applications
+    Medicaid::Application.only(:application_identifier, :application_response_payload).select do |app|
+      range.cover?(app.submitted_at)
+    end
   end
 
   def transfers
