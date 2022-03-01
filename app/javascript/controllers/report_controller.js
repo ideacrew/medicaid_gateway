@@ -48,7 +48,7 @@ export default class extends Controller {
     this.stimulate('Report#app_search', "")
   }
 
-  toggle_drop_down(event) {
-    document.getElementsByClassName("dropdown-menu")[0].classList.toggle("show")
+  toggle_determinations_menu(event) {
+    document.getElementById("determinations_menu").classList.toggle("show")
   }
 }
