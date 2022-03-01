@@ -11,8 +11,6 @@ require 'aca_entities/magi_medicaid/federal_poverty_level'
 require 'aca_entities/operations/magi_medicaid/create_federal_poverty_level'
 
 RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each do
-  include ActiveSupport::Testing::TimeHelpers
-  
   it 'should be a container-ready operation' do
     expect(subject.respond_to?(:call)).to be_truthy
   end
@@ -1710,9 +1708,6 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     include_context 'cms ME me_test_scenarios test_eight'
 
     before do
-      # TODO: remove this mock date work around and ActiveSupport::Testing::TimeHelpers
-      travel_to(Date.new(Date.today.year, 1, 15))
-
       @result = subject.call(input_params)
       @application = @result.success[:payload]
       @new_thhms = @application.tax_households.flat_map(&:tax_household_members)
