@@ -103,5 +103,9 @@ RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
     it 'should find the irs consent details from the application request payload' do
       expect(application.irs_consent_details[:is_renewal_authorized]).to eq(true)
     end
+
+    it 'should find the applicant immigration status from the application request payload' do
+      expect(application.citizen_status_for(@person_hbx_id)).to eq("US citizen")
+    end
   end
 end

@@ -120,6 +120,15 @@ module Medicaid
       application_response_entity&.submitted_at || Date.today.beginning_of_year
     end
 
+    def citizen_status_for(person_hbx_id)
+      return unless application_response_payload_json
+      applicants = application_response_payload_json[:applicants]
+      return unless applicants
+      applicant = applicants.detect {|a| a[:person_hbx_id] == person_hbx_id}
+      citizen_status = applicant&.dig(:citizenship_immigration_status_information, :citizen_status)
+      citizen_status&.humanize&.downcase&.gsub("us", "US")
+    end
+
     def other_factors
       return 'No other factors' unless self.aptc_households.present?
       aptc_hh_keys = %w[total_household_count annual_tax_household_income csr_annual_income_limit
