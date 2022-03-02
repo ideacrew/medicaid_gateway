@@ -129,6 +129,15 @@ module Medicaid
       citizen_status&.humanize&.downcase&.gsub("us", "US")
     end
 
+    def tax_filer_kind_for(person_hbx_id)
+      return unless application_response_payload_json
+      applicants = application_response_payload_json[:applicants]
+      return unless applicants
+      applicant = applicants.detect {|a| a[:person_hbx_id] == person_hbx_id}
+      tax_filer_kind = applicant&.dig(:tax_filer_kind)
+      tax_filer_kind&.humanize&.downcase
+    end
+
     def other_factors
       return 'No other factors' unless self.aptc_households.present?
       aptc_hh_keys = %w[total_household_count annual_tax_household_income csr_annual_income_limit

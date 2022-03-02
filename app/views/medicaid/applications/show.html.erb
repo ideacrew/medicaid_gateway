@@ -26,6 +26,7 @@
       <th>Expected Contribution %</th>
       <th>CSR</th>
       <th>Immigration Status</th>
+      <th>Tax Filing Status</th>
     </tr>
   </thead>
   <tbody>
@@ -44,6 +45,7 @@
             <td><%=  @application.aptc_households.last.contribution_percent unless mm_eligible %></td>
             <td><%= thm[:product_eligibility_determination][:csr] if thm[:product_eligibility_determination][:is_csr_eligible] %></td>
             <td><%= @application.citizen_status_for(thm[:applicant_reference][:person_hbx_id]) %></td>
+            <td><%= @application.tax_filer_kind_for(thm[:applicant_reference][:person_hbx_id]) %></td>
           </tr>
         <% end %>
       <% end %>

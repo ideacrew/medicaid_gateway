@@ -107,5 +107,9 @@ RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
     it 'should find the applicant immigration status from the application request payload' do
       expect(application.citizen_status_for(@person_hbx_id)).to eq("US citizen")
     end
+
+    it 'should find the applicant tax filing status from the application request payload' do
+      expect(application.tax_filer_kind_for(@person_hbx_id)).to eq("tax filer")
+    end
   end
 end
