@@ -28,6 +28,7 @@
       <th>Immigration Status</th>
       <th>Tax Filing Status</th>
       <th>Relationship</th>
+      <th>Age</th>
     </tr>
   </thead>
   <tbody>
@@ -48,6 +49,7 @@
             <td><%= @application.citizen_status_for(thm[:applicant_reference][:person_hbx_id]) %></td>
             <td><%= @application.tax_filer_kind_for(thm[:applicant_reference][:person_hbx_id]) %></td>
             <td><%= @application.relationship_for(thm[:applicant_reference][:person_hbx_id]) %></td>
+            <td><%= @application.age_of_applicant_for(thm[:applicant_reference][:person_hbx_id]) %></td>
           </tr>
         <% end %>
       <% end %>

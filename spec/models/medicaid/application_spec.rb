@@ -116,5 +116,9 @@ RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
       dependent = @application_response_entity.applicants.last
       expect(application.relationship_for(dependent.person_hbx_id)).to eq("spouse")
     end
+
+    it 'should find the applicant age from the application request payload' do
+      expect(application.age_of_applicant_for(@person_hbx_id)).to eq("45")
+    end
   end
 end
