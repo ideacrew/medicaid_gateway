@@ -138,6 +138,18 @@ module Medicaid
       tax_filer_kind&.humanize&.downcase
     end
 
+    def relationship_for(person_hbx_id)
+      return "self" if person_hbx_id == primary_hbx_id
+      return unless application_response_payload_json
+      applicants = application_response_payload_json[:applicants]
+      return unless applicants
+      relationships = application_response_entity&.relationships
+      relationship = relationships.detect do |rel|
+        rel.applicant_reference.person_hbx_id == person_hbx_id && rel.relative_reference.person_hbx_id == primary_hbx_id
+      end
+      relationship&.kind&.humanize&.downcase || "relationship not found"
+    end
+
     def other_factors
       return 'No other factors' unless self.aptc_households.present?
       aptc_hh_keys = %w[total_household_count annual_tax_household_income csr_annual_income_limit
