@@ -129,6 +129,36 @@ module Medicaid
       citizen_status&.humanize&.downcase&.gsub("us", "US")
     end
 
+    def tax_filer_kind_for(person_hbx_id)
+      return unless application_response_payload_json
+      applicants = application_response_payload_json[:applicants]
+      return unless applicants
+      applicant = applicants.detect {|a| a[:person_hbx_id] == person_hbx_id}
+      tax_filer_kind = applicant&.dig(:tax_filer_kind)
+      tax_filer_kind&.humanize&.downcase
+    end
+
+    def relationship_for(person_hbx_id)
+      return "self" if person_hbx_id == primary_hbx_id
+      return unless application_response_payload_json
+      applicants = application_response_payload_json[:applicants]
+      return unless applicants
+      relationships = application_response_entity&.relationships
+      relationship = relationships.detect do |rel|
+        rel.applicant_reference.person_hbx_id == person_hbx_id && rel.relative_reference.person_hbx_id == primary_hbx_id
+      end
+      relationship&.kind&.humanize&.downcase || "relationship not found"
+    end
+
+    def age_of_applicant_for(person_hbx_id)
+      return unless application_response_payload_json
+      applicants = application_response_payload_json[:applicants]
+      return unless applicants
+      applicant = applicants.detect {|a| a[:person_hbx_id] == person_hbx_id}
+      age_of_applicant = applicant&.dig(:age_of_applicant)
+      age_of_applicant&.to_s
+    end
+
     def other_factors
       return 'No other factors' unless self.aptc_households.present?
       aptc_hh_keys = %w[total_household_count annual_tax_household_income csr_annual_income_limit
