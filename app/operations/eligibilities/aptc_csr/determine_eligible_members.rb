@@ -87,7 +87,7 @@ module Eligibilities
       def spouse_applicants_from_thh
         @tax_household.tax_household_members.inject([]) do |applis, thhm|
           appli = applicant_by_reference(thhm.applicant_reference.person_hbx_id)
-          applis << appli if @application.spouse_relationships(appli).present?
+          applis << appli if !appli.is_claimed_as_tax_dependent && @application.spouse_relationships(appli).present?
           applis
         end
       end
