@@ -49,7 +49,7 @@ module Medicaid
     embedded_in :application, class_name: '::Medicaid::Application'
 
     def contribution_percent
-      return 0 if annual_tax_household_income.to_i == 0
+      return 0 if annual_tax_household_income.to_i == 0 || !total_expected_contribution_amount
       (total_expected_contribution_amount / annual_tax_household_income) * 100
     end
   end

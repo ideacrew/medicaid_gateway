@@ -43,7 +43,7 @@
             <td><% benchmark = @application.benchmarks.detect{ |a| a[:member_identifier] == thm[:applicant_reference][:person_hbx_id]} %>
               <%= benchmark[:monthly_premium] if benchmark %>
             </td>
-            <td><%= thm[:product_eligibility_determination][:magi_as_percentage_of_fpl] %>%</td>
+            <td><%= @application.aptc_households.last.fpl_percent %>%</td>
             <td><%= thm[:product_eligibility_determination][:is_magi_medicaid] %></td>
             <td><%= thh[:max_aptc] unless mm_eligible %></td>
             <td><%=  @application.aptc_households.last.contribution_percent unless mm_eligible %></td>
@@ -57,13 +57,6 @@
   </tbody>
 </table>
 <% end %>
-
-<ul class="list-group list-group-horizontal mb-5">
-  <li class="list-group-item list-group-item-primary"><h5 class="m-0">FPL</h5></li>
-  <% @application.fpl&.each do |k, v| %>
-    <li class="list-group-item"><b><%= k.to_s.humanize.titleize %>:</b> <%= v %></li>
-  <% end %>
-</ul>
 
 <h2>Payloads (click name to see in hide/show)</h2>
 <div class="accordion mb-5">
