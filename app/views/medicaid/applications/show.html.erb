@@ -34,7 +34,7 @@
   <tbody>
     <% @application.application_response_payload_json[:tax_households].each do |thh| %>
       <% thh[:tax_household_members].each do |thm| %>
-        <% next unless @application.applicant_hbx_ids.include?(thm[:applicant_reference][:person_hbx_id]) %>
+        <% next unless @application.applicants_applying_for_coverage.include?(thm[:applicant_reference][:person_hbx_id]) %>
         <% if thm[:product_eligibility_determination] %>
           <% mm_eligible = thm[:product_eligibility_determination][:is_magi_medicaid] %>
           <tr>

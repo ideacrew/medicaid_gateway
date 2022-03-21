@@ -89,8 +89,12 @@ RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
       expect(application.submitted_at).to eq(Date.today.to_datetime)
     end
 
-    it 'should find the applicants applying for coverage from the application response payload' do
-      expect(application.applicants.all?(&:is_applying_coverage)).to eq(true)
+    it 'should find all the applicants from the application response payload' do
+      expect(application.applicants.count).to eq(2)
+    end
+
+    it 'should find the hbx ids of applicants applying for coverage from the application response payload' do
+      expect(application.applicants_applying_for_coverage).to eq([@person_hbx_id])
     end
 
     it 'should find non-magi medicaid eligibility for the applicant from the application response payload' do

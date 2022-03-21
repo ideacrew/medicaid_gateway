@@ -95,12 +95,11 @@ module Medicaid
     end
 
     def applicants
-      applicants = application_response_entity&.applicants || []
-      applicants.select(&:is_applying_coverage)
+      application_response_entity&.applicants || []
     end
 
-    def applicant_hbx_ids
-      applicants.map(&:person_hbx_id)
+    def applicants_applying_for_coverage
+      applicants.select(&:is_applying_coverage).map(&:person_hbx_id)
     end
 
     def attestation_for(member_identifier)
