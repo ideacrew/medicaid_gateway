@@ -34,8 +34,9 @@
   <tbody>
     <% @application.application_response_payload_json[:tax_households].each do |thh| %>
       <% thh[:tax_household_members].each do |thm| %>
-          <% if thm[:product_eligibility_determination] %>
-        <% mm_eligible = thm[:product_eligibility_determination][:is_magi_medicaid] %>
+        <% next unless @application.applicant_hbx_ids.include?(thm[:applicant_reference][:person_hbx_id]) %>
+        <% if thm[:product_eligibility_determination] %>
+          <% mm_eligible = thm[:product_eligibility_determination][:is_magi_medicaid] %>
           <tr>
             <td><%= thm[:applicant_reference][:person_hbx_id] %></td>
             <td><%= @application.relationship_for(thm[:applicant_reference][:person_hbx_id]) %></td>
@@ -49,7 +50,7 @@
             <td><%=  @application.aptc_households.last.contribution_percent unless mm_eligible %></td>
             <td><%= thm[:product_eligibility_determination][:csr] if thm[:product_eligibility_determination][:is_csr_eligible] %></td>
             <td><%= @application.citizen_status_for(thm[:applicant_reference][:person_hbx_id]) %></td>
-            <td><%= @application.tax_filer_kind_for(thm[:applicant_reference][:person_hbx_id]) %></td>            
+            <td><%= @application.tax_filer_kind_for(thm[:applicant_reference][:person_hbx_id]) %></td>
           </tr>
         <% end %>
       <% end %>

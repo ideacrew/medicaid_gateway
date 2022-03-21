@@ -44,7 +44,12 @@ RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
 
   context 'with a detailed application response payload' do
     let(:application) { FactoryBot.create(:application)}
-    let(:magi_medicaid_application_json) { JSON.generate(magi_medicaid_application) }
+    let(:magi_medicaid_application_json) do
+      application = magi_medicaid_application
+      # prepare a non-applicant for testing
+      application[:applicants].last[:is_applying_coverage] = false
+      JSON.generate(application)
+    end
     let(:medicaid_applicants) do
       "[{\"Person ID\":#{applicant_hash[:person_hbx_id]}}, {\"Person ID\":#{applicant2_hash[:person_hbx_id]}}]"
     end
@@ -84,8 +89,8 @@ RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
       expect(application.submitted_at).to eq(Date.today.to_datetime)
     end
 
-    it 'should find the applicants from the application response payload' do
-      expect(application.applicants.empty?).to eq(false)
+    it 'should find the applicants applying for coverage from the application response payload' do
+      expect(application.applicants.all?(&:is_applying_coverage)).to eq(true)
     end
 
     it 'should find non-magi medicaid eligibility for the applicant from the application response payload' do
