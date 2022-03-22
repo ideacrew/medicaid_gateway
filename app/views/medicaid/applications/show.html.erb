@@ -33,24 +33,34 @@
   </thead>
   <tbody>
     <% @application.application_response_payload_json[:tax_households].each do |thh| %>
-      <% thh[:tax_household_members].each do |thm| %>
-        <% next unless @application.applicants_applying_for_coverage.include?(thm[:applicant_reference][:person_hbx_id]) %>
+      <% thh[:tax_household_members].each do |thm| %>        
         <% if thm[:product_eligibility_determination] %>
           <% mm_eligible = thm[:product_eligibility_determination][:is_magi_medicaid] %>
           <tr>
             <td><%= thm[:applicant_reference][:person_hbx_id] %></td>
             <td><%= @application.relationship_for(thm[:applicant_reference][:person_hbx_id]) %></td>
             <td><%= @application.age_of_applicant_for(thm[:applicant_reference][:person_hbx_id]) %></td>
-            <td><% benchmark = @application.benchmarks.detect{ |a| a[:member_identifier] == thm[:applicant_reference][:person_hbx_id]} %>
-              <%= benchmark[:monthly_premium] if benchmark %>
-            </td>
-            <td><%= @application.aptc_households&.last&.fpl_percent %>%</td>
-            <td><%= thm[:product_eligibility_determination][:is_magi_medicaid] %></td>
-            <td><%= thh[:max_aptc] unless mm_eligible %></td>
-            <td><%=  @application.aptc_households.last.contribution_percent unless mm_eligible %></td>
-            <td><%= thm[:product_eligibility_determination][:csr] if thm[:product_eligibility_determination][:is_csr_eligible] %></td>
-            <td><%= @application.citizen_status_for(thm[:applicant_reference][:person_hbx_id]) %></td>
-            <td><%= @application.tax_filer_kind_for(thm[:applicant_reference][:person_hbx_id]) %></td>
+            <% if @application.applicants_applying_for_coverage.include?(thm[:applicant_reference][:person_hbx_id]) %>
+              <td><% benchmark = @application.benchmarks.detect{ |a| a[:member_identifier] == thm[:applicant_reference][:person_hbx_id]} %>
+                <%= benchmark[:monthly_premium] if benchmark %>
+              </td>
+              <td><%= @application.aptc_households&.last&.fpl_percent %>%</td>
+              <td><%= thm[:product_eligibility_determination][:is_magi_medicaid] %></td>
+              <td><%= thh[:max_aptc] unless mm_eligible %></td>
+              <td><%=  @application.aptc_households.last.contribution_percent unless mm_eligible %></td>
+              <td><%= thm[:product_eligibility_determination][:csr] if thm[:product_eligibility_determination][:is_csr_eligible] %></td>
+              <td><%= @application.citizen_status_for(thm[:applicant_reference][:person_hbx_id]) %></td>
+              <td><%= @application.tax_filer_kind_for(thm[:applicant_reference][:person_hbx_id]) %></td>
+            <% else %>
+                <td>n/a</td>
+                <td>n/a</td>
+                <td>n/a</td>
+                <td>n/a</td>
+                <td>n/a</td>
+                <td>n/a</td>
+                <td>n/a</td>
+                <td>n/a</td>
+            <% end %>
           </tr>
         <% end %>
       <% end %>
