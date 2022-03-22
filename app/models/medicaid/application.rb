@@ -98,6 +98,10 @@ module Medicaid
       application_response_entity&.applicants || []
     end
 
+    def applicants_applying_for_coverage
+      applicants.select(&:is_applying_coverage).map(&:person_hbx_id)
+    end
+
     def attestation_for(member_identifier)
       applicants.each do |applicant|
         return applicant.attestation.to_h if member_identifier.to_s == applicant[:person_hbx_id]&.to_s
