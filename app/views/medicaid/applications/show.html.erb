@@ -33,7 +33,7 @@
   </thead>
   <tbody>
     <% @application.application_response_payload_json[:tax_households].each do |thh| %>
-      <% thh[:tax_household_members].each do |thm| %>        
+      <% thh[:tax_household_members].each do |thm| %>
         <% if thm[:product_eligibility_determination] %>
           <% mm_eligible = thm[:product_eligibility_determination][:is_magi_medicaid] %>
           <tr>
