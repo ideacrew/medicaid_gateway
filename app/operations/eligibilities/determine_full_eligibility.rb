@@ -67,7 +67,7 @@ module Eligibilities
     def all_members_are_medicaid_eligible?(mm_thh)
       mm_thh.tax_household_members.all? do |thhm|
         ped = thhm.product_eligibility_determination
-        ped.is_medicaid_chip_eligible || ped.is_magi_medicaid
+        ped.is_medicaid_chip_eligible || ped.is_magi_medicaid || ped.chip_ineligibility_reasons&.include?("Applicant is incarcerated")
       end
     end
 
