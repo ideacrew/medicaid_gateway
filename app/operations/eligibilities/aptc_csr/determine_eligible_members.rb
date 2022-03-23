@@ -112,8 +112,8 @@ module Eligibilities
         return true unless applicant.has_eligible_health_coverage
         esi_benefits = applicant.eligible_benefit_esis
         return true if esi_benefits.blank?
-
-        esi_benefits.all? do |esi_benefit|
+        return true unless esi_benefits.any? { |benefit| benefit_coverage_covers?(benefit) }
+        esi_benefits.select { |benefit| benefit_coverage_covers?(benefit) }.each do |esi_benefit|
           esi_rules_satisfied?(applicant, esi_benefit)
         end
       end
