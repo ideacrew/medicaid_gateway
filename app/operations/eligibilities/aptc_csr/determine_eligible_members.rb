@@ -176,6 +176,7 @@ module Eligibilities
       end
 
       def tax_filing?(applicant)
+        # To qualify for APTC/CSR, a consumer must plan to file taxes or be claimed as a tax dependent for the coverage year.
         eligible_tax_filer?(applicant) || eligible_tax_dependent?(applicant)
       end
 
@@ -216,9 +217,9 @@ module Eligibilities
 
       def eligible_tax_filer?(applicant)
         return false if applicant.is_claimed_as_tax_dependent
-        applicant.is_primary_applicant ||
-          applicant.is_required_to_file_taxes ||
-          (married?(applicant) && applicant.is_joint_tax_filing)
+        # If the consumer is married, they must be filing jointly or as head of household
+        applicant.is_required_to_file_taxes ||
+          (married?(applicant) && (applicant.is_joint_tax_filing || applicant.is_filing_as_head_of_household))
       end
 
       def married?(applicant)
