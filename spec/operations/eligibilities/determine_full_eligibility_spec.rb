@@ -2460,12 +2460,14 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
         end.product_eligibility_determination
       end
 
-      it 'should not return medicaid, aqhp, or csr eligible' do
-        binding.pry
+      it 'should not return aqhp or csr eligible' do
         expect(ped.is_ia_eligible).to eq(false)
+        expect(ped.is_csr_eligible).to eq(false)
+      end
+
+      it 'should not return medicaid/chip eligible' do
         expect(ped.is_magi_medicaid).to eq(false)
         expect(ped.is_medicaid_chip_eligible).to eq(false)
-        expect(ped.is_csr_eligible).to eq(nil)
       end
 
       it 'should return uqhp eligible' do

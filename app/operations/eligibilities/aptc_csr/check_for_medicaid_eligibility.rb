@@ -75,7 +75,11 @@ module Eligibilities
           member = member_by_reference(aptc_household, thhm.applicant_reference.person_hbx_id)
           applicant = applicant_by_reference(thhm.applicant_reference.person_hbx_id)
           # We should not be determining member level eligibility for a Non-Applicant
-          check_and_update_magi_medicaid_eligibility(member, thhm, applicant) if applicant.is_applying_coverage
+          # or for an Applicant who is legitimately ineligible outside of gap filling rules
+          if applicant.is_applying_coverage && !absolutely_mm_ineligible?(applicant)
+            check_and_update_magi_medicaid_eligibility(member, thhm,
+                                                       applicant)
+          end
         end
 
         Success(aptc_household)
@@ -144,6 +148,13 @@ module Eligibilities
         aptc_household[:members].detect do |mmbr|
           mmbr[:member_identifier] == person_hbx_id.to_s
         end
+      end
+
+      # Used to block gap filling override if applicant is legitimately magi medicaid ineligible
+      def absolutely_mm_ineligible?(applicant)
+        medicare_kinds = %(medicare medicare_advantage medicare_part_b)
+        medicare_enrolled = applicant.benefits.any? {|benefit| medicare_kinds.include?(benefit.kind) }
+        applicant.is_medicare_eligible || medicare_enrolled || applicant.age_of_applicant >= 65
       end
     end
   end
