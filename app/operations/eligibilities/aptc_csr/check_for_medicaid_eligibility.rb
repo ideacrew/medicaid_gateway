@@ -74,9 +74,10 @@ module Eligibilities
         @tax_household.tax_household_members.each do |thhm|
           member = member_by_reference(aptc_household, thhm.applicant_reference.person_hbx_id)
           applicant = applicant_by_reference(thhm.applicant_reference.person_hbx_id)
+          eligibility_date = aptc_household[:eligibility_date]
           # We should not be determining member level eligibility for a Non-Applicant
           # or for an Applicant who is legitimately ineligible outside of gap filling rules
-          if applicant.is_applying_coverage && !absolutely_mm_ineligible?(applicant)
+          if applicant.is_applying_coverage && !absolutely_mm_ineligible?(applicant, eligibility_date)
             check_and_update_magi_medicaid_eligibility(member, thhm,
                                                        applicant)
           end
@@ -151,10 +152,20 @@ module Eligibilities
       end
 
       # Used to block gap filling rules if applicant is legitimately magi medicaid ineligible
-      def absolutely_mm_ineligible?(applicant)
+      def absolutely_mm_ineligible?(applicant, eligibility_date)
         medicare_kinds = %(medicare medicare_advantage)
-        medicare_enrolled = applicant.benefits&.any? {|benefit| medicare_kinds.include?(benefit.kind) }
+        enrolled_medicare_benefits = applicant.benefits&.select do |benefit|
+          benefit.status == 'is_enrolled' && medicare_kinds.include?(benefit.kind)
+        end
+        medicare_enrolled = enrolled_medicare_benefits&.any? { |benefit| benefit_coverage_covers?(benefit, eligibility_date) }
+
         applicant.is_medicare_eligible || medicare_enrolled || applicant.age_of_applicant >= 65
+      end
+
+      def benefit_coverage_covers?(benefit, eligibility_date)
+        start_on = benefit.start_on
+        end_on = benefit.end_on || eligibility_date.end_of_year
+        (start_on..end_on).cover? eligibility_date
       end
     end
   end
