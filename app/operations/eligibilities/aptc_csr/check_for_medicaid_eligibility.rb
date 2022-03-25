@@ -150,10 +150,10 @@ module Eligibilities
         end
       end
 
-      # Used to block gap filling override if applicant is legitimately magi medicaid ineligible
+      # Used to block gap filling rules if applicant is legitimately magi medicaid ineligible
       def absolutely_mm_ineligible?(applicant)
-        medicare_kinds = %(medicare medicare_advantage medicare_part_b)
-        medicare_enrolled = applicant.benefits.any? {|benefit| medicare_kinds.include?(benefit.kind) }
+        medicare_kinds = %(medicare medicare_advantage)
+        medicare_enrolled = applicant.benefits&.any? {|benefit| medicare_kinds.include?(benefit.kind) }
         applicant.is_medicare_eligible || medicare_enrolled || applicant.age_of_applicant >= 65
       end
     end

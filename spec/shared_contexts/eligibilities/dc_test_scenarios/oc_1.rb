@@ -332,140 +332,140 @@ RSpec.shared_context 'dc_test_scenarios oc_1', :shared_context => :metadata do
 
   let(:mitc_string_response) do
     {
-        "Determination Date" => "2022-03-11",
-                "Applicants" => [
-             {
-                                "Person ID" => 99,
-                       "Medicaid Household" => {
-                                       "People" => [
-                         99
-                    ],
-                                         "MAGI" => 0,
-                    "MAGI as Percentage of FPL" => 0,
-                                         "Size" => 1
-                },
-                        "Medicaid Eligible" => "N",
-                            "CHIP Eligible" => "N",
-                     "Ineligibility Reason" => [
-                     "Applicant did not meet the requirements for any Medicaid category"
-                ],
-                        "Non-MAGI Referral" => "Y",
-                "CHIP Ineligibility Reason" => [
-                     "Applicant did not meet the requirements for any CHIP category"
-                ],
-                                 "Category" => "None",
-                            "CHIP Category" => "None",
-                  "CHIP Category Threshold" => 0,
-                           "Determinations" => {
-                                             "Residency" => {
-                        "Indicator" => "Y"
-                    },
-                                  "Adult Group Category" => {
-                                   "Indicator" => "N",
-                          "Ineligibility Code" => 123,
-                        "Ineligibility Reason" => "Applicant is not between the ages of 19 and 64 (inclusive)"
-                    },
-                             "Parent Caretaker Category" => {
-                                   "Indicator" => "N",
-                          "Ineligibility Code" => 146,
-                        "Ineligibility Reason" => "No child met all criteria for parent caretaker category"
-                    },
-                                    "Pregnancy Category" => {
-                                   "Indicator" => "N",
-                          "Ineligibility Code" => 124,
-                        "Ineligibility Reason" => "Applicant not pregnant or within postpartum period"
-                    },
-                                        "Child Category" => {
-                                   "Indicator" => "N",
-                          "Ineligibility Code" => 394,
-                        "Ineligibility Reason" => "Applicant is over the age limit for the young adult threshold in the state"
-                    },
-                    "Optional Targeted Low Income Child" => {
-                        "Indicator" => "X"
-                    },
-                        "CHIP Targeted Low Income Child" => {
-                        "Indicator" => "X"
-                    },
-                                          "Unborn Child" => {
-                        "Indicator" => "X"
-                    },
-                              "Income Medicaid Eligible" => {
-                                   "Indicator" => "N",
-                          "Ineligibility Code" => 401,
-                        "Ineligibility Reason" => "Applicant did not meet the requirements for any eligibility category"
-                    },
-                                  "Income CHIP Eligible" => {
-                                   "Indicator" => "N",
-                          "Ineligibility Code" => 401,
-                        "Ineligibility Reason" => "Applicant did not meet the requirements for any eligibility category"
-                    },
-                                   "Medicaid CHIPRA 214" => {
-                                   "Indicator" => "N",
-                          "Ineligibility Code" => 119,
-                        "Ineligibility Reason" => "Applicant is not a child or pregnant woman"
-                    },
-                                       "CHIP CHIPRA 214" => {
-                        "Indicator" => "X"
-                    },
-                                    "Trafficking Victim" => {
-                                   "Indicator" => "N",
-                          "Ineligibility Code" => 410,
-                        "Ineligibility Reason" => "Applicant is not a victim of trafficking"
-                    },
-                                      "Seven Year Limit" => {
-                        "Indicator" => "X"
-                    },
-                                         "Five Year Bar" => {
-                        "Indicator" => "X"
-                    },
-                            "Title II Work Quarters Met" => {
-                        "Indicator" => "X"
-                    },
-                         "Medicaid Citizen Or Immigrant" => {
-                        "Indicator" => "Y"
-                    },
-                             "CHIP Citizen Or Immigrant" => {
-                        "Indicator" => "Y"
-                    },
-                           "Former Foster Care Category" => {
-                                   "Indicator" => "N",
-                          "Ineligibility Code" => 400,
-                        "Ineligibility Reason" => "Applicant was not formerly in foster care"
-                    },
-                         "Work Quarters Override Income" => {
-                                   "Indicator" => "N",
-                          "Ineligibility Code" => 338,
-                        "Ineligibility Reason" => "Applicant did not meet all the criteria for income override rule"
-                    },
-                            "State Health Benefits CHIP" => {
-                        "Indicator" => "X"
-                    },
-                         "CHIP Waiting Period Satisfied" => {
-                        "Indicator" => "X"
-                    },
-                               "Dependent Child Covered" => {
-                        "Indicator" => "X"
-                    },
-                            "Medicaid Non-MAGI Referral" => {
-                        "Indicator" => "Y"
-                    },
-                                    "Emergency Medicaid" => {
-                                   "Indicator" => "N",
-                          "Ineligibility Code" => 109,
-                        "Ineligibility Reason" => "Applicant does not meet the eligibility criteria for emergency Medicaid"
-                    },
-                            "Refugee Medical Assistance" => {
-                        "Indicator" => "X"
-                    },
-                                         "APTC Referral" => {
-                        "Indicator" => "Y"
-                    }
-                },
-                            "Other Outputs" => {
-                    "Qualified Children List" => []
-                }
+      "Determination Date" => "2022-03-11",
+      "Applicants" => [
+        {
+          "Person ID" => 99,
+          "Medicaid Household" => {
+            "People" => [
+              99
+            ],
+            "MAGI" => 0,
+            "MAGI as Percentage of FPL" => 0,
+            "Size" => 1
+          },
+          "Medicaid Eligible" => "N",
+          "CHIP Eligible" => "N",
+          "Ineligibility Reason" => [
+            "Applicant did not meet the requirements for any Medicaid category"
+          ],
+          "Non-MAGI Referral" => "Y",
+          "CHIP Ineligibility Reason" => [
+            "Applicant did not meet the requirements for any CHIP category"
+          ],
+          "Category" => "None",
+          "CHIP Category" => "None",
+          "CHIP Category Threshold" => 0,
+          "Determinations" => {
+            "Residency" => {
+              "Indicator" => "Y"
+            },
+            "Adult Group Category" => {
+              "Indicator" => "N",
+              "Ineligibility Code" => 123,
+              "Ineligibility Reason" => "Applicant is not between the ages of 19 and 64 (inclusive)"
+            },
+            "Parent Caretaker Category" => {
+              "Indicator" => "N",
+              "Ineligibility Code" => 146,
+              "Ineligibility Reason" => "No child met all criteria for parent caretaker category"
+            },
+            "Pregnancy Category" => {
+              "Indicator" => "N",
+              "Ineligibility Code" => 124,
+              "Ineligibility Reason" => "Applicant not pregnant or within postpartum period"
+            },
+            "Child Category" => {
+              "Indicator" => "N",
+              "Ineligibility Code" => 394,
+              "Ineligibility Reason" => "Applicant is over the age limit for the young adult threshold in the state"
+            },
+            "Optional Targeted Low Income Child" => {
+              "Indicator" => "X"
+            },
+            "CHIP Targeted Low Income Child" => {
+              "Indicator" => "X"
+            },
+            "Unborn Child" => {
+              "Indicator" => "X"
+            },
+            "Income Medicaid Eligible" => {
+              "Indicator" => "N",
+              "Ineligibility Code" => 401,
+              "Ineligibility Reason" => "Applicant did not meet the requirements for any eligibility category"
+            },
+            "Income CHIP Eligible" => {
+              "Indicator" => "N",
+              "Ineligibility Code" => 401,
+              "Ineligibility Reason" => "Applicant did not meet the requirements for any eligibility category"
+            },
+            "Medicaid CHIPRA 214" => {
+              "Indicator" => "N",
+              "Ineligibility Code" => 119,
+              "Ineligibility Reason" => "Applicant is not a child or pregnant woman"
+            },
+            "CHIP CHIPRA 214" => {
+              "Indicator" => "X"
+            },
+            "Trafficking Victim" => {
+              "Indicator" => "N",
+              "Ineligibility Code" => 410,
+              "Ineligibility Reason" => "Applicant is not a victim of trafficking"
+            },
+            "Seven Year Limit" => {
+              "Indicator" => "X"
+            },
+            "Five Year Bar" => {
+              "Indicator" => "X"
+            },
+            "Title II Work Quarters Met" => {
+              "Indicator" => "X"
+            },
+            "Medicaid Citizen Or Immigrant" => {
+              "Indicator" => "Y"
+            },
+            "CHIP Citizen Or Immigrant" => {
+              "Indicator" => "Y"
+            },
+            "Former Foster Care Category" => {
+              "Indicator" => "N",
+              "Ineligibility Code" => 400,
+              "Ineligibility Reason" => "Applicant was not formerly in foster care"
+            },
+            "Work Quarters Override Income" => {
+              "Indicator" => "N",
+              "Ineligibility Code" => 338,
+              "Ineligibility Reason" => "Applicant did not meet all the criteria for income override rule"
+            },
+            "State Health Benefits CHIP" => {
+              "Indicator" => "X"
+            },
+            "CHIP Waiting Period Satisfied" => {
+              "Indicator" => "X"
+            },
+            "Dependent Child Covered" => {
+              "Indicator" => "X"
+            },
+            "Medicaid Non-MAGI Referral" => {
+              "Indicator" => "Y"
+            },
+            "Emergency Medicaid" => {
+              "Indicator" => "N",
+              "Ineligibility Code" => 109,
+              "Ineligibility Reason" => "Applicant does not meet the eligibility criteria for emergency Medicaid"
+            },
+            "Refugee Medical Assistance" => {
+              "Indicator" => "X"
+            },
+            "APTC Referral" => {
+              "Indicator" => "Y"
             }
-        ]
+          },
+          "Other Outputs" => {
+            "Qualified Children List" => []
+          }
+        }
+      ]
     }
   end
 

@@ -189,7 +189,7 @@ module Eligibilities
         return false if applicant.benefits.blank?
         enrolled_other_coverage_benefits = applicant.benefits.select do |benefit|
           benefit.status == 'is_enrolled' && ['medicaid', 'child_health_insurance_plan',
-                                              'medicare', 'tricare', 'employer_sponsored_insurance',
+                                              'medicare', 'medicare_advantage', 'tricare', 'employer_sponsored_insurance',
                                               'health_reimbursement_arrangement', 'cobra',
                                               'retiree_health_benefits', 'veterans_administration_health_benefits',
                                               'peace_corps_health_benefits'].include?(benefit.kind)
@@ -201,7 +201,7 @@ module Eligibilities
         return false if applicant.benefits.blank?
         eligible_other_coverage_benefits = applicant.benefits.select do |benefit|
           benefit.status == 'is_eligible' && ['medicaid', 'child_health_insurance_plan',
-                                              'medicare', 'tricare', 'retiree_health_benefits',
+                                              'medicare', 'medicare_advantage', 'tricare', 'retiree_health_benefits',
                                               'veterans_administration_health_benefits',
                                               'peace_corps_health_benefits'].include?(benefit.kind)
         end
