@@ -30,7 +30,6 @@ module Transfers
 
     def update_transfer(params, transfers)
       result = Try do
-        params[:payload] = "" if params[:result] == "Success"
         transfers.each do |transfer|
           transfer.update!(params.except(:transfer_id))
         end
