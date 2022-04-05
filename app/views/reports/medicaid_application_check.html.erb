@@ -29,7 +29,7 @@
 			<th>Application Identifer</th>
 			<th>Updated At</th>
 			<th>Failure</th>
-            <th>Link</th>
+      <th>Link</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -40,8 +40,8 @@
 </table>
 <datalist id="apps">
   <option value=""></option>
-  <% @application_ids.each do |id| %>
-    <option value="<%= id %>"><%= id %></option>
+  <% @application_ids.each do |ap| %>
+    <option value="<%= ap.application_identifier %>" data-id="<%= ap.id %>"><%= ap.application_identifier %></option>
   <% end %>
 </datalist>
 <%= paginate @applications %>
