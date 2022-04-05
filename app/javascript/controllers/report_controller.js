@@ -37,8 +37,10 @@ export default class extends Controller {
 
   app_search(event) {
     const value = event.target.value
-    window.history.replaceState(null, null, window.location.pathname)
-    this.stimulate('Report#app_search', value)
+    let options = document.querySelector('#apps option[value="'+value+'"]')
+    if (options != null && value != '') {
+      window.location = window.location.origin+"/medicaid/applications/"+value
+    }
   }
 
   clear_search(event) {
