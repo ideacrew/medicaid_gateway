@@ -39,7 +39,6 @@ module Transfers
         transfers << (transfer.success? ? transfer.value!.to_hash(identifier: true) : transfer)
       end
       primary = merge_payloads(transfers)
-      inbound_transfers.first.update!(payload: primary)
       Success(primary)
     rescue StandardError => e
       Failure("get_payload error: #{e}")
