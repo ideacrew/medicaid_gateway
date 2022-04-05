@@ -34,11 +34,8 @@ module Medicaid
     index({ created_at: 1, updated_at: 1 })
     index({ updated_at: 1 })
     index({ application_identifier: 1 })
-<<<<<<< HEAD
     index({ application_request_payload: 1 })
     index({ medicaid_response_payload: 1 })
-=======
->>>>>>> 054eff2 (add index and go directly to result by id)
     index({ application_identifier: 1, id: 1 })
 
     def successful?
