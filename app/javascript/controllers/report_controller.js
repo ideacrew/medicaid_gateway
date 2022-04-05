@@ -38,7 +38,7 @@ export default class extends Controller {
   app_search(event) {
     const value = event.target.value
     let options = document.querySelector('#apps option[value="'+value+'"]')
-    if (options != null) {
+    if (options != null && value != '') {
       window.location = window.location.origin+"/medicaid/applications/"+value
     }
   }
