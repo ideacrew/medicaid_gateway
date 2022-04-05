@@ -158,7 +158,6 @@ module Aces
         return Success(payload) unless MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll)
         Transfers::ToEnroll.new.call(payload, transfer_id)
       else
-        @transfer.update!(payload: payload)
         Success(@transfer)
       end
     end
