@@ -160,7 +160,7 @@ class ReportsController < ApplicationController
   end
 
   def applications
-    last_updated = Medicaid::Application.all.distinct(:updated_at).sort.last.utc.to_s(:number)
+    last_updated = Medicaid::Application.all.distinct(:updated_at).max.utc.to_s(:number)
     cache_key = "applications/#{last_updated}"
     @all_applications = Rails.cache.fetch(cache_key) do
       Medicaid::Application.all.only(:application_identifier, :created_at, :application_response_payload, :medicaid_response_payload)
