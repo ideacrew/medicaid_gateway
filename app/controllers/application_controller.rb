@@ -9,6 +9,12 @@ class ApplicationController < ActionController::Base
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
+  # override Pundit authorize method to skip authorization on reflexes
+  def authorize(record, query = nil)
+    return if @stimulus_reflex
+    super(record, query)
+  end
+
   def user_not_authorized(_exception)
     respond_to do |format|
       format.json { render nothing: true, status: :forbidden }
