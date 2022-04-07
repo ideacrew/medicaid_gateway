@@ -67,15 +67,18 @@ module Medicaid
       params[:assistance_year]
     end
 
-    def fpl
+    def fpl_year
       return unless assistance_year
-      fpl_year = assistance_year - 1
+      assistance_year - 1
+    end
+
+    def fpl
+      return unless fpl_year
       fpl_data = ::Types::FederalPovertyLevels.detect do |fpl_hash|
         fpl_hash[:medicaid_year] == fpl_year
       end
-      { medicaid_year: fpl_year,
-        annual_poverty_guideline: fpl_data[:annual_poverty_guideline],
-        annual_per_person_amount: fpl_data[:annual_per_person_amount] }
+      { medicaid_year: assistance_year,
+        annual_poverty_guideline: fpl_data[:annual_poverty_guideline] }
     end
 
     def irs_consent_details

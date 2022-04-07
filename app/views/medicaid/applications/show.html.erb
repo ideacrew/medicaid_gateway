@@ -69,6 +69,14 @@
 </table>
 <% end %>
 
+<ul class="list-group list-group-horizontal mt-3 mb-3">
+  <li class="list-group-item list-group-item-primary"><h5 class="m-0">FPL</h5></li>
+  <li class="list-group-item"><b>APTC Year:</b> <%= @application.fpl_year %></li>
+  <% @application.fpl.each do |k, v| %>
+    <li class="list-group-item"><b><%= k.to_s.humanize.titleize %>:</b> <%= v %></li>
+  <% end %>
+</ul>
+
 <h2>Payloads (click name to see in hide/show)</h2>
 <div class="accordion mb-5">
   <div class="accordion_panel">

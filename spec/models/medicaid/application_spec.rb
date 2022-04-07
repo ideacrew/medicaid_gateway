@@ -70,11 +70,17 @@ RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
     end
 
     it 'should be able to generate the fpl data' do
-      expect(application.fpl.keys.length).to eq(3)
+      fpl_keys = ['medicaid_year', 'annual_poverty_guideline']
+      expect(application.fpl.stringify_keys.keys).to eq(fpl_keys)
+      expect(application.fpl.values.any?(&:nil?)).to eq(false)
     end
 
     it 'should find the assistance year from the application response payload' do
       expect(application.assistance_year).to eq(Date.today.year)
+    end
+
+    it 'should calculate the fpl year based on the assistance year' do
+      expect(application.fpl_year).to eq(application.assistance_year - 1)
     end
 
     it 'should find the premium from the application response payload' do
