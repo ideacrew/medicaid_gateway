@@ -2501,4 +2501,116 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       end
     end
   end
+
+  # Any member of the tax household may enroll in a QHP through any of the Exchanges for which one of the tax filers meets the residency standard,
+  # so dependent can receive an APTC determination, if eligible (not a DC resident so therefore immediately not eligible for Medicaid)
+  context 'dc_test_scenarios qa_core_3_magi_020' do
+    include_context 'dc_test_scenarios qa_core_3_magi_020'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @new_thhms = @application.tax_households.flat_map(&:tax_household_members)
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    context 'for tax_household_members' do
+      let(:primary_ped) do
+        @new_thhms.detect do |thhm|
+          thhm.applicant_reference.person_hbx_id.to_s == '21210142'
+        end.product_eligibility_determination
+      end
+
+      let(:spouse_ped) do
+        @new_thhms.detect do |thhm|
+          thhm.applicant_reference.person_hbx_id.to_s == '21210143'
+        end.product_eligibility_determination
+      end
+
+      let(:child_ped) do
+        @new_thhms.detect do |thhm|
+          thhm.applicant_reference.person_hbx_id.to_s == '21210144'
+        end.product_eligibility_determination
+      end
+
+      context 'primary determinations' do
+        it 'should not return aqhp or csr eligible' do
+          expect(primary_ped.is_ia_eligible).to eq(false)
+          expect(primary_ped.is_csr_eligible).to eq(nil)
+        end
+
+        it 'should return medicaid eligible' do
+          expect(primary_ped.is_magi_medicaid).to eq(true)
+        end
+
+        it 'should not return uqhp eligible' do
+          expect(primary_ped.is_uqhp_eligible).to eq(nil)
+        end
+      end
+
+      context 'spouse determinations' do
+        it 'should not return aqhp or csr eligible' do
+          expect(spouse_ped.is_ia_eligible).to eq(false)
+          expect(spouse_ped.is_csr_eligible).to eq(nil)
+        end
+
+        it 'should return medicaid eligible' do
+          expect(spouse_ped.is_magi_medicaid).to eq(true)
+        end
+
+        it 'should not return uqhp eligible' do
+          expect(spouse_ped.is_uqhp_eligible).to eq(nil)
+        end
+      end
+
+      context 'child determinations' do
+        it 'should return aptc eligible and get an aptc amount' do
+          expect(@application.tax_households.first.max_aptc).not_to be_nil
+          expect(child_ped.is_ia_eligible).to eq(true)
+        end
+
+        # it 'should not assess eligibility for aqhp or csr' do
+        #   expect(spouse_ped.is_ia_eligible).to eq(false)
+        #   expect(spouse_ped.is_csr_eligible).to eq(nil)
+        # end
+
+        it 'should not return medicaid eligible' do
+          expect(child_ped.is_magi_medicaid).to eq(false)
+        end
+
+        it 'should not return uqhp eligible' do
+          expect(child_ped.is_uqhp_eligible).to eq(nil)
+        end
+      end
+    end
+
+    context 'for persistence' do
+      before do
+        medicaid_app.reload
+      end
+
+      it 'should match with hbx_id' do
+        expect(medicaid_app.application_identifier).to eq(application_entity.hbx_id)
+      end
+
+      it 'should match with application request payload' do
+        expect(medicaid_app.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should match with application response payload' do
+        expect(medicaid_app.application_response_payload).to eq(@application.to_json)
+      end
+
+      it 'should match with medicaid request payload' do
+        expect(medicaid_app.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+    end
+  end
 end
