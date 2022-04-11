@@ -44,7 +44,7 @@
               <td><% benchmark = @application.benchmarks.detect{ |a| a[:member_identifier] == thm[:applicant_reference][:person_hbx_id]} %>
                 <%= benchmark[:monthly_premium] if benchmark %>
               </td>
-              <td><%= @application.aptc_households&.last&.fpl_percent %>%</td>
+              <td><%= @application.aptc_households&.detect { |hh| thm[:applicant_reference][:person_hbx_id].in? (hh&.aptc_household_members&.map(&:member_identifier)) }&.fpl_percent  %>%</td>
               <td><%= thm[:product_eligibility_determination][:is_magi_medicaid] %></td>
               <td><%= thh[:max_aptc] unless mm_eligible %></td>
               <td><%=  @application.aptc_households&.last&.contribution_percent unless mm_eligible %></td>
