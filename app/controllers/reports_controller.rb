@@ -24,7 +24,7 @@ class ReportsController < ApplicationController
     authorize :user, :determinations?
     @start_on = start_on || session_date(session[:ma_start]) || Date.today
     @end_on = end_on || session_date(session[:ma_end]) || Date.today
-    @application_ids = Medicaid::Application.all.pluck(:application_identifier, :id)
+    @application_ids = Medicaid::Application.all.distinct(:application_identifier).uniq.sort
     application_id = params.fetch(:app) if params.key?(:app)
     @app = application_id || session[:app]
     @applications = if @app
