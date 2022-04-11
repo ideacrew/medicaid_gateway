@@ -38,11 +38,10 @@
 		<% end %>
 	</tbody>
 </table>
-
 <datalist id="apps">
   <option value=""></option>
-  <% @all_applications.each do |ap| %>
-    <option value="<%= ap.application_identifier %>" data-id="<%= ap.id %>"><%= ap.application_identifier %></option>
+  <% @application_ids.each do |ap| %>
+    <option value="<%= ap %>" data-id="<%= ap %>"><%= ap %></option>
   <% end %>
 </datalist>
 <%= paginate @applications %>
