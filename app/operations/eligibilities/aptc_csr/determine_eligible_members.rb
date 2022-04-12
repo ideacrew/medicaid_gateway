@@ -96,7 +96,6 @@ module Eligibilities
         ped = find_matching_ped(applicant.person_hbx_id)
 
         applicant.is_applying_coverage &&
-          # state_resident?(applicant) &&
           tax_filer_is_state_resident? &&
           !applicant.incarcerated? &&
           applicant.lawfully_present_in_us? &&
@@ -179,7 +178,6 @@ module Eligibilities
       end
 
       def residential_address_in_state?(applicant)
-        binding.irb
         hme_address = applicant.home_address
         return false if hme_address.blank?
 

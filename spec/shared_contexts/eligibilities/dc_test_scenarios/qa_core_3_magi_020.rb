@@ -942,7 +942,7 @@ RSpec.shared_context 'dc_test_scenarios qa_core_3_magi_020', :shared_context => 
 
   let(:mitc_string_response) do
     {
-      'Determination Date': "2022-04-08",
+      'Determination Date': "2022-04-12",
       Applicants: [
         {
           'Person ID': 21_210_142,
@@ -1208,9 +1208,14 @@ RSpec.shared_context 'dc_test_scenarios qa_core_3_magi_020', :shared_context => 
             'MAGI as Percentage of FPL': 31,
             Size: 3
           },
-          'Medicaid Eligible': "Y",
+          'Medicaid Eligible': "N",
           'CHIP Eligible': "N",
+          'Ineligibility Reason': [
+            "Applicant did not meet residency requirements"
+          ],
+          'Non-MAGI Referral': "N",
           'CHIP Ineligibility Reason': [
+            "Applicant did not meet residency requirements",
             "Applicant did not meet the requirements for any CHIP category"
           ],
           Category: "Child Category",
@@ -1219,7 +1224,9 @@ RSpec.shared_context 'dc_test_scenarios qa_core_3_magi_020', :shared_context => 
           'CHIP Category Threshold': 0,
           Determinations: {
             Residency: {
-              Indicator: "Y"
+              Indicator: "N",
+              'Ineligibility Code': nil,
+              'Ineligibility Reason': nil
             },
             'Adult Group Category': {
               Indicator: "Y"
@@ -1311,9 +1318,7 @@ RSpec.shared_context 'dc_test_scenarios qa_core_3_magi_020', :shared_context => 
               Indicator: "X"
             },
             'APTC Referral': {
-              Indicator: "N",
-              'Ineligibility Code': 406,
-              'Ineligibility Reason': "Applicant is eligible for Medicaid"
+              Indicator: "Y"
             }
           },
           'Other Outputs': {

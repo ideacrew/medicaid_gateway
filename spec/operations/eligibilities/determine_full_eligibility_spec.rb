@@ -2539,7 +2539,7 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       context 'primary determinations' do
         it 'should not return aqhp or csr eligible' do
           expect(primary_ped.is_ia_eligible).to eq(false)
-          expect(primary_ped.is_csr_eligible).to eq(nil)
+          expect(primary_ped.is_csr_eligible).to eq(false)
         end
 
         it 'should return medicaid eligible' do
@@ -2554,7 +2554,7 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       context 'spouse determinations' do
         it 'should not return aqhp or csr eligible' do
           expect(spouse_ped.is_ia_eligible).to eq(false)
-          expect(spouse_ped.is_csr_eligible).to eq(nil)
+          expect(spouse_ped.is_csr_eligible).to eq(false)
         end
 
         it 'should return medicaid eligible' do
@@ -2571,11 +2571,6 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
           expect(@application.tax_households.first.max_aptc).not_to be_nil
           expect(child_ped.is_ia_eligible).to eq(true)
         end
-
-        # it 'should not assess eligibility for aqhp or csr' do
-        #   expect(spouse_ped.is_ia_eligible).to eq(false)
-        #   expect(spouse_ped.is_csr_eligible).to eq(nil)
-        # end
 
         it 'should not return medicaid eligible' do
           expect(child_ped.is_magi_medicaid).to eq(false)
