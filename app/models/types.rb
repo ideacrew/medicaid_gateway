@@ -115,4 +115,19 @@ module Types
                                           '94',
                                           '100',
                                           'limited')
+  ELIGIBLE_INSURANCE_KINDS = %w[
+    medicaid
+    child_health_insurance_plan
+    medicare
+    medicare_advantage
+    tricare
+    retiree_health_benefits
+    veterans_administration_health_benefits
+    peace_corps_health_benefits
+  ].freeze
+
+  ENROLLED_INSURANCE_KINDS = ['medicaid', 'child_health_insurance_plan', 'medicare', 'medicare_advantage', 'tricare',
+                              'employer_sponsored_insurance', 'health_reimbursement_arrangement', 'cobra',
+                              'retiree_health_benefits', 'veterans_administration_health_benefits', 'peace_corps_health_benefits'].freeze
+
 end

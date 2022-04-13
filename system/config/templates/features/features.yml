@@ -23,3 +23,5 @@ registry:
         is_enabled: false
       - key: :daily_determination_report
         is_enabled: false
+      - key: :additional_ineligible_types
+        is_enabled: false

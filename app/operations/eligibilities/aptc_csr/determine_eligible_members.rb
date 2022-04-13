@@ -2,6 +2,7 @@
 
 require 'dry/monads'
 require 'dry/monads/do'
+require 'types'
 
 # This operation is private to ::Eligibilities::AptcCsr::DetermineEligibility
 module Eligibilities
@@ -201,11 +202,7 @@ module Eligibilities
       def enrolled_in_other_coverage?(applicant)
         return false if applicant.benefits.blank?
         enrolled_other_coverage_benefits = applicant.benefits.select do |benefit|
-          benefit.status == 'is_enrolled' && ['medicaid', 'child_health_insurance_plan',
-                                              'medicare', 'medicare_advantage', 'tricare', 'employer_sponsored_insurance',
-                                              'health_reimbursement_arrangement', 'cobra',
-                                              'retiree_health_benefits', 'veterans_administration_health_benefits',
-                                              'peace_corps_health_benefits'].include?(benefit.kind)
+          benefit.status == 'is_enrolled' && enrolled_insurances.include?(benefit.kind)
         end
         enrolled_other_coverage_benefits.any? { |benefit| benefit_coverage_covers?(benefit) }
       end
@@ -213,12 +210,41 @@ module Eligibilities
       def eligible_for_other_coverage?(applicant)
         return false if applicant.benefits.blank?
         eligible_other_coverage_benefits = applicant.benefits.select do |benefit|
-          benefit.status == 'is_eligible' && ['medicaid', 'child_health_insurance_plan',
-                                              'medicare', 'medicare_advantage', 'tricare', 'retiree_health_benefits',
-                                              'veterans_administration_health_benefits',
-                                              'peace_corps_health_benefits'].include?(benefit.kind)
+          benefit.status == 'is_eligible' && eligbile_insurances.include?(benefit.kind)
         end
         eligible_other_coverage_benefits.any? { |benefit| benefit_coverage_covers?(benefit) }
+      end
+
+      def eligbile_insurances
+        return ::Types::ELIGIBLE_INSURANCE_KINDS unless MedicaidGatewayRegistry.feature_enabled?(:additional_ineligible_types)
+        ::Types::ELIGIBLE_INSURANCE_KINDS + ['acf_refugee_medical_assistance',
+                                             'americorps_health_benefits',
+                                             'state_supplementary_payment',
+                                             'veterans_benefits',
+                                             'naf_health_benefit_program',
+                                             'self_funded_student_health_coverage',
+                                             'foreign_government_health_coverage',
+                                             'coverage_under_the_state_health_benefits_risk_pool',
+                                             'health_care_for_peace_corp_volunteers',
+                                             'department_of_defense_non_appropriated_health_benefits',
+                                             'employer_sponsored_insurance', 'health_reimbursement_arrangement']
+      end
+
+      def enrolled_insurances
+        return ::Types::ENROLLED_INSURANCE_KINDS unless MedicaidGatewayRegistry.feature_enabled?(:additional_ineligible_types)
+        ::Types::ENROLLED_INSURANCE_KINDS + [
+          'acf_refugee_medical_assistance',
+          'americorps_health_benefits',
+          'state_supplementary_payment',
+          'veterans_benefits',
+          'naf_health_benefit_program',
+          'self_funded_student_health_coverage',
+          'foreign_government_health_coverage',
+          'coverage_under_the_state_health_benefits_risk_pool',
+          'health_care_for_peace_corp_volunteers',
+          'department_of_defense_non_appropriated_health_benefits',
+          'employer_sponsored_insurance', 'health_reimbursement_arrangement'
+        ]
       end
 
       def benefit_coverage_covers?(benefit)

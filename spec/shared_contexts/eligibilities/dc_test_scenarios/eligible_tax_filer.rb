@@ -12,9 +12,9 @@ RSpec.shared_context 'dc_test_scenarios primary_non_tax_filer', :shared_context 
       "family_reference" => {
         "hbx_id" => "288790"
       },
-      "assistance_year" => 2022,
+      "assistance_year" => assistance_year,
       "aptc_effective_date" => "2022-05-01",
-      "years_to_renew" => 2027,
+      "years_to_renew" => assistance_year + 5,
       "renewal_consent_through_year" => 5,
       "is_ridp_verified" => true,
       "is_renewal_authorized" => true,
