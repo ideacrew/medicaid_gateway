@@ -2502,6 +2502,8 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     end
   end
 
+  # Any member of the tax household may enroll in a QHP through any of the Exchanges for which one of the tax filers meets the residency standard,
+  # so dependent can receive an APTC determination, if eligible (not a DC resident so therefore immediately not eligible for Medicaid)
   context 'dc_test_scenarios qa_core_3_magi_020' do
     include_context 'dc_test_scenarios qa_core_3_magi_020'
 
