@@ -201,22 +201,16 @@ module Eligibilities
       def enrolled_in_other_coverage?(applicant)
         return false if applicant.benefits.blank?
         enrolled_other_coverage_benefits = applicant.benefits.select do |benefit|
-          benefit.status == 'is_enrolled' && ['medicaid', 'child_health_insurance_plan',
-                                              'medicare', 'medicare_advantage', 'tricare', 'employer_sponsored_insurance',
-                                              'health_reimbursement_arrangement', 'cobra',
-                                              'retiree_health_benefits', 'veterans_administration_health_benefits',
-                                              'peace_corps_health_benefits'].include?(benefit.kind)
+          benefit.status == 'is_enrolled' && Types::ENROLLED_INSURANCE_KINDS.include?(benefit.kind)
         end
         enrolled_other_coverage_benefits.any? { |benefit| benefit_coverage_covers?(benefit) }
       end
 
       def eligible_for_other_coverage?(applicant)
         return false if applicant.benefits.blank?
+        p Types::ELIGIBLE_INSURANCE_KINDS
         eligible_other_coverage_benefits = applicant.benefits.select do |benefit|
-          benefit.status == 'is_eligible' && ['medicaid', 'child_health_insurance_plan',
-                                              'medicare', 'medicare_advantage', 'tricare', 'retiree_health_benefits',
-                                              'veterans_administration_health_benefits',
-                                              'peace_corps_health_benefits'].include?(benefit.kind)
+          benefit.status == 'is_eligible' && Types::ELIGIBLE_INSURANCE_KINDS.include?(benefit.kind)
         end
         eligible_other_coverage_benefits.any? { |benefit| benefit_coverage_covers?(benefit) }
       end
