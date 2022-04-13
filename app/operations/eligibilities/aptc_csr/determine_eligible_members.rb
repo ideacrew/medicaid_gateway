@@ -96,7 +96,7 @@ module Eligibilities
         ped = find_matching_ped(applicant.person_hbx_id)
 
         applicant.is_applying_coverage &&
-          state_resident?(applicant) &&
+          tax_filer_is_state_resident? &&
           !applicant.incarcerated? &&
           applicant.lawfully_present_in_us? &&
           tax_filing?(applicant) &&
@@ -162,6 +162,19 @@ module Eligibilities
         residential_address_in_state?(applicant) ||
           applicant.is_homeless ||
           temporarily_absent?(applicant)
+      end
+
+      # any member of the tax household may enroll in a QHP through any of the Exchanges for which one of the tax filers meets the residency standard
+      def tax_filer_is_state_resident?
+        tax_filer_applicants.any? {|applicant| residential_address_in_state?(applicant)}
+      end
+
+      def tax_filer_applicants
+        @tax_household.tax_household_members.each_with_object([]) do |thhm, filers|
+          member_identifier = thhm.applicant_reference.person_hbx_id
+          applicant = applicant_by_reference(member_identifier)
+          filers << applicant if applicant.tax_filer_kind == "tax_filer"
+        end
       end
 
       def residential_address_in_state?(applicant)
