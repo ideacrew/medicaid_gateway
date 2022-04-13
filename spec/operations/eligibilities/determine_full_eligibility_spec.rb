@@ -2502,8 +2502,6 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     end
   end
 
-  # Any member of the tax household may enroll in a QHP through any of the Exchanges for which one of the tax filers meets the residency standard,
-  # so dependent can receive an APTC determination, if eligible (not a DC resident so therefore immediately not eligible for Medicaid)
   context 'dc_test_scenarios qa_core_3_magi_020' do
     include_context 'dc_test_scenarios qa_core_3_magi_020'
 
@@ -2605,7 +2603,10 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
 
       it 'should match with medicaid response payload' do
         expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
-=======
+      end
+    end
+  end
+
   if MedicaidGatewayRegistry.feature_enabled?(:additional_ineligible_types)
     # Expected outcome is UQHP for person 1 b/c person is eligible for americorps_health_benefits, but is_ia for person 2
     context 'dc_test_scenarios americorps' do
