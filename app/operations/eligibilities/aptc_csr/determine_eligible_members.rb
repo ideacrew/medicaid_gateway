@@ -208,7 +208,6 @@ module Eligibilities
 
       def eligible_for_other_coverage?(applicant)
         return false if applicant.benefits.blank?
-        p Types::ELIGIBLE_INSURANCE_KINDS
         eligible_other_coverage_benefits = applicant.benefits.select do |benefit|
           benefit.status == 'is_eligible' && Types::ELIGIBLE_INSURANCE_KINDS.include?(benefit.kind)
         end
