@@ -2609,73 +2609,74 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     end
   end
 
-  if MedicaidGatewayRegistry.feature_enabled?(:additional_ineligible_types)
-    # Expected outcome is UQHP for person 1 b/c person is eligible for americorps_health_benefits, but is_ia for person 2
-    context 'dc_test_scenarios americorps' do
-      include_context 'dc_test_scenarios americorps'
+  # Expected outcome is UQHP for person 1 b/c person is eligible for americorps_health_benefits, but is_ia for person 2
+  context 'dc_test_scenarios americorps' do
+    include_context 'dc_test_scenarios americorps'
 
-      before do
-        @result = subject.call(input_params)
-        @application = @result.success[:payload]
-        @new_thhms = @application.tax_households.flat_map(&:tax_household_members)
+    before do
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).and_call_original
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:additional_ineligible_types).and_return(true)
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @new_thhms = @application.tax_households.flat_map(&:tax_household_members)
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    context 'for tax_household_members' do
+      let(:ped) do
+        @new_thhms.detect do |thhm|
+          thhm.applicant_reference.person_hbx_id.to_s == '99'
+        end.product_eligibility_determination
       end
 
-      it 'should return application' do
-        expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+      let(:ped2) do
+        @new_thhms.detect do |thhm|
+          thhm.applicant_reference.person_hbx_id.to_s == '100'
+        end.product_eligibility_determination
       end
 
-      context 'for tax_household_members' do
-        let(:ped) do
-          @new_thhms.detect do |thhm|
-            thhm.applicant_reference.person_hbx_id.to_s == '99'
-          end.product_eligibility_determination
-        end
-
-        let(:ped2) do
-          @new_thhms.detect do |thhm|
-            thhm.applicant_reference.person_hbx_id.to_s == '100'
-          end.product_eligibility_determination
-        end
-
-        it 'should not return aqhp or csr eligible for person 1' do
-          expect(ped.is_ia_eligible).to eq(false)
-          expect(ped.is_csr_eligible).to eq(false)
-        end
-
-        it 'should return uqhp eligible for person 1' do
-          expect(ped.is_uqhp_eligible).to eq(true)
-        end
-
-        it 'should return aqhp eligible for person 2' do
-          expect(ped2.is_ia_eligible).to eq(true)
-        end
+      it 'should not return aqhp or csr eligible for person 1' do
+        expect(ped.is_ia_eligible).to eq(false)
+        expect(ped.is_csr_eligible).to eq(false)
       end
 
-      context 'for persistence' do
-        before do
-          medicaid_app.reload
-        end
+      it 'should return uqhp eligible for person 1' do
+        expect(ped.is_uqhp_eligible).to eq(true)
+      end
 
-        it 'should match with hbx_id' do
-          expect(medicaid_app.application_identifier).to eq(application_entity.hbx_id)
-        end
-
-        it 'should match with application request payload' do
-          expect(medicaid_app.application_request_payload).to eq(input_application.to_json)
-        end
-
-        it 'should match with application response payload' do
-          expect(medicaid_app.application_response_payload).to eq(@application.to_json)
-        end
-
-        it 'should match with medicaid request payload' do
-          expect(medicaid_app.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
-        end
-
-        it 'should match with medicaid response payload' do
-          expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
-        end
+      it 'should return aqhp eligible for person 2' do
+        expect(ped2.is_ia_eligible).to eq(true)
       end
     end
+
+    context 'for persistence' do
+      before do
+        medicaid_app.reload
+      end
+
+      it 'should match with hbx_id' do
+        expect(medicaid_app.application_identifier).to eq(application_entity.hbx_id)
+      end
+
+      it 'should match with application request payload' do
+        expect(medicaid_app.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should match with application response payload' do
+        expect(medicaid_app.application_response_payload).to eq(@application.to_json)
+      end
+
+      it 'should match with medicaid request payload' do
+        expect(medicaid_app.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+    end
+
   end
 end

@@ -130,34 +130,4 @@ module Types
                               'employer_sponsored_insurance', 'health_reimbursement_arrangement', 'cobra',
                               'retiree_health_benefits', 'veterans_administration_health_benefits', 'peace_corps_health_benefits'].freeze
 
-  if MedicaidGatewayRegistry.feature_enabled?(:additional_ineligible_types)
-    ELIGIBLE_INSURANCE_KINDS += [
-      'acf_refugee_medical_assistance',
-      'americorps_health_benefits',
-      'state_supplementary_payment',
-      'veterans_benefits',
-      'naf_health_benefit_program',
-      'self_funded_student_health_coverage',
-      'foreign_government_health_coverage',
-      'coverage_under_the_state_health_benefits_risk_pool',
-      'parents_domestic_partner',
-      'health_care_for_peace_corp_volunteers',
-      'department_of_defense_non_appropriated_health_benefits'
-    ]
-
-    ENROLLED_INSURANCE_KINDS += [
-      'acf_refugee_medical_assistance',
-      'americorps_health_benefits',
-      'state_supplementary_payment',
-      'veterans_benefits',
-      'naf_health_benefit_program',
-      'self_funded_student_health_coverage',
-      'foreign_government_health_coverage',
-      'coverage_under_the_state_health_benefits_risk_pool',
-      'parents_domestic_partner',
-      'health_care_for_peace_corp_volunteers',
-      'department_of_defense_non_appropriated_health_benefits',
-      'employer_sponsored_insurance', 'health_reimbursement_arrangement'
-    ]
-  end
 end
