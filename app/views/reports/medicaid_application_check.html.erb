@@ -14,7 +14,7 @@
   </div>
 </div>
 <% if @app && !@apps.any? %>
-  There are are no applications with the identifier of <%= @app %>. Try again or <%= link_to "see all determinations by date range", medicaid_application_check_reports_path %>
+  <p>There are are no applications with the identifier <strong><%= @app %></strong>. Try a different search term or <%= link_to "see all determinations by date range", medicaid_application_check_reports_path %>.</p>
 <% end %>
 
 <% unless @app %>
