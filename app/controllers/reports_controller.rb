@@ -24,10 +24,12 @@ class ReportsController < ApplicationController
     authorize :user, :determinations?
     @start_on = start_on || session_date(session[:ma_start]) || Date.today
     @end_on = end_on || session_date(session[:ma_end]) || Date.today
-    @application_ids = Medicaid::Application.all.distinct(:application_identifier).uniq.sort
-    application_id = params.fetch(:app) if params.key?(:app)
-    @app = application_id || session[:app]
-    @applications = if @app
+    if params.key?(:app)
+       @app = params.fetch(:app)
+       apps = Medicaid::Application.where(application_identifier: @app)
+       redirect_to apps.first if apps && apps.length == 1
+    end
+    @applications = if apps && apps.any?
                       Medicaid::Application.where(application_identifier: @app).page params[:page]
                     else
                       applications.order(updated_at: :desc).page params[:page]

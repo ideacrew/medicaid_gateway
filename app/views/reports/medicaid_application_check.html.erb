@@ -4,14 +4,12 @@
       <h1>Determinations</h1>
     </div>
     <div class="col">
+      <%= form_tag(medicaid_application_check_reports_path, method: :get) do %>
       <div class="input-group input-group-sm pb-3">
-        <input name="app" id="app" class="form-control" data-controller="report" data-action="report#app_search" value="<%= @app %>" list="apps" placeholder="Search by Application">
-        <div class="input-group-append">
-        <% if @app %>
-          <button type="button" class="btn btn-primary" data-controller="report" data-action="report#clear_search">X</button>
-        <% end %>
-        </div>
+        <%= text_field_tag :app, params[:app] %>
+        <%= submit_tag("Search", name: "search") %> 
       </div>
+      <% end %>
     </div>
   </div>
 </div>
@@ -38,10 +36,4 @@
 		<% end %>
 	</tbody>
 </table>
-<datalist id="apps">
-  <option value=""></option>
-  <% @application_ids.each do |ap| %>
-    <option value="<%= ap %>" data-id="<%= ap %>"><%= ap %></option>
-  <% end %>
-</datalist>
 <%= paginate @applications %>
