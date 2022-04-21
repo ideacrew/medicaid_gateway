@@ -49,6 +49,9 @@ module Eligibilities
       end
 
       def member_totally_ineligible?(applicant)
+        is_non_filer = applicant.tax_filer_kind == 'non_filer'
+        return false if is_non_filer && residential_address_in_state?(applicant)
+
         applicant.incarcerated? ||
           applicant.non_citizen_and_no_lawful_presence_attestation ||
           !tax_filer_is_state_resident?
@@ -74,10 +77,10 @@ module Eligibilities
       end
 
       def residential_address_in_state?(applicant)
-        hme_address = applicant.home_address
-        return false if hme_address.blank?
+        home_address = applicant.home_address
+        return false if home_address.blank?
 
-        hme_address.state == @application.us_state
+        home_address.state == @application.us_state
       end
 
       def temporarily_absent?(applicant)
