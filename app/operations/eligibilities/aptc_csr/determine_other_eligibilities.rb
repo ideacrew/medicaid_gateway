@@ -51,13 +51,26 @@ module Eligibilities
       def member_totally_ineligible?(applicant)
         applicant.incarcerated? ||
           applicant.non_citizen_and_no_lawful_presence_attestation ||
-          !state_resident?(applicant)
+          !tax_filer_is_state_resident?
       end
 
       def state_resident?(applicant)
         residential_address_in_state?(applicant) ||
           applicant.is_homeless ||
           temporarily_absent?(applicant)
+      end
+
+      # any member of the tax household may enroll in a QHP through any of the Exchanges for which one of the tax filers meets the residency standard
+      def tax_filer_is_state_resident?
+        tax_filer_applicants.any? {|applicant| residential_address_in_state?(applicant)}
+      end
+
+      def tax_filer_applicants
+        @tax_household.tax_household_members.each_with_object([]) do |thhm, filers|
+          member_identifier = thhm.applicant_reference.person_hbx_id
+          applicant = applicant_by_reference(member_identifier)
+          filers << applicant if applicant.tax_filer_kind == "tax_filer"
+        end
       end
 
       def residential_address_in_state?(applicant)
