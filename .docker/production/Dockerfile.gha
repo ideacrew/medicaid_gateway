@@ -70,7 +70,7 @@ ENV HOME=/medicaid_gateway
 
 ENV PATH=$HOME/bin:$BUNDLE_BIN:$GEM_HOME/gems/bin:$PATH
 
-RUN gem update --system
+# RUN gem update --system
 RUN rm -f /usr/local/bin/ruby/gems/*/specifications/default/bundler-*.gemspec
 RUN gem install bundler -v $BUNDLER_VERSION
 
