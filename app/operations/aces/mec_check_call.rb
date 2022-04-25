@@ -36,7 +36,7 @@ module Aces
 
     def validate_xml(seralized_xml)
       document = Nokogiri::XML(seralized_xml)
-      xsd_path = File.open(Pathname.pwd.join("spec/test_data/nonesi_mec.xsd"))
+      xsd_path = File.open(Rails.root.join("artifacts", "aces", "nonesi_mec.xsd"))
       schema_location = File.expand_path(xsd_path)
       schema = Nokogiri::XML::Schema(File.open(schema_location))
       result = schema.validate(document).each_with_object([]) do |error, collect|
