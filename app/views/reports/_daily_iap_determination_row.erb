@@ -14,4 +14,5 @@
     <td><%= determination.attestation_for(applicant.applicant_reference.person_hbx_id)[:is_self_attested_blind] %></td>
     <td><%= determination.attestation_for(applicant.applicant_reference.person_hbx_id)[:is_self_attested_disabled] %></td>
     <td><%= determination.daily_living_help?(applicant.applicant_reference.person_hbx_id) %></td>
+    <td><%= determination.citizen_status_for(applicant.applicant_reference.person_hbx_id) %></td>
 </tr>
