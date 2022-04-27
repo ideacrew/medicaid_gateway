@@ -1,12 +1,14 @@
+<% mm_eligible = applicant.product_eligibility_determination.is_magi_medicaid%>
+<% csr_eligible = applicant.product_eligibility_determination.is_csr_eligible%>
 <tr>
     <td><%= determination.primary_hbx_id %></td>
     <td><%= link_to determination.application_identifier, determination %></td>
     <td><%= determination.age_of_applicant(applicant.applicant_reference.person_hbx_id) %></td>
     <td><%= applicant.product_eligibility_determination.is_uqhp_eligible %></td>
     <td><%= applicant.product_eligibility_determination.is_ia_eligible %></td>
-    <td><%= tax_household.max_aptc %></td>
-    <td><%= applicant.product_eligibility_determination.csr %></td>
-    <td><%= applicant.product_eligibility_determination.is_medicaid_chip_eligible %></td>
+    <td><%= tax_household.max_aptc unless mm_eligible %></td>
+    <td><%= applicant.product_eligibility_determination.csr if csr_eligible%></td>
+    <td><%= mm_eligible %></td>
     <td><%= applicant.product_eligibility_determination.is_non_magi_medicaid_eligible %></td>
     <td><%= applicant.product_eligibility_determination.is_totally_ineligible %></td>
     <td><%= determination.application_response_entity&.submitted_at %></td>
