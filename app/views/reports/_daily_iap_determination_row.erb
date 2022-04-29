@@ -1,10 +1,11 @@
+<% ia_eligible = applicant.product_eligibility_determination.is_ia_eligible %>
 <tr>
     <td><%= determination.primary_hbx_id %></td>
     <td><%= link_to determination.application_identifier, determination %></td>
     <td><%= determination.age_of_applicant(applicant.applicant_reference.person_hbx_id) %></td>
     <td><%= applicant.product_eligibility_determination.is_uqhp_eligible %></td>
-    <td><%= applicant.product_eligibility_determination.is_ia_eligible %></td>
-    <td><%= tax_household.max_aptc %></td>
+    <td><%= ia_eligible %></td>
+    <td><%= tax_household.max_aptc if ia_eligible %></td>
     <td><%= applicant.product_eligibility_determination.csr %></td>
     <td><%= applicant.product_eligibility_determination.is_magi_medicaid %></td>
     <td><%= applicant.product_eligibility_determination.is_non_magi_medicaid_eligible %></td>
