@@ -83,28 +83,28 @@
     <input type="checkbox" id="chck1" checked>
     <label class="accordion_panel-label" for="chck1"><h3>Application Request Payload (from Enroll)</h3></label>
     <div class="accordion_panel-content">
-      <%= raw(ap(@application_request_payload)) %>
+      <%= raw(ap(@application_request_payload, index: false)) %>
     </div>
   </div>
   <div class="accordion_panel">
     <input type="checkbox" id="chck2" checked>
     <label class="accordion_panel-label" for="chck2"><h3>Medicaid Request Payload (to MitC)</h3></label>
     <div class="accordion_panel-content">
-      <%= raw(ap(@medicaid_request_payload)) %>
+      <%= raw(ap(@medicaid_request_payload, index: false)) %>
     </div>
   </div>
   <div class="accordion_panel">
     <input type="checkbox" id="chck3" checked>
     <label class="accordion_panel-label" for="chck3"><h3>Medicaid Response Payload (from MitC)</h3></label>
     <div class="accordion_panel-content">
-      <%= raw(ap(@medicaid_response_payload)) %>
+      <%= raw(ap(@medicaid_response_payload, index: false)) %>
     </div>
   </div>
   <div class="accordion_panel">
     <input type="checkbox" id="chck4" checked>
     <label class="accordion_panel-label" for="chck4"><h3>Application Response Payload (to Enroll)</h3></label>
     <div class="accordion_panel-content">
-      <%= raw(ap(@application_response_payload)) %>
+      <%= raw(ap(@application_response_payload, index: false)) %>
     </div>
   </div>
 </div>
@@ -113,13 +113,13 @@
 <% if @application.aptc_households && @application.aptc_households.any? %>
 
 <% @application.aptc_households.each do |household| %>
-  <%= raw(ap(household.attributes)) %>
+  <%= raw(ap(household.attributes, index: false)) %>
 <% end %>
 
 <% end %>
 <hr>
 <% if @application.other_factors %>
 <h2>Other Factors</h2>
-  <%= raw(ap(@application.other_factors)) if @application.other_factors  %>
+  <%= raw(ap(@application.other_factors, index: false)) if @application.other_factors  %>
 <% end %>
 <%= link_to "Determinations Report", medicaid_application_check_reports_path, class: 'btn btn-primary' %>
