@@ -7,7 +7,7 @@
     <td><%= ia_eligible %></td>
     <td><%= tax_household.max_aptc if ia_eligible %></td>
     <td><%= applicant.product_eligibility_determination.csr %></td>
-    <td><%= applicant.product_eligibility_determination.is_magi_medicaid %></td>
+    <td><%= applicant.product_eligibility_determination.is_magi_medicaid || applicant.product_eligibility_determination.is_medicaid_chip_eligible %></td>
     <td><%= applicant.product_eligibility_determination.is_non_magi_medicaid_eligible %></td>
     <td><%= applicant.product_eligibility_determination.is_totally_ineligible %></td>
     <td><%= determination.application_response_entity&.submitted_at %></td>
