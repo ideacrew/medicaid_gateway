@@ -25,3 +25,7 @@ registry:
         is_enabled: false
       - key: :additional_ineligible_types
         is_enabled: false
+      - key: :transfer_payload_type_atp
+        is_enabled: <%= ENV["TRANSFER_PAYLOAD_TYPE_ATP"] || true %>
+      - key: :transfer_payload_type_ios
+        is_enabled: <%= ENV["TRANSFER_PAYLOAD_TYPE_IOS"] || false %>
