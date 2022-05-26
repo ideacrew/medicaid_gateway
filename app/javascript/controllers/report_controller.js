@@ -31,8 +31,46 @@ export default class extends Controller {
     const startDate = this.startDateTarget.value,
           endDate = this.endDateTarget.value,
           sessionName = event.target.dataset.session
-    window.history.replaceState(null, null, window.location.pathname)
-    this.stimulate('Report#change_dates', sessionName, startDate, endDate)
+
+    // window.history.pushState(null, null, window.location.pathname)
+
+    let url = new URL(window.location.href);
+    if (startDate){
+      url.searchParams.set('start_on', startDate);
+      }
+    if (endDate){
+      url.searchParams.set('end_on', endDate);
+      }
+      
+      url.searchParams.set('page', 1);
+
+      window.location.href = url;
+
+      const change_dates_url = "/reports/change_dates"
+      const data = {start_date: startDate, end_date: endDate, session_name: sessionName}
+      const csrf_token = document.head.querySelector(`meta[name="csrf-token"]`).getAttribute("content")
+      console.log(change_dates_url)
+      console.log(JSON.stringify(data))
+      fetch(change_dates_url, {
+        method: 'PUT',
+        credentials: "include",
+        headers: {
+                'Content-Type': 'application/json',
+                "X-CSRF-Token": csrf_token
+         },
+         body: JSON.stringify(data),
+  }).then(data => {
+    console.log('Success:', data);
+  })
+  
+  // .then(response => response.text())
+  
+//   .then(function(response) {
+//     if (response.status != 204) {
+//         event.target.checked = !event.target.checked 
+//     }
+// })
+    // this.stimulate('Report#change_dates', sessionName, startDate, endDate)
   }
 
   app_search(event) {
