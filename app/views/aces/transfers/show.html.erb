@@ -16,17 +16,17 @@
 
 <% unless @response_payload.blank? %>
 <h2>Response Payload:</h2>
-<%= raw(ap(@response_payload, index: false)) %>
+<%= raw(ap(@response_payload)) %>
 <% end %>
 
 <% unless @callback_payload.blank? %>
 <h2>Callback Payload:</h2>
-<%= raw(ap(@callback_payload, index: false)) %>
+<%= raw(ap(@callback_payload)) %>
 <% end %>
 
 <% unless @outbound_payload.blank? %>
 <h2>Payload from Enroll:</h2>
-<%= raw(ap(@outbound_payload, index: false)) %>
+<%= raw(ap(@outbound_payload)) %>
 <% end %>
 
 <% unless @transfer.xml_payload.blank? %>
