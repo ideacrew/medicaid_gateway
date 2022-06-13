@@ -104,9 +104,13 @@ module Eligibilities
       def compute_annual_amount(evidence)
         evidence_end_date = calculate_end_date(evidence)
         evidence_start_date = calculate_start_date(evidence)
+        year_difference = evidence_end_date.year - evidence_start_date.year
+        days_in_start_year = Date.gregorian_leap?(evidence_start_date.year) ? 366 : 365
+        start_day_of_year = evidence_start_date.yday
+        end_day_of_year = evidence_end_date.yday + (year_difference * days_in_start_year)
         evidence_per_day = calculate_amount_per_day(evidence)
 
-        ((evidence_end_date.yday - evidence_start_date.yday + 1) * evidence_per_day).round(2)
+        ((end_day_of_year - start_day_of_year + 1) * evidence_per_day).round(2)
       end
 
       # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
