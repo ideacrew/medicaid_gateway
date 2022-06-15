@@ -1,4 +1,4 @@
-name: Docs and RSpec
+name: Quality Workbench
 on: push
 
 jobs:
