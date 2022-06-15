@@ -1,4 +1,4 @@
-FROM ruby:2.7.2 AS medicaid_gateway
+FROM ruby:2.7.6 AS medicaid_gateway
 
 LABEL author="IdeaCrew"
 

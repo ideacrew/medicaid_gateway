@@ -2,7 +2,7 @@
 ### app/rails config ###
 ########################
 
-FROM ruby:2.7.2 AS app
+FROM ruby:2.7.6 AS app
 
 LABEL author="IdeaCrew"
 
