@@ -3,7 +3,7 @@
 ############################################
 
 # Taken from .ruby-version
-ARG RUBY_VERSION=2.7.2
+ARG RUBY_VERSION=2.7.6
 FROM ruby:$RUBY_VERSION-slim-buster as base
 LABEL author="IdeaCrew"
 
@@ -12,7 +12,7 @@ ENV USERNAME=medicaid_gateway
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Taken from Gemfile.lock
-ARG BUNDLER_VERSION=2.2.14
+ARG BUNDLER_VERSION=2.3.16
 
 # Must be set as ENV variable to overrride the default
 ENV BUNDLER_VERSION=$BUNDLER_VERSION
