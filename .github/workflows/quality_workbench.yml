@@ -1,6 +1,10 @@
 name: Quality Workbench
 on: push
 
+concurrency:
+  group: qb-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   rubocop:
     runs-on: ubuntu-latest
