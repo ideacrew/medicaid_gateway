@@ -46,8 +46,6 @@ jobs:
           java-version: "11"
           distribution: "adopt"
       - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7.2
       - name: Cache Gems
         uses: actions/cache@v2
         with:
