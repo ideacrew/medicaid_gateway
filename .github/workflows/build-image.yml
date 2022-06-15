@@ -85,12 +85,12 @@ jobs:
         run: git show --quiet HEAD > release.txt
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
         with:
           install: true
 
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
           # Key is named differently to avoid collision
@@ -177,7 +177,7 @@ jobs:
     steps:
       - name: Post to a Slack channel
         id: slack
-        uses: slackapi/slack-github-action@v1.16.0
+        uses: slackapi/slack-github-action@v1
         with:
           channel-id: "docker-images-${{ needs.prep.outputs.repositoryName }}"
           slack-message: "New image pushed: ${{ needs.prep.outputs.taggedImage }}-${{ matrix.client }} built from <https://github.com/ideacrew/${{ needs.prep.outputs.repositoryName }}/commit/${{ needs.prep.outputs.shortSha }}|${{ needs.prep.outputs.shortSha }}> on `${{ needs.prep.outputs.branchName }}`"
