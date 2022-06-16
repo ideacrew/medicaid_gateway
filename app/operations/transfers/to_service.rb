@@ -113,7 +113,7 @@ module Transfers
         status = xml.xpath('//tns:ResponseDescriptionText', 'tns' => 'http://hix.cms.gov/0.1/hix-core')
         status_text = status.any? ? status.last.text : "N/A"
         payload = status_text == "Success" ? "" : @transfer.outbound_payload
-        failure = response[:status] == 200 ? nil : "Response failure not a #{response[:status]}"
+        failure = response[:status] == 200 ? nil : "Response has a failure with status #{response[:status]}"
         @transfer.update!(response_payload: response_json, callback_status: status_text, outbound_payload: payload, failure: failure)
       else
         @transfer.update!(response_payload: response_json, callback_status: status_text, failure: nil)
