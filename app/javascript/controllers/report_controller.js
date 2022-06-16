@@ -31,8 +31,11 @@ export default class extends Controller {
     const startDate = this.startDateTarget.value,
           endDate = this.endDateTarget.value,
           sessionName = event.target.dataset.session
+    const change_dates_url = "/reports/change_dates"
+    const data = {start_date: startDate, end_date: endDate, session_name: sessionName}
+    const csrf_token = document.head.querySelector(`meta[name="csrf-token"]`).getAttribute("content")
     let url = new URL(window.location.href);
-  
+
     if (startDate){
       url.searchParams.set('start_on', startDate);
       }
@@ -40,11 +43,6 @@ export default class extends Controller {
       url.searchParams.set('end_on', endDate);
       }
 
-      const change_dates_url = "/reports/change_dates"
-      const data = {start_date: startDate, end_date: endDate, session_name: sessionName}
-      const csrf_token = document.head.querySelector(`meta[name="csrf-token"]`).getAttribute("content")
-      console.log(change_dates_url)
-      console.log(JSON.stringify(data))
       fetch(change_dates_url, {
         method: 'PUT',
         credentials: "include",
@@ -54,7 +52,6 @@ export default class extends Controller {
          },
          body: JSON.stringify(data),
       }).then(data => {
-        console.log('Success:', data);
         window.location.href = window.location.href;
       })
   }

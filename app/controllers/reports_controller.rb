@@ -4,8 +4,8 @@
 class ReportsController < ApplicationController
 
   def events
-    @start_on = start_on || session_date(session[:start]) || Date.today
-    @end_on = end_on || session_date(session[:end]) || Date.today
+    @start_on = session_date(session[:start]) || Date.today
+    @end_on = session_date(session[:end]) || Date.today
     events = applications + transfers + inbound_transfers + checks
     events.map!(&:to_event).sort_by! { |event| event[:created_at] }.reverse!
     @events_count = events.count
@@ -39,8 +39,8 @@ class ReportsController < ApplicationController
 
   def account_transfers
     authorize :user, :transfers_sent?
-    @start_on = start_on || session_date(session[:atp_start]) || Date.today
-    @end_on = end_on || session_date(session[:atp_end]) || Date.today
+    @start_on = session_date(session[:atp_start]) || Date.today
+    @end_on = session_date(session[:atp_end]) || Date.today
     @transfers = transfers.order(updated_at: :desc).page params[:page]
     @success_count = transfers.select(&:successful?).count
     @fail_count = transfers.count - @success_count
@@ -48,8 +48,8 @@ class ReportsController < ApplicationController
 
   def account_transfers_to_enroll
     authorize :user, :transfers_received?
-    @start_on = start_on || session_date(session[:inbound_start]) || Date.today
-    @end_on = end_on || session_date(session[:inbound_end]) || Date.today
+    @start_on = session_date(session[:inbound_start]) || Date.today
+    @end_on = session_date(session[:inbound_end]) || Date.today
     @transfers = inbound_transfers.order(updated_at: :desc).page params[:page]
     @success_count = inbound_transfers.select(&:successful?).count
     @fail_count = inbound_transfers.count - @success_count
@@ -57,8 +57,8 @@ class ReportsController < ApplicationController
 
   def mec_checks
     authorize :user
-    @start_on = start_on || session_date(session[:mc_sent_start]) || Date.today
-    @end_on = end_on || session_date(session[:mc_sent_end]) || Date.today
+    @start_on = session_date(session[:mc_sent_start]) || Date.today
+    @end_on = session_date(session[:mc_sent_end]) || Date.today
     @checks = checks.order(updated_at: :desc).page params[:page]
     @success_count = checks.select(&:successful?).count
     @fail_count = checks.count - @success_count
@@ -66,8 +66,8 @@ class ReportsController < ApplicationController
 
   def transfer_summary
     authorize :user
-    @start_on = start_on || session_date(session[:ts_start]) || Date.today
-    @end_on = end_on || session_date(session[:ts_end]) || Date.today
+    @start_on = session_date(session[:ts_start]) || Date.today
+    @end_on = session_date(session[:ts_end]) || Date.today
     @at_sent_total = transfers.count
     @at_sent_successful = transfers.where(failure: nil).count
     @at_sent_failure = @at_sent_total - @at_sent_successful
@@ -79,8 +79,8 @@ class ReportsController < ApplicationController
   end
 
   def update_transfer_requested # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-    @start_on = start_on || session_date(session[:inbound_start]) || Date.today
-    @end_on = end_on || session_date(session[:inbound_end]) || Date.today
+    @start_on = session_date(session[:inbound_start]) || Date.today
+    @end_on = session_date(session[:inbound_end]) || Date.today
     transfers = inbound_transfers.select(&:waiting_to_transfer?)
     external_ids = transfers&.map(&:external_id)&.uniq
     external_ids&.map do |external_id|
@@ -96,8 +96,8 @@ class ReportsController < ApplicationController
   end
 
   def resubmit_to_service
-    @start_on = start_on || session_date(session[:inbound_start]) || Date.today
-    @end_on = end_on || session_date(session[:inbound_end]) || Date.today
+    @start_on = session_date(session[:inbound_start]) || Date.today
+    @end_on = session_date(session[:inbound_end]) || Date.today
     transfer_id = params[:id]
     transfer = Aces::Transfer.find(transfer_id)
     payload = transfer.outbound_payload
@@ -111,8 +111,8 @@ class ReportsController < ApplicationController
   end
 
   def resubmit_to_enroll
-    @start_on = start_on || session_date(session[:inbound_start]) || Date.today
-    @end_on = end_on || session_date(session[:inbound_end]) || Date.today
+    @start_on = session_date(session[:inbound_start]) || Date.today
+    @end_on = session_date(session[:inbound_end]) || Date.today
     transfer_id = params[:id]
     inbound_transfer = Aces::InboundTransfer.find(transfer_id)
     payload = inbound_transfer.payload
@@ -157,14 +157,6 @@ class ReportsController < ApplicationController
     start_on = params.key?(:start_on) ? Date.strptime(params.fetch(:start_on), "%m/%d/%Y") : Time.now.utc
     end_on = params.key?(:end_on) ? Date.strptime(params.fetch(:end_on), "%m/%d/%Y") : Time.now.utc
     start_on.beginning_of_day..end_on.end_of_day
-  end
-
-  def start_on
-    params.fetch(:start_on).to_date if params.key?(:start_on)
-  end
-
-  def end_on
-    params.fetch(:end_on).to_date if params.key?(:end_on)
   end
 
   def range
