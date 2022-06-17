@@ -93,11 +93,12 @@ module Eligibilities
         end
       end
 
+      # rubocop:disable Metrics/CyclomaticComplexity
       def member_eligible_for_aptc_csr?(applicant)
         ped = find_matching_ped(applicant.person_hbx_id)
 
         applicant.is_applying_coverage &&
-          tax_filer_is_state_resident? &&
+          (state_resident?(applicant) || tax_filer_is_state_resident?) &&
           !applicant.incarcerated? &&
           applicant.lawfully_present_in_us? &&
           tax_filing?(applicant) &&
@@ -108,6 +109,7 @@ module Eligibilities
           all_ichra_affordable?(applicant) &&
           all_qsehra_affordable?(applicant)
       end
+      # rubocop:enable Metrics/CyclomaticComplexity
 
       def all_esi_affordable?(applicant)
         return true unless applicant.has_eligible_health_coverage
