@@ -32,24 +32,6 @@ RSpec.describe "Reports", type: :view, dbclean: :after_each do
 
       expect(page).to_not have_content("100745")
     end
-
-    it "accepts and uses date params" do
-      old_transfer = create :transfer, created_at: 1.day.ago, updated_at: 1.day.ago
-      start_on = 2.days.ago.strftime('%m/%d/%Y')
-      visit "/reports/events?start_on=#{start_on}"
-
-      expect(page).to have_content(old_transfer.application_identifier)
-    end
-
-    # TODO: test date input (Stimulus Reflex)
-    # it "user input changes date range" do
-    #   old_transfer = create :transfer, created_at: 1.day.ago, updated_at: 1.day.ago
-    #   visit '/reports/events'
-    #   expect(page).not_to have_content(old_transfer.application_identifier)
-    #   start_on = 3.days.ago.strftime('%Y-%m-%d')
-    #   fill_in "input#start_on", with: start_on
-    #   expect(page).to have_content(old_transfer.application_identifier)
-    # end
   end
 
   describe "GET /reports/medicaid_application_check" do
@@ -65,14 +47,6 @@ RSpec.describe "Reports", type: :view, dbclean: :after_each do
       visit '/reports/medicaid_application_check'
       expect(page).to_not have_css('td', text: old_application.application_identifier)
     end
-
-    it "accepts and uses date params"  do
-      old_application = create :application, created_at: 1.day.ago, updated_at: 1.day.ago
-      start_on = 2.days.ago.strftime('%m/%d/%Y')
-      visit "/reports/medicaid_application_check?start_on=#{start_on}"
-      expect(page).to have_content(old_application.application_identifier)
-    end
-
   end
 
   describe "GET /reports/account_transfers" do
@@ -88,14 +62,6 @@ RSpec.describe "Reports", type: :view, dbclean: :after_each do
       visit '/reports/account_transfers'
 
       expect(page).to_not have_content("100745")
-    end
-
-    it "accepts and uses date params" do
-      old_transfer = create :transfer, created_at: 1.day.ago, updated_at: 1.day.ago
-      start_on = 2.days.ago.strftime('%m/%d/%Y')
-      visit "/reports/account_transfers?start_on=#{start_on}"
-
-      expect(page).to have_content(old_transfer.application_identifier)
     end
   end
 
@@ -113,14 +79,6 @@ RSpec.describe "Reports", type: :view, dbclean: :after_each do
 
       expect(page).to_not have_content("100745")
     end
-
-    it "accepts and uses date params" do
-      old_transfer = create :inbound_transfer, created_at: 1.day.ago, updated_at: 1.day.ago, application_identifier: 'shjdfgdfhsjfg'
-      start_on = 2.days.ago.strftime('%m/%d/%Y')
-      visit "/reports/account_transfers_to_enroll?start_on=#{start_on}"
-
-      expect(page).to have_content(old_transfer.application_identifier)
-    end
   end
 
   describe "GET /reports/mec_checks" do
@@ -135,14 +93,6 @@ RSpec.describe "Reports", type: :view, dbclean: :after_each do
       visit '/reports/account_transfers'
 
       expect(page).to_not have_content("100745")
-    end
-
-    it "accepts and uses date params" do
-      old_mc = create :mec_check, created_at: 1.day.ago, updated_at: 1.day.ago
-      start_on = 2.days.ago.strftime('%m/%d/%Y')
-      visit "/reports/mec_checks?start_on=#{start_on}"
-
-      expect(page).to have_content(old_mc.application_identifier)
     end
 
     it "displays failure if not nil" do
