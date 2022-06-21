@@ -30,7 +30,7 @@ root@cc485144f966:/# rabbitmqctl add_vhost event_source
 root@cc485144f966:/# rabbitmqctl set_permissions -p event_source guest ".*" ".*" ".*"
 ```
 
-- Ruby version: 2.7.2
+- Ruby version: 2.7.6
 - Rails version: 6.1.3.2
 - Tests: RSpec
 - Database: MongoDB

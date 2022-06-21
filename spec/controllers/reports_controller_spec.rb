@@ -240,4 +240,22 @@ RSpec.describe ReportsController, type: :controller, dbclean: :after_each do
       end
     end
   end
+
+  describe 'PUT change_dates' do
+    let(:user) { FactoryBot.create(:user, :with_hbx_staff_role) }
+    let(:report_params) { { start_date: Date.yesterday.to_s, end_date: Date.today.to_s, session_name: '' } }
+
+    before :each do
+      sign_in user
+      put :change_dates, params: { report: report_params }
+    end
+
+    it 'should store the start date in the session' do
+      expect(session['start']).to eq Date.parse(report_params[:start_date])
+    end
+
+    it 'should store the end date in the session' do
+      expect(session['end']).to eq Date.parse(report_params[:end_date])
+    end
+  end
 end

@@ -37,6 +37,7 @@ Rails.application.routes.draw do
       put 'resubmit_to_service'
       put 'resubmit_to_enroll'
       get 'daily_iap_determinations'
+      put 'change_dates'
     end
   end
 end

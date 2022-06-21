@@ -4,8 +4,8 @@
 class ReportsController < ApplicationController
 
   def events
-    @start_on = start_on || session_date(session[:start]) || Date.today
-    @end_on = end_on || session_date(session[:end]) || Date.today
+    @start_on = session_date(session[:start]) || Date.today
+    @end_on = session_date(session[:end]) || Date.today
     events = applications + transfers + inbound_transfers + checks
     events.map!(&:to_event).sort_by! { |event| event[:created_at] }.reverse!
     @events_count = events.count
@@ -22,8 +22,8 @@ class ReportsController < ApplicationController
 
   def medicaid_application_check
     authorize :user, :determinations?
-    @start_on = start_on || session_date(session[:ma_start]) || Date.today
-    @end_on = end_on || session_date(session[:ma_end]) || Date.today
+    @start_on = session_date(session[:ma_start]) || Date.today
+    @end_on = session_date(session[:ma_end]) || Date.today
     if params.key?(:app)
       application_id = params.fetch(:app)
       @app = application_id unless application_id.blank?
@@ -39,8 +39,8 @@ class ReportsController < ApplicationController
 
   def account_transfers
     authorize :user, :transfers_sent?
-    @start_on = start_on || session_date(session[:atp_start]) || Date.today
-    @end_on = end_on || session_date(session[:atp_end]) || Date.today
+    @start_on = session_date(session[:atp_start]) || Date.today
+    @end_on = session_date(session[:atp_end]) || Date.today
     @transfers = transfers.order(updated_at: :desc).page params[:page]
     @success_count = transfers.select(&:successful?).count
     @fail_count = transfers.count - @success_count
@@ -48,8 +48,8 @@ class ReportsController < ApplicationController
 
   def account_transfers_to_enroll
     authorize :user, :transfers_received?
-    @start_on = start_on || session_date(session[:inbound_start]) || Date.today
-    @end_on = end_on || session_date(session[:inbound_end]) || Date.today
+    @start_on = session_date(session[:inbound_start]) || Date.today
+    @end_on = session_date(session[:inbound_end]) || Date.today
     @transfers = inbound_transfers.order(updated_at: :desc).page params[:page]
     @success_count = inbound_transfers.select(&:successful?).count
     @fail_count = inbound_transfers.count - @success_count
@@ -57,8 +57,8 @@ class ReportsController < ApplicationController
 
   def mec_checks
     authorize :user
-    @start_on = start_on || session_date(session[:mc_sent_start]) || Date.today
-    @end_on = end_on || session_date(session[:mc_sent_end]) || Date.today
+    @start_on = session_date(session[:mc_sent_start]) || Date.today
+    @end_on = session_date(session[:mc_sent_end]) || Date.today
     @checks = checks.order(updated_at: :desc).page params[:page]
     @success_count = checks.select(&:successful?).count
     @fail_count = checks.count - @success_count
@@ -66,8 +66,8 @@ class ReportsController < ApplicationController
 
   def transfer_summary
     authorize :user
-    @start_on = start_on || session_date(session[:ts_start]) || Date.today
-    @end_on = end_on || session_date(session[:ts_end]) || Date.today
+    @start_on = session_date(session[:ts_start]) || Date.today
+    @end_on = session_date(session[:ts_end]) || Date.today
     @at_sent_total = transfers.count
     @at_sent_successful = transfers.where(failure: nil).count
     @at_sent_failure = @at_sent_total - @at_sent_successful
@@ -79,8 +79,8 @@ class ReportsController < ApplicationController
   end
 
   def update_transfer_requested # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-    @start_on = start_on || session_date(session[:inbound_start]) || Date.today
-    @end_on = end_on || session_date(session[:inbound_end]) || Date.today
+    @start_on = session_date(session[:inbound_start]) || Date.today
+    @end_on = session_date(session[:inbound_end]) || Date.today
     transfers = inbound_transfers.select(&:waiting_to_transfer?)
     external_ids = transfers&.map(&:external_id)&.uniq
     external_ids&.map do |external_id|
@@ -96,8 +96,8 @@ class ReportsController < ApplicationController
   end
 
   def resubmit_to_service
-    @start_on = start_on || session_date(session[:inbound_start]) || Date.today
-    @end_on = end_on || session_date(session[:inbound_end]) || Date.today
+    @start_on = session_date(session[:inbound_start]) || Date.today
+    @end_on = session_date(session[:inbound_end]) || Date.today
     transfer_id = params[:id]
     transfer = Aces::Transfer.find(transfer_id)
     payload = transfer.outbound_payload
@@ -111,8 +111,8 @@ class ReportsController < ApplicationController
   end
 
   def resubmit_to_enroll
-    @start_on = start_on || session_date(session[:inbound_start]) || Date.today
-    @end_on = end_on || session_date(session[:inbound_end]) || Date.today
+    @start_on = session_date(session[:inbound_start]) || Date.today
+    @end_on = session_date(session[:inbound_end]) || Date.today
     transfer_id = params[:id]
     inbound_transfer = Aces::InboundTransfer.find(transfer_id)
     payload = inbound_transfer.payload
@@ -143,20 +143,20 @@ class ReportsController < ApplicationController
     @applications = Kaminari.paginate_array(sorted_applications).page params[:page]
   end
 
+  def change_dates
+    session_name = change_date_params[:session_name]
+    start_date = change_date_params[:start_date]
+    end_date = change_date_params[:end_date]
+    session["#{session_name}start"] = Date.parse(start_date)
+    session["#{session_name}end"] = Date.parse(end_date)
+  end
+
   private
 
   def range_from_params
     start_on = params.key?(:start_on) ? Date.strptime(params.fetch(:start_on), "%m/%d/%Y") : Time.now.utc
     end_on = params.key?(:end_on) ? Date.strptime(params.fetch(:end_on), "%m/%d/%Y") : Time.now.utc
     start_on.beginning_of_day..end_on.end_of_day
-  end
-
-  def start_on
-    Date.strptime(params.fetch(:start_on), "%m/%d/%Y") if params.key?(:start_on)
-  end
-
-  def end_on
-    Date.strptime(params.fetch(:end_on), "%m/%d/%Y") if params.key?(:end_on)
   end
 
   def range
@@ -190,5 +190,9 @@ class ReportsController < ApplicationController
     return unless date
     return date if date.is_a? Date
     Date.parse(date, "%Y-%m-%d")
+  end
+
+  def change_date_params
+    params.require(:report).permit(:start_date, :end_date, :session_name)
   end
 end
