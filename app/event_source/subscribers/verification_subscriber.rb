@@ -6,7 +6,7 @@ module Subscribers
     include ::EventSource::Subscriber[amqp: 'enroll.fdsh.verifications']
 
     subscribe(:on_enroll_fdsh_verifications) do |delivery_info, metadata, response|
-      to_mec_check = metadata[:headers]["local_mec_check"]
+      to_mec_check = metadata[:headers]["key"] == "local_mec_check"
       result = Aces::InitiateMecChecks.new.call(response) if to_mec_check
 
       if !to_mec_check || result.success?
