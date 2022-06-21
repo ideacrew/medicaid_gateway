@@ -64,3 +64,6 @@ event_source.*
 *.xlsx
 *.doc
 *.docx
+
+# Ignore local .env file
+.env
