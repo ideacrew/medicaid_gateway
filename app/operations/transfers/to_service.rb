@@ -108,15 +108,15 @@ module Transfers
 
     def update_transfer(response)
       response_json = response.to_json
+      response_failure = response[:status] == 200 ? nil : "Response has a failure with status #{response[:status]}"
       if @service == "aces"
         xml = Nokogiri::XML(response.to_hash[:body])
         status = xml.xpath('//tns:ResponseDescriptionText', 'tns' => 'http://hix.cms.gov/0.1/hix-core')
         status_text = status.any? ? status.last.text : "N/A"
         payload = status_text == "Success" ? "" : @transfer.outbound_payload
-        failure = response[:status] == 200 ? nil : "Response has a failure with status #{response[:status]}"
-        @transfer.update!(response_payload: response_json, callback_status: status_text, outbound_payload: payload, failure: failure)
+        @transfer.update!(response_payload: response_json, callback_status: status_text, outbound_payload: payload, failure: response_failure)
       else
-        @transfer.update!(response_payload: response_json, callback_status: status_text, failure: nil)
+        @transfer.update!(response_payload: response_json, callback_status: status_text, failure: response_failure)
       end
       Success("Successfully transferred in account")
     end
