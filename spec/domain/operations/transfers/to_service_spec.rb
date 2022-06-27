@@ -78,7 +78,7 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
 
     end
 
-    context 'with valid application transfer to aces and 504 response' do
+    context 'with valid application transfer response not as 200' do
       let(:failure_response) do
         {
           :status => 504,
@@ -92,17 +92,37 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
       before do
         allow(MedicaidGatewayRegistry).to receive(:[]).with(:aces_connection).and_return(feature_ns)
         allow(MedicaidGatewayRegistry).to receive(:[]).with(:transfer_service).and_return(service_ns)
-        allow(service_ns).to receive(:item).and_return("aces")
         allow(transfer).to receive(:initiate_transfer).and_return(event)
-        @transfer_count = Aces::Transfer.all.count
-        @result = transfer.call(aces_hash)
-        @transfer = Aces::Transfer.last
       end
 
-      it "should create a new transfer with failure message" do
-        expect(Aces::Transfer.all.count).to eq @transfer_count + 1
-        expect(Aces::Transfer.all.last.failure).to eq "Response has a failure with status 504"
-        expect(Aces::Transfer.all.last.response_payload).not_to eq nil
+      context 'ACES Service' do
+        before do
+          allow(service_ns).to receive(:item).and_return("aces")
+          @transfer_count = Aces::Transfer.all.count
+          transfer.call(aces_hash)
+          @transfer = Aces::Transfer.last
+        end
+
+        it "should create a new transfer with failure message" do
+          expect(Aces::Transfer.all.count).to eq @transfer_count + 1
+          expect(@transfer.failure).to eq "Response has a failure with status 504"
+          expect(@transfer.response_payload).not_to eq nil
+        end
+      end
+
+      context 'Non-ACEs Services' do
+        before do
+          allow(service_ns).to receive(:item).and_return("curam")
+          @transfer_count = Aces::Transfer.all.count
+          transfer.call(aces_hash)
+          @transfer = Aces::Transfer.last
+        end
+
+        it "should create a new transfer with failure message" do
+          expect(Aces::Transfer.all.count).to eq @transfer_count + 1
+          expect(@transfer.failure).to eq "Response has a failure with status 504"
+          expect(@transfer.response_payload).not_to eq nil
+        end
       end
     end
 
