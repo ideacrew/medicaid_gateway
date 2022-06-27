@@ -102,7 +102,7 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
           transfer.call(aces_hash)
           @transfer = Aces::Transfer.last
         end
-  
+
         it "should create a new transfer with failure message" do
           expect(Aces::Transfer.all.count).to eq @transfer_count + 1
           expect(@transfer.failure).to eq "Response has a failure with status 504"
@@ -117,7 +117,7 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
           transfer.call(aces_hash)
           @transfer = Aces::Transfer.last
         end
-  
+
         it "should create a new transfer with failure message" do
           expect(Aces::Transfer.all.count).to eq @transfer_count + 1
           expect(@transfer.failure).to eq "Response has a failure with status 504"
