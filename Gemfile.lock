@@ -207,6 +207,10 @@ GEM
       responders
       warden (~> 1.2.3)
     diff-lcs (1.4.4)
+    dotenv (2.7.6)
+    dotenv-rails (2.7.6)
+      dotenv (= 2.7.6)
+      railties (>= 3.2)
     dry-configurable (0.9.0)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.4, >= 0.4.7)
@@ -576,6 +580,7 @@ DEPENDENCIES
   capybara (~> 3.12)
   database_cleaner (~> 1.7)
   devise
+  dotenv-rails
   event_source!
   eye (= 0.10.0)
   factory_bot_rails (~> 6.2)
