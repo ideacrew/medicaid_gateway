@@ -11,6 +11,7 @@ RSpec.describe "Daiy Determinations Report", type: :view, dbclean: :after_each d
 
   let(:user) { create(:user, :with_hbx_staff_role) }
   let(:application) { FactoryBot.create(:application)}
+
   before :each do
     login_as(user)
   end

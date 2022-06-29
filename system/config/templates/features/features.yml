@@ -5,38 +5,26 @@ registry:
     features:
       - key: :state_abbreviation
         is_enabled: true
-        item: "DC"
+        item: "ME"
       - key: :transfer_to_enroll
-        is_enabled: false
+        is_enabled: true
       - key: :transfer_service
         is_enabled: true
-        item: "curam"
+        item: "aces"
       - key: :mitc_determination
         is_enabled: true
       - key: :mec_check
-        is_enabled: false
+        is_enabled: true
       - key: :resubmit_to_enroll
         is_enabled: false
       - key: :bulk_transfer_to_enroll
-        is_enabled: false
+        is_enabled: true
       - key: :fpl_overrides
         is_enabled: false
-        item: [
-                {
-                  medicaid_year: 2021,
-                  annual_poverty_guideline: BigDecimal(12_760.to_s),
-                  annual_per_person_amount: BigDecimal(4_480.to_s)
-                },
-                {
-                  medicaid_year: 2022,
-                  annual_poverty_guideline: BigDecimal(12_880.to_s),
-                  annual_per_person_amount: BigDecimal(4_540.to_s)
-                }
-              ]
       - key: :daily_determination_report
-        is_enabled: true
+        is_enabled: false
       - key: :additional_ineligible_types
-        is_enabled: true
+        is_enabled: false
       - key: :transfer_payload_type_atp
         is_enabled: <%= ENV["TRANSFER_PAYLOAD_TYPE_ATP"] || true %>
       - key: :transfer_payload_type_ios
