@@ -3,13 +3,13 @@
     <td><%= determination.primary_hbx_id %></td>
     <td><%= link_to determination.application_identifier, determination %></td>
     <td><%= determination.age_of_applicant(applicant.applicant_reference.person_hbx_id) %></td>
-    <td><%= applicant.product_eligibility_determination.is_uqhp_eligible %></td>
+    <td><%= applicant.product_eligibility_determination.is_uqhp_eligible || false %></td>
     <td><%= ia_eligible %></td>
     <td><%= tax_household.max_aptc if ia_eligible %></td>
     <td><%= applicant.product_eligibility_determination.csr %></td>
     <td><%= applicant.product_eligibility_determination.is_magi_medicaid || applicant.product_eligibility_determination.is_medicaid_chip_eligible %></td>
     <td><%= applicant.product_eligibility_determination.is_non_magi_medicaid_eligible %></td>
-    <td><%= applicant.product_eligibility_determination.is_totally_ineligible %></td>
+    <td><%= applicant.product_eligibility_determination.is_totally_ineligible || false %></td>
     <td><%= determination.application_response_entity&.submitted_at %></td>
     <td><%= determination.application_response_entity&.full_medicaid_determination %></td>  
     <td><%= determination.attestation_for(applicant.applicant_reference.person_hbx_id)[:is_self_attested_blind] %></td>
