@@ -12,11 +12,11 @@ RSpec.describe ReportsController, type: :controller, dbclean: :after_each do
     let(:aces_connection) { double('Aces Connection') }
 
     before :each do
-      allow(::MedicaidGatewayRegistry).to receive(:[]).with(:transfer_service).and_return(double(item: "aces"))
-      allow(::MedicaidGatewayRegistry).to receive(:[]).with(:aces_connection).and_return(aces_connection)
-      allow(aces_connection).to receive(:setting).with(:aces_atp_service_username).and_return(double(item: 'username'))
-      allow(aces_connection).to receive(:setting).with(:aces_atp_service_password).and_return(double(item: 'password'))
-      allow(aces_connection).to receive(:setting).with(:aces_atp_service_uri).and_return(double(item: 'URI'))
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:transfer_payload_type_atp).and_return(true)
+      allow(MedicaidGatewayRegistry[:transfer_service]).to receive(:item).and_return("aces")
+      allow(MedicaidGatewayRegistry[:aces_connection].setting(:aces_atp_service_username)).to receive(:item).and_return('username')
+      allow(MedicaidGatewayRegistry[:aces_connection].setting(:aces_atp_service_password)).to receive(:item).and_return('password')
+      allow(MedicaidGatewayRegistry[:aces_connection].setting(:aces_atp_service_uri)).to receive(:item).and_return('URI')
       allow(Faraday).to receive(:post).and_return({ test: 'test' })
 
       sign_in user
@@ -27,7 +27,7 @@ RSpec.describe ReportsController, type: :controller, dbclean: :after_each do
 
       it "should flash notice message" do
         subject
-        expect(flash[:notice]).to match(/Successfully transferred in account/)
+        expect(flash[:notice]).to match(/Successfully transferred account from Enroll/)
       end
 
       it "should redirect to transfer show page" do
