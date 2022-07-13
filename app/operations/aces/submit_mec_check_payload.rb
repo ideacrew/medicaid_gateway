@@ -19,7 +19,11 @@ module Aces
 
     def read_endpoint_setting
       result = Try do
-        MedicaidGatewayRegistry[:aces_connection].setting(:aces_mec_check_uri).item
+        if MedicaidGatewayRegistry[:transfer_service].item == "aces"
+          MedicaidGatewayRegistry[:aces_connection].setting(:aces_mec_check_uri).item
+        else
+          MedicaidGatewayRegistry[:curam_connection].setting(:curam_mec_check_uri).item
+        end
       end
       return Failure("Failed to find setting: :aces_connection, :aces_mec_check_uri") if result.failure?
       result.nil? ? Failure(":aces_mec_check_uri cannot be nil") : result
