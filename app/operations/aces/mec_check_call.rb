@@ -51,11 +51,19 @@ module Aces
     end
 
     def build_check_request(transfer)
-      Aces::BuildAccountTransferRequest.new.call(transfer)
+      if MedicaidGatewayRegistry[:transfer_service].item == "aces"
+        Aces::BuildAccountTransferRequest.new.call(transfer)
+      else
+        Curam::BuildAccountTransferRequest.new.call(transfer)
+      end
     end
 
     def encode_check(payload)
-      Aces::EncodeAccountTransferRequest.new.call(payload)
+      if MedicaidGatewayRegistry[:transfer_service].item == "aces"
+        Aces::EncodeAccountTransferRequest.new.call(payload)
+      else
+        Curam::EncodeAccountTransferRequest.new.call(payload)
+      end
     end
 
     def submit_check(encoded_check)
