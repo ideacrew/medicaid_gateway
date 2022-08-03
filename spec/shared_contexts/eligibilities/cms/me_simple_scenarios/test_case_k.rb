@@ -29,8 +29,9 @@ RSpec.shared_context 'cms ME simple_scenarios test_case_k', :shared_context => :
         "is_consumer_role" => true,
         "is_resident_role" => false,
         "is_applying_coverage" => true,
-        five_year_bar_applies: false,
-        five_year_bar_met: false,
+        "five_year_bar_applies" => false,
+        "five_year_bar_met" => false,
+        "qualified_non_citizen" => true,
         "is_consent_applicant" => false,
         "vlp_document" => {
           "subject" => "I-766 (Employment Authorization Card)", "alien_number" => "412345678", "i94_number" => nil, "visa_number" => nil, "passport_number" => nil, "sevis_id" => nil, "naturalization_number" => nil, "receipt_number" => nil, "citizenship_number" => nil, "card_number" => "abd1234567890", "country_of_citizenship" => nil, "expiration_date" => "2022-02-18", "issuing_country" => nil
