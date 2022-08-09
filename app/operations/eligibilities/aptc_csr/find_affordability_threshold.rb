@@ -5,7 +5,7 @@ require 'dry/monads/do'
 
 module Eligibilities
   module AptcCsr
-    # This Operation is for finding the correct Affordability Threshold based on the input year
+    # This Operation is for fetching the Affordability Threshold(Required Contribution Percentage) based on the input year.
     class FindAffordabilityThreshold
       include Dry::Monads[:result, :do]
 
@@ -21,7 +21,6 @@ module Eligibilities
       private
 
       def validate_input(year)
-        # TODO: do we want to have a range of years which we support?
         if year.is_a?(Integer)
           Success(year)
         else
@@ -40,7 +39,3 @@ module Eligibilities
     end
   end
 end
-
-# Questions:
-#   1. Do we want to have a range of years which we support?
-#   2. Resource Registry configuration for AffordabilityThresholds
