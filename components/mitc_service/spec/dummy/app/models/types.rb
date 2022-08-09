@@ -99,7 +99,8 @@ module Types
   AffordabilityThresholds = [
     { 2020 => BigDecimal('9.83') },
     { 2021 => BigDecimal('9.83') },
-    { 2022 => BigDecimal('9.83') }
+    { 2022 => BigDecimal('9.83') },
+    { 2023 => BigDecimal('9.12') }
   ].freeze
 
   CsrKind = Types::Coercible::String.enum('0',
