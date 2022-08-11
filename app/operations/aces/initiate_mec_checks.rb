@@ -14,7 +14,7 @@ module Aces
     def call(payload)
       return Failure({ error: "MEC Check feature not enabled." }) unless MedicaidGatewayRegistry[:mec_check].enabled?
       json = JSON.parse(payload)
-      mec_check = yield create_mec_check(json)
+      mec_check = yield create_mec_check(json, payload)
       checks    = yield get_applicant_checks(json)
       _results  = yield update_mec_check(mec_check, checks)
 
@@ -23,14 +23,15 @@ module Aces
 
     protected
 
-    def create_mec_check(json)
+    def create_mec_check(json, payload)
       application = json["hbx_id"] || "n/a"
       family = json["family_reference"]["hbx_id"] || "n/a"
       results = Aces::CreateMecCheck.new.call(
         {
           application_identifier: application,
           family_identifier: family,
-          type: "application"
+          type: "application",
+          request_payload: payload
         }
       )
 
@@ -50,7 +51,7 @@ module Aces
             results[hbx_id] = mc_response.failure
           else
             response = mc_response.value!
-            results[hbx_id] = response[:code_description]
+            results[hbx_id] = response[:code_description] == "Y" ? 'Success' : response[:code_description]
             evidence["request_results"] = [response]
             evidence["aasm_state"] = response[:mec_verification_code] == "Y" ? :outstanding : :attested
           end
@@ -72,7 +73,11 @@ module Aces
 
     def serialize_response(response)
       xml = Nokogiri::XML(response)
-      body = xml.at_xpath("//xml_ns:VerifyNonESIMECResponse", "xml_ns" => "http://gov.hhs.cms.hix.dsh.ee.nonesi_mec.ext")
+      body = if MedicaidGatewayRegistry[:transfer_service].item == "aces"
+               xml.at_xpath("//xml_ns:VerifyNonESIMECResponse", "xml_ns" => "http://gov.hhs.cms.hix.dsh.ee.nonesi_mec.ext")
+             else
+               xml.at_xpath("//xmlns:GetEligibilityResponse", "xmlns" => "http://xmlns.dhcf.dc.gov/dcas/Medicaid/Eligibility/xsd/v1")
+             end
       Success(AcaEntities::Medicaid::MecCheck::Operations::GenerateResult.new.call(body.to_xml))
     rescue StandardError => e
       Failure("Serializing response error => #{e}")

@@ -31,6 +31,13 @@ RSpec.describe ::MecCheckContract, dbclean: :after_each do
         expect(result.to_h).to eq all_params
       end
     end
-  end
 
+    context 'with request payload' do
+      it 'should pass validation' do
+        required_params[:request_payload] = "payload"
+        result = subject.call(all_params)
+        expect(result.to_h).to eq all_params
+      end
+    end
+  end
 end

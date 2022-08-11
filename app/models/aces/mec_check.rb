@@ -17,6 +17,8 @@ module Aces
     # Server response from the service
     field :applicant_responses, type: Hash
 
+    field :request_payload, type: String
+
     # Payload type of person or application
     field :type, type: String
 

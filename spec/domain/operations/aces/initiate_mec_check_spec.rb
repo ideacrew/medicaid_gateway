@@ -45,6 +45,7 @@ describe Aces::InitiateMecCheck, dbclean: :after_each do
   end
 
   let(:feature_ns) { double }
+  let(:feature_service) { double }
   let(:setting) { double(item: "SOME URI") }
 
   context "with MEC Check feature disabled" do
@@ -57,15 +58,18 @@ describe Aces::InitiateMecCheck, dbclean: :after_each do
 
   context "with MEC Check feature enabled" do
     before :each do
+      allow(MedicaidGatewayRegistry).to receive(:[]).with(:transfer_service).and_return(feature_service)
       allow(MedicaidGatewayRegistry).to receive(:[]).with(:aces_connection).and_return(feature_ns)
       allow(MedicaidGatewayRegistry).to receive(:[]).with(:mec_check).and_return(feature_ns)
       allow(feature_ns).to receive(:setting).with(:aces_atp_service_uri).and_return(setting)
+      allow(feature_service).to receive(:item).and_return("aces")
       allow(feature_ns).to receive(:setting).with(:aces_atp_service_username).and_return(setting)
       allow(feature_ns).to receive(:setting).with(:aces_atp_service_password).and_return(setting)
       allow(operation).to receive(:call_mec_check).and_return(event)
       allow(feature_ns).to receive(:enabled?).and_return(true)
       operation.call(payload)
     end
+
     it "there should be a mec check with the family id" do
       mec_check = Aces::MecCheck.first
       expect(mec_check.family_identifier).to eq family_id
@@ -74,6 +78,46 @@ describe Aces::InitiateMecCheck, dbclean: :after_each do
     it "the mec check should have the correct applicant_responses value" do
       mec_check = Aces::MecCheck.first
       expect(mec_check.applicant_responses).to eq expected_response
+    end
+  end
+
+  context 'When transfer service is for curam' do
+    let(:response_body) do
+      "<GetEligibilityResponse xmlns=\"http://xmlns.dhcf.dc.gov/dcas/Medicaid/Eligibility/xsd/v1\"><EligibilityFlag>Y</EligibilityFlag><RespCode>0000</RespCode><FaultMSG/><FaultDesc/></GetEligibilityResponse>"
+    end
+
+    let(:response) do
+      {
+        :body => response_body,
+        :response_headers => {}
+      }
+    end
+
+    let(:event) { Success(response) }
+    let(:expected_response) {{ "d81d92cf869540ed804b21d7b22352c6" => "Success" }}
+
+    context "with MEC Check feature enabled" do
+      before :each do
+        allow(MedicaidGatewayRegistry).to receive(:[]).with(:transfer_service).and_return(feature_service)
+        allow(MedicaidGatewayRegistry).to receive(:[]).with(:curam_connection).and_return(feature_ns)
+        allow(MedicaidGatewayRegistry).to receive(:[]).with(:mec_check).and_return(feature_ns)
+        allow(feature_service).to receive(:item).and_return("curam")
+        allow(feature_ns).to receive(:setting).with(:curam_atp_service_uri).and_return(setting)
+        allow(feature_ns).to receive(:setting).with(:curam_atp_service_username).and_return(setting)
+        allow(feature_ns).to receive(:setting).with(:curam_atp_service_password).and_return(setting)
+        allow(operation).to receive(:call_mec_check).and_return(event)
+        allow(feature_ns).to receive(:enabled?).and_return(true)
+        operation.call(payload)
+      end
+      it "there should be a mec check with the family id" do
+        mec_check = Aces::MecCheck.first
+        expect(mec_check.family_identifier).to eq family_id
+      end
+
+      it "the mec check should have the correct applicant_responses value" do
+        mec_check = Aces::MecCheck.first
+        expect(mec_check.applicant_responses).to eq expected_response
+      end
     end
   end
 end

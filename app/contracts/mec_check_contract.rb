@@ -9,6 +9,7 @@ class MecCheckContract < Dry::Validation::Contract
     required(:application_identifier).filled(:string)
     required(:family_identifier).filled(:string)
     required(:type).filled(:string)
+    optional(:request_payload).filled(:string)
     optional(:applicant_responses).maybe(:hash)
     optional(:failure).maybe(:string)
   end

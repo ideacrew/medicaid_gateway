@@ -30,13 +30,18 @@ module Aces
 
     def generate_xml(payload, ssn)
       payload["person"][:person]["person_demographics"]["ssn"] = ssn
+      payload["request_for"] = MedicaidGatewayRegistry[:transfer_service].item
       transfer_request = ::AcaEntities::Medicaid::MecCheck::Operations::GenerateXml.new.call(payload.to_json)
       transfer_request.success? ? transfer_request : Failure("Generate XML failure: #{transfer_request.failure}")
     end
 
     def validate_xml(seralized_xml)
       document = Nokogiri::XML(seralized_xml)
-      xsd_path = File.open(Rails.root.join("artifacts", "aces", "nonesi_mec.xsd"))
+      xsd_path = if MedicaidGatewayRegistry[:transfer_service].item == "aces"
+                   File.open(Rails.root.join("artifacts", "aces", "nonesi_mec.xsd"))
+                 else
+                   File.open(Rails.root.join("artifacts", "curam", "verify_eligibility.xsd"))
+                 end
       schema_location = File.expand_path(xsd_path)
       schema = Nokogiri::XML::Schema(File.open(schema_location))
       result = schema.validate(document).each_with_object([]) do |error, collect|
@@ -54,6 +59,8 @@ module Aces
       if MedicaidGatewayRegistry[:transfer_service].item == "aces"
         Aces::BuildAccountTransferRequest.new.call(transfer)
       else
+        transfer = transfer.gsub("xmlns:v1=\"http://xmlns.dhcf.dc.gov/dcas/Medicaid/Eligibility/xsd/v1\"", "")
+        transfer = transfer.gsub("xmlns:v11=\"http://xmlns.dc.gov/dcas/common/CommonNative/xsd/V1\"", "")
         Curam::BuildAccountTransferRequest.new.call(transfer)
       end
     end

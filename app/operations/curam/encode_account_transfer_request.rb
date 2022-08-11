@@ -21,7 +21,7 @@ module Curam
 
     def encode_soap_header(xml, request)
       request_header = request.header
-      xml[:soapenv].Header do |header|
+      xml[:soap].Header do |header|
         header[:wsse].Security({
                                  "xmlns:wsse" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
                                  "xmlns:wsu" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
@@ -40,15 +40,17 @@ module Curam
     end
 
     def encode_soap_body(built, request)
-      str = "<\/soapenv:Header>"
+      str = "<\/soap:Header>"
       payload = built.value!
       pos = payload.index(str)
-      Success(payload.insert(pos + str.size, "<soapenv:Body>#{request.raw_body}<\/soapenv:Body>"))
+      Success(payload.insert(pos + str.size, "<soap:Body>#{request.raw_body}<\/soap:Body>"))
     end
 
     def encode_soap_envelope(request)
       builder = Nokogiri::XML::Builder.new do |xml|
-        xml[:soapenv].Envelope({ "xmlns:soapenv" => "http://schemas.xmlsoap.org/soap/envelope/" }) do |envelope|
+        xml[:soap].Envelope({ "xmlns:soap" => "http://www.w3.org/2003/05/soap-envelope",
+                              "xmlns:v1" => "http://xmlns.dhcf.dc.gov/dcas/Medicaid/Eligibility/xsd/v1",
+                              "xmlns:v11" => "http://xmlns.dc.gov/dcas/common/CommonNative/xsd/V1" }) do |envelope|
           encode_soap_header(envelope, request)
         end
       end
