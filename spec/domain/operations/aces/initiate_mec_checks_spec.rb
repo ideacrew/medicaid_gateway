@@ -93,14 +93,6 @@ describe Aces::InitiateMecChecks, dbclean: :after_each do
 
     let(:event) { Success(response) }
 
-    let(:expected_response) do
-      JSON.parse(payload)["applicants"].to_h do |a|
-        [a["person_hbx_id"],  a["local_mec_evidence"].blank? ? "not MEC checked" : "Applicant Not Found"]
-      end
-    end
-
-    let(:expected_response) {{ "d81d92cf869540ed804b21d7b22352c6" => "Success" }}
-
     context "with MEC Check feature enabled" do
       before :each do
         allow(MedicaidGatewayRegistry).to receive(:[]).with(:transfer_service).and_return(feature_service)
@@ -127,7 +119,7 @@ describe Aces::InitiateMecChecks, dbclean: :after_each do
 
       it "the mec check should have the correct applicant_responses value" do
         mec_check = Aces::MecCheck.first
-        expect(mec_check.applicant_responses).to eq expected_response
+        expect(mec_check.applicant_responses).to eq({"1624289008997662"=>"Success", "1624289008997663"=>"Success", "1624289008997664"=>"not MEC checked"})
       end
     end
   end
