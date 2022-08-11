@@ -92,6 +92,13 @@ describe Aces::InitiateMecChecks, dbclean: :after_each do
     end
 
     let(:event) { Success(response) }
+
+    let(:expected_response) do
+      JSON.parse(payload)["applicants"].to_h do |a|
+        [a["person_hbx_id"],  a["local_mec_evidence"].blank? ? "not MEC checked" : "Applicant Not Found"]
+      end
+    end
+
     let(:expected_response) {{ "d81d92cf869540ed804b21d7b22352c6" => "Success" }}
 
     context "with MEC Check feature enabled" do
