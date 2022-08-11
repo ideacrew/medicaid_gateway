@@ -14,7 +14,8 @@ describe Aces::CreateMecCheck, "create mec check", dbclean: :after_each do
       application_identifier: "app_id",
       family_identifier: "fam_id",
       applicant_responses: checks,
-      type: "application"
+      type: "application",
+      request_payload: 'payload'
     }
   end
 
@@ -25,6 +26,10 @@ describe Aces::CreateMecCheck, "create mec check", dbclean: :after_each do
     it 'should not raise error' do
       expect(results.success?).to be_truthy
     end
+
+    it 'should have the request_payload saved' do
+      expect(results.value!.request_payload).to eq "payload"
+    end
   end
 
   context 'invalid parameters' do
@@ -32,5 +37,4 @@ describe Aces::CreateMecCheck, "create mec check", dbclean: :after_each do
       expect(results.success?).to be_truthy
     end
   end
-
 end

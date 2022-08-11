@@ -34,6 +34,7 @@ module Aces
     def persist(values)
       mec_check = ::Aces::MecCheck.new(values)
       if mec_check.save
+        mec_check.update_attributes(request_payload: values[:request_payload])
         Success(mec_check)
       else
         Failure('Unable to persist MEC Check.')

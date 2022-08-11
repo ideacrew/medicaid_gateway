@@ -43,6 +43,7 @@ module Aces
       payload["person"]["person"]["person_demographics"]["ssn"] = ssn
       payload["person"]["person"]["person_demographics"]["dob"] = payload["demographic"]["dob"]
       payload["person"]["person"]["person_demographics"]["gender"] = payload["demographic"]["gender"]
+      payload["request_for"] = MedicaidGatewayRegistry[:transfer_service].item
       Success(payload)
     end
 
@@ -53,7 +54,11 @@ module Aces
 
     def validate_xml(seralized_xml)
       document = Nokogiri::XML(seralized_xml)
-      xsd_path = File.open(Rails.root.join("artifacts", "aces", "nonesi_mec.xsd"))
+      xsd_path = if MedicaidGatewayRegistry[:transfer_service].item == "aces"
+                   File.open(Rails.root.join("artifacts", "aces", "nonesi_mec.xsd"))
+                 else
+                   File.open(Rails.root.join("artifacts", "curam", "verify_eligibility.xsd"))
+                 end
       schema_location = File.expand_path(xsd_path)
       schema = Nokogiri::XML::Schema(File.open(schema_location))
       result = schema.validate(document).each_with_object([]) do |error, collect|
@@ -68,11 +73,21 @@ module Aces
     end
 
     def build_check_request(transfer)
-      Aces::BuildAccountTransferRequest.new.call(transfer)
+      if MedicaidGatewayRegistry[:transfer_service].item == "aces"
+        Aces::BuildAccountTransferRequest.new.call(transfer)
+      else
+        transfer = transfer.gsub("xmlns:v1=\"http://xmlns.dhcf.dc.gov/dcas/Medicaid/Eligibility/xsd/v1\"", "")
+        transfer = transfer.gsub("xmlns:v11=\"http://xmlns.dc.gov/dcas/common/CommonNative/xsd/V1\"", "")
+        Curam::BuildAccountTransferRequest.new.call(transfer)
+      end
     end
 
     def encode_check(payload)
-      Aces::EncodeAccountTransferRequest.new.call(payload)
+      if MedicaidGatewayRegistry[:transfer_service].item == "aces"
+        Aces::EncodeAccountTransferRequest.new.call(payload)
+      else
+        Curam::EncodeAccountTransferRequest.new.call(payload)
+      end
     end
 
     def submit_check(encoded_check)
