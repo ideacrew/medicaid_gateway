@@ -119,7 +119,8 @@ describe Aces::InitiateMecChecks, dbclean: :after_each do
 
       it "the mec check should have the correct applicant_responses value" do
         mec_check = Aces::MecCheck.first
-        expect(mec_check.applicant_responses).to eq({"1624289008997662"=>"Success", "1624289008997663"=>"Success", "1624289008997664"=>"not MEC checked"})
+        expect(mec_check.applicant_responses).to eq({ "1624289008997662" => "Success", "1624289008997663" => "Success",
+                                                      "1624289008997664" => "not MEC checked" })
       end
     end
   end
