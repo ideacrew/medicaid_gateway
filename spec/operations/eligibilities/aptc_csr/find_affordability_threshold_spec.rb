@@ -4,13 +4,9 @@ require 'rails_helper'
 
 describe Eligibilities::AptcCsr::FindAffordabilityThreshold do
   describe '.call' do
-    context 'year 2021' do
-      it { expect(subject.call(2021).success.to_f).to eq(9.83) }
-    end
-
-    context 'year 2023' do
-      it { expect(subject.call(2023).success.to_f).to eq(9.12) }
-    end
+    it { expect(subject.call(2021).success.to_f).to eq(9.83) }
+    it { expect(subject.call(2022).success.to_f).to eq(9.61) }
+    it { expect(subject.call(2023).success.to_f).to eq(9.12) }
   end
 
   context 'invalid params' do
