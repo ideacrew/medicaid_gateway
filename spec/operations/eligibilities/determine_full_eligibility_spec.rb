@@ -1815,6 +1815,10 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
         expect(@thh.max_aptc).to eq(641.0)
         expect(@thh.max_aptc).not_to eq(581.0)
       end
+
+      it 'should add yearly_expected_contribution for TaxHousehold' do
+        expect(@thh.yearly_expected_contribution).not_to eq(0.0)
+      end
     end
 
     context 'for persistence' do
@@ -1899,6 +1903,10 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       it 'should return max_aptc' do
         expect(@thh.max_aptc).to eq(154.0)
         expect(@thh.max_aptc).not_to eq(124.0)
+      end
+
+      it 'should add yearly_expected_contribution for TaxHousehold' do
+        expect(@thh.yearly_expected_contribution).not_to eq(0.0)
       end
     end
 
