@@ -108,7 +108,7 @@ module Transfers
 
     def update_transfer(response)
       response_json = response.to_json
-      response_failure = response[:status] == 200 ? nil : "Response has a failure with status #{response[:status]}"
+      response_failure = response["status"] == 200 ? nil : "Response has a failure with status #{response['status']}"
       if @service == "aces"
         xml = Nokogiri::XML(response.to_hash[:body])
         status = xml.xpath('//tns:ResponseDescriptionText', 'tns' => 'http://hix.cms.gov/0.1/hix-core')
