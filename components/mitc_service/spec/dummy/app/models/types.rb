@@ -70,6 +70,11 @@ module Types
       medicaid_year: 2022,
       annual_poverty_guideline: BigDecimal(13_590.to_s),
       annual_per_person_amount: BigDecimal(4_720.to_s)
+    },
+    {
+      medicaid_year: 2023,
+      annual_poverty_guideline: BigDecimal(13_590.to_s),
+      annual_per_person_amount: BigDecimal(4_720.to_s)
     }
   ].freeze
 
@@ -92,6 +97,12 @@ module Types
         earned_income: BigDecimal('12_400'),
         unearned_income: BigDecimal('1_100')
       }
+    },
+    {
+      2023 => {
+        earned_income: BigDecimal('12_400'),
+        unearned_income: BigDecimal('1_100')
+      }
     }
   ].freeze
 
@@ -99,7 +110,7 @@ module Types
   AffordabilityThresholds = [
     { 2020 => BigDecimal('9.83') },
     { 2021 => BigDecimal('9.83') },
-    { 2022 => BigDecimal('9.83') },
+    { 2022 => BigDecimal('9.61') },
     { 2023 => BigDecimal('9.12') }
   ].freeze
 

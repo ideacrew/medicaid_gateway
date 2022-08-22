@@ -75,7 +75,7 @@ module Eligibilities
         amount = total_monthly_qsehra_amount(aptc_household)
         return compared_result if amount.zero?
 
-        corrected_aptc = compared_result - amount
+        corrected_aptc = compared_result - (amount * 12.0)
         corrected_aptc > 0 ? corrected_aptc : BigDecimal('0')
       end
 
