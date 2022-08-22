@@ -29,7 +29,7 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
 
   let(:response) do
     {
-      "status" => 200,
+      :status => 200,
       :body => response_body,
       :response_headers => {}
     }
@@ -81,7 +81,7 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
     context 'with valid application transfer response not as 200' do
       let(:failure_response) do
         {
-          "status" => 504,
+          :status => 504,
           :body => response_body,
           :response_headers => {}
         }
