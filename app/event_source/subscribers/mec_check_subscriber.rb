@@ -25,7 +25,7 @@ module Subscribers
         ack(delivery_info.delivery_tag)
         logger.debug "application_submitted_subscriber_message; acked (nacked) due to: #{error}"
       end
-    rescue StandardError => e
+    rescue StandardError, SystemStackError => e
       # In the case of subscriber error, saving details for reporting purposes, repurposing existing fields.
       Aces::CreateMecCheck.new.call(
         {
