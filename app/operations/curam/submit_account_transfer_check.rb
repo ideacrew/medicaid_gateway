@@ -32,7 +32,7 @@ module Curam
         conn.post(
           service_uri,
           clean_payload,
-          "Content-Type" => "text/xml"
+          "Content-Type" => "application/soap+xml"
         )
       end
       result.or(Failure("Curam SubmitAccountTransferCheck submit_request failed with: #{result.exception}"))
