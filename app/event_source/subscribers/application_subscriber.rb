@@ -26,7 +26,7 @@ module Subscribers
         ack(delivery_info.delivery_tag)
         logger.debug "application_submitted_subscriber_message; acked (nacked) due to:#{errors}"
       end
-    rescue StandardError => e
+    rescue StandardError, SystemStackError => e
       ack(delivery_info.delivery_tag)
       logger.debug "application_submitted_subscriber_error: baacktrace: #{e.backtrace}; acked (nacked)"
     end
