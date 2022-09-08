@@ -77,6 +77,34 @@ describe Aces::InitiateMecChecks, dbclean: :after_each do
       mec_check = Aces::MecCheck.first
       expect(mec_check.applicant_responses).to eq expected_response
     end
+
+    context '#get_applicant_checks' do
+      before do
+        payload_hash = JSON.parse(payload)
+        local_mec_evidence = payload_hash['applicants'].first['local_mec_evidence']
+        expect(local_mec_evidence['aasm_state']).to eq nil
+      end
+
+      context 'with applicant Medicaid eligibility found in response' do
+        before do
+          response[:body] = response_body.gsub('<MECVerificationCode>N</MECVerificationCode>', '<MECVerificationCode>Y</MECVerificationCode>')
+        end
+
+        it 'should update the person evidence to :outstanding' do
+          result = operation.send(:get_applicant_checks, JSON.parse(payload)).value!
+          local_mec_evidence = result[0]['applicants'].first['local_mec_evidence']
+          expect(local_mec_evidence['aasm_state']).to eq :outstanding
+        end
+      end
+
+      context 'with applicant Medicaid eligibility NOT found in response' do
+        it 'should update the person evidence to :attested' do
+          result = operation.send(:get_applicant_checks, JSON.parse(payload)).value!
+          local_mec_evidence = result[0]['applicants'].first['local_mec_evidence']
+          expect(local_mec_evidence['aasm_state']).to eq :attested
+        end
+      end
+    end
   end
 
   context 'When transfer service is for curam' do
@@ -121,6 +149,34 @@ describe Aces::InitiateMecChecks, dbclean: :after_each do
         mec_check = Aces::MecCheck.first
         expect(mec_check.applicant_responses).to eq({ "1624289008997662" => "Success", "1624289008997663" => "Success",
                                                       "1624289008997664" => "not MEC checked" })
+      end
+
+      context '#get_applicant_checks' do
+        before do
+          payload_hash = JSON.parse(payload)
+          local_mec_evidence = payload_hash['applicants'].first['local_mec_evidence']
+          expect(local_mec_evidence['aasm_state']).to eq nil
+        end
+
+        context 'with applicant Medicaid eligibility found in response' do
+          it 'should update the person evidence to :outstanding' do
+            result = operation.send(:get_applicant_checks, JSON.parse(payload)).value!
+            local_mec_evidence = result[0]['applicants'].first['local_mec_evidence']
+            expect(local_mec_evidence['aasm_state']).to eq :outstanding
+          end
+        end
+
+        context 'with applicant Medicaid eligibility NOT found in response' do
+          before do
+            response[:body] = response_body.gsub('<EligibilityFlag>Y</EligibilityFlag>', '<EligibilityFlag>N</EligibilityFlag>')
+          end
+
+          it 'should update the person evidence to :attested' do
+            result = operation.send(:get_applicant_checks, JSON.parse(payload)).value!
+            local_mec_evidence = result[0]['applicants'].first['local_mec_evidence']
+            expect(local_mec_evidence['aasm_state']).to eq :attested
+          end
+        end
       end
     end
   end

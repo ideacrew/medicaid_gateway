@@ -53,7 +53,7 @@ module Aces
             response = mc_response.value!
             results[hbx_id] = response[:code_description] == "Y" ? 'Success' : response[:code_description]
             evidence["request_results"] = [response]
-            evidence["aasm_state"] = response[:mec_verification_code] == "Y" ? :outstanding : :attested
+            evidence["aasm_state"] = generate_aasm_state(response)
           end
         else
           results[hbx_id] = "not MEC checked"
@@ -85,6 +85,19 @@ module Aces
 
     def call_mec_check(person)
       Aces::ApplicantMecCheckCall.new.call(person)
+    end
+
+    def generate_aasm_state(response)
+      case MedicaidGatewayRegistry[:transfer_service].item
+      when 'aces'
+        transform_to_aasm_state(response[:mec_verification_code])
+      when 'curam'
+        transform_to_aasm_state(response[:code_description])
+      end
+    end
+
+    def transform_to_aasm_state(code)
+      code == 'Y' ? :outstanding : :attested
     end
 
     def update_mec_check(mec_check, checks)
