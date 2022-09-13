@@ -14,7 +14,7 @@ registry:
       - key: :mitc_determination
         is_enabled: true
       - key: :mec_check
-        is_enabled: <%= ENV['MG_MEC_CHECK_IS_ENABLED'] || true %>
+        is_enabled: <%= ENV['MEC_CHECK_IS_ENABLED'] || true %>
       - key: :resubmit_to_enroll
         is_enabled: false
       - key: :bulk_transfer_to_enroll
