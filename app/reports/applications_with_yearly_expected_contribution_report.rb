@@ -20,8 +20,8 @@ CSV.open(file_name, 'w', force_quotes: true) do |csv|
     next row if application.blank?
 
     thhs_information = JSON.parse(row['TaxHouseholdsInformation'])
-    thh_hbx_assigned_id_with_expected_contribution = thhs_information.inject({}) do |thhs_hash, thhs_information|
-      thh_hbx_assigned_id, person_hbx_ids = thhs_information
+    thh_hbx_assigned_id_with_expected_contribution = thhs_information.inject({}) do |thhs_hash, thhs_info|
+      thh_hbx_assigned_id, person_hbx_ids = thhs_info
       aptc_household = application.aptc_households.detect do |aptc_hh|
         (aptc_hh.aptc_household_members.map(&:member_identifier) & person_hbx_ids).present?
       end
@@ -32,7 +32,9 @@ CSV.open(file_name, 'w', force_quotes: true) do |csv|
       thhs_hash
     end
 
-    csv << [row['ApplicationHbxID'], thh_hbx_assigned_id_with_expected_contribution.to_json] if thh_hbx_assigned_id_with_expected_contribution.present?
+    if thh_hbx_assigned_id_with_expected_contribution.present?
+      csv << [row['ApplicationHbxID'], thh_hbx_assigned_id_with_expected_contribution.to_json]
+    end
   rescue StandardError => e
     puts "Unable to process ApplicationHbxID: #{row['ApplicationHbxID']}, message: #{e.message}, backtrace: #{e.backtrace}"
   end
