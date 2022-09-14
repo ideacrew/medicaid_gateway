@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # This script generates a CSV report with information about Applications with YearlyExpectedContribution
-# rails runner app/reports/applications_with_yearly_expected_contribution_report.rb -e production
+# rails runner script/applications_with_yearly_expected_contribution_report.rb -e production
 
 field_names = %w[ApplicationHbxID AptcHouseholdsWithYearlyExpectedContribution]
 file_name = "#{Rails.root}/applications_with_yearly_expected_contributions_for_aptc_households.csv"
