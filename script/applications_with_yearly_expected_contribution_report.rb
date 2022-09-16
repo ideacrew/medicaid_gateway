@@ -41,5 +41,6 @@ CSV.open(file_name, 'w', force_quotes: true) do |csv|
     puts "Unable to process ApplicationHbxID: #{row['ApplicationHbxID']}, message: #{e.message}, backtrace: #{e.backtrace}"
   end
 end
-total_time_in_mins = ((DateTime.current - start_time) * 24 * 60).to_f.ceil
+end_time = DateTime.current
+total_time_in_mins = ((end_time - start_time) * 24 * 60).to_f.ceil
 puts "ApplicationsWithYearlyExpectedContributionReport end_time: #{end_time}, total_time_taken_in_minutes: #{total_time_in_mins}"
