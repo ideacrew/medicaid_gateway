@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - "trunk"
+      - "ivl_mg_renewals_2023"
   pull_request:
     branches:
       - "trunk"
