@@ -3,7 +3,7 @@
 module Subscribers
   module AptcCsrCredits
     module Renewals
-      class RenewalSubscriber
+      class RenewalsSubscriber
         include ::EventSource::Subscriber[amqp: 'enroll.applications.aptc_csr_credits.renewals']
 
         subscribe(:on_enroll_applications_aptc_csr_credits_renewals) do |delivery_info, _metadata, response|
