@@ -15,7 +15,8 @@ module Transfers
     def call(params, transfer_id = "")
       transfer_id = yield record_transfer(params, transfer_id)
       _valid_applicants = yield validate_applicants(params, transfer_id)
-      xml = yield generate_xml(params, transfer_id)
+      flagged_params = yield add_param_flags(params)
+      xml = yield generate_xml(flagged_params, transfer_id)
       validated = yield schema_validation(xml, transfer_id)
       # validated  = yield business_validation(validated)
       transfer_response = yield initiate_transfer(validated, transfer_id)
@@ -53,6 +54,20 @@ module Transfers
       error_result = {
         transfer_id: transfer_id,
         failure: "Application does not contain any applicants applying for coverage."
+      }
+      Failure(error_result)
+    end
+
+    def add_param_flags(params, transfer_id)
+      flags = []
+      flags << :non_ssn_apply_reason if MedicaidGatewayRegistry.feature_enabled?(:non_ssn_apply_reason)
+      flags << :income_start_on if MedicaidGatewayRegistry.feature_enabled?(:income_start_on)
+      flags << :income_end_on if MedicaidGatewayRegistry.feature_enabled?(:income_end_on)
+      Success(params.merge(flags))
+    rescue StandardError e
+      error_result = {
+        transfer_id: transfer_id,
+        failure: "Missing feature flag - #{e}"
       }
       Failure(error_result)
     end
