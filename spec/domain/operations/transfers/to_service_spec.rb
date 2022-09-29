@@ -199,7 +199,7 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
     let(:params) {JSON.parse(aces_hash)}
     let(:transfer_record) do
       Transfers::Create.new.call({
-                                   service: service_ns,
+                                   service: 'service',
                                    application_identifier: params["family"]["magi_medicaid_applications"]["hbx_id"],
                                    family_identifier: params["family"]["family_members"].detect { |fm| fm["is_primary_applicant"] == true }["hbx_id"],
                                    outbound_payload: aces_hash
@@ -208,6 +208,8 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
 
     context 'valid feature flags' do
       before do
+        allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_income_start_on).and_return(true)
+        allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_income_end_on).and_return(true)
         allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_non_ssn_apply_reason).and_return(true)
       end
 
@@ -215,7 +217,7 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
         result_value = Transfers::ToService.new.send(:add_param_flags, aces_hash, transfer_record.id).value!
         result_hash = JSON.parse(result_value)
         expect(result_hash.keys).to include 'drop_param_flags'
-        expect(result_hash['drop_param_flags']).to eq ['drop_non_ssn_apply_reason']
+        expect(result_hash['drop_param_flags']).to eq ['drop_non_ssn_apply_reason', 'drop_income_start_on', 'drop_income_end_on']
       end
     end
   end

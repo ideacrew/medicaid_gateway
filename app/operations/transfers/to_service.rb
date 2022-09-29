@@ -15,7 +15,7 @@ module Transfers
     def call(params, transfer_id = "")
       transfer_id = yield record_transfer(params, transfer_id)
       _valid_applicants = yield validate_applicants(params, transfer_id)
-      flagged_params = yield add_param_flags(params)
+      flagged_params = yield add_param_flags(params, transfer_id)
       xml = yield generate_xml(flagged_params, transfer_id)
       validated = yield schema_validation(xml, transfer_id)
       # validated  = yield business_validation(validated)
