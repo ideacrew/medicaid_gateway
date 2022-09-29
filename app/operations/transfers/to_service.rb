@@ -65,7 +65,7 @@ module Transfers
       flags << :drop_income_start_on if MedicaidGatewayRegistry.feature_enabled?(:drop_income_start_on)
       flags << :drop_income_end_on if MedicaidGatewayRegistry.feature_enabled?(:drop_income_end_on)
       Success(params.merge(flags))
-    rescue StandardError e
+    rescue StandardError => e
       error_result = {
         transfer_id: transfer_id,
         failure: "Missing feature flag - #{e}"
