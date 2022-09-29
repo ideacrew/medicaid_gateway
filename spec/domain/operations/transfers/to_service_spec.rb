@@ -211,6 +211,7 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
         allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_income_start_on).and_return(true)
         allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_income_end_on).and_return(true)
         allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_non_ssn_apply_reason).and_return(true)
+        allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_vlp_document).and_return(false)
       end
 
       it 'should add the enabled flags to the payload' do
