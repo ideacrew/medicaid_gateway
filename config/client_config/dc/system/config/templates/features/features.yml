@@ -42,7 +42,7 @@ registry:
       - key: :transfer_payload_type_ios
         is_enabled: <%= ENV["TRANSFER_PAYLOAD_TYPE_IOS"] || false %>
       - key: :drop_non_ssn_apply_reason
-        is_enabled: <%= ENV["DROP_NO_SSN_APPLY_REASON_IS_ENABLED"] || false %>
+        is_enabled: <%= ENV["DROP_NON_SSN_APPLY_REASON_IS_ENABLED"] || false %>
       - key: :drop_income_start_on
         is_enabled: <%= ENV["DROP_INCOME_START_ON_IS_ENABLED"] || false %>
       - key: :drop_income_end_on
