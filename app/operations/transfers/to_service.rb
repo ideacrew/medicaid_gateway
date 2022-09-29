@@ -15,7 +15,8 @@ module Transfers
     def call(params, transfer_id = "")
       transfer_id = yield record_transfer(params, transfer_id)
       _valid_applicants = yield validate_applicants(params, transfer_id)
-      xml = yield generate_xml(params, transfer_id)
+      flagged_params = yield add_param_flags(params, transfer_id)
+      xml = yield generate_xml(flagged_params, transfer_id)
       validated = yield schema_validation(xml, transfer_id)
       # validated  = yield business_validation(validated)
       transfer_response = yield initiate_transfer(validated, transfer_id)
@@ -53,6 +54,21 @@ module Transfers
       error_result = {
         transfer_id: transfer_id,
         failure: "Application does not contain any applicants applying for coverage."
+      }
+      Failure(error_result)
+    end
+
+    def add_param_flags(params, transfer_id)
+      payload = JSON.parse(params)
+      flags = []
+      flags << :drop_non_ssn_apply_reason if MedicaidGatewayRegistry.feature_enabled?(:drop_non_ssn_apply_reason)
+      flags << :drop_income_start_on if MedicaidGatewayRegistry.feature_enabled?(:drop_income_start_on)
+      flags << :drop_income_end_on if MedicaidGatewayRegistry.feature_enabled?(:drop_income_end_on)
+      Success(payload.merge(:drop_param_flags => flags).to_json)
+    rescue ResourceRegistry::Error::FeatureNotFoundError => e
+      error_result = {
+        transfer_id: transfer_id,
+        failure: "Transfers::ToService#add_param_flags - #{e}"
       }
       Failure(error_result)
     end
