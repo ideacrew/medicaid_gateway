@@ -60,9 +60,10 @@ module Transfers
 
     def add_param_flags(params, transfer_id)
       flags = []
-      flags << :non_ssn_apply_reason if MedicaidGatewayRegistry.feature_enabled?(:non_ssn_apply_reason)
-      flags << :income_start_on if MedicaidGatewayRegistry.feature_enabled?(:income_start_on)
-      flags << :income_end_on if MedicaidGatewayRegistry.feature_enabled?(:income_end_on)
+      binding.irb
+      flags << :drop_non_ssn_apply_reason if MedicaidGatewayRegistry.feature_enabled?(:drop_non_ssn_apply_reason)
+      flags << :drop_income_start_on if MedicaidGatewayRegistry.feature_enabled?(:drop_income_start_on)
+      flags << :drop_income_end_on if MedicaidGatewayRegistry.feature_enabled?(:drop_income_end_on)
       Success(params.merge(flags))
     rescue StandardError e
       error_result = {

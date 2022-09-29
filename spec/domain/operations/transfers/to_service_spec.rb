@@ -195,4 +195,20 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
     end
   end
 
+  context '#add_param_flags' do
+    before do
+      allow(MedicaidGatewayRegistry).to receive(:[]).with(:aces_connection).and_return(feature_ns)
+      allow(MedicaidGatewayRegistry).to receive(:[]).with(:transfer_service).and_return(service_ns)
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_non_ssn_apply_reason).and_return(true)
+      allow(service_ns).to receive(:item).and_return("aces")
+      allow(transfer).to receive(:initiate_transfer).and_return(event)
+    end
+
+    context 'valid feature flags' do
+      it 'should add the enabled flags to the params hash' do
+        # prepare params
+        transfer.add_param_flags(params, transfer_id)
+      end
+    end
+  end
 end
