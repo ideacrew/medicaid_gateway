@@ -64,6 +64,7 @@ module Transfers
       flags << :drop_non_ssn_apply_reason if MedicaidGatewayRegistry.feature_enabled?(:drop_non_ssn_apply_reason)
       flags << :drop_income_start_on if MedicaidGatewayRegistry.feature_enabled?(:drop_income_start_on)
       flags << :drop_income_end_on if MedicaidGatewayRegistry.feature_enabled?(:drop_income_end_on)
+      flags << :drop_vlp_document if MedicaidGatewayRegistry.feature_enabled?(:drop_vlp_document)
       Success(payload.merge(:drop_param_flags => flags).to_json)
     rescue ResourceRegistry::Error::FeatureNotFoundError => e
       error_result = {
