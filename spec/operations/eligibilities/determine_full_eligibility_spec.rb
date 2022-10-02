@@ -12,6 +12,10 @@ require 'aca_entities/magi_medicaid/federal_poverty_level'
 require 'aca_entities/operations/magi_medicaid/create_federal_poverty_level'
 
 RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each do
+  before do
+    MedicaidGatewayRegistry[:atleast_one_silver_plan_donot_cover_pediatric_dental_cost].feature.stub(:is_enabled).and_return(false)
+  end
+
   it 'should be a container-ready operation' do
     expect(subject.respond_to?(:call)).to be_truthy
   end

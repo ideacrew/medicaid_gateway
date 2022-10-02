@@ -26,6 +26,27 @@ module BenchmarkEhbPremiumHelper
   #   slcsapd_enabled?(effective_date.year) && all_members_aged_19_or_above?(members)
   # end
 
-  # def all_members_aged_19_or_above?(members)
-  # end
+  def use_non_dynamic_slcsp?(mm_application)
+    !slcsapd_enabled?(mm_application.assistance_year) || no_thh_has_aptc_eligible_children?(mm_application)
+  end
+
+  def age_on(date, dob)
+    age = date.year - dob.year
+
+    if date.month < dob.month || (date.month == dob.month && date.day < dob.day)
+      age - 1
+    else
+      age
+    end
+  end
+
+  def thh_has_aptc_eligible_children?(tax_household, effective_date)
+    tax_household.aptc_csr_eligible_members.any? do |thhm|
+      age_on(effective_date, thhm.applicant_reference.dob) < 19
+    end
+  end
+
+  def no_thh_has_aptc_eligible_children?(mm_application)
+    mm_application.tax_households.none? { |thh| thh_has_aptc_eligible_children?(thh, mm_application.aptc_effective_date) }
+  end
 end

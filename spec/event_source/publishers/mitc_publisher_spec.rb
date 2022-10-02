@@ -57,7 +57,7 @@ RSpec.describe ::Publishers::MitcPublisher, dbclean: :after_each do
       # Operations::MitcDetermination.new.execute(payload)
 
       # expect(bunny_exchange).to receive(:publish).at_least(1).times
-      # Operations::DetermineEligibility.new.execute(payload)
+      # OperationsDetermineMemberEligibility.new.execute(payload)
     end
   end
 end

@@ -13,6 +13,10 @@ require 'aca_entities/operations/magi_medicaid/create_federal_poverty_level'
 RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_each do
   include Dry::Monads[:result, :do]
 
+  before do
+    MedicaidGatewayRegistry[:atleast_one_silver_plan_donot_cover_pediatric_dental_cost].feature.stub(:is_enabled).and_return(false)
+  end
+
   let(:event) { Success(double) }
   let(:obj)  {MitcService::CallMagiInTheCloud.new}
 

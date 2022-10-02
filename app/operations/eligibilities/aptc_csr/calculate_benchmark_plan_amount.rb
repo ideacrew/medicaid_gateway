@@ -14,7 +14,7 @@ module Eligibilities
       # @option opts [AcaEntities::MagiMedicaid::TaxHoushold] :magi_medicaid_tax_household
       # @option opts [AcaEntities::MagiMedicaid::Application] :magi_medicaid_application(includes MAGI Medicaid Deteminations)
       # @return [Dry::Result]
-      # This class is PRIVATE. Can only be called from ::Eligibilities::AptcCsr::ComputeAptcAndCsr
+      # This class is PRIVATE. Can only be called from ::Eligibilities::AptcCsr::ComputeCsr
       def call(params)
         # { aptc_household: aptc_household,
         #   tax_household: @mm_tax_household,

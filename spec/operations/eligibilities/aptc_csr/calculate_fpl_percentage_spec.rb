@@ -9,6 +9,10 @@ require 'aca_entities/magi_medicaid/federal_poverty_level'
 require 'aca_entities/operations/magi_medicaid/create_federal_poverty_level'
 
 describe Eligibilities::AptcCsr::CalculateFplPercentage do
+  before do
+    MedicaidGatewayRegistry[:atleast_one_silver_plan_donot_cover_pediatric_dental_cost].feature.stub(:is_enabled).and_return(false)
+  end
+
   include_context 'setup magi_medicaid application with two applicants'
 
   let(:input_application) do
@@ -24,7 +28,7 @@ describe Eligibilities::AptcCsr::CalculateFplPercentage do
       magi_medicaid_application: input_application }
   end
 
-  let(:eligibility) { Eligibilities::AptcCsr::DetermineEligibility.new.call(input_params) }
+  let(:eligibility) { Eligibilities::AptcCsr::DetermineMemberEligibility.new.call(input_params) }
 
   let(:fpl_data) { ::Types::FederalPovertyLevels.detect { |fpl_hash| fpl_hash[:medicaid_year] == Date.today.year - 1 } }
 

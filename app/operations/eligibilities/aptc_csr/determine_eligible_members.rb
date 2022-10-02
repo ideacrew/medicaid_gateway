@@ -4,7 +4,7 @@ require 'dry/monads'
 require 'dry/monads/do'
 require 'types'
 
-# This operation is private to ::Eligibilities::AptcCsr::DetermineEligibility
+# This operation is private to ::Eligibilities::AptcCsr::DetermineMemberEligibility
 module Eligibilities
   module AptcCsr
     # This Operation is to compute the APTC and CSR values for a given TaxHousehold

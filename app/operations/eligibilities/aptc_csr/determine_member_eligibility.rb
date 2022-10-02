@@ -6,7 +6,7 @@ require 'dry/monads/do'
 module Eligibilities
   module AptcCsr
     # This class determine the aptc and csr subsidies for a given TaxHousehold
-    class DetermineEligibility
+    class DetermineMemberEligibility
       include Dry::Monads[:result, :do]
 
       # @param [Hash] opts The options to calculate the aptc and csr subsidies
@@ -20,8 +20,8 @@ module Eligibilities
 
         aptc_household = yield check_for_medicaid_eligibility(params)
         aptc_household = yield determine_eligible_members(aptc_household)
-        aptc_household = yield compute_aptc_and_csr(aptc_household)
         aptc_household = yield determine_other_eligibilities(aptc_household)
+        aptc_household = yield compute_csr(aptc_household)
         aptc_household_entity = yield init_aptc_household(aptc_household)
         result = yield add_determination_to_application(aptc_household_entity)
 
@@ -44,22 +44,27 @@ module Eligibilities
                                                                       application: @mm_application })
       end
 
-      def compute_aptc_and_csr(aptc_household)
-        # Do not compute aptc and csr values if all members are ineligible for aptc/csr
+      def compute_csr(aptc_household)
+        # Do not compute csr values if all members are ineligible for aptc/csr
         return Success(aptc_household) if all_members_are_ineligible_for_aptc_csr?(aptc_household)
 
-        ::Eligibilities::AptcCsr::ComputeAptcAndCsr.new.call({ tax_household: @mm_tax_household,
-                                                               aptc_household: aptc_household,
-                                                               application: @mm_application })
+        ::Eligibilities::AptcCsr::ComputeCsr.new.call({ tax_household: @mm_tax_household,
+                                                        aptc_household: aptc_household,
+                                                        application: @mm_application })
       end
 
       def all_members_are_ineligible_for_aptc_csr?(aptc_household)
-        aptc_household[:members].all? do |member|
-          member[:aptc_eligible] == false
-        end
+        aptc_household[:members].all? { |member| member[:aptc_eligible] == false }
+      end
+
+      def all_members_are_eligible_for_magi_medicaid_or_aptc_csr?(aptc_household)
+        aptc_household[:members].all? { |member| member[:aptc_eligible] || member[:magi_medicaid_eligible] }
       end
 
       def determine_other_eligibilities(aptc_household)
+        # Do not determine Totally Ineligible & UQHP Eligible if all members are eligible for MagiMedicaid/APTC_CSR
+        return Success(aptc_household) if all_members_are_eligible_for_magi_medicaid_or_aptc_csr?(aptc_household)
+
         ::Eligibilities::AptcCsr::DetermineOtherEligibilities.new.call({ tax_household: @mm_tax_household,
                                                                          aptc_household: aptc_household,
                                                                          application: @mm_application })
@@ -78,7 +83,6 @@ module Eligibilities
           thh[:annual_tax_household_income] = aptc_household.annual_tax_household_income
           thh[:yearly_expected_contribution] = aptc_household.total_expected_contribution_amount
           thh[:csr_annual_income_limit] = aptc_household.csr_annual_income_limit
-          thh[:is_insurance_assistance_eligible] = aptc_household.benchmark_calculation_members.present? ? 'Yes' : 'No'
           add_member_level_info(thh, aptc_household)
         end
 
