@@ -61,85 +61,13 @@ module Eligibilities
         Success(@result_mm_application)
       end
 
-      def calculate_benchmark_plan_amount(aptc_household)
-        @tax_household = params[:tax_household]
-        @application = params[:application]
-        ::Eligibilities::AptcCsr::CalculateBenchmarkPlanAmount.new.call({ aptc_household: aptc_household,
-                                                                          tax_household: @tax_household,
-                                                                          application: @application })
-      end
-
-      def calculate_aptc(aptc_household)
-        total_benchmark_amount = aptc_household[:total_benchmark_plan_monthly_premium_amount] * 12
-        total_contribution_amount = aptc_household[:total_expected_contribution_amount]
-        compared_result = total_benchmark_amount - total_contribution_amount
-        aptc =
-          if compared_result > 0
-            correct_aptc_if_qsehra(compared_result, aptc_household) / 12
-          else
-            BigDecimal('0')
-          end
-        aptc_household[:maximum_aptc_amount] = aptc.round
-        aptc_household[:is_aptc_calculated] = true
-        Success(aptc_household)
-      end
-
-      def correct_aptc_if_qsehra(compared_result, aptc_household)
-        amount = total_monthly_qsehra_amount(aptc_household)
-        return compared_result if amount.zero?
-
-        corrected_aptc = compared_result - (amount * 12.0)
-        corrected_aptc > 0 ? corrected_aptc : BigDecimal('0')
-      end
-
-      # Check qsehra for APTC eligible members only
-      def total_monthly_qsehra_amount(aptc_household)
-        aptc_eligible_members = aptc_household[:members].select do |member|
-          member[:aptc_eligible] == true
-        end
-        aptc_eligible_members.inject(BigDecimal('0')) do |total, member|
-          applicant = applicant_by_reference(member[:member_identifier])
-          total + applicant.monthly_qsehra_amount
-        end
-      end
-
-      def applicant_by_reference(person_hbx_id)
-        @application.applicants.detect do |applicant|
-          applicant.person_hbx_id.to_s == person_hbx_id.to_s
-        end
-      end
-
       def determine_event_name_and_publish_payload(mm_application)
         if @use_non_dynamic_slcsp
-          publish_payload_for_fully_determined_application(mm_application)
+          Eligibilities::DetermineEventAndPublishFullDetermination.new.call(mm_application)
         else
           construct_and_publish_payload_for_dynamic_slcsp(mm_application)
         end
       end
-
-      # rubocop:disable Metrics/CyclomaticComplexity
-      def publish_payload_for_fully_determined_application(mm_application)
-        peds = mm_application.tax_households.flat_map(&:tax_household_members).map(&:product_eligibility_determination)
-        event_name =
-          if peds.all?(&:is_ia_eligible)
-            :aptc_eligible
-          elsif peds.all?(&:is_medicaid_chip_eligible)
-            :medicaid_chip_eligible
-          elsif peds.all?(&:is_totally_ineligible)
-            :totally_ineligible
-          elsif peds.all?(&:is_magi_medicaid)
-            :magi_medicaid_eligible
-          elsif peds.all?(&:is_uqhp_eligible)
-            :uqhp_eligible
-          else
-            :mixed_determination
-          end
-
-        Eligibilities::PublishDetermination.new.call(mm_application, event_name.to_s)
-
-        Success({ event: event_name, payload: mm_application })
-      end
-      # rubocop:enable Metrics/CyclomaticComplexity
 
       def construct_and_publish_payload_for_dynamic_slcsp(mm_application)
         Success({ event: :event_name, payload: mm_application })
