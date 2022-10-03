@@ -16,7 +16,6 @@ module Eligibilities
 
         aptc_household = yield calculate_expected_contribution(params)
         aptc_household = yield calculate_csr(aptc_household)
-        # aptc_household = yield calculate_benchmark_plan_amount(aptc_household)
         # aptc_household = yield calculate_aptc(aptc_household)
 
         Success(aptc_household)
@@ -30,46 +29,6 @@ module Eligibilities
         ::Eligibilities::AptcCsr::CalculateExpectedContribution.new.call(
           { aptc_household: params[:aptc_household] }
         )
-      end
-
-      def calculate_benchmark_plan_amount(aptc_household)
-        ::Eligibilities::AptcCsr::CalculateBenchmarkPlanAmount.new.call({ aptc_household: aptc_household,
-                                                                          tax_household: @tax_household,
-                                                                          application: @application })
-      end
-
-      def calculate_aptc(aptc_household)
-        total_benchmark_amount = aptc_household[:total_benchmark_plan_monthly_premium_amount] * 12
-        total_contribution_amount = aptc_household[:total_expected_contribution_amount]
-        compared_result = total_benchmark_amount - total_contribution_amount
-        aptc =
-          if compared_result > 0
-            correct_aptc_if_qsehra(compared_result, aptc_household) / 12
-          else
-            BigDecimal('0')
-          end
-        aptc_household[:maximum_aptc_amount] = aptc.round
-        aptc_household[:is_aptc_calculated] = true
-        Success(aptc_household)
-      end
-
-      def correct_aptc_if_qsehra(compared_result, aptc_household)
-        amount = total_monthly_qsehra_amount(aptc_household)
-        return compared_result if amount.zero?
-
-        corrected_aptc = compared_result - (amount * 12.0)
-        corrected_aptc > 0 ? corrected_aptc : BigDecimal('0')
-      end
-
-      # Check qsehra for APTC eligible members only
-      def total_monthly_qsehra_amount(aptc_household)
-        aptc_eligible_members = aptc_household[:members].select do |member|
-          member[:aptc_eligible] == true
-        end
-        aptc_eligible_members.inject(BigDecimal('0')) do |total, member|
-          applicant = applicant_by_reference(member[:member_identifier])
-          total + applicant.monthly_qsehra_amount
-        end
       end
 
       def applicant_by_reference(person_hbx_id)
@@ -113,7 +72,3 @@ module Eligibilities
     end
   end
 end
-
-# Pending Tasks:
-#   1. Any configuration for calculate_expected_contribution?
-#   2. Any configuration for calculate_csr fpl_percentage range?

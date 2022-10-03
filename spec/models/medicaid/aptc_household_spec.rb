@@ -60,13 +60,16 @@ RSpec.describe ::Medicaid::AptcHousehold, type: :model do
     let(:application) { FactoryBot.create(:application, :with_aptc_households) }
 
     before do
-      @aptc_household = Medicaid::AptcHousehold.new(input_params)
-      application.aptc_households << @aptc_household
+      @aptc_household = application.aptc_households.build(input_params)
       application.save!
     end
 
     it 'should be findable' do
       expect(application.reload.aptc_households.find(@aptc_household.id)).to be_a(::Medicaid::AptcHousehold)
+    end
+
+    it 'should store created_at timestamps' do
+      expect(application.aptc_households.pluck(:created_at).compact.count).to eq(2)
     end
 
     it 'should be able to calculate the expected contribution percentage' do

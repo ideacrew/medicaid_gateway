@@ -3,10 +3,6 @@
 require 'rails_helper'
 
 describe Eligibilities::AptcCsr::FindIncomeThreshold do
-  before do
-    MedicaidGatewayRegistry[:atleast_one_silver_plan_donot_cover_pediatric_dental_cost].feature.stub(:is_enabled).and_return(false)
-  end
-
   context 'valid params' do
     before do
       @result = subject.call(2020)

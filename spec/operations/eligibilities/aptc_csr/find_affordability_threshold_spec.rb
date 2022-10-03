@@ -3,10 +3,6 @@
 require 'rails_helper'
 
 describe Eligibilities::AptcCsr::FindAffordabilityThreshold do
-  before do
-    MedicaidGatewayRegistry[:atleast_one_silver_plan_donot_cover_pediatric_dental_cost].feature.stub(:is_enabled).and_return(false)
-  end
-
   describe '.call' do
     it { expect(subject.call(2021).success.to_f).to eq(9.83) }
     it { expect(subject.call(2022).success.to_f).to eq(9.61) }

@@ -10,28 +10,6 @@ module Eligibilities
       include Dry::Monads[:result, :do]
       include BenchmarkEhbPremiumHelper
 
-      # feature_enabled: true
-      #   thhs = [thh1, thh2]
-      #     case1:
-      #       thh1: :non_aptc_eligible
-      #       thh2: :non_aptc_eligible
-
-      #     case2:
-      #       thh1: :non_aptc_eligible
-      #       thh2: :aptc_eligible without :children
-
-      #     case3:
-      #       thh1: :non_aptc_eligible
-      #       thh2: :aptc_eligible with :children
-
-      #     case4:
-      #       thh1: :aptc_eligible with :children
-      #       thh2: :aptc_eligible without :children
-
-      #     case5:
-      #       thh1: :aptc_eligible with :children
-      #       thh2: :aptc_eligible with :children
-
       def call(params)
         # { magi_medicaid_application: mm_application }
 
@@ -137,28 +115,6 @@ module Eligibilities
         else
           construct_and_publish_payload_for_dynamic_slcsp(mm_application)
         end
-        # if @use_non_dynamic_slcsp
-        #   @result_mm_application ||= mm_application
-        #   tax_households.each do |mm_thh|
-        #     # Do not determine APTC/CSR if all members are ineligible
-        #     next mm_thh if all_members_are_aptc_csr_ineligible?(mm_thh)
-
-        #     result = ::Eligibilities::AptcCsr::ComputeAptc.new.call({ application: @result_mm_application,
-        #                                                               medicaid_application: medicaid_application,
-        #                                                               tax_household: mm_thh })
-        #     return result if result.failure?
-        #     @result_mm_application = result.success[:magi_medicaid_application]
-        #   end
-        #   medicaid_application.update_attributes!(application_response_payload: @result_mm_application.to_json)
-        #   Success(@result_mm_application)
-        #   # tax_households.each { |thh| ComputeTaxHouseholdAptcWithNonDynamicSlcehp.new.call(thh) }
-        #   # :determine_event_name_and_publish_payload_for_fully_determined_application
-        # else
-        #   tax_households_without_aptc_eligible_children.each { |thh| ComputeTaxHouseholdAptcWithNonDynamicSlcehp.new.call(thh) }
-        #   construct_and_publish_payload_for_dynamic_slcehb
-        #     construct payload for tax_households_with_aptc_eligible_members
-        #     :publish_payload_for_dynamic_slcehb
-        # end
       end
 
       # rubocop:disable Metrics/CyclomaticComplexity
