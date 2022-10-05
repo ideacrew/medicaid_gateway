@@ -9,6 +9,7 @@ module Eligibilities
     class ComputeAptcsAndPublish
       include Dry::Monads[:result, :do]
       include BenchmarkEhbPremiumHelper
+      include EventSource::Command
 
       def call(params)
         # { magi_medicaid_application: mm_application }
@@ -70,7 +71,9 @@ module Eligibilities
       end
 
       def construct_and_publish_payload_for_dynamic_slcsp(mm_application)
-        Success({ event: :event_name, payload: mm_application })
+        event("events.magi_medicaid.iap.benchmark_products.determine_slcsp", attributes: mm_application.to_h).success.publish
+
+        Success({ event: :determine_slcsp, payload: mm_application })
       end
     end
   end
