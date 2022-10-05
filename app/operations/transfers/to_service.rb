@@ -65,6 +65,7 @@ module Transfers
       flags << :drop_income_start_on if MedicaidGatewayRegistry.feature_enabled?(:drop_income_start_on)
       flags << :drop_income_end_on if MedicaidGatewayRegistry.feature_enabled?(:drop_income_end_on)
       flags << :drop_vlp_document if MedicaidGatewayRegistry.feature_enabled?(:drop_vlp_document)
+      flags << :post_partum_is_pregnancy if MedicaidGatewayRegistry.feature_enabled?(:post_partum_is_pregnancy)
       Success(payload.merge(:drop_param_flags => flags).to_json)
     rescue ResourceRegistry::Error::FeatureNotFoundError => e
       error_result = {
