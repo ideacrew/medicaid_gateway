@@ -4,6 +4,8 @@ require 'dry/monads'
 require 'dry/monads/do'
 
 module ProcessSubscriberResponses
+  # This Operation processes SlcspDetermined Response.
+  # Computes APTC for tax households with Dynamic SLCSP values.
   class SlcspDetermined
     include Dry::Monads[:result, :do]
 
