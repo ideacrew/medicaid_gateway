@@ -41,9 +41,7 @@ module Eligibilities
                          else
                            # tax_households_without_aptc_eligible_children
                            mm_application.tax_households.select do |thh|
-                             thh.aptc_csr_eligible_members.all? do |aptc_member|
-                               age_on(mm_application.aptc_effective_date, aptc_member.applicant_reference.dob) >= 19
-                             end
+                            thh.aptc_members_aged_19_or_above(mm_application.aptc_effective_date).present?
                            end
                          end
 
