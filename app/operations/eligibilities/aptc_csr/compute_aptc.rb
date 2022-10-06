@@ -32,11 +32,14 @@ module Eligibilities
         @application = params[:application]
         @medicaid_app = params[:medicaid_application]
         @household_benchmark_ehb_premium = params[:household_benchmark_ehb_premium]
-        # BenchmarkHousehold
 
         persisted_aptc_hh = @medicaid_app.aptc_households.detect do |aptc_hh|
-          thhms_person_hbx_ids = @tax_household.tax_household_members.map(&:applicant_reference).flat_map(&:person_hbx_id)
-          aptc_hh.aptc_household_members.map(&:member_identifier) & thhms_person_hbx_ids
+          if aptc_hh.tax_household_identifier.present?
+            @tax_household.hbx_id == aptc_hh.tax_household_identifier
+          else
+            thhms_person_hbx_ids = @tax_household.tax_household_members.map(&:applicant_reference).flat_map(&:person_hbx_id)
+            (aptc_hh.aptc_household_members.map(&:member_identifier) & thhms_person_hbx_ids).present?
+          end
         end
 
         if persisted_aptc_hh.present?

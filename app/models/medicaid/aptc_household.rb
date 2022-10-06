@@ -39,6 +39,9 @@ module Medicaid
     # Computed fpl_percent that is used for APTC/CSR determination
     field :fpl_percent, type: Float
 
+    # Unique Identifier(hbx_id) of the incoming application's tax_household.
+    field :tax_household_identifier, type: String
+
     # eligibility_date is the date for which this determination is applicable for
     field :eligibility_date, type: Date
 

@@ -44,7 +44,8 @@ module Eligibilities
         aptc_household = {
           members: thhms,
           assistance_year: @application.assistance_year,
-          total_household_count: thhms.inject(0) { |sum, hash| sum + hash[:household_count] }
+          total_household_count: thhms.inject(0) { |sum, hash| sum + hash[:household_count] },
+          tax_household_identifier: @tax_household.hbx_id
         }
         Success(aptc_household)
       end
