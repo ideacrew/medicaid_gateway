@@ -16,7 +16,6 @@ module Eligibilities
 
         aptc_household = yield calculate_expected_contribution(params)
         aptc_household = yield calculate_csr(aptc_household)
-        # aptc_household = yield calculate_aptc(aptc_household)
 
         Success(aptc_household)
       end

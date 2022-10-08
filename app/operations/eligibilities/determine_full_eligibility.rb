@@ -60,7 +60,6 @@ module Eligibilities
         update_medicaid_application_with_ahs(result.success[:aptc_household])
         @result_mm_application = result.success[:magi_medicaid_application]
       end
-      update_medicaid_application_with_app_response(@result_mm_application)
       Success(@result_mm_application)
     end
 
@@ -89,10 +88,6 @@ module Eligibilities
       aptc_household.benchmark_calculation_members = benchmark_calculation_members
       aptc_household.aptc_household_members = aptc_household_members
       @medicaid_application.save!
-    end
-
-    def update_medicaid_application_with_app_response(mm_application)
-      @medicaid_application.update_attributes!(application_response_payload: mm_application.to_json)
     end
 
     def init_bcms(aptc_household_entity)

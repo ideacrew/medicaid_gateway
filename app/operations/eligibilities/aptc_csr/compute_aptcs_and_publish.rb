@@ -55,9 +55,17 @@ module Eligibilities
           return result if result.failure?
           @result_mm_application = result.success[:magi_medicaid_application]
         end
-        medicaid_application.update_attributes!(application_response_payload: @result_mm_application.to_json)
+        update_medicaid_application_with_payload(medicaid_application)
 
         Success(@result_mm_application)
+      end
+
+      def update_medicaid_application_with_payload(medicaid_application)
+        if @use_non_dynamic_slcsp
+          medicaid_application.update_attributes!(application_response_payload: @result_mm_application.to_json)
+        else
+          medicaid_application.update_attributes!(dynamic_slcsp_request_payload: @result_mm_application.to_json)
+        end
       end
 
       def determine_event_name_and_publish_payload(mm_application)

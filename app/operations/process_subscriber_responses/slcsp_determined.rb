@@ -11,7 +11,7 @@ module ProcessSubscriberResponses
 
     def call(mm_application_params)
       mm_application       = yield initialize_application(mm_application_params)
-      medicaid_application = yield find_medicaid_application(mm_application)
+      medicaid_application = yield find_and_update_medicaid_application(mm_application)
       mm_application       = yield compute_aptcs(mm_application, medicaid_application)
       event_name           = yield determine_event_name_and_publish_payload(mm_application)
 
@@ -24,10 +24,11 @@ module ProcessSubscriberResponses
       AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(params)
     end
 
-    def find_medicaid_application(mm_application)
+    def find_and_update_medicaid_application(mm_application)
       medicaid_app = ::Medicaid::Application.where(application_identifier: mm_application.hbx_id).last
 
       if medicaid_app.present?
+        medicaid_app.update_attributes!(dynamic_slcsp_response_payload: mm_application.to_json)
         Success(medicaid_app)
       else
         Failure("Unable to find Medicaid Application with given identifier: #{mm_application.hbx_id}")

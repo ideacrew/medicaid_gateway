@@ -17,6 +17,14 @@ module Medicaid
     # Input Application Request Payload that we get from external system for Determination in JSON format
     field :application_request_payload, type: String
 
+    # Dynamic SLCSP Request Payload(Application) in JSON format
+    # Cv3Application - AcaEntities::MagiMedicaid::Application
+    field :dynamic_slcsp_request_payload, type: String
+
+    # Dynamic SLCSP Response Payload(Application) in JSON format
+    # Cv3Application - AcaEntities::MagiMedicaid::Application
+    field :dynamic_slcsp_response_payload, type: String
+
     # Response Application Payload that we will send back to the external system with Full Determination in JSON format
     field :application_response_payload, type: String
 
@@ -37,6 +45,40 @@ module Medicaid
     index({ application_request_payload: 1 })
     index({ medicaid_response_payload: 1 })
     index({ application_identifier: 1, id: 1 })
+
+    # Life Cycle of the Medicaid::Application or Sequence of Events
+    #   1. application_request_received
+    #   2. magi_medicaid_determination_requested
+    #   3. magi_medicaid_determination_received
+    #   4. dynamic_slcsp_requested
+    #   5. dynamic_slcsp_received
+    #   6. application_response_published
+    # Steps 5 and 6 are executed only if Dynamic SLCSP is needed
+
+
+    def application_request_received?
+      application_request_payload.present?
+    end
+
+    def magi_medicaid_determination_requested?
+      medicaid_request_payload.present?
+    end
+
+    def magi_medicaid_determination_received?
+      medicaid_response_payload.present?
+    end
+
+    def dynamic_slcsp_requested?
+      dynamic_slcsp_request_payload.present?
+    end
+
+    def dynamic_slcsp_received?
+      dynamic_slcsp_response_payload.present?
+    end
+
+    def application_response_published?
+      application_response_payload.present?
+    end
 
     def successful?
       return true unless application_response_payload.blank?
