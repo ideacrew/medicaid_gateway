@@ -55,7 +55,6 @@ module Medicaid
     #   6. application_response_published
     # Steps 5 and 6 are executed only if Dynamic SLCSP is needed
 
-
     def application_request_received?
       application_request_payload.present?
     end
