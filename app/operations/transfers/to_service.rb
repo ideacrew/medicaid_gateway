@@ -60,12 +60,20 @@ module Transfers
 
     def add_param_flags(params, transfer_id)
       payload = JSON.parse(params)
-      flags = []
-      flags << :drop_non_ssn_apply_reason if MedicaidGatewayRegistry.feature_enabled?(:drop_non_ssn_apply_reason)
-      flags << :drop_income_start_on if MedicaidGatewayRegistry.feature_enabled?(:drop_income_start_on)
-      flags << :drop_income_end_on if MedicaidGatewayRegistry.feature_enabled?(:drop_income_end_on)
-      flags << :drop_vlp_document if MedicaidGatewayRegistry.feature_enabled?(:drop_vlp_document)
-      Success(payload.merge(:drop_param_flags => flags).to_json)
+      family_flags = {}
+      drop_param_flags = []
+
+      # flags stored on Family level for use in ATP transforms
+      family_flags[:invert_person_association] = true if MedicaidGatewayRegistry.feature_enabled?(:invert_person_association)
+      payload['family'].merge!({family_flags: family_flags}) if family_flags.present?
+
+      # flags for dropping parameters before sending payload to ATP transforms
+      drop_param_flags << :drop_non_ssn_apply_reason if MedicaidGatewayRegistry.feature_enabled?(:drop_non_ssn_apply_reason)
+      drop_param_flags << :drop_income_start_on if MedicaidGatewayRegistry.feature_enabled?(:drop_income_start_on)
+      drop_param_flags << :drop_income_end_on if MedicaidGatewayRegistry.feature_enabled?(:drop_income_end_on)
+      drop_param_flags << :drop_vlp_document if MedicaidGatewayRegistry.feature_enabled?(:drop_vlp_document)
+
+      Success(payload.merge(:drop_param_flags => drop_param_flags).to_json)
     rescue ResourceRegistry::Error::FeatureNotFoundError => e
       error_result = {
         transfer_id: transfer_id,
