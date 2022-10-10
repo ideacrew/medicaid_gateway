@@ -65,7 +65,7 @@ module Transfers
 
       # flags stored on Family level for use in ATP transforms
       family_flags[:invert_person_association] = true if MedicaidGatewayRegistry.feature_enabled?(:invert_person_association)
-      payload['family'].merge!({family_flags: family_flags}) if family_flags.present?
+      payload['family'].merge!({ family_flags: family_flags }) if family_flags.present?
 
       # flags for dropping parameters before sending payload to ATP transforms
       drop_param_flags << :drop_non_ssn_apply_reason if MedicaidGatewayRegistry.feature_enabled?(:drop_non_ssn_apply_reason)
