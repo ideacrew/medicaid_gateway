@@ -3,6 +3,7 @@
 module Subscribers
   module AptcCsrCredits
     module Renewals
+      # This class is to consume renewal events
       class RenewalsSubscriber
         include ::EventSource::Subscriber[amqp: 'enroll.applications.aptc_csr_credits.renewals']
 
