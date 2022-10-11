@@ -212,13 +212,19 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
         allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_income_end_on).and_return(true)
         allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_non_ssn_apply_reason).and_return(true)
         allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_vlp_document).and_return(false)
+        allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:invert_person_association).and_return(true)
+        result_value = Transfers::ToService.new.send(:add_param_flags, aces_hash, transfer_record.id).value!
+        @result_hash = JSON.parse(result_value)
       end
 
-      it 'should add the enabled flags to the payload' do
-        result_value = Transfers::ToService.new.send(:add_param_flags, aces_hash, transfer_record.id).value!
-        result_hash = JSON.parse(result_value)
-        expect(result_hash.keys).to include 'drop_param_flags'
-        expect(result_hash['drop_param_flags']).to eq ['drop_non_ssn_apply_reason', 'drop_income_start_on', 'drop_income_end_on']
+      it 'should add the enabled drop param flags to the payload' do
+        expect(@result_hash.keys).to include 'drop_param_flags'
+        expect(@result_hash['drop_param_flags']).to eq ['drop_non_ssn_apply_reason', 'drop_income_start_on', 'drop_income_end_on']
+      end
+
+      it 'should add the enabled family flags to the payload' do
+        expect(@result_hash['family'].keys).to include 'family_flags'
+        expect(@result_hash['family']['family_flags']['invert_person_association']).to eq true
       end
     end
   end

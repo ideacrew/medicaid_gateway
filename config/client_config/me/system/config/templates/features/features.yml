@@ -37,3 +37,5 @@ registry:
         is_enabled: <%= ENV["DROP_INCOME_END_ON_IS_ENABLED"] || false %>
       - key: :drop_vlp_document
         is_enabled: <%= ENV["DROP_VLP_DOCUMENT_IS_ENABLED"] || false %>
+      - key: :invert_person_association
+        is_enabled: <%= ENV["INVERT_PERSON_ASSOCIATION_IS_ENABLED"] || false %>
