@@ -6,6 +6,8 @@ FactoryBot.define do
     application_request_payload { "{\"us_state\":\"DC\",\"hbx_id\":\"200000123\"}" }
     application_response_payload { "{\"us_state\":\"DC\",\"hbx_id\":\"200000123\"}" }
     medicaid_request_payload { "{\"Applicants\":[{\"Person ID\":95}]}" }
+    dynamic_slcsp_request_payload { "{\"us_state\":\"DC\",\"hbx_id\":\"200000123\"}" }
+    dynamic_slcsp_response_payload { "{\"us_state\":\"DC\",\"hbx_id\":\"200000123\"}" }
     medicaid_response_payload { "{\"Applicants\":[{\"Person ID\":95}]}" }
 
     trait :with_aptc_households do

@@ -55,18 +55,22 @@ RSpec.describe ::Medicaid::AptcHousehold, type: :model do
         assistance_year: Date.today.year,
         fpl: fpl,
         fpl_percent: 256.00,
+        tax_household_identifier: '192837465',
         eligibility_date: Date.today.next_month.beginning_of_month }
     end
     let(:application) { FactoryBot.create(:application, :with_aptc_households) }
 
     before do
-      @aptc_household = Medicaid::AptcHousehold.new(input_params)
-      application.aptc_households << @aptc_household
+      @aptc_household = application.aptc_households.build(input_params)
       application.save!
     end
 
     it 'should be findable' do
       expect(application.reload.aptc_households.find(@aptc_household.id)).to be_a(::Medicaid::AptcHousehold)
+    end
+
+    it 'should store created_at timestamps' do
+      expect(application.aptc_households.pluck(:created_at).compact.count).to eq(2)
     end
 
     it 'should be able to calculate the expected contribution percentage' do

@@ -16,8 +16,8 @@ module Eligibilities
       medicaid_application = yield find_medicaid_application(params)
       mm_application_entity = yield get_magi_medicaid_application(medicaid_application)
       mm_app_with_medicaid_determination = yield add_medicaid_determination_to_mm_application(mm_application_entity)
-      mm_app_with_full_determination = yield determine_all_eligibilities_except_medicaid(mm_app_with_medicaid_determination)
-      result = yield determine_event_name_and_publish_payload(mm_app_with_full_determination)
+      mm_app_with_member_determinations = yield determine_member_eligibilities(mm_app_with_medicaid_determination)
+      result = yield compute_aptcs_and_publish(mm_app_with_member_determinations)
 
       Success(result)
     end
@@ -47,21 +47,25 @@ module Eligibilities
       @medicaid_application.update_attributes!(medicaid_response_payload: @medicaid_response_payload.to_json)
     end
 
-    # Other eligibilities include APTC, CSR, Totally Ineligible & UQHP Eligible
-    def determine_all_eligibilities_except_medicaid(mm_application)
+    # Eligibilities include MagiMedicaid, APTC, CSR, Totally Ineligible & UQHP Eligible
+    def determine_member_eligibilities(mm_application)
       @result_mm_application ||= mm_application
       mm_application.tax_households.each do |mm_thh|
         # Do not determine APTC/CSR if all members are ineligible
         next mm_thh if all_members_are_aptc_csr_ineligible?(mm_thh)
 
-        result = ::Eligibilities::AptcCsr::DetermineEligibility.new.call({ magi_medicaid_application: @result_mm_application,
-                                                                           magi_medicaid_tax_household: mm_thh })
+        result = ::Eligibilities::AptcCsr::DetermineMemberEligibility.new.call({ magi_medicaid_application: @result_mm_application,
+                                                                                 magi_medicaid_tax_household: mm_thh })
         return result if result.failure?
         update_medicaid_application_with_ahs(result.success[:aptc_household])
         @result_mm_application = result.success[:magi_medicaid_application]
       end
-      update_medicaid_application_with_app_response(@result_mm_application)
       Success(@result_mm_application)
+    end
+
+    # Compute APTC and Publish
+    def compute_aptcs_and_publish(mm_application)
+      ::Eligibilities::AptcCsr::ComputeAptcsAndPublish.new.call({ magi_medicaid_application: mm_application })
     end
 
     def all_members_are_aptc_csr_ineligible?(mm_thh)
@@ -74,6 +78,7 @@ module Eligibilities
       end
     end
 
+    # ahs: AptcHouseholds
     def update_medicaid_application_with_ahs(aptc_household_entity)
       benchmark_calculation_members = init_bcms(aptc_household_entity)
       aptc_household_members = init_ahms(aptc_household_entity)
@@ -83,10 +88,6 @@ module Eligibilities
       aptc_household.benchmark_calculation_members = benchmark_calculation_members
       aptc_household.aptc_household_members = aptc_household_members
       @medicaid_application.save!
-    end
-
-    def update_medicaid_application_with_app_response(mm_application)
-      @medicaid_application.update_attributes!(application_response_payload: mm_application.to_json)
     end
 
     def init_bcms(aptc_household_entity)
@@ -106,29 +107,5 @@ module Eligibilities
         ahm_array
       end
     end
-
-    # rubocop:disable Metrics/CyclomaticComplexity
-    def determine_event_name_and_publish_payload(mm_application)
-      peds = mm_application.tax_households.flat_map(&:tax_household_members).map(&:product_eligibility_determination)
-      event_name =
-        if peds.all?(&:is_ia_eligible)
-          :aptc_eligible
-        elsif peds.all?(&:is_medicaid_chip_eligible)
-          :medicaid_chip_eligible
-        elsif peds.all?(&:is_totally_ineligible)
-          :totally_ineligible
-        elsif peds.all?(&:is_magi_medicaid)
-          :magi_medicaid_eligible
-        elsif peds.all?(&:is_uqhp_eligible)
-          :uqhp_eligible
-        else
-          :mixed_determination
-        end
-
-      Eligibilities::PublishDetermination.new.call(mm_application, event_name.to_s)
-
-      Success({ event: event_name, payload: mm_application })
-    end
-    # rubocop:enable Metrics/CyclomaticComplexity
   end
 end

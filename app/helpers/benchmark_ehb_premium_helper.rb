@@ -9,6 +9,8 @@ module BenchmarkEhbPremiumHelper
     MedicaidGatewayRegistry[:atleast_one_silver_plan_donot_cover_pediatric_dental_cost]&.settings(effective_year.to_s.to_sym)&.item
   end
 
+  # SLCEPWPDC: Second Lowest Cost Ehb Premiums With Pediatric Dental Costs
+
   # Non-dynamic calculation of SLCSP:
   #   In states where all health plans cover pediatric dental benefits,
   #   or in households that do not include children under 19 who qualify for APTC,
@@ -18,14 +20,11 @@ module BenchmarkEhbPremiumHelper
   #   In states where not all silver plans cover pediatric dental benefits,
   #  for tax households that include one or more children under the age of 19 who qualify for APTC,
   #  call external system(Enroll) to find the SLCSP value.
+  def use_non_dynamic_slcsp?(mm_application)
+    !slcsapd_enabled?(mm_application.assistance_year) || no_thh_has_aptc_eligible_children?(mm_application)
+  end
 
-  # SLCEPWPDC: Second Lowest Cost Ehb Premiums With Pediatric Dental Costs
-  # def call_external_system_for_slcsepwpdc?(effective_date, members)
-  #   return false unless effective_date.is_a?(Date)
-
-  #   slcsapd_enabled?(effective_date.year) && all_members_aged_19_or_above?(members)
-  # end
-
-  # def all_members_aged_19_or_above?(members)
-  # end
+  def no_thh_has_aptc_eligible_children?(mm_application)
+    mm_application.tax_households.none? { |thh| thh.aptc_members_aged_below_19(mm_application.aptc_effective_date).present? }
+  end
 end

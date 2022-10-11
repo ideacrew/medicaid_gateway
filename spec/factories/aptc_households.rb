@@ -24,6 +24,7 @@ FactoryBot.define do
         aptc_effective_end_on: Date.new(Date.today.year + 1, 10, 31) }
     end
 
+    tax_household_identifier { '192837465' }
     fpl_percent { 256.00 }
     eligibility_date { Date.today.next_month.beginning_of_month }
 
