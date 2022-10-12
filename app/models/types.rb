@@ -79,6 +79,7 @@ module Types
   ].freeze
 
   # Use ResourceRegistry to configure these values
+  # Mark doesn't see value in moving these to RR, so leaving them as hard-coded
   IncomeThresholds = [
     {
       2020 => {
@@ -88,7 +89,7 @@ module Types
     },
     {
       2021 => {
-        earned_income: BigDecimal('12_400'),
+        earned_income: BigDecimal('12_200'),
         unearned_income: BigDecimal('1_100')
       }
     },
@@ -100,7 +101,7 @@ module Types
     },
     {
       2023 => {
-        earned_income: BigDecimal('12_400'),
+        earned_income: BigDecimal('12_500'),
         unearned_income: BigDecimal('1_100')
       }
     }
