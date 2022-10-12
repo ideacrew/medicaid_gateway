@@ -24,7 +24,7 @@ describe Eligibilities::AptcCsr::CalculateFplPercentage do
       magi_medicaid_application: input_application }
   end
 
-  let(:eligibility) { Eligibilities::AptcCsr::DetermineEligibility.new.call(input_params) }
+  let(:eligibility) { Eligibilities::AptcCsr::DetermineMemberEligibility.new.call(input_params) }
 
   let(:fpl_data) { ::Types::FederalPovertyLevels.detect { |fpl_hash| fpl_hash[:medicaid_year] == Date.today.year - 1 } }
 

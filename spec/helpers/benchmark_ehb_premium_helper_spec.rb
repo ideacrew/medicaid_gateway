@@ -3,9 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe BenchmarkEhbPremiumHelper, type: :helper do
-  describe '#slcsapd_enabled?' do
-    let(:effective_year) { Date.today.year }
+  let(:effective_year) { Date.today.year }
 
+  describe '#slcsapd_enabled?' do
     before do
       MedicaidGatewayRegistry[:atleast_one_silver_plan_donot_cover_pediatric_dental_cost].feature.stub(:is_enabled).and_return(top_level_config)
       MedicaidGatewayRegistry[:atleast_one_silver_plan_donot_cover_pediatric_dental_cost].settings(
@@ -46,6 +46,40 @@ RSpec.describe BenchmarkEhbPremiumHelper, type: :helper do
 
       it 'should return non truthy value' do
         expect(helper.slcsapd_enabled?(2019)).not_to be_truthy
+      end
+    end
+  end
+
+  describe '#use_non_dynamic_slcsp?' do
+    before do
+      MedicaidGatewayRegistry[:atleast_one_silver_plan_donot_cover_pediatric_dental_cost].feature.stub(:is_enabled).and_return(top_level_config)
+      MedicaidGatewayRegistry[:atleast_one_silver_plan_donot_cover_pediatric_dental_cost].settings(
+        effective_year.to_s.to_sym
+      ).stub(:item).and_return(year_level_config)
+    end
+
+    let(:mm_application) { OpenStruct.new(tax_households: [tax_household], aptc_effective_date: Date.today, assistance_year: effective_year) }
+    let(:tax_household) { OpenStruct.new(aptc_csr_eligible_members: [OpenStruct.new(applicant_reference: OpenStruct.new(dob: dob))]) }
+
+    context 'RR config turned OFF' do
+      let(:top_level_config) { false }
+      let(:year_level_config) { false }
+      let(:dob) { Date.today - 15.years }
+
+      it 'should return true' do
+        expect(helper.use_non_dynamic_slcsp?(mm_application)).to be_truthy
+      end
+    end
+
+    context 'RR config turned ON and tax_households do not have aptc_csr eligible children' do
+      let(:top_level_config) { true }
+      let(:year_level_config) { true }
+      let(:dob) { Date.today - 19.years }
+
+      before { allow(helper).to receive(:no_thh_has_aptc_eligible_children?).with(mm_application).and_return(true) }
+
+      it 'should return true' do
+        expect(helper.use_non_dynamic_slcsp?(mm_application)).to be_truthy
       end
     end
   end

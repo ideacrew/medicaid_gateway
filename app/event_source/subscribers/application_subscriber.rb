@@ -30,22 +30,5 @@ module Subscribers
       ack(delivery_info.delivery_tag)
       logger.debug "application_submitted_subscriber_error: baacktrace: #{e.backtrace}; acked (nacked)"
     end
-
-    # subscribe(:on_enroll_iap_applications) do |_delivery_info, _metadata, request|
-    #   payload = JSON.parse(request, :symbolize_names => true)
-    #   result = ::Eligibilities::Medicaid::RequestDetermination.new.call(payload)
-
-    #   message = if result.success?
-    #               result.success
-    #             else
-    #               result.failure.errors.to_h
-    #             end
-
-    #   # TODO: log message
-    #   puts "application_submitted_subscriber_message: #{message}"
-    # rescue StandardError => e
-    #   # TODO: log error message
-    #   puts "application_submitted_subscriber_error: #{e.backtrace}"
-    # end
   end
 end

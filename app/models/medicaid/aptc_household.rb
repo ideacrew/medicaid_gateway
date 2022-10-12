@@ -39,11 +39,14 @@ module Medicaid
     # Computed fpl_percent that is used for APTC/CSR determination
     field :fpl_percent, type: Float
 
+    # Unique Identifier(hbx_id) of the incoming application's tax_household.
+    field :tax_household_identifier, type: String
+
     # eligibility_date is the date for which this determination is applicable for
     field :eligibility_date, type: Date
 
-    embeds_many :benchmark_calculation_members, class_name: '::Medicaid::BenchmarkCalculationMember'
-    embeds_many :aptc_household_members, class_name: '::Medicaid::AptcHouseholdMember'
+    embeds_many :benchmark_calculation_members, class_name: '::Medicaid::BenchmarkCalculationMember', cascade_callbacks: true
+    embeds_many :aptc_household_members, class_name: '::Medicaid::AptcHouseholdMember', cascade_callbacks: true
     accepts_nested_attributes_for :benchmark_calculation_members, :aptc_household_members
 
     embedded_in :application, class_name: '::Medicaid::Application'

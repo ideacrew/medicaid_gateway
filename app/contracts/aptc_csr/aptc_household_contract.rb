@@ -18,7 +18,6 @@ module AptcCsr
       required(:total_household_count).filled(:integer)
       required(:annual_tax_household_income).filled(::Types::Money)
       optional(:csr_annual_income_limit).maybe(::Types::Money)
-      # required(:are_all_members_medicaid_eligible).filled(:bool)
       optional(:is_aptc_calculated).maybe(:bool)
       optional(:maximum_aptc_amount).maybe(::Types::Money)
       optional(:total_expected_contribution_amount).maybe(::Types::Money)
@@ -28,6 +27,7 @@ module AptcCsr
       required(:fpl_percent).filled(::Types::Money)
       optional(:benchmark_calculation_members).array(BenchmarkCalculationMemberContract.params)
       required(:members).array(MemberContract.params)
+      optional(:tax_household_identifier).maybe(:string)
 
       required(:eligibility_date).filled(:date)
     end

@@ -6,6 +6,7 @@ require "#{Rails.root}/spec/shared_contexts/eligibilities/magi_medicaid_applicat
 
 RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
   include_context 'setup magi_medicaid application with two applicants'
+  let(:application) { FactoryBot.create(:application)}
 
   context 'associations' do
     context 'embeds_many :aptc_households' do
@@ -43,7 +44,6 @@ RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
   end
 
   context 'with a detailed application response payload' do
-    let(:application) { FactoryBot.create(:application)}
     let(:magi_medicaid_application_json) do
       application = magi_medicaid_application
       # prepare a non-applicant for testing
@@ -134,6 +134,96 @@ RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
 
     it 'should find the applicant age from the application request payload' do
       expect(application.age_of_applicant_for(@person_hbx_id)).to eq("45")
+    end
+  end
+
+  describe '#application_request_received?' do
+    context 'with application_request_payload' do
+      it 'should return true' do
+        expect(application.application_request_received?).to be_truthy
+      end
+    end
+
+    context 'without application_request_payload' do
+      it 'should return false' do
+        application.update_attribute(:application_request_payload, nil)
+        expect(application.reload.application_request_received?).to be_falsey
+      end
+    end
+  end
+
+  describe '#magi_medicaid_determination_requested?' do
+    context 'with medicaid_request_payload' do
+      it 'should return true' do
+        expect(application.magi_medicaid_determination_requested?).to be_truthy
+      end
+    end
+
+    context 'without medicaid_request_payload' do
+      it 'should return false' do
+        application.update_attribute(:medicaid_request_payload, nil)
+        expect(application.reload.magi_medicaid_determination_requested?).to be_falsey
+      end
+    end
+  end
+
+  describe '#magi_medicaid_determination_received?' do
+    context 'with medicaid_response_payload' do
+      it 'should return true' do
+        expect(application.magi_medicaid_determination_received?).to be_truthy
+      end
+    end
+
+    context 'without medicaid_response_payload' do
+      it 'should return false' do
+        application.update_attribute(:medicaid_response_payload, nil)
+        expect(application.reload.magi_medicaid_determination_received?).to be_falsey
+      end
+    end
+  end
+
+  describe '#dynamic_slcsp_requested?' do
+    context 'with dynamic_slcsp_request_payload' do
+      it 'should return true' do
+        expect(application.dynamic_slcsp_requested?).to be_truthy
+      end
+    end
+
+    context 'without dynamic_slcsp_request_payload' do
+      it 'should return false' do
+        application.update_attribute(:dynamic_slcsp_request_payload, nil)
+        expect(application.reload.dynamic_slcsp_requested?).to be_falsey
+      end
+    end
+  end
+
+  describe '#dynamic_slcsp_received?' do
+    context 'with dynamic_slcsp_response_payload' do
+      it 'should return true' do
+        expect(application.dynamic_slcsp_received?).to be_truthy
+      end
+    end
+
+    context 'without dynamic_slcsp_response_payload' do
+      it 'should return false' do
+        application.update_attribute(:dynamic_slcsp_response_payload, nil)
+        expect(application.reload.dynamic_slcsp_received?).to be_falsey
+      end
+    end
+  end
+
+  describe '#application_response_published?' do
+    context 'with application_response_payload' do
+      it 'should return true' do
+        expect(application.application_response_published?).to be_truthy
+      end
+    end
+
+    context 'without application_response_payload' do
+      it 'should return false' do
+        application.update_attribute(:application_response_payload, nil)
+        expect(application.reload.application_response_published?).to be_falsey
+      end
     end
   end
 end
