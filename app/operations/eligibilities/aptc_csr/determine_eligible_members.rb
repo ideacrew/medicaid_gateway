@@ -116,7 +116,10 @@ module Eligibilities
         esi_benefits = applicant.eligible_benefit_esis
         return true if esi_benefits.blank?
         return true unless esi_benefits.any? { |benefit| benefit_coverage_covers?(benefit) }
-        esi_benefits.select { |benefit| benefit_coverage_covers?(benefit) }.each do |esi_benefit|
+        effective_esi_benefits = esi_benefits.select { |benefit| benefit_coverage_covers?(benefit) }
+        return true if effective_esi_benefits.blank?
+
+        effective_esi_benefits.all? do |esi_benefit|
           esi_rules_satisfied?(applicant, esi_benefit)
         end
       end
@@ -152,7 +155,7 @@ module Eligibilities
           aptc_hh_member[:csr_eligible] = false
           rels = @application.spouse_relationships(applicant)
           rels.each do |relation|
-            spouse_member = matching_aptc_member(relation.applicant_reference.person_hbx_id)
+            spouse_member = matching_aptc_member(relation.relative_reference.person_hbx_id)
             spouse_member[:aptc_eligible] = false
             spouse_member[:csr_eligible] = false
           end
@@ -281,7 +284,6 @@ module Eligibilities
       def all_ichra_affordable?(applicant)
         monthly_premium = monthly_lcsp_premium(applicant)
 
-        # TODO: Update ichra_benefits method correctly
         applicant.ichra_benefits.all? do |ichra_benefit|
           ichra_benefit_affordable?(ichra_benefit, monthly_premium)
         end
@@ -299,7 +301,6 @@ module Eligibilities
       def all_qsehra_affordable?(applicant)
         monthly_premium = monthly_lcsp_premium(applicant)
 
-        # TODO: Update qsehra_benefits method correctly
         applicant.qsehra_benefits.all? do |qsehra_benefit|
           qsehra_benefit_affordable?(qsehra_benefit, monthly_premium)
         end
@@ -333,7 +334,3 @@ module Eligibilities
     # rubocop:enable Metrics/ClassLength
   end
 end
-
-# TODO
-#   1. Update ichra_benefits method correctly
-#   2. Update qsehra_benefits method correctly
