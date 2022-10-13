@@ -5,7 +5,7 @@ module Events
     module Applications
       module AptcCsrCredits
         module Renewals
-          class DeterminedUqhpeligible < EventSource::Event
+          class DeterminedUqhpEligible < EventSource::Event
             publisher_path 'publishers.magi_medicaid.applications.aptc_csr_credits.renewals.renewals_determination_publisher'
           end
         end
