@@ -15,9 +15,9 @@ module Eligibilities
 
     # @option opts [AcaEntities::MagiMedicaid::Application] :mm_application
     # @return [Dry::Monads::Result]
-    def call(mm_application)
+    def call(mm_application, is_renewal = nil)
       event_name = yield determine_event(mm_application)
-      event      = yield build_event(mm_application, event_name)
+      event      = yield build_event(mm_application, event_name, is_renewal)
       _result    = yield publish_event(event)
 
       Success({ event: event_name, payload: mm_application })
@@ -48,10 +48,16 @@ module Eligibilities
     end
     # rubocop:enable Metrics/CyclomaticComplexity
 
-    def build_event(app, event_name)
+    def build_event(app, event_name, is_renewal)
       event_key = "determined_#{event_name}"
-      result = event("events.magi_medicaid.mitc.eligibilities.#{event_key}", attributes: app.to_h)
-      logger.info "MedicaidGateway Reponse Publisher to enroll & polypress, event_key: #{event_key}, attributes: #{app.to_h}, result: #{result}"
+      if is_renewal.present?
+        result = event("events.magi_medicaid.applications.aptc_csr_credits.renewals.#{event_key}", attributes: app.to_h)
+        logger.info "MedicaidGateway Reponse Publisher to enroll, event_key: #{event_key}, attributes: #{app.to_h}, result: #{result}"
+      else
+        result = event("events.magi_medicaid.mitc.eligibilities.#{event_key}", attributes: app.to_h)
+        logger.info "MedicaidGateway Reponse Publisher to enroll & polypress, event_key: #{event_key}, attributes: #{app.to_h}, result: #{result}"
+      end
+
       logger.info('-' * 100)
       result
     end

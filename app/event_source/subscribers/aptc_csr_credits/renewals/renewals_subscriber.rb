@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Subscribers
   module AptcCsrCredits
     module Renewals
@@ -9,7 +7,7 @@ module Subscribers
 
         subscribe(:on_enroll_applications_aptc_csr_credits_renewals) do |delivery_info, _metadata, response|
           payload = JSON.parse(response, :symbolize_names => true)
-          result = ::Eligibilities::Medicaid::RequestDetermination.new.call(payload)
+          result = ::Eligibilities::Medicaid::RequestDetermination.new.call(payload, is_renewal = true)
 
           if result.success?
             ack(delivery_info.delivery_tag)

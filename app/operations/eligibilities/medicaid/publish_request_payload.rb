@@ -12,10 +12,11 @@ module Eligibilities
 
       # @param [Hash] opts The options to publishing the medicaid request payload
       # @option opts [::AcaEntities::MagiMedicaid::Application] :mm_application
+      # @option opts [::AcaEntities::MagiMedicaid::Application] :is_renewal
       # @return [Dry::Monads::Result]
-      def call(mm_application)
+      def call(mm_application, is_renewal = nil)
         medicaid_service = yield determine_service(mm_application)
-        application = yield generate_and_publish_payload(medicaid_service)
+        application = yield generate_and_publish_payload(medicaid_service, is_renewal)
 
         Success(application)
       end
@@ -31,7 +32,7 @@ module Eligibilities
         Success(:mitc_service)
       end
 
-      def generate_and_publish_payload(_medicaid_service)
+      def generate_and_publish_payload(_medicaid_service, is_renewal)
         # case medicaid_service
         # when :mitc_service
         #   ::MitcService::GenerateAndPublishPayload(@mm_application)
@@ -39,7 +40,7 @@ module Eligibilities
         #   ::OtherService::GenerateAndPublishPayload(@mm_application)
         # else
         # end
-        ::MitcService::GenerateAndPublishPayload.new.call(@mm_application)
+        ::MitcService::GenerateAndPublishPayload.new.call(@mm_application, is_renewal)
       end
     end
   end

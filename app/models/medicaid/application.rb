@@ -36,6 +36,10 @@ module Medicaid
     # For Example: In DC's case the external system is MitC
     field :medicaid_response_payload, type: String
 
+    # Application type (renewal or regular), helps to route the determined application to proper event source channel
+    # For Example: In OE period, need to know the type of application to route to the respective queue
+    field :is_renewal, type: Boolean
+
     embeds_many :aptc_households, class_name: '::Medicaid::AptcHousehold', cascade_callbacks: true
     accepts_nested_attributes_for :aptc_households
 
