@@ -5,6 +5,7 @@ require "#{Rails.root}/spec/shared_contexts/eligibilities/magi_medicaid_applicat
 Dir["#{Rails.root}/spec/shared_contexts/eligibilities/cms/me_simple_scenarios/*.rb"].sort.each { |file| require file }
 Dir["#{Rails.root}/spec/shared_contexts/eligibilities/cms/me_complex_scenarios/*.rb"].sort.each { |file| require file }
 Dir["#{Rails.root}/spec/shared_contexts/eligibilities/cms/me_test_scenarios/*.rb"].sort.each { |file| require file }
+Dir["#{Rails.root}/spec/shared_contexts/eligibilities/esi_affordability/*.rb"].sort.each { |file| require file }
 require 'aca_entities/magi_medicaid/contracts/create_federal_poverty_level_contract'
 require 'aca_entities/magi_medicaid/contracts/federal_poverty_level_contract'
 require 'aca_entities/magi_medicaid/federal_poverty_level'
@@ -1170,6 +1171,240 @@ RSpec.describe ::Eligibilities::Medicaid::RequestDetermination, dbclean: :after_
     # A is spouse to B, C is spouse to D and both C, D are tax dependents to A
     context 'cms me_test_scenarios test_14 state ME' do
       include_context 'cms ME me_test_scenarios test_14'
+
+      before do
+        @result = subject.call(input_application)
+        @application = @result.success
+      end
+
+      let(:medicaid_request_payload) do
+        ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
+      end
+
+      it 'should create only one Medicaid::Application object with given hbx_id' do
+        expect(::Medicaid::Application.where(application_identifier: application_entity.hbx_id).count).to eq(1)
+      end
+
+      it 'should return success' do
+        expect(@result).to be_success
+      end
+
+      it 'should return Medicaid::Application persistence object' do
+        expect(@application).to be_a(::Medicaid::Application)
+      end
+
+      it 'should create Medicaid::Application persistence object' do
+        expect(@application.persisted?).to be_truthy
+      end
+
+      it 'should store application_request_payload' do
+        expect(@application.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should store medicaid_request_payload' do
+        expect(@application.medicaid_request_payload).not_to be_nil
+        expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+    end
+
+    # ESI affordability test_1_10103187
+    context 'esi_affordability test_1_10103187' do
+      include_context 'esi_affordability test_1_10103187'
+
+      before do
+        @result = subject.call(input_application)
+        @application = @result.success
+      end
+
+      let(:medicaid_request_payload) do
+        ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
+      end
+
+      it 'should create only one Medicaid::Application object with given hbx_id' do
+        expect(::Medicaid::Application.where(application_identifier: application_entity.hbx_id).count).to eq(1)
+      end
+
+      it 'should return success' do
+        expect(@result).to be_success
+      end
+
+      it 'should return Medicaid::Application persistence object' do
+        expect(@application).to be_a(::Medicaid::Application)
+      end
+
+      it 'should create Medicaid::Application persistence object' do
+        expect(@application.persisted?).to be_truthy
+      end
+
+      it 'should store application_request_payload' do
+        expect(@application.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should store medicaid_request_payload' do
+        expect(@application.medicaid_request_payload).not_to be_nil
+        expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+    end
+
+    # ESI affordability test_10103188
+    context 'esi_affordability test_10103188' do
+      include_context 'esi_affordability test_10103188'
+
+      before do
+        @result = subject.call(input_application)
+        @application = @result.success
+      end
+
+      let(:medicaid_request_payload) do
+        ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
+      end
+
+      it 'should create only one Medicaid::Application object with given hbx_id' do
+        expect(::Medicaid::Application.where(application_identifier: application_entity.hbx_id).count).to eq(1)
+      end
+
+      it 'should return success' do
+        expect(@result).to be_success
+      end
+
+      it 'should return Medicaid::Application persistence object' do
+        expect(@application).to be_a(::Medicaid::Application)
+      end
+
+      it 'should create Medicaid::Application persistence object' do
+        expect(@application.persisted?).to be_truthy
+      end
+
+      it 'should store application_request_payload' do
+        expect(@application.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should store medicaid_request_payload' do
+        expect(@application.medicaid_request_payload).not_to be_nil
+        expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+    end
+
+    # ESI affordability test_10103189
+    context 'esi_affordability test_10103189' do
+      include_context 'esi_affordability test_10103189'
+
+      before do
+        @result = subject.call(input_application)
+        @application = @result.success
+      end
+
+      let(:medicaid_request_payload) do
+        ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
+      end
+
+      it 'should create only one Medicaid::Application object with given hbx_id' do
+        expect(::Medicaid::Application.where(application_identifier: application_entity.hbx_id).count).to eq(1)
+      end
+
+      it 'should return success' do
+        expect(@result).to be_success
+      end
+
+      it 'should return Medicaid::Application persistence object' do
+        expect(@application).to be_a(::Medicaid::Application)
+      end
+
+      it 'should create Medicaid::Application persistence object' do
+        expect(@application.persisted?).to be_truthy
+      end
+
+      it 'should store application_request_payload' do
+        expect(@application.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should store medicaid_request_payload' do
+        expect(@application.medicaid_request_payload).not_to be_nil
+        expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+    end
+
+    # ESI affordability test_10103192
+    context 'esi_affordability test_10103192' do
+      include_context 'esi_affordability test_10103192'
+
+      before do
+        @result = subject.call(input_application)
+        @application = @result.success
+      end
+
+      let(:medicaid_request_payload) do
+        ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
+      end
+
+      it 'should create only one Medicaid::Application object with given hbx_id' do
+        expect(::Medicaid::Application.where(application_identifier: application_entity.hbx_id).count).to eq(1)
+      end
+
+      it 'should return success' do
+        expect(@result).to be_success
+      end
+
+      it 'should return Medicaid::Application persistence object' do
+        expect(@application).to be_a(::Medicaid::Application)
+      end
+
+      it 'should create Medicaid::Application persistence object' do
+        expect(@application.persisted?).to be_truthy
+      end
+
+      it 'should store application_request_payload' do
+        expect(@application.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should store medicaid_request_payload' do
+        expect(@application.medicaid_request_payload).not_to be_nil
+        expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+    end
+
+    # ESI affordability test_10103191
+    context 'esi_affordability test_10103191' do
+      include_context 'esi_affordability test_10103191'
+
+      before do
+        @result = subject.call(input_application)
+        @application = @result.success
+      end
+
+      let(:medicaid_request_payload) do
+        ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(application_entity).success
+      end
+
+      it 'should create only one Medicaid::Application object with given hbx_id' do
+        expect(::Medicaid::Application.where(application_identifier: application_entity.hbx_id).count).to eq(1)
+      end
+
+      it 'should return success' do
+        expect(@result).to be_success
+      end
+
+      it 'should return Medicaid::Application persistence object' do
+        expect(@application).to be_a(::Medicaid::Application)
+      end
+
+      it 'should create Medicaid::Application persistence object' do
+        expect(@application.persisted?).to be_truthy
+      end
+
+      it 'should store application_request_payload' do
+        expect(@application.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should store medicaid_request_payload' do
+        expect(@application.medicaid_request_payload).not_to be_nil
+        expect(@application.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+    end
+
+    # ESI affordability test_10103190
+    context 'esi_affordability test_10103190' do
+      include_context 'esi_affordability test_10103190'
 
       before do
         @result = subject.call(input_application)

@@ -6,6 +6,7 @@ Dir["#{Rails.root}/spec/shared_contexts/eligibilities/cms/me_simple_scenarios/*.
 Dir["#{Rails.root}/spec/shared_contexts/eligibilities/cms/me_complex_scenarios/*.rb"].sort.each { |file| require file }
 Dir["#{Rails.root}/spec/shared_contexts/eligibilities/cms/me_test_scenarios/*.rb"].sort.each { |file| require file }
 Dir["#{Rails.root}/spec/shared_contexts/eligibilities/dc_test_scenarios/*.rb"].sort.each { |file| require file }
+Dir["#{Rails.root}/spec/shared_contexts/eligibilities/esi_affordability/*.rb"].sort.each { |file| require file }
 require 'aca_entities/magi_medicaid/contracts/create_federal_poverty_level_contract'
 require 'aca_entities/magi_medicaid/contracts/federal_poverty_level_contract'
 require 'aca_entities/magi_medicaid/federal_poverty_level'
@@ -2882,6 +2883,200 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
 
       it 'should match with medicaid response payload' do
         expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+    end
+  end
+
+  # ESI affordability test_1_10103187
+  context 'esi_affordability test_1_10103187' do
+    include_context 'esi_affordability test_1_10103187'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @peds = @application.tax_households.first.tax_household_members.flat_map(&:product_eligibility_determination)
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    context 'for product_eligibility_determinations' do
+      it 'should return uqhp eligible for primary' do
+        expect(@peds.first.is_uqhp_eligible).to eq(true)
+      end
+
+      it 'should return aptc eligible for spouse' do
+        expect(@peds[1].is_ia_eligible).to eq(true)
+      end
+
+      it 'should return aptc eligible for dependent' do
+        expect(@peds[2].is_ia_eligible).to eq(true)
+      end
+    end
+
+    context 'for persistence' do
+      before do
+        medicaid_app.reload
+      end
+
+      it 'should match with hbx_id' do
+        expect(medicaid_app.application_identifier).to eq(application_entity.hbx_id)
+      end
+
+      it 'should match with application request payload' do
+        expect(medicaid_app.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should match with application response payload' do
+        expect(medicaid_app.application_response_payload).to eq(@application.to_json)
+      end
+
+      it 'should match with medicaid request payload' do
+        expect(medicaid_app.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+    end
+  end
+
+  # ESI affordability test_10103188
+  context 'esi_affordability test_10103188' do
+    include_context 'esi_affordability test_10103188'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @peds = @application.tax_households.first.tax_household_members.flat_map(&:product_eligibility_determination)
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    context 'for product_eligibility_determinations' do
+      it 'should return uqhp eligible for primary' do
+        expect(@peds.first.is_uqhp_eligible).to eq(true)
+      end
+
+      it 'should return uqhp eligible for spouse' do
+        expect(@peds[1].is_uqhp_eligible).to eq(true)
+      end
+
+      it 'should return aptc eligible for dependent' do
+        expect(@peds[2].is_ia_eligible).to eq(true)
+      end
+    end
+
+    context 'for persistence' do
+      before do
+        medicaid_app.reload
+      end
+
+      it 'should match with hbx_id' do
+        expect(medicaid_app.application_identifier).to eq(application_entity.hbx_id)
+      end
+
+      it 'should match with application request payload' do
+        expect(medicaid_app.application_request_payload).to eq(input_application.to_json)
+      end
+
+      it 'should match with application response payload' do
+        expect(medicaid_app.application_response_payload).to eq(@application.to_json)
+      end
+
+      it 'should match with medicaid request payload' do
+        expect(medicaid_app.medicaid_request_payload).to eq(medicaid_request_payload.to_json)
+      end
+
+      it 'should match with medicaid response payload' do
+        expect(medicaid_app.medicaid_response_payload).to eq(mitc_response.to_json)
+      end
+    end
+  end
+
+  # ESI affordability test_10103189
+  context 'esi_affordability test_10103189' do
+    include_context 'esi_affordability test_10103189'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @peds = @application.tax_households.first.tax_household_members.flat_map(&:product_eligibility_determination)
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    context 'for product_eligibility_determinations' do
+      it 'should return uqhp determinations for all members' do
+        expect(@peds.map(&:is_uqhp_eligible)).to eq([true, true, true])
+      end
+    end
+  end
+
+  # ESI affordability test_10103192
+  context 'esi_affordability test_10103192' do
+    include_context 'esi_affordability test_10103192'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @peds = @application.tax_households.first.tax_household_members.flat_map(&:product_eligibility_determination)
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    context 'for product_eligibility_determinations' do
+      it 'should return aqhp determinations for all members' do
+        expect(@peds.map(&:is_ia_eligible)).to eq([true, true, true])
+      end
+    end
+  end
+
+  # ESI affordability test_10103191
+  context 'esi_affordability test_10103191' do
+    include_context 'esi_affordability test_10103191'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @peds = @application.tax_households.first.tax_household_members.flat_map(&:product_eligibility_determination)
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    context 'for product_eligibility_determinations' do
+      it 'should return aqhp determinations for all members' do
+        expect(@peds.map(&:is_ia_eligible)).to eq([true, true, true])
+      end
+    end
+  end
+
+  # ESI affordability test_10103190
+  context 'esi_affordability test_10103190' do
+    include_context 'esi_affordability test_10103190'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @peds = @application.tax_households.first.tax_household_members.flat_map(&:product_eligibility_determination)
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    context 'for product_eligibility_determinations' do
+      it 'should return aqhp determinations for all members' do
+        expect(@peds.map(&:is_ia_eligible)).to eq([true, true, true])
       end
     end
   end
