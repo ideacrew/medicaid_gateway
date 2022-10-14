@@ -6,6 +6,7 @@ RSpec.shared_context 'esi_affordability test_10103192', :shared_context => :meta
   let(:oe_start_on) { today.beginning_of_month }
   let(:start_of_year) { today.beginning_of_year }
   let(:aptc_effective_date) { Date.new(assistance_year) }
+  let(:health_plan_meets_mvs_and_affordable) { false }
 
   let(:app_params) do
     {
@@ -139,7 +140,8 @@ RSpec.shared_context 'esi_affordability test_10103192', :shared_context => :meta
           "start_on" => start_of_year.to_s,
           "end_on" => nil,
           "submitted_at" => start_of_year.to_s,
-          "hra_kind" => nil
+          "hra_kind" => nil,
+          "health_plan_meets_mvs_and_affordable" => health_plan_meets_mvs_and_affordable
         }],
         "deductions" => [],
         "is_medicare_eligible" => false,
