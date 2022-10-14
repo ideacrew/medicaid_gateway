@@ -75,4 +75,56 @@ describe Applications::CreateOrUpdate, dbclean: :after_each do
                                                                             "application_identifier must be a string"]
     end
   end
+
+  context 'with required data and renewal flag' do
+    context 'when is_renewal is true' do
+      before do
+        @result = subject.call({ application_identifier: application_request_payload.to_h[:hbx_id].to_s,
+                                 application_request_payload: application_request_payload.to_json,
+                                 medicaid_request_payload: medicaid_request_payload.to_json,
+                                 is_renewal: true })
+      end
+
+      it 'should return success' do
+        expect(@result).to be_success
+      end
+
+      it 'should create only one Application' do
+        expect(::Medicaid::Application.all.count).to eq(1)
+      end
+
+      it 'should persisted the data' do
+        expect(@result.success.persisted?).to eq true
+      end
+
+      it 'should return true for is_renewal' do
+        expect(@result.success.is_renewal).to eq true
+      end
+    end
+
+    context 'when is_renewal is nil' do
+      before do
+        @result = subject.call({ application_identifier: application_request_payload.to_h[:hbx_id].to_s,
+                                 application_request_payload: application_request_payload.to_json,
+                                 medicaid_request_payload: medicaid_request_payload.to_json,
+                                 is_renewal: nil })
+      end
+
+      it 'should return success' do
+        expect(@result).to be_success
+      end
+
+      it 'should create only one Application' do
+        expect(::Medicaid::Application.all.count).to eq(1)
+      end
+
+      it 'should persisted the data' do
+        expect(@result.success.persisted?).to eq true
+      end
+
+      it 'should return nil for is_renewal' do
+        expect(@result.success.is_renewal).to eq nil
+      end
+    end
+  end
 end

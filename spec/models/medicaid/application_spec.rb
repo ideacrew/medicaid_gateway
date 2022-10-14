@@ -25,21 +25,52 @@ RSpec.describe ::Medicaid::Application, type: :model, dbclean: :after_each do
   end
 
   context 'valid params' do
-    let(:input_params) do
-      { application_identifier: '100001',
-        application_request_payload: "{\"us_state\":\"DC\",\"hbx_id\":\"200000123\"}",
-        application_response_payload: "{\"us_state\":\"DC\",\"hbx_id\":\"200000123\"}",
-        medicaid_request_payload: "{\"Applicants\":[{\"Person ID\":95}]}",
-        medicaid_response_payload: "{\"Applicants\":[{\"Person ID\":95}]}" }
+    context 'when is_renewal is nil' do
+      let(:input_params) do
+        { application_identifier: '100001',
+          application_request_payload: "{\"us_state\":\"DC\",\"hbx_id\":\"200000123\"}",
+          application_response_payload: "{\"us_state\":\"DC\",\"hbx_id\":\"200000123\"}",
+          medicaid_request_payload: "{\"Applicants\":[{\"Person ID\":95}]}",
+          medicaid_response_payload: "{\"Applicants\":[{\"Person ID\":95}]}",
+          is_renewal: nil }
+      end
+
+      before do
+        @application = described_class.new(input_params)
+        @application.save!
+      end
+
+      it 'should be findable' do
+        expect(described_class.find(@application.id)).to be_a(::Medicaid::Application)
+      end
+
+      it 'should return nil for is_renewal attribute' do
+        expect(described_class.find(@application.id).is_renewal).to eq nil
+      end
     end
 
-    before do
-      @application = described_class.new(input_params)
-      @application.save!
-    end
+    context 'when is_renewal is true' do
+      let(:input_params) do
+        { application_identifier: '100001',
+          application_request_payload: "{\"us_state\":\"DC\",\"hbx_id\":\"200000123\"}",
+          application_response_payload: "{\"us_state\":\"DC\",\"hbx_id\":\"200000123\"}",
+          medicaid_request_payload: "{\"Applicants\":[{\"Person ID\":95}]}",
+          medicaid_response_payload: "{\"Applicants\":[{\"Person ID\":95}]}",
+          is_renewal: true }
+      end
 
-    it 'should be findable' do
-      expect(described_class.find(@application.id)).to be_a(::Medicaid::Application)
+      before do
+        @application = described_class.new(input_params)
+        @application.save!
+      end
+
+      it 'should be findable' do
+        expect(described_class.find(@application.id)).to be_a(::Medicaid::Application)
+      end
+
+      it 'should return nil for is_renewal attribute' do
+        expect(described_class.find(@application.id).is_renewal).to be_truthy
+      end
     end
   end
 
