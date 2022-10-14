@@ -46,16 +46,39 @@ module Transfers
     def validate_applicants(params, transfer_id)
       payload = JSON.parse(params)
       applicants = payload.dig("family", "magi_medicaid_applications", "applicants")
-      result = applicants&.each_with_object([]) do |applicant, collect|
-        collect << applicant["is_applying_coverage"]
-      end
-      return Success("Valid applicants.") if result&.include?(true)
+      failure_messages = []
+      failure_messages << check_applicants_applying_for_coverage(applicants)
+      failure_messages << check_applicants_vlp_document(applicants)
+      failure_messages.compact!.flatten!
+      return Success("Valid applicants.") if failure_messages.blank?
 
       error_result = {
         transfer_id: transfer_id,
-        failure: "Application does not contain any applicants applying for coverage."
+        failure: failure_messages.to_s
       }
       Failure(error_result)
+    end
+
+    def check_applicants_applying_for_coverage(applicants)
+      failure_message = "Application does not contain any applicants applying for coverage."
+      applicant_checks = applicants&.each_with_object([]) do |applicant, collect|
+        collect << applicant["is_applying_coverage"]
+      end
+      return failure_message unless applicant_checks&.include?(true)
+    end
+
+    def check_applicants_vlp_document(applicants)
+      # undefined mapping for VLP doc type of Other is not an issue when VLP documents are dropped
+      return if MedicaidGatewayRegistry.feature_enabled?(:drop_vlp_document)
+
+      unaccepted_types = ["Other (With Alien Number)", "Other (With I-94 Number)"]
+      failure_messages = applicants&.each_with_object([]) do |applicant, collect|
+        doc_type = applicant.dig('vlp_document', 'subject')
+        person_hbx_id = applicant['person_hbx_id']
+        failure_message = "Applicant #{person_hbx_id} has unaccepted VLP document type #{doc_type}."
+        collect << failure_message if unaccepted_types.include?(doc_type)
+      end
+      return failure_messages unless failure_messages&.empty?
     end
 
     def add_param_flags(params, transfer_id)
