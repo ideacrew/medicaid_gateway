@@ -170,7 +170,7 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
         expect(@result.success?).to be_truthy
       end
 
-      it "updates transfer tp have a callback status of Success" do
+      it "updates transfer to have a callback status of Success" do
         expect(@transfer.reload.callback_status).to eq "Success"
       end
     end
@@ -191,6 +191,60 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
       it 'should fail when no applicants are applying for coverage' do
         error_message = @result.failure[:failure]
         expect(error_message).to eq "Application does not contain any applicants applying for coverage."
+      end
+    end
+
+    context 'when an applicant has vlp document' do
+      let(:vlp_doc) do
+        {
+          subject: vlp_subject,
+          alien_number: "987654321",
+          passport_number: "12345678",
+          sevis_id: "1234567891",
+          country_of_citizenship: "Albania",
+          expiration_date: "2030-01-01T00:00:00.000+00:00"
+        }
+      end
+
+      before do
+        allow(MedicaidGatewayRegistry).to receive(:[]).with(:curam_connection).and_return(feature_ns)
+        allow(MedicaidGatewayRegistry).to receive(:[]).with(:transfer_service).and_return(service_ns)
+        allow(service_ns).to receive(:item).and_return("curam")
+        allow(transfer).to receive(:initiate_transfer).and_return(event)
+        payload = JSON.parse(aces_hash)
+        applicant = payload.dig("family", "magi_medicaid_applications", "applicants").first
+        applicant['vlp_document'] = vlp_doc
+        params = payload.to_json
+        @result = transfer.call(params)
+        @person_hbx_id = applicant['person_hbx_id']
+      end
+
+      context 'when drop_vlp_document feature is disabled' do
+        before do
+          allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_vlp_document).and_return(false)
+          allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_income_start_on).and_return(false)
+          allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_income_end_on).and_return(false)
+          allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_non_ssn_apply_reason).and_return(false)
+          allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:invert_person_association).and_return(false)
+        end
+
+        context 'with vlp document type of Other (With Alien Number)' do
+          let(:vlp_subject) { "Other (With Alien Number)" }
+
+          it 'should fail to transfer and log as error' do
+            error_message = @result.failure[:failure]
+            expect(error_message).to eq "Applicant #{@person_hbx_id} has unaccepted VLP document type #{vlp_doc[:subject]}."
+          end
+        end
+
+        context 'with vlp document type of Other (With I-94 Number)' do
+          let(:vlp_subject) { "Other (With I-94 Number)" }
+
+          it 'should fail to transfer and log as error' do
+            error_message = @result.failure[:failure]
+            expect(error_message).to eq "Applicant #{@person_hbx_id} has unaccepted VLP document type #{vlp_doc[:subject]}."
+          end
+        end
       end
     end
   end
