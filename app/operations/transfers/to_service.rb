@@ -54,7 +54,7 @@ module Transfers
 
       error_result = {
         transfer_id: transfer_id,
-        failure: failure_messages.to_s
+        failure: failure_messages.join("\n")
       }
       Failure(error_result)
     end

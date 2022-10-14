@@ -233,8 +233,7 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
 
           it 'should fail to transfer and log as error' do
             error_message = @result.failure[:failure]
-            expected_message = ["Applicant #{@person_hbx_id} has unaccepted VLP document type #{vlp_doc[:subject]}."].to_s
-            expect(error_message).to eq expected_message
+            expect(error_message).to eq "Applicant #{@person_hbx_id} has unaccepted VLP document type #{vlp_doc[:subject]}."
           end
         end
 
@@ -243,8 +242,7 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
 
           it 'should fail to transfer and log as error' do
             error_message = @result.failure[:failure]
-            expected_message = ["Applicant #{@person_hbx_id} has unaccepted VLP document type #{vlp_doc[:subject]}."].to_s
-            expect(error_message).to eq expected_message
+            expect(error_message).to eq "Applicant #{@person_hbx_id} has unaccepted VLP document type #{vlp_doc[:subject]}."
           end
         end
       end
