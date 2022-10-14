@@ -7,8 +7,10 @@ module Subscribers
 
     # subscribe(:on_enroll_iap_benchmark_products) do |delivery_info, _metadata, response|
     subscribe(:on_slcsp_determined) do |delivery_info, _metadata, response|
+      logger.info "on_slcsp_determined: response: #{response}"
       subscriber_logger = subscriber_logger_for(:on_slcsp_determined)
       payload = JSON.parse(response, symbolize_names: true)
+      logger.info "on_slcsp_determined: payload: #{payload}"
       subscriber_logger.info "on_slcsp_determined: payload: #{payload}"
 
       process_slcsp_determined_event(subscriber_logger, payload) unless Rails.env.test?

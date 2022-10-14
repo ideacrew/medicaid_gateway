@@ -109,7 +109,6 @@ module Eligibilities
           all_ichra_affordable?(applicant) &&
           all_qsehra_affordable?(applicant)
       end
-      # rubocop:enable Metrics/CyclomaticComplexity
 
       def all_esi_affordable?(applicant)
         return true unless applicant.has_eligible_health_coverage
@@ -119,10 +118,23 @@ module Eligibilities
         effective_esi_benefits = esi_benefits.select { |benefit| benefit_coverage_covers?(benefit) }
         return true if effective_esi_benefits.blank?
 
+        # If health_plan_meets_mvs_and_affordable is 'true' or 'nil' for any of the Effective ESI Benefits
+        #   then the group(esi_benefit.esi_covered) is ineligible for aptc
+        # If health_plan_meets_mvs_and_affordable is answered 'false' check for other things
+        effective_esi_benefits.each do |esi_benefit|
+          if [true, nil].include?(esi_benefit.health_plan_meets_mvs_and_affordable)
+            update_member_aptc_eligibility(applicant, esi_benefit)
+            @any_affordable_benefit ||= true
+          end
+        end
+
+        return false if defined?(@any_affordable_benefit) && @any_affordable_benefit
+
         effective_esi_benefits.all? do |esi_benefit|
           esi_rules_satisfied?(applicant, esi_benefit)
         end
       end
+      # rubocop:enable Metrics/CyclomaticComplexity
 
       def esi_rules_satisfied?(applicant, esi_benefit)
         esi_benefit.is_esi_mec_met &&

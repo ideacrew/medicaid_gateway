@@ -3039,6 +3039,29 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     end
   end
 
+  # Family ESI affordability test_10103192
+  context 'esi_affordability test_10103192' do
+    include_context 'esi_affordability test_10103192'
+    let(:health_plan_meets_mvs_and_affordable) { [true, nil].sample }
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @peds = @application.tax_households.first.tax_household_members.flat_map(&:product_eligibility_determination)
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    context 'for product_eligibility_determinations' do
+      it 'should return ineligible aqhp determinations for primary' do
+        expect(@peds.map(&:is_ia_eligible)).to eq([false, true, true])
+        expect(@peds.map(&:is_uqhp_eligible)).to eq([true, nil, nil])
+      end
+    end
+  end
+
   # ESI affordability test_10103191
   context 'esi_affordability test_10103191' do
     include_context 'esi_affordability test_10103191'
@@ -3060,6 +3083,29 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     end
   end
 
+  # Family ESI affordability test_10103191
+  context 'esi_affordability test_10103191' do
+    include_context 'esi_affordability test_10103191'
+    let(:health_plan_meets_mvs_and_affordable) { [true, nil].sample }
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @peds = @application.tax_households.first.tax_household_members.flat_map(&:product_eligibility_determination)
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    context 'for product_eligibility_determinations' do
+      it 'should return ineligible aqhp determinations for primary and spouse' do
+        expect(@peds.map(&:is_ia_eligible)).to eq([false, false, true])
+        expect(@peds.map(&:is_uqhp_eligible)).to eq([true, true, nil])
+      end
+    end
+  end
+
   # ESI affordability test_10103190
   context 'esi_affordability test_10103190' do
     include_context 'esi_affordability test_10103190'
@@ -3077,6 +3123,29 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     context 'for product_eligibility_determinations' do
       it 'should return aqhp determinations for all members' do
         expect(@peds.map(&:is_ia_eligible)).to eq([true, true, true])
+      end
+    end
+  end
+
+  # Family ESI affordability test_10103190
+  context 'esi_affordability test_10103190' do
+    include_context 'esi_affordability test_10103190'
+    let(:health_plan_meets_mvs_and_affordable) { [true, nil].sample }
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @peds = @application.tax_households.first.tax_household_members.flat_map(&:product_eligibility_determination)
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    context 'for product_eligibility_determinations' do
+      it 'should return all members ineligible for aqhp and eligible for uqhp' do
+        expect(@peds.map(&:is_ia_eligible)).to eq([false, false, false])
+        expect(@peds.map(&:is_uqhp_eligible)).to eq([true, true, true])
       end
     end
   end
