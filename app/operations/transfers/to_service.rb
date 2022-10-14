@@ -61,8 +61,8 @@ module Transfers
 
     def check_applicants_applying_for_coverage(applicants)
       failure_message = "Application does not contain any applicants applying for coverage."
-      applicant_checks = applicants.map {|applicant| applicant["is_applying_coverage"]}
-      return failure_message if applicant_checks&.all?(false)
+      applicant_checks = applicants&.map {|applicant| applicant["is_applying_coverage"]}
+      return failure_message if applicant_checks.nil? || applicant_checks&.all?(false)
     end
 
     def check_applicants_vlp_document(applicants)
