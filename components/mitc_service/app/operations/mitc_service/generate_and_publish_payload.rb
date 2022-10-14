@@ -13,11 +13,12 @@ module MitcService
 
     # @param [Hash] opts The options to publishing the medicaid request payload
     # @option opts [::AcaEntities::MagiMedicaid::Application] :mm_application
+    # @option opts [::AcaEntities::MagiMedicaid::Application] :is_renewal
     # @return [Dry::Monads::Result]
-    def call(mm_application)
+    def call(mm_application, is_renewal = nil)
       mm_application = yield validate_mm_application(mm_application)
       mitc_request_payload = yield generate_request_payload(mm_application)
-      application = yield persist_medicaid_application(mm_application, mitc_request_payload)
+      application = yield persist_medicaid_application(mm_application, mitc_request_payload, is_renewal)
       _message = yield publish_mitc_request_payload(mitc_request_payload)
 
       Success(application)
@@ -38,10 +39,11 @@ module MitcService
       ::AcaEntities::MagiMedicaid::Operations::Mitc::GenerateRequestPayload.new.call(mm_application)
     end
 
-    def persist_medicaid_application(mm_application, mitc_request_payload)
+    def persist_medicaid_application(mm_application, mitc_request_payload, is_renewal)
       ::Applications::CreateOrUpdate.new.call({ application_identifier: mm_application.hbx_id,
                                                 application_request_payload: mm_application.to_json,
-                                                medicaid_request_payload: mitc_request_payload.to_json })
+                                                medicaid_request_payload: mitc_request_payload.to_json,
+                                                is_renewal: is_renewal })
     end
 
     def publish_mitc_request_payload(mitc_request_payload)

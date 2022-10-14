@@ -12,9 +12,9 @@ module Eligibilities
       # @param [Hash] opts The options to request medicaid determination
       # @option opts [Hash] :params MagiMedicaid Application request payload
       # @return [Dry::Monads::Result]
-      def call(params)
+      def call(params, is_renewal = nil)
         mm_application = yield init_magi_medicaid_application(params)
-        application = yield publish_request_payload(mm_application)
+        application = yield publish_request_payload(mm_application, is_renewal)
 
         Success(application)
       end
@@ -25,8 +25,8 @@ module Eligibilities
         ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(params)
       end
 
-      def publish_request_payload(mm_application)
-        ::Eligibilities::Medicaid::PublishRequestPayload.new.call(mm_application)
+      def publish_request_payload(mm_application, is_renewal)
+        ::Eligibilities::Medicaid::PublishRequestPayload.new.call(mm_application, is_renewal)
       end
     end
   end

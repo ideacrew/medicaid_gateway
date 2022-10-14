@@ -16,7 +16,7 @@ module Eligibilities
 
         mm_application, medicaid_application = yield find_medicaid_application(params)
         mm_application = yield compute_aptcs(mm_application, medicaid_application)
-        event_name = yield determine_event_name_and_publish_payload(mm_application)
+        event_name = yield determine_event_name_and_publish_payload(mm_application, medicaid_application.is_renewal)
 
         Success({ event: event_name, payload: mm_application })
       end
@@ -68,9 +68,9 @@ module Eligibilities
         end
       end
 
-      def determine_event_name_and_publish_payload(mm_application)
+      def determine_event_name_and_publish_payload(mm_application, is_renewal)
         if @use_non_dynamic_slcsp
-          Eligibilities::DetermineEventAndPublishFullDetermination.new.call(mm_application)
+          Eligibilities::DetermineEventAndPublishFullDetermination.new.call(mm_application, is_renewal)
         else
           construct_and_publish_payload_for_dynamic_slcsp(mm_application)
         end

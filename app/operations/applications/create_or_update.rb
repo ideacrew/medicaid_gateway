@@ -15,7 +15,7 @@ module Applications
     # @return [Dry::Monads::Result]
     def call(params)
       values      = yield validate_params(params)
-      application = yield create_or_update(values)
+      application = yield create_or_update(values, params[:is_renewal])
 
       Success(application)
     end
@@ -33,9 +33,9 @@ module Applications
     end
 
     # Create or Update Medicaid Application
-    def create_or_update(values)
+    def create_or_update(values, is_renewal)
       application = ::Medicaid::Application.where(application_identifier: values[:application_identifier]).first || ::Medicaid::Application.new
-      application.assign_attributes(values)
+      application.assign_attributes(values.merge(is_renewal: is_renewal))
 
       if application.save
         Success(application)
