@@ -170,7 +170,7 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
         expect(@result.success?).to be_truthy
       end
 
-      it "updates transfer tp have a callback status of Success" do
+      it "updates transfer to have a callback status of Success" do
         expect(@transfer.reload.callback_status).to eq "Success"
       end
     end
@@ -219,9 +219,9 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
         @person_hbx_id = applicant['person_hbx_id']
       end
 
-      context 'when drop_vlp_document feature is enabled' do
+      context 'when drop_vlp_document feature is disabled' do
         before do
-          allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_vlp_document).and_return(true)
+          allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_vlp_document).and_return(false)
           allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_income_start_on).and_return(false)
           allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_income_end_on).and_return(false)
           allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_non_ssn_apply_reason).and_return(false)
