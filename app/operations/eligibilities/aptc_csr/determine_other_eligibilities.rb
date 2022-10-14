@@ -49,12 +49,14 @@ module Eligibilities
       end
 
       def member_totally_ineligible?(applicant)
+        applicant.incarcerated? ||
+          applicant.non_citizen_and_no_lawful_presence_attestation || state_residency_requirement_not_met?(applicant)
+      end
+
+      def state_residency_requirement_not_met?(applicant)
         is_non_filer = applicant.tax_filer_kind == 'non_filer'
         return false if is_non_filer && residential_address_in_state?(applicant)
-
-        applicant.incarcerated? ||
-          applicant.non_citizen_and_no_lawful_presence_attestation ||
-          !tax_filer_is_state_resident?
+        !tax_filer_is_state_resident?
       end
 
       def state_resident?(applicant)

@@ -3149,4 +3149,47 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       end
     end
   end
+
+  # unqualified immigrant getting eligibility results
+  # 2 Domestic partners: Primary is a non tax filer income $130,000, Partner is an unqualified immigrant
+  context 'totally_inelgible_domestic_partner state ME' do
+    include_context 'cms ME me_test_scenarios totally_inelgible_domestic_partner'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @new_thhms = @application.tax_households.flat_map(&:tax_household_members)
+    end
+
+    it 'should return application' do
+      expect(@application).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    context 'for product_eligibility_determinations' do
+      let(:primary_ped) do
+        @new_thhms.detect do |thhm|
+          thhm.applicant_reference.person_hbx_id.to_s == '10101903'
+        end.product_eligibility_determination
+      end
+
+      let(:partner_ped) do
+        @new_thhms.detect do |thhm|
+          thhm.applicant_reference.person_hbx_id.to_s == '10101905'
+        end.product_eligibility_determination
+      end
+
+      it 'should return primary eligible for uqhp' do
+        expect(primary_ped.is_ia_eligible).to eq(false)
+        expect(primary_ped.is_uqhp_eligible).to eq(true)
+        expect(primary_ped.is_totally_ineligible).to eq(nil)
+      end
+
+      it 'should return partner totally_ineligible' do
+        expect(partner_ped.is_ia_eligible).to eq(false)
+        expect(partner_ped.is_uqhp_eligible).to eq(nil)
+        expect(partner_ped.is_totally_ineligible).to eq(true)
+      end
+    end
+
+  end
 end
