@@ -13,7 +13,7 @@ module ProcessSubscriberResponses
       mm_application       = yield initialize_application(mm_application_params)
       medicaid_application = yield find_and_update_medicaid_application(mm_application)
       mm_application       = yield compute_aptcs(mm_application, medicaid_application)
-      event_name           = yield determine_event_name_and_publish_payload(mm_application)
+      event_name           = yield determine_event_name_and_publish_payload(mm_application, medicaid_application)
 
       Success({ event: event_name, payload: mm_application })
     end
@@ -54,8 +54,8 @@ module ProcessSubscriberResponses
       Success(@result_mm_application)
     end
 
-    def determine_event_name_and_publish_payload(mm_application)
-      Eligibilities::DetermineEventAndPublishFullDetermination.new.call(mm_application)
+    def determine_event_name_and_publish_payload(mm_application, medicaid_application)
+      Eligibilities::DetermineEventAndPublishFullDetermination.new.call(mm_application, medicaid_application.is_renewal)
     end
   end
 end
