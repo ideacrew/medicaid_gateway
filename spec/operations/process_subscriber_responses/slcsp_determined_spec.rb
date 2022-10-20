@@ -65,13 +65,13 @@ RSpec.describe ProcessSubscriberResponses::SlcspDetermined, dbclean: :after_each
         aptc_hh.update_attributes!(tax_household_identifier: '12345')
       end
 
-      context do 'regular application'
+      context 'regular application' do
         it 'should return success' do
           expect(subject.success?).to be_truthy
         end
       end
 
-      context do 'renewal application'
+      context 'renewal application' do
         it 'should return success' do
           application.update_attributes!(is_renewal: true)
           expect(subject.success?).to be_truthy
