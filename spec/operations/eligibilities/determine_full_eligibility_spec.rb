@@ -3225,7 +3225,7 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       let(:is_esi_waiting_period) { true }
       let(:employee_cost) { "1000.0" }
 
-      it 'should return all members ineligible for aqhp and eligible for uqhp' do
+      it 'should return all members eligible for aqhp' do
         expect(@peds.map(&:is_ia_eligible)).to eq([true, true, true])
       end
     end
@@ -3235,7 +3235,7 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       let(:is_esi_waiting_period) { true }
       let(:employee_cost) { "1000.0" }
 
-      it 'should return all members ineligible for aqhp and eligible for uqhp' do
+      it 'should return all members eligible for aqhp' do
         expect(@peds.map(&:is_ia_eligible)).to eq([true, true, true])
       end
     end
@@ -3245,7 +3245,7 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       let(:is_esi_waiting_period) { false }
       let(:employee_cost) { "1000.0" }
 
-      it 'should return all members ineligible for aqhp and eligible for uqhp' do
+      it 'should return all members eligible for aqhp' do
         expect(@peds.map(&:is_ia_eligible)).to eq([true, true, true])
       end
     end
@@ -3255,7 +3255,7 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       let(:is_esi_waiting_period) { false }
       let(:employee_cost) { "10.0" }
 
-      it 'should return all members ineligible for aqhp and eligible for uqhp' do
+      it 'should return all members eligible for aqhp except for the employee' do
         expect(@peds.map(&:is_ia_eligible)).to eq([false, true, true])
       end
     end
