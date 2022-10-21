@@ -7,6 +7,25 @@ RSpec.shared_context 'esi_affordability test_10103190', :shared_context => :meta
   let(:start_of_year) { today.beginning_of_year }
   let(:aptc_effective_date) { Date.new(assistance_year) }
   let(:health_plan_meets_mvs_and_affordable) { false }
+  let(:primary_benefit) do
+    { "name" => nil,
+      "kind" => "employer_sponsored_insurance",
+      "status" => "is_eligible",
+      "is_employer_sponsored" => false,
+      "employer" => {
+        "employer_name" => "MM", "employer_id" => "57-1036710"
+      },
+      "esi_covered" => "family",
+      "is_esi_waiting_period" => false,
+      "is_esi_mec_met" => true,
+      "employee_cost" => "1000.0",
+      "employee_cost_frequency" => "Weekly",
+      "start_on" => start_of_year.to_s,
+      "end_on" => nil,
+      "submitted_at" => start_of_year.to_s,
+      "hra_kind" => nil,
+      "health_plan_meets_mvs_and_affordable" => health_plan_meets_mvs_and_affordable }
+  end
 
   let(:app_params) do
     {
@@ -122,25 +141,7 @@ RSpec.shared_context 'esi_affordability test_10103190', :shared_context => :meta
           "ssi_type" => nil,
           "submitted_at" => start_of_year.to_s
         }],
-        "benefits" => [{
-          "name" => nil,
-          "kind" => "employer_sponsored_insurance",
-          "status" => "is_eligible",
-          "is_employer_sponsored" => false,
-          "employer" => {
-            "employer_name" => "MM", "employer_id" => "57-1036710"
-          },
-          "esi_covered" => "family",
-          "is_esi_waiting_period" => false,
-          "is_esi_mec_met" => true,
-          "employee_cost" => "1000.0",
-          "employee_cost_frequency" => "Weekly",
-          "start_on" => start_of_year.to_s,
-          "end_on" => nil,
-          "submitted_at" => start_of_year.to_s,
-          "hra_kind" => nil,
-          "health_plan_meets_mvs_and_affordable" => health_plan_meets_mvs_and_affordable
-        }],
+        "benefits" => [primary_benefit],
         "deductions" => [],
         "is_medicare_eligible" => false,
         "has_insurance" => false,

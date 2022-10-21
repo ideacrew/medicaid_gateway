@@ -121,14 +121,14 @@ module Eligibilities
         # If health_plan_meets_mvs_and_affordable is 'true' or 'nil' for any of the Effective ESI Benefits
         #   then the group(esi_benefit.esi_covered) is ineligible for aptc
         # If health_plan_meets_mvs_and_affordable is answered 'false' check for other things
-        effective_esi_benefits.each do |esi_benefit|
+        any_affordable_benefit = effective_esi_benefits.any? do |esi_benefit|
           if [true, nil].include?(esi_benefit.health_plan_meets_mvs_and_affordable)
-            update_member_aptc_eligibility(applicant, esi_benefit)
-            @any_affordable_benefit ||= true
+            update_member_aptc_eligibility(applicant, esi_benefit.esi_covered)
+            true
           end
         end
 
-        return false if defined?(@any_affordable_benefit) && @any_affordable_benefit
+        return false if any_affordable_benefit
 
         effective_esi_benefits.all? do |esi_benefit|
           esi_rules_satisfied?(applicant, esi_benefit)
@@ -137,26 +137,36 @@ module Eligibilities
       # rubocop:enable Metrics/CyclomaticComplexity
 
       def esi_rules_satisfied?(applicant, esi_benefit)
-        esi_benefit.is_esi_mec_met &&
-          waiting_period_rule_satisfied?(esi_benefit) &&
-          determine_esi_benefit_affordability(applicant, esi_benefit)
+        # Minimum value standard:
+        #   If yes continute to check for other rules.
+        #   If no this applicant is eligible for APTC/CSR for this rule.
+        return true unless esi_benefit.is_esi_mec_met
+        return true if waiting_period_rule_satisfied?(esi_benefit)
+
+        determine_esi_benefit_affordability(applicant, esi_benefit)
       end
 
+      # Waiting period:
+      #   If 'Yes': Check if 'From' date is later than eligibility date.
+      #     If yes, then stop. Since the applicant can't currently get enrolled in that plan, it does not disqualify the consumer from receiving APTC.
+      #   If 'No': Continue with affordability calculation.
       def waiting_period_rule_satisfied?(esi_benefit)
-        return true unless esi_benefit.is_esi_waiting_period
-        esi_benefit.start_on <= @aptc_household[:eligibility_date]
+        esi_benefit.is_esi_waiting_period && esi_benefit.start_on > @aptc_household[:eligibility_date]
       end
 
+      # Determine affordability: Compare total with affordability threshold. The current threshold is 9.61%.
+      #   If employee premium as a percent of income > affordability threshold, the employee may be eligible for APTC.
+      #   If employee premium as a percent of income < affordability threshold, the employee is not eligible for APTC.
       def determine_esi_benefit_affordability(applicant, esi_benefit)
         employee_only_premium_amnt = esi_benefit.annual_employee_cost
         employee_premium_as_percent = (employee_only_premium_amnt / @aptc_household[:annual_tax_household_income]) * 100
         return true if employee_premium_as_percent > @affordability_threshold
-        update_member_aptc_eligibility(applicant, esi_benefit)
+        update_member_aptc_eligibility(applicant, 'self')
         false
       end
 
-      def update_member_aptc_eligibility(applicant, esi_benefit)
-        case esi_benefit.esi_covered
+      def update_member_aptc_eligibility(applicant, covered_members)
+        case covered_members
         when 'self'
           aptc_hh_member = matching_aptc_member(applicant.person_hbx_id)
           aptc_hh_member[:aptc_eligible] = false

@@ -3192,4 +3192,72 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     end
 
   end
+
+  # Family ESI affordability test_10103190 esi_covered
+  context 'esi_affordability test_10103190 esi_covered' do
+    include_context 'esi_affordability test_10103190'
+    let(:primary_benefit) do
+      { "name" => nil,
+        "kind" => "employer_sponsored_insurance",
+        "status" => "is_eligible",
+        "is_employer_sponsored" => false,
+        "employer" => { "employer_name" => "MM", "employer_id" => "57-1036710" },
+        "esi_covered" => 'self',
+        "is_esi_waiting_period" => is_esi_waiting_period,
+        "is_esi_mec_met" => is_esi_mec_met,
+        "employee_cost" => employee_cost,
+        "employee_cost_frequency" => "Weekly",
+        "start_on" => start_of_year.to_s,
+        "end_on" => nil,
+        "submitted_at" => start_of_year.to_s,
+        "hra_kind" => nil,
+        "health_plan_meets_mvs_and_affordable" => false }
+    end
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @peds = @application.tax_households.first.tax_household_members.flat_map(&:product_eligibility_determination)
+    end
+
+    context "Minimum value standard: is_esi_mec_met: false" do
+      let(:is_esi_mec_met) { false }
+      let(:is_esi_waiting_period) { true }
+      let(:employee_cost) { "1000.0" }
+
+      it 'should return all members eligible for aqhp' do
+        expect(@peds.map(&:is_ia_eligible)).to eq([true, true, true])
+      end
+    end
+
+    context "Waiting period: is_esi_waiting_period: true, start_on date is later than eligibility date" do
+      let(:is_esi_mec_met) { true }
+      let(:is_esi_waiting_period) { true }
+      let(:employee_cost) { "1000.0" }
+
+      it 'should return all members eligible for aqhp' do
+        expect(@peds.map(&:is_ia_eligible)).to eq([true, true, true])
+      end
+    end
+
+    context "Determine affordability: employee premium as a percent of income > affordability threshold" do
+      let(:is_esi_mec_met) { true }
+      let(:is_esi_waiting_period) { false }
+      let(:employee_cost) { "1000.0" }
+
+      it 'should return all members eligible for aqhp' do
+        expect(@peds.map(&:is_ia_eligible)).to eq([true, true, true])
+      end
+    end
+
+    context "Determine affordability: employee premium as a percent of income < affordability threshold" do
+      let(:is_esi_mec_met) { true }
+      let(:is_esi_waiting_period) { false }
+      let(:employee_cost) { "10.0" }
+
+      it 'should return all members eligible for aqhp except for the employee' do
+        expect(@peds.map(&:is_ia_eligible)).to eq([false, true, true])
+      end
+    end
+  end
 end
