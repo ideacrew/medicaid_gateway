@@ -49,6 +49,7 @@ module Transfers
       failure_messages = []
       failure_messages << check_applicants_applying_for_coverage(applicants)
       failure_messages << check_applicants_vlp_document(applicants)
+      failure_messages << check_applicants_deductions(applicants)
       failure_messages.compact!.flatten!
       return Success("Valid applicants.") if failure_messages.blank?
 
@@ -77,6 +78,20 @@ module Transfers
         collect << failure_message if unaccepted_types.include?(doc_type)
       end
       return failure_messages unless failure_messages&.empty?
+    end
+
+    def check_applicants_deductions(applicants)
+      return unless MedicaidGatewayRegistry.feature_enabled?(:block_atp_deductions)
+
+      failure_messages = applicants&.each_with_object([]) do |applicant, collect|
+        deductions = applicant['deductions']
+        person_hbx_id = applicant['person_hbx_id']
+        deduction_kinds = deductions.map {|deduction| deduction['kind']}
+        failure_message = "Applicant #{person_hbx_id} has unaccepted deductions: #{deduction_kinds}."
+
+        collect << failure_message.gsub(/[\["\]]/, '') if deduction_kinds.present?
+      end
+      return failure_messages unless failure_messages.empty?
     end
 
     def add_param_flags(params, transfer_id)
