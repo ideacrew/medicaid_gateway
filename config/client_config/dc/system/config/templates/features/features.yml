@@ -51,4 +51,6 @@ registry:
         is_enabled: <%= ENV["DROP_VLP_DOCUMENT_IS_ENABLED"] || false %>
       - key: :invert_person_association
         is_enabled: <%= ENV["INVERT_PERSON_ASSOCIATION_IS_ENABLED"] || false %>
+      - key: :block_atp_deductions
+        is_enabled: <%= ENV["BLOCK_ATP_DEDUCTIONS_IS_ENABLED"] || false %>
 

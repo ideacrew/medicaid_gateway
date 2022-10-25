@@ -247,6 +247,50 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
         end
       end
     end
+
+    context 'when an applicant has deductions' do
+      let(:deduction) do
+        {
+          name: nil,
+          kind: "alimony_paid",
+          amount: 90.0,
+          start_on: "2022-01-01",
+          end_on: nil,
+          frequency_kind: "Monthly",
+          submitted_at: "2022-10-05T16:48:03.000+00:00"
+        }
+      end
+
+      before do
+        allow(MedicaidGatewayRegistry).to receive(:[]).with(:curam_connection).and_return(feature_ns)
+        allow(MedicaidGatewayRegistry).to receive(:[]).with(:transfer_service).and_return(service_ns)
+        allow(service_ns).to receive(:item).and_return("curam")
+        allow(transfer).to receive(:initiate_transfer).and_return(event)
+        payload = JSON.parse(aces_hash)
+        applicant = payload.dig("family", "magi_medicaid_applications", "applicants").first
+        applicant['deductions'] = [deduction]
+        params = payload.to_json
+        @result = transfer.call(params)
+        @person_hbx_id = applicant['person_hbx_id']
+      end
+
+      context 'when block_atp_deductions feature is enabled' do
+        before do
+          # allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_vlp_document).and_return(false)
+          # allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_income_start_on).and_return(false)
+          # allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_income_end_on).and_return(false)
+          # allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_non_ssn_apply_reason).and_return(false)
+          # allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:invert_person_association).and_return(false)
+          allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(any_args).and_call_original
+          allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:block_atp_deductions).and_return(true)
+        end
+
+        it 'should fail to transfer and log as error' do
+          error_message = @result.failure[:failure]
+          expect(error_message).to eq "Applicant #{@person_hbx_id} has unaccepted deductions: #{deduction[:kind]}."
+        end
+      end
+    end
   end
 
   context '#add_param_flags' do
