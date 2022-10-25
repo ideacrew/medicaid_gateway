@@ -15,7 +15,12 @@ module Subscribers
     subscribe(:on_determinations_eval) do |body, status, headers|
       logger.info "MitcResponseSubscriber#on_determinations_eval body: #{body}, status: #{status}, headers: #{headers}"
       correlation_id = headers["CorrelationID"]
-      persist(body, correlation_id)
+      
+      benchmark_measure = Benchmark.measure do
+        persist(body, correlation_id)
+      end
+
+      logger.info "TimeNow: #{Time.now}, benchmark_measure: #{benchmark_measure} application_hbx_id: #{correlation_id}, MitcResponseSubscriber"
     end
 
     def self.persist(response, correlation_id)

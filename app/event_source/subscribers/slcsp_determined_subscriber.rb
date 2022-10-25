@@ -13,7 +13,11 @@ module Subscribers
       logger.info "on_slcsp_determined: payload: #{payload}"
       subscriber_logger.info "on_slcsp_determined: payload: #{payload}"
 
-      process_slcsp_determined_event(subscriber_logger, payload) unless Rails.env.test?
+      benchmark_measure = Benchmark.measure do
+        process_slcsp_determined_event(subscriber_logger, payload) unless Rails.env.test?
+      end
+
+      logger.info "TimeNow: #{Time.now}, benchmark_measure: #{benchmark_measure} application_hbx_id: #{payload[:hbx_id]}, SlcspDeterminedSubscriber"
 
       ack(delivery_info.delivery_tag)
     rescue StandardError, SystemStackError => e
