@@ -266,6 +266,8 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
         allow(MedicaidGatewayRegistry).to receive(:[]).with(:transfer_service).and_return(service_ns)
         allow(service_ns).to receive(:item).and_return("curam")
         allow(transfer).to receive(:initiate_transfer).and_return(event)
+        allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(any_args).and_call_original
+        allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:block_atp_deductions).and_return(true)
         payload = JSON.parse(aces_hash)
         applicant = payload.dig("family", "magi_medicaid_applications", "applicants").first
         applicant['deductions'] = [deduction]
@@ -275,16 +277,6 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
       end
 
       context 'when block_atp_deductions feature is enabled' do
-        before do
-          # allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_vlp_document).and_return(false)
-          # allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_income_start_on).and_return(false)
-          # allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_income_end_on).and_return(false)
-          # allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_non_ssn_apply_reason).and_return(false)
-          # allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:invert_person_association).and_return(false)
-          allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(any_args).and_call_original
-          allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:block_atp_deductions).and_return(true)
-        end
-
         it 'should fail to transfer and log as error' do
           error_message = @result.failure[:failure]
           expect(error_message).to eq "Applicant #{@person_hbx_id} has unaccepted deductions: #{deduction[:kind]}."
