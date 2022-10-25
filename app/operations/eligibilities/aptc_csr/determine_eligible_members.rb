@@ -118,11 +118,14 @@ module Eligibilities
         effective_esi_benefits = esi_benefits.select { |benefit| benefit_coverage_covers?(benefit) }
         return true if effective_esi_benefits.blank?
 
+        # If family affordability is N, treat as Y for coverage year 2022 applications
+        # 2023+ -- family affordability as N treated as N
+
         # If health_plan_meets_mvs_and_affordable is 'true' or 'nil' for any of the Effective ESI Benefits
         #   then the group(esi_benefit.esi_covered) is ineligible for aptc
         # If health_plan_meets_mvs_and_affordable is answered 'false' check for other things
         any_affordable_benefit = effective_esi_benefits.any? do |esi_benefit|
-          if [true, nil].include?(esi_benefit.health_plan_meets_mvs_and_affordable)
+          if @application.assistance_year <= 2022 || [true, nil].include?(esi_benefit.health_plan_meets_mvs_and_affordable)
             update_member_aptc_eligibility(applicant, esi_benefit.esi_covered)
             true
           end

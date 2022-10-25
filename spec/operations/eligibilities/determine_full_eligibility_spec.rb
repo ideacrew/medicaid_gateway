@@ -1296,7 +1296,10 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     end
   end
 
-  # Primary should get APTC instead of UQHP
+  # Primary should get UQHP because of family affordability rule.
+  # For applications with assistance year 2022 or lower,
+  #   irrespective of what is answered to health_plan_meets_mvs_and_affordable
+  #   we need to consider the answer to this question as true
   context 'cms me_test_scenarios test_four state ME' do
     include_context 'cms ME me_test_scenarios test_four'
 
@@ -1329,13 +1332,8 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
         end.product_eligibility_determination
       end
 
-      it 'should return aqhp, csr result for jane' do
-        expect(jane_ped.is_ia_eligible).to eq(true)
-        expect(jane_ped.is_csr_eligible).to eq(true)
-        expect(jane_ped.csr).to eq('0')
-      end
-
-      it 'should return uqhp result for jim' do
+      it 'should return uqhp result for jane and jim' do
+        expect(jane_ped.is_uqhp_eligible).to eq(true)
         expect(jim_ped.is_uqhp_eligible).to eq(true)
       end
 
