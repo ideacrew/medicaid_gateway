@@ -26,12 +26,11 @@ module Subscribers
       if @result.success?
         logger.debug "application_submitted_subscriber_message; acked"
         logger.info "ApplicationSubscriber End TimeNow: #{Time.now}"
-        ack(delivery_info.delivery_tag)
       else
         errors = @result.failure.errors.to_h
         logger.debug "application_submitted_subscriber_message; acked (nacked) due to:#{errors}"
-        ack(delivery_info.delivery_tag)
       end
+      ack(delivery_info.delivery_tag)
     rescue StandardError, SystemStackError => e
       logger.debug "application_submitted_subscriber_error: baacktrace: #{e.backtrace}; acked (nacked)"
       ack(delivery_info.delivery_tag)
