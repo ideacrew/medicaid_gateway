@@ -139,8 +139,7 @@ class ReportsController < ApplicationController
     @end_on = @start_on
     @count = daily_report_applications.map(&:application_response_entity).compact.map(&:tax_households).flatten
                                       .map(&:tax_household_members).flatten.count
-    sorted_applications = daily_report_applications.sort_by(&:submitted_at).reverse
-    @applications = Kaminari.paginate_array(sorted_applications).page params[:page]
+    @applications = Kaminari.paginate_array(daily_report_applications).page params[:page]
   end
 
   def change_dates
@@ -169,9 +168,9 @@ class ReportsController < ApplicationController
   end
 
   def daily_report_applications
-    Medicaid::Application.only(:application_identifier, :application_response_payload).select do |app|
-      range.cover?(app.submitted_at)
-    end
+    # getting submitted_at field from application_response_payload was not performant,
+    # this uses created_at field on Medicaid::Application as a reasonable proxy
+    Medicaid::Application.where(created_at: range).order_by(created_at: :desc).only(:application_identifier, :application_response_payload)
   end
 
   def transfers
