@@ -118,35 +118,38 @@ module Eligibilities
         effective_esi_benefits = esi_benefits.select { |benefit| benefit_coverage_covers?(benefit) }
         return true if effective_esi_benefits.blank?
 
-        # If family affordability is N, treat as Y for coverage year 2022 applications
-        # 2023+ -- family affordability as N treated as N
-
+        # Family affordability test should only be effective from 2023 applications
         # If health_plan_meets_mvs_and_affordable is 'true' or 'nil' for any of the Effective ESI Benefits
         #   then the group(esi_benefit.esi_covered) is ineligible for aptc
         # If health_plan_meets_mvs_and_affordable is answered 'false' check for other things
-        any_affordable_benefit = effective_esi_benefits.any? do |esi_benefit|
-          if @application.assistance_year <= 2022 || [true, nil].include?(esi_benefit.health_plan_meets_mvs_and_affordable)
-            update_member_aptc_eligibility(applicant, esi_benefit.esi_covered)
-            true
-          end
-        end
+        any_affordable_benefit = if @application.assistance_year <= 2022
+                                   false
+                                 else
+                                   effective_esi_benefits.any? do |esi_benefit|
+                                     if [true, nil].include?(esi_benefit.health_plan_meets_mvs_and_affordable)
+                                       update_member_aptc_eligibility(applicant, esi_benefit.esi_covered)
+                                       true
+                                     end
+                                   end
+                                 end
 
         return false if any_affordable_benefit
 
         effective_esi_benefits.all? do |esi_benefit|
-          esi_rules_satisfied?(applicant, esi_benefit)
+          covered_members = @application.assistance_year <= 2022 ? esi_benefit.esi_covered : 'self'
+          esi_rules_satisfied?(applicant, esi_benefit, covered_members)
         end
       end
       # rubocop:enable Metrics/CyclomaticComplexity
 
-      def esi_rules_satisfied?(applicant, esi_benefit)
+      def esi_rules_satisfied?(applicant, esi_benefit, covered_members)
         # Minimum value standard:
         #   If yes continute to check for other rules.
         #   If no this applicant is eligible for APTC/CSR for this rule.
         return true unless esi_benefit.is_esi_mec_met
         return true if waiting_period_rule_satisfied?(esi_benefit)
 
-        determine_esi_benefit_affordability(applicant, esi_benefit)
+        determine_esi_benefit_affordability(applicant, esi_benefit, covered_members)
       end
 
       # Waiting period:
@@ -160,11 +163,11 @@ module Eligibilities
       # Determine affordability: Compare total with affordability threshold. The current threshold is 9.61%.
       #   If employee premium as a percent of income > affordability threshold, the employee may be eligible for APTC.
       #   If employee premium as a percent of income < affordability threshold, the employee is not eligible for APTC.
-      def determine_esi_benefit_affordability(applicant, esi_benefit)
+      def determine_esi_benefit_affordability(applicant, esi_benefit, covered_members)
         employee_only_premium_amnt = esi_benefit.annual_employee_cost
         employee_premium_as_percent = (employee_only_premium_amnt / @aptc_household[:annual_tax_household_income]) * 100
         return true if employee_premium_as_percent > @affordability_threshold
-        update_member_aptc_eligibility(applicant, 'self')
+        update_member_aptc_eligibility(applicant, covered_members)
         false
       end
 
