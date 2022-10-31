@@ -27,7 +27,7 @@ module Curam
                                    "xmlns:wsse" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
                                    "xmlns:wsu" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
                                  }) do |security|
-            security[:wsu].Timestamp({"wsu:Id" => Base64.strict_encode64(Time.now.to_s).gsub!(/[^0-9A-Za-z]/, '') }) do |ts|
+            security[:wsu].Timestamp({ "wsu:Id" => Base64.strict_encode64(Time.now.to_s).gsub!(/[^0-9A-Za-z]/, '') }) do |ts|
               ts[:wsu].Created request_header.timestamp.created
               ts[:wsu].Expires request_header.timestamp.expires
             end
@@ -39,8 +39,8 @@ module Curam
                                    "Type" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText"
                                  }, encode_password(request_header.password))
               ut[:wsse].Nonce({
-                "EncodingType" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary"
-              }, encode_nonce(request_header.nonce))
+                                "EncodingType" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary"
+                              }, encode_nonce(request_header.nonce))
             end
           end
         end

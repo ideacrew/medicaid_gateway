@@ -26,11 +26,10 @@ describe Curam::MecCheck::EncodeMecCheckRequest, "given an Curam::MecCheck::Enco
   end
   let(:timestamp) do
     instance_double(Curam::Timestamp,
-      {
-        created: 'Now',
-        expires: '5 mins later'
-      }
-    )
+                    {
+                      created: 'Now',
+                      expires: '5 mins later'
+                    })
   end
   let(:request) do
     instance_double(
