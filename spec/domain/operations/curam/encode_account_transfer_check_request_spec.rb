@@ -15,7 +15,7 @@ describe Curam::EncodeAccountTransferCheckRequest, "given a Curam::AccountTransf
   let(:operation) { Curam::EncodeAccountTransferCheckRequest.new }
   let(:header) do
     instance_double(
-      Curam::SoapAuthorizationHeader,
+      Curam::Atp::SoapAuthorizationHeader,
       {
         :username => "A Username",
         :password => "A Password",
