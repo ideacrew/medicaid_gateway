@@ -7,14 +7,19 @@ module Subscribers
 
     # subscribe(:on_enroll_iap_benchmark_products) do |delivery_info, _metadata, response|
     subscribe(:on_slcsp_determined) do |delivery_info, _metadata, response|
+      logger.info "SlcspDeterminedSubscriber Start TimeNow: #{Time.now}"
       logger.info "on_slcsp_determined: response: #{response}"
       subscriber_logger = subscriber_logger_for(:on_slcsp_determined)
       payload = JSON.parse(response, symbolize_names: true)
       logger.info "on_slcsp_determined: payload: #{payload}"
       subscriber_logger.info "on_slcsp_determined: payload: #{payload}"
 
-      process_slcsp_determined_event(subscriber_logger, payload) unless Rails.env.test?
+      benchmark_measure = Benchmark.measure do
+        process_slcsp_determined_event(subscriber_logger, payload) unless Rails.env.test?
+      end
 
+      logger.info "TimeNow: #{Time.now}, benchmark_measure: #{benchmark_measure} application_hbx_id: #{payload[:hbx_id]}, SlcspDeterminedSubscriber"
+      logger.info "SlcspDeterminedSubscriber End TimeNow: #{Time.now}"
       ack(delivery_info.delivery_tag)
     rescue StandardError, SystemStackError => e
       logger.info "on_slcsp_determined: error: #{e} backtrace: #{e.backtrace}; acked (nacked)"

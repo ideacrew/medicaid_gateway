@@ -15,20 +15,25 @@ module Subscribers
 
     # event_source branch: release_0.5.2
     subscribe(:on_enroll_iap_applications) do |delivery_info, _metadata, response|
+      logger.info "ApplicationSubscriber Start TimeNow: #{Time.now}"
       payload = JSON.parse(response, :symbolize_names => true)
-      result = ::Eligibilities::Medicaid::RequestDetermination.new.call(payload)
+      benchmark_measure = Benchmark.measure do
+        @result = ::Eligibilities::Medicaid::RequestDetermination.new.call(payload)
+      end
 
-      if result.success?
-        ack(delivery_info.delivery_tag)
+      logger.info "TimeNow: #{Time.now}, benchmark_measure: #{benchmark_measure} application_hbx_id: #{payload[:hbx_id]}, ApplicationSubscriber"
+
+      if @result.success?
         logger.debug "application_submitted_subscriber_message; acked"
+        logger.info "ApplicationSubscriber End TimeNow: #{Time.now}"
       else
-        errors = result.failure.errors.to_h
-        ack(delivery_info.delivery_tag)
+        errors = @result.failure.errors.to_h
         logger.debug "application_submitted_subscriber_message; acked (nacked) due to:#{errors}"
       end
-    rescue StandardError, SystemStackError => e
       ack(delivery_info.delivery_tag)
+    rescue StandardError, SystemStackError => e
       logger.debug "application_submitted_subscriber_error: baacktrace: #{e.backtrace}; acked (nacked)"
+      ack(delivery_info.delivery_tag)
     end
   end
 end
