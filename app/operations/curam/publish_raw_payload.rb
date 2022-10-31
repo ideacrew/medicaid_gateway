@@ -19,11 +19,11 @@ module Curam
     protected
 
     def build_request(raw_payload)
-      Curam::BuildAccountTransferRequest.new.call(raw_payload.value!)
+      Curam::Atp::BuildAccountTransferRequest.new.call(raw_payload.value!)
     end
 
     def encode_request(request)
-      Curam::EncodeAccountTransferRequest.new.call(request)
+      Curam::Atp::EncodeAccountTransferRequest.new.call(request)
     end
 
     def submit_request(encoded_request)
