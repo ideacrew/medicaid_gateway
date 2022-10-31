@@ -14,8 +14,9 @@ module Curam
       def call(payload)
         username = yield read_username_setting
         password = yield read_password_setting
-        created = yield generate_created
-        Success(build_request(username, password, created, payload))
+        timestamp = yield generate_timestamp
+        nonce = yield generate_nonce
+        Success(build_request(username, password, timestamp, nonce, payload))
       end
 
       protected
@@ -23,17 +24,19 @@ module Curam
       def build_request(
         username,
         password,
-        created,
+        timestamp,
+        nonce,
         payload
       )
         Aces::AccountTransferRequest.new({
-                                          header: Curam::MecCheck::SoapAuthorizationHeader.new({
-                                                                                        username: username,
-                                                                                        password: password,
-                                                                                        created: created
-                                                                                      }),
-                                          raw_body: payload
-                                        })
+                                           header: Curam::MecCheck::SoapAuthorizationHeader.new({
+                                                                                                  username: username,
+                                                                                                  password: password,
+                                                                                                  timestamp: timestamp,
+                                                                                                  nonce:nonce
+                                                                                                }),
+                                           raw_body: payload
+                                         })
       end
 
       def read_username_setting
@@ -52,8 +55,15 @@ module Curam
         result.nil? ? Failure(":curam_atp_service_username cannot be nil") : result
       end
 
-      def generate_created
-        Success(Time.now.utc.strftime("%Y-%m-%dT%H:%M:%S.%L%Z"))
+      def generate_timestamp
+        curr_time = Time.now.utc
+        created = curr_time.strftime("%Y-%m-%dT%H:%M:%S.%L%Z")
+        expires = (curr_time + 1.minute).strftime("%Y-%m-%dT%H:%M:%S.%L%Z")
+        Success({created: created, expires: expires})
+      end
+
+      def generate_nonce
+        Success(SecureRandom.random_bytes(16))
       end
     end
   end

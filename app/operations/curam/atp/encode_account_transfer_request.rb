@@ -24,16 +24,16 @@ module Curam
         request_header = request.header
         xml[:soap].Header do |header|
           header[:wsse].Security({
-                                  "xmlns:wsse" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-                                  "xmlns:wsu" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
-                                }) do |security|
+                                   "xmlns:wsse" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
+                                   "xmlns:wsu" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+                                 }) do |security|
             security[:wsse].UsernameToken({
                                             "wsu:Id" => "UsernameToken-E2D62235026636E65716286872744061"
                                           }) do |ut|
               ut[:wsse].Username request_header.username
               ut[:wsse].Password({
-                                  "Type" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText"
-                                }, encode_password(request_header.password, request_header.created))
+                                   "Type" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText"
+                                 }, encode_password(request_header.password, request_header.created))
               ut[:wsu].Created request_header.created
             end
           end

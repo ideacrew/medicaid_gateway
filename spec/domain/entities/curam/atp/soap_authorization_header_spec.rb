@@ -14,10 +14,10 @@ describe Curam::Atp::SoapAuthorizationHeader, "given:
 
   subject do
     Curam::Atp::SoapAuthorizationHeader.new({
-                                         username: username,
-                                         password: password,
-                                         created: created
-                                       })
+                                              username: username,
+                                              password: password,
+                                              created: created
+                                            })
   end
 
   it "has the correct username" do

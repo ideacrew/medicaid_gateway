@@ -30,10 +30,10 @@ module Curam
     )
       Curam::TransferCheck.new({
                                  header: Curam::Atp::SoapAuthorizationHeader.new({
-                                                                              username: username,
-                                                                              password: password,
-                                                                              created: created
-                                                                            }),
+                                                                                   username: username,
+                                                                                   password: password,
+                                                                                   created: created
+                                                                                 }),
                                  global_application_id: "SBM#{id}",
                                  last_written: date.to_date
                                })

@@ -29,13 +29,13 @@ module Curam
         payload
       )
         Aces::AccountTransferRequest.new({
-                                          header: Curam::Atp::SoapAuthorizationHeader.new({
-                                                                                        username: username,
-                                                                                        password: password,
-                                                                                        created: created
-                                                                                      }),
-                                          raw_body: payload
-                                        })
+                                           header: Curam::Atp::SoapAuthorizationHeader.new({
+                                                                                             username: username,
+                                                                                             password: password,
+                                                                                             created: created
+                                                                                           }),
+                                           raw_body: payload
+                                         })
       end
 
       def read_username_setting
