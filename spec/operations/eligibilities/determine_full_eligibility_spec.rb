@@ -1296,10 +1296,8 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     end
   end
 
-  # Primary should get UQHP because of family affordability rule.
-  # For applications with assistance year 2022 or lower,
-  #   irrespective of what is answered to health_plan_meets_mvs_and_affordable
-  #   we need to consider the answer to this question as true
+  # Primary should get APTC instead of UQHP
+  # We should not run Family Affordability test as the application's assistance year equal or less than 2022.
   context 'cms me_test_scenarios test_four state ME' do
     include_context 'cms ME me_test_scenarios test_four'
 
@@ -1332,8 +1330,13 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
         end.product_eligibility_determination
       end
 
-      it 'should return uqhp result for jane and jim' do
-        expect(jane_ped.is_uqhp_eligible).to eq(true)
+      it 'should return aqhp, csr result for jane' do
+        expect(jane_ped.is_ia_eligible).to eq(true)
+        expect(jane_ped.is_csr_eligible).to eq(true)
+        expect(jane_ped.csr).to eq('0')
+      end
+
+      it 'should return uqhp result for jim' do
         expect(jim_ped.is_uqhp_eligible).to eq(true)
       end
 
@@ -3255,6 +3258,124 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
 
       it 'should return all members eligible for aqhp except for the employee' do
         expect(@peds.map(&:is_ia_eligible)).to eq([false, true, true])
+      end
+    end
+  end
+
+  # esi_affordability test_3150481
+  # 2022, health_plan_meets_mvs_and_affordable: true, esi_covered: 'family'
+  context 'esi_affordability test_3150481' do
+    include_context 'esi_affordability test_3150481'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @peds = @application.tax_households.first.tax_household_members.flat_map(&:product_eligibility_determination)
+    end
+
+    context 'for product_eligibility_determinations' do
+      it 'should return all members ineligible for aqhp and eligible for uqhp' do
+        expect(@peds.map(&:is_ia_eligible)).to eq([false, false, false])
+        expect(@peds.map(&:is_uqhp_eligible)).to eq([true, true, true])
+      end
+    end
+  end
+
+  # 2022, health_plan_meets_mvs_and_affordable: true, esi_covered: 'self_and_spouse'
+  context 'esi_affordability test_3150481' do
+    include_context 'esi_affordability test_3150481'
+    let(:esi_covered) { 'self_and_spouse' }
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @peds = @application.tax_households.first.tax_household_members.flat_map(&:product_eligibility_determination)
+    end
+
+    context 'for product_eligibility_determinations' do
+      it 'should return employee ineligible for aqhp and eligible for uqhp' do
+        expect(@peds.map(&:is_ia_eligible)).to eq([false, false, true])
+        expect(@peds.map(&:is_uqhp_eligible)).to eq([true, true, nil])
+      end
+    end
+  end
+
+  # 2022, health_plan_meets_mvs_and_affordable: true, esi_covered: 'self'
+  context 'esi_affordability test_3150481' do
+    include_context 'esi_affordability test_3150481'
+    let(:esi_covered) { 'self' }
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @peds = @application.tax_households.first.tax_household_members.flat_map(&:product_eligibility_determination)
+    end
+
+    context 'for product_eligibility_determinations' do
+      it 'should return employee ineligible for aqhp and eligible for uqhp' do
+        expect(@peds.map(&:is_ia_eligible)).to eq([false, true, true])
+        expect(@peds.map(&:is_uqhp_eligible)).to eq([true, nil, nil])
+      end
+    end
+  end
+
+  # 2023, health_plan_meets_mvs_and_affordable: true, esi_covered: 'family'
+  context 'esi_affordability test_3150481' do
+    include_context 'esi_affordability test_3150481'
+    let(:assistance_year) { 2023 }
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @peds = @application.tax_households.first.tax_household_members.flat_map(&:product_eligibility_determination)
+    end
+
+    context 'for product_eligibility_determinations' do
+      it 'should return employee ineligible for aqhp and eligible for uqhp' do
+        expect(@peds.map(&:is_ia_eligible)).to eq([false, false, false])
+        expect(@peds.map(&:is_uqhp_eligible)).to eq([true, true, true])
+      end
+    end
+  end
+
+  # 2023, health_plan_meets_mvs_and_affordable: true, esi_covered: 'self'
+  context 'esi_affordability test_3150481' do
+    include_context 'esi_affordability test_3150481'
+    let(:assistance_year) { 2023 }
+    let(:health_plan_meets_mvs_and_affordable) { false }
+    let(:esi_covered) { 'self' }
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @peds = @application.tax_households.first.tax_household_members.flat_map(&:product_eligibility_determination)
+    end
+
+    context 'for product_eligibility_determinations' do
+      it 'should return employee ineligible for aqhp and eligible for uqhp' do
+        expect(@peds.map(&:is_ia_eligible)).to eq([false, true, true])
+        expect(@peds.map(&:is_uqhp_eligible)).to eq([true, nil, nil])
+      end
+    end
+  end
+
+  # 2023, health_plan_meets_mvs_and_affordable: true, esi_covered: 'self_and_spouse'
+  context 'esi_affordability test_3150481' do
+    include_context 'esi_affordability test_3150481'
+    let(:assistance_year) { 2023 }
+    let(:health_plan_meets_mvs_and_affordable) { false }
+    let(:esi_covered) { 'self_and_spouse' }
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @peds = @application.tax_households.first.tax_household_members.flat_map(&:product_eligibility_determination)
+    end
+
+    context 'for product_eligibility_determinations' do
+      it 'should return employee ineligible for aqhp and eligible for uqhp' do
+        expect(@peds.map(&:is_ia_eligible)).to eq([false, true, true])
+        expect(@peds.map(&:is_uqhp_eligible)).to eq([true, nil, nil])
       end
     end
   end
