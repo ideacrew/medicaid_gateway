@@ -29,7 +29,7 @@ module Curam
       date
     )
       Curam::TransferCheck.new({
-                                 header: Curam::SoapAuthorizationHeader.new({
+                                 header: Curam::Atp::SoapAuthorizationHeader.new({
                                                                               username: username,
                                                                               password: password,
                                                                               created: created

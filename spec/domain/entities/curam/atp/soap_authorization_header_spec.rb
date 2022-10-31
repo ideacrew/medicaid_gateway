@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-describe Curam::SoapAuthorizationHeader, "given:
+describe Curam::Atp::SoapAuthorizationHeader, "given:
   - a username
   - a password
   - a created value
@@ -13,7 +13,7 @@ describe Curam::SoapAuthorizationHeader, "given:
   let(:created) { "SOME CREATED VALUE" }
 
   subject do
-    Curam::SoapAuthorizationHeader.new({
+    Curam::Atp::SoapAuthorizationHeader.new({
                                          username: username,
                                          password: password,
                                          created: created

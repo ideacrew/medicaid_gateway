@@ -7,7 +7,7 @@ module Curam
   class TransferCheck < Dry::Struct
     transform_keys(&:to_sym)
 
-    attribute :header, Types.Nominal(::Curam::SoapAuthorizationHeader)
+    attribute :header, Types.Nominal(::Curam::Atp::SoapAuthorizationHeader)
 
     # This exists currently for the purpose of connectivity testing - it is an
     # opaque XML payload.  It will become a full-fledged aca_entities object

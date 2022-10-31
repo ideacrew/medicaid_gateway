@@ -28,7 +28,7 @@ module Curam
       payload
     )
       Aces::AccountTransferRequest.new({
-                                         header: Curam::SoapAuthorizationHeader.new({
+                                         header: Curam::Atp::SoapAuthorizationHeader.new({
                                                                                       username: username,
                                                                                       password: password,
                                                                                       created: created
