@@ -9,7 +9,7 @@ module Curam
       attribute :username, Types::String
       attribute :password, Types::String
       attribute :timestamp, Curam::Timestamp
-      attribute :nonce, Type::String
+      attribute :nonce, Types::String
     end
   end
 end

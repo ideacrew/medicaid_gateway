@@ -27,14 +27,20 @@ module Curam
                                    "xmlns:wsse" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
                                    "xmlns:wsu" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
                                  }) do |security|
+            security[:wsu].Timestamp({"wsu:Id" => Base64.strict_encode64(Time.now.to_s).gsub!(/[^0-9A-Za-z]/, '') }) do |ts|
+              ts[:wsu].Created request_header.timestamp.created
+              ts[:wsu].Expires request_header.timestamp.expires
+            end
             security[:wsse].UsernameToken({
                                             "wsu:Id" => "UsernameToken-E2D62235026636E65716286872744061"
                                           }) do |ut|
               ut[:wsse].Username request_header.username
               ut[:wsse].Password({
                                    "Type" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText"
-                                 }, encode_password(request_header.password, request_header.created))
-              ut[:wsu].Created request_header.created
+                                 }, encode_password(request_header.password))
+              ut[:wsse].Nonce({
+                "EncodingType" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary"
+              }, encode_nonce(request_header.nonce))
             end
           end
         end
@@ -58,7 +64,11 @@ module Curam
         Success(builder.to_xml)
       end
 
-      def encode_password(password, _created_at)
+      def encode_nonce(nonce)
+        Base64.strict_encode64(nonce)
+      end
+
+      def encode_password(password)
         # Digest::SHA1.base64digest(nonce + created_at + password)
         # Configure for password digest later.  Right now they use raw passwordtext.
         password
