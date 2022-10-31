@@ -78,7 +78,7 @@ module Aces
       else
         transfer = transfer.gsub("xmlns:v1=\"http://xmlns.dhcf.dc.gov/dcas/Medicaid/Eligibility/xsd/v1\"", "")
         transfer = transfer.gsub("xmlns:v11=\"http://xmlns.dc.gov/dcas/common/CommonNative/xsd/V1\"", "")
-        Curam::BuildAccountTransferRequest.new.call(transfer)
+        Curam::MecCheck::BuildMecCheckRequest.new.call(transfer)
       end
     end
 
@@ -86,7 +86,7 @@ module Aces
       if MedicaidGatewayRegistry[:transfer_service].item == "aces"
         Aces::EncodeAccountTransferRequest.new.call(payload)
       else
-        Curam::EncodeAccountTransferRequest.new.call(payload)
+        Curam::Atp::EncodeMecCheckRequest.new.call(payload)
       end
     end
 
