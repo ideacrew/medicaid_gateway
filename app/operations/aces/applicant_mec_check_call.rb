@@ -86,7 +86,7 @@ module Aces
       if MedicaidGatewayRegistry[:transfer_service].item == "aces"
         Aces::EncodeAccountTransferRequest.new.call(payload)
       else
-        Curam::Atp::EncodeMecCheckRequest.new.call(payload)
+        Curam::MecCheck::EncodeMecCheckRequest.new.call(payload)
       end
     end
 
