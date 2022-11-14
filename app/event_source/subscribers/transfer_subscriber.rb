@@ -45,7 +45,7 @@ module Subscribers
             application_identifier: response.to_s,
             family_identifier: result.to_s,
             service: "subscriber failure",
-            failure: e
+            failure: "Exception: '#{e.class}' / message: #{e}"
           }
         )
       else
