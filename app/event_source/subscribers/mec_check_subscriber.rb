@@ -32,7 +32,7 @@ module Subscribers
           application_identifier: response.to_s,
           family_identifier: result,
           type: "subscriber failure",
-          failure: "Exception: '#{e.class.to_s}' / message: #{e.to_s}"
+          failure: "Exception: '#{e.class}' / message: #{e}"
         }
       )
       ack(delivery_info.delivery_tag)
