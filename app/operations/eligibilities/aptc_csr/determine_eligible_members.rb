@@ -101,6 +101,7 @@ module Eligibilities
           (state_resident?(applicant) || tax_filer_is_state_resident?) &&
           !applicant.incarcerated? &&
           applicant.lawfully_present_in_us? &&
+          minimum_federal_poverty_level?(applicant, ped) &&
           tax_filing?(applicant) &&
           medicaid_or_chip_check?(ped) &&
           !enrolled_in_other_coverage?(applicant) &&
@@ -108,6 +109,22 @@ module Eligibilities
           all_esi_affordable?(applicant) &&
           all_ichra_affordable?(applicant) &&
           all_qsehra_affordable?(applicant)
+      end
+
+      def immigration_status_exception?(applicant, ped)
+        applicant.medicaid_and_chip.ineligible_due_to_immigration_in_last_5_years ||
+          !ped.medicaid_cd_for_citizen_or_immigrant&.indicator_code ||
+          !ped.chip_cd_for_citizen_or_immigrant&.indicator_code
+      end
+
+      # Given annual_income_less_than_100_percent_fpl
+      #   If they are denied beacuse of Immigration Status(per MITC) they are still eligible for APTC
+      #   If they answered ineligible_due_to_immigration_in_last_5_years to true they are still eligible for APTC
+      #   Then the member is ineligible for APTC
+      def minimum_federal_poverty_level?(applicant, ped)
+        return true if @aptc_household[:annual_income_less_than_100_percent_fpl].blank?
+
+        immigration_status_exception?(applicant, ped)
       end
 
       def all_esi_affordable?(applicant)

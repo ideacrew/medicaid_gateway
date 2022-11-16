@@ -136,13 +136,12 @@ module Eligibilities
         thhm.medicaid_cd_for_income&.indicator_code == false
       end
 
-      # finds matching ::AptcCsr::Member
       def annual_income_less_than_100_percent_fpl?(aptc_household)
         annual_income = aptc_household[:annual_tax_household_income]
         fpl_data = aptc_household[:fpl]
         hh_annual_poverty_guideline = fpl_data[:annual_poverty_guideline] +
                                       ((aptc_household[:total_household_count] - 1) * fpl_data[:annual_per_person_amount])
-        annual_income < hh_annual_poverty_guideline
+        aptc_household[:annual_income_less_than_100_percent_fpl] = annual_income < hh_annual_poverty_guideline
       end
 
       # finds matching ::AptcCsr::Member

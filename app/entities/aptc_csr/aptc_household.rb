@@ -18,6 +18,7 @@ module AptcCsr
     attribute :benchmark_calculation_members, Types::Array.of(BenchmarkCalculationMember).optional.meta(omittable: true)
     attribute :members, Types::Array.of(Member)
     attribute :tax_household_identifier, Types::String.optional.meta(omittable: true)
+    attribute :annual_income_less_than_100_percent_fpl, Types::Bool.optional.meta(omittable: true)
 
     attribute :eligibility_date, Types::Date
   end

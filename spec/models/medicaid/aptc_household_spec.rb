@@ -56,6 +56,7 @@ RSpec.describe ::Medicaid::AptcHousehold, type: :model do
         fpl: fpl,
         fpl_percent: 256.00,
         tax_household_identifier: '192837465',
+        annual_income_less_than_100_percent_fpl: false,
         eligibility_date: Date.today.next_month.beginning_of_month }
     end
     let(:application) { FactoryBot.create(:application, :with_aptc_households) }

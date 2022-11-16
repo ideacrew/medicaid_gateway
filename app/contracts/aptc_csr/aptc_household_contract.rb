@@ -28,6 +28,7 @@ module AptcCsr
       optional(:benchmark_calculation_members).array(BenchmarkCalculationMemberContract.params)
       required(:members).array(MemberContract.params)
       optional(:tax_household_identifier).maybe(:string)
+      optional(:annual_income_less_than_100_percent_fpl).maybe(:bool)
 
       required(:eligibility_date).filled(:date)
     end
