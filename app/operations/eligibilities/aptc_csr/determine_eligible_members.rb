@@ -120,7 +120,7 @@ module Eligibilities
       # Given annual_income_less_than_100_percent_fpl
       #   If they are denied beacuse of Immigration Status(per MITC) they are still eligible for APTC
       #   If they answered ineligible_due_to_immigration_in_last_5_years to true they are still eligible for APTC
-      #   Then the member is ineligible for APTC
+      #   Else the member is ineligible for APTC
       def minimum_federal_poverty_level?(applicant, ped)
         return true if @aptc_household[:annual_income_less_than_100_percent_fpl].blank?
 
