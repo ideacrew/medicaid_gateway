@@ -7,6 +7,7 @@ Dir["#{Rails.root}/spec/shared_contexts/eligibilities/cms/me_complex_scenarios/*
 Dir["#{Rails.root}/spec/shared_contexts/eligibilities/cms/me_test_scenarios/*.rb"].sort.each { |file| require file }
 Dir["#{Rails.root}/spec/shared_contexts/eligibilities/dc_test_scenarios/*.rb"].sort.each { |file| require file }
 Dir["#{Rails.root}/spec/shared_contexts/eligibilities/esi_affordability/*.rb"].sort.each { |file| require file }
+Dir["#{Rails.root}/spec/shared_contexts/eligibilities/gap_filling/*.rb"].sort.each { |file| require file }
 require 'aca_entities/magi_medicaid/contracts/create_federal_poverty_level_contract'
 require 'aca_entities/magi_medicaid/contracts/federal_poverty_level_contract'
 require 'aca_entities/magi_medicaid/federal_poverty_level'
@@ -2580,18 +2581,19 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
         end
       end
 
+      # APTC Household income is less than 100% FPL
       context 'child determinations' do
-        it 'should return aptc eligible and get an aptc amount' do
-          expect(@application.tax_households.first.max_aptc).not_to be_nil
-          expect(child_ped.is_ia_eligible).to eq(true)
+        it 'should not return aqhp or csr eligible' do
+          expect(child_ped.is_ia_eligible).to eq(false)
+          expect(child_ped.is_csr_eligible).to eq(false)
         end
 
         it 'should not return medicaid eligible' do
           expect(child_ped.is_magi_medicaid).to eq(false)
         end
 
-        it 'should not return uqhp eligible' do
-          expect(child_ped.is_uqhp_eligible).to eq(nil)
+        it 'should return uqhp eligible' do
+          expect(child_ped.is_uqhp_eligible).to eq(true)
         end
       end
     end
@@ -3376,6 +3378,23 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       it 'should return employee ineligible for aqhp and eligible for uqhp' do
         expect(@peds.map(&:is_ia_eligible)).to eq([false, true, true])
         expect(@peds.map(&:is_uqhp_eligible)).to eq([true, nil, nil])
+      end
+    end
+  end
+
+  # 3.2.2 Minimum federal poverty level
+  context 'gap_filling test_2570928' do
+    include_context 'gap_filling test_2570928'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @peds = @application.tax_households.first.tax_household_members.flat_map(&:product_eligibility_determination)
+    end
+
+    context 'for product_eligibility_determinations' do
+      it 'should return member eligible for uqhp' do
+        expect(@peds.map(&:is_uqhp_eligible)).to eq([true])
       end
     end
   end

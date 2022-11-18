@@ -35,6 +35,7 @@ RSpec.describe ::AptcCsr::AptcHouseholdContract, dbclean: :around_each do
                                         member_premium: aptc_member[:benchmark_plan_monthly_premium_amount] }],
       members: [aptc_member],
       tax_household_identifier: '9876',
+      annual_income_less_than_100_percent_fpl: false,
       eligibility_date: Date.today.next_month.beginning_of_month }
   end
 
