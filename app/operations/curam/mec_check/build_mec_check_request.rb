@@ -22,6 +22,7 @@ module Curam
 
       protected
 
+      # rubocop:disable Metrics/ParameterLists
       def build_request(
         username,
         password,
@@ -41,6 +42,7 @@ module Curam
                                                raw_body: payload
                                              })
       end
+      # rubocop:enable Metrics/ParameterLists
 
       def read_username_setting
         result = Try do
