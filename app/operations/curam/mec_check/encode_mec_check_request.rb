@@ -41,6 +41,7 @@ module Curam
               ut[:wsse].Nonce({
                                 "EncodingType" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary"
                               }, encode_nonce(request_header.nonce))
+              ut[:wsu].Created request_header.created
             end
           end
         end
