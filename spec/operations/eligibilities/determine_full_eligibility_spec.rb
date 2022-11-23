@@ -3398,4 +3398,22 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       end
     end
   end
+
+  # Gap filling logic incorrectly overriding APTC eligibility where the household is not eligible for Medicaid
+  # due to recent denial or immigration status
+  context 'gap_filling test_1321470' do
+    include_context 'gap_filling test_1321470'
+
+    before do
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @peds = @application.tax_households.first.tax_household_members.flat_map(&:product_eligibility_determination)
+    end
+
+    context 'for product_eligibility_determinations' do
+      it 'should return member eligible for Insurance Assistance' do
+        expect(@peds.map(&:is_ia_eligible)).to eq([true, true, true, true])
+      end
+    end
+  end
 end
