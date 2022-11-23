@@ -16,16 +16,19 @@ module Curam
         password = yield read_password_setting
         timestamp = yield generate_timestamp
         nonce = yield generate_nonce
-        Success(build_request(username, password, timestamp, nonce, payload))
+        created = yield generate_created
+        Success(build_request(username, password, timestamp, nonce, created, payload))
       end
 
       protected
 
+      # rubocop:disable Metrics/ParameterLists
       def build_request(
         username,
         password,
         timestamp,
         nonce,
+        created,
         payload
       )
         Curam::MecCheck::MecCheckRequest.new({
@@ -33,26 +36,28 @@ module Curam
                                                                                                       username: username,
                                                                                                       password: password,
                                                                                                       timestamp: timestamp,
-                                                                                                      nonce: nonce
+                                                                                                      nonce: nonce,
+                                                                                                      created: created
                                                                                                     }),
                                                raw_body: payload
                                              })
       end
+      # rubocop:enable Metrics/ParameterLists
 
       def read_username_setting
         result = Try do
-          MedicaidGatewayRegistry[:curam_connection].setting(:curam_atp_service_username).item
+          MedicaidGatewayRegistry[:curam_connection].setting(:curam_mec_check_username).item
         end
-        return Failure("Failed to find setting: :curam_connection, :curam_atp_service_username") if result.failure?
-        result.nil? ? Failure(":curam_atp_service_username cannot be nil") : result
+        return Failure("Failed to find setting: :curam_connection, :curam_mec_check_username") if result.failure?
+        result.nil? ? Failure(":curam_mec_check_username cannot be nil") : result
       end
 
       def read_password_setting
         result = Try do
-          MedicaidGatewayRegistry[:curam_connection].setting(:curam_atp_service_password).item
+          MedicaidGatewayRegistry[:curam_connection].setting(:curam_mec_check_password).item
         end
-        return Failure("Failed to find setting: :curam_connection, :curam_atp_service_username") if result.failure?
-        result.nil? ? Failure(":curam_atp_service_username cannot be nil") : result
+        return Failure("Failed to find setting: :curam_connection, :curam_mec_check_password") if result.failure?
+        result.nil? ? Failure(":curam_mec_check_password cannot be nil") : result
       end
 
       def generate_timestamp
@@ -64,6 +69,10 @@ module Curam
 
       def generate_nonce
         Success(SecureRandom.random_bytes(16))
+      end
+
+      def generate_created
+        Success(Time.now.utc.strftime("%Y-%m-%dT%H:%M:%S.%L%Z"))
       end
     end
   end

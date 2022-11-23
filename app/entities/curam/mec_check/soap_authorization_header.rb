@@ -10,6 +10,7 @@ module Curam
       attribute :password, Types::String
       attribute :timestamp, Curam::Timestamp
       attribute :nonce, Types::String
+      attribute :created, Types::String
     end
   end
 end
