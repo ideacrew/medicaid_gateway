@@ -26,7 +26,7 @@ module Aces
         end
       end
       return Failure("Failed to find setting: :aces_connection, :aces_mec_check_uri") if result.failure?
-      result.nil? ? Failure(":aces_mec_check_uri cannot be nil") : result
+      result.value!.nil? ? Failure(":aces_mec_check_uri cannot be nil") : result
     end
 
     def submit_request(service_uri, payload)

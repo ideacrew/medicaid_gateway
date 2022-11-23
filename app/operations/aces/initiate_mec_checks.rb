@@ -15,7 +15,7 @@ module Aces
       return Failure({ error: "MEC Check feature not enabled." }) unless MedicaidGatewayRegistry[:mec_check].enabled?
       json = JSON.parse(payload)
       mec_check = yield create_mec_check(json, payload)
-      checks    = yield get_applicant_checks(json)
+      checks    = yield get_applicant_checks(json, mec_check)
       _results  = yield update_mec_check(mec_check, checks)
 
       publish_to_enroll(mec_check, checks)
@@ -39,7 +39,7 @@ module Aces
       Failure({ error: "Failed to save MEC check: #{results.failure}" })
     end
 
-    def get_applicant_checks(json)
+    def get_applicant_checks(json, mec_check)
       results = {}
       people = json["applicants"]
       people.each do |person|
@@ -61,7 +61,7 @@ module Aces
       end
       Success([json, results])
     rescue StandardError => e
-      Failure("Mec check failure => #{e}")
+      Failure({mc_id: mec_check.id, error: "Mec check failure => #{e}"})
     end
 
     def mec_check(person)
