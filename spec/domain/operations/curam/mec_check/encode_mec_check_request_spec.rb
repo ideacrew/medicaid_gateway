@@ -20,7 +20,8 @@ describe Curam::MecCheck::EncodeMecCheckRequest, "given an Curam::MecCheck::Enco
         :username => "A Username",
         :password => "A Password",
         :timestamp => timestamp,
-        :nonce => "A Nonce"
+        :nonce => "A Nonce",
+        :created => "Now"
       }
     )
   end
