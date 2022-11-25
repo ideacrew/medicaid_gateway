@@ -6,17 +6,8 @@ module Subscribers
     include ::EventSource::Subscriber[amqp: 'enroll.fdsh.verifications']
 
     subscribe(:on_enroll_fdsh_verifications) do |delivery_info, metadata, response|
-      # logger.debug "Received response: #{response}"
-      # logger.debug "Received metadata: #{metadata.class}"
-      # logger.debug "Received delivery_info: #{delivery_info}"
       to_mec_check = metadata.to_hash.dig(:headers, "key") == "local_mec_check"
-
       result = Aces::InitiateMecChecks.new.call(response) if to_mec_check
-      logger.debug "-----------------"
-      logger.debug result
-      logger.debug result.failure
-      logger.debug result.failure.class
-      logger.debug result.class
 
       if !to_mec_check || result.success?
         ack(delivery_info.delivery_tag)
