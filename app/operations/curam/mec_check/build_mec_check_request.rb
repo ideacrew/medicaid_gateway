@@ -34,15 +34,15 @@ module Curam
         payload
       )
         request = Curam::MecCheck::MecCheckRequest.new({
-                                               header: Curam::MecCheck::SoapAuthorizationHeader.new({
-                                                                                                      username: username,
-                                                                                                      password: password,
-                                                                                                      timestamp: timestamp,
-                                                                                                      nonce: nonce,
-                                                                                                      created: created
-                                                                                                    }),
-                                               raw_body: payload
-                                             })
+                                                         header: Curam::MecCheck::SoapAuthorizationHeader.new({
+                                                                                                                username: username,
+                                                                                                                password: password,
+                                                                                                                timestamp: timestamp,
+                                                                                                                nonce: nonce,
+                                                                                                                created: created
+                                                                                                              }),
+                                                         raw_body: payload
+                                                       })
         Success(request)
       rescue Dry::Struct::Error => e
         Failure({ error: "Failed to create MecCheckRequest: #{e}" })

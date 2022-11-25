@@ -61,7 +61,7 @@ module Aces
       end
       Success([json, results])
     rescue StandardError => e
-      Failure({mc_id: mec_check.id, error: "Mec check failure => #{e}"})
+      Failure({ mc_id: mec_check.id, error: "Mec check failure => #{e}" })
     end
 
     def mec_check(person)
