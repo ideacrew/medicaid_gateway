@@ -17,7 +17,9 @@ module Curam
         timestamp = yield generate_timestamp
         nonce = yield generate_nonce
         created = yield generate_created
-        Success(build_request(username, password, timestamp, nonce, created, payload))
+        request = yield build_request(username, password, timestamp, nonce, created, payload)
+        Success(request)
+        # Success(build_request(username, password, timestamp, nonce, created, payload))
       end
 
       protected
@@ -31,16 +33,19 @@ module Curam
         created,
         payload
       )
-        Curam::MecCheck::MecCheckRequest.new({
-                                               header: Curam::MecCheck::SoapAuthorizationHeader.new({
-                                                                                                      username: username,
-                                                                                                      password: password,
-                                                                                                      timestamp: timestamp,
-                                                                                                      nonce: nonce,
-                                                                                                      created: created
-                                                                                                    }),
-                                               raw_body: payload
-                                             })
+        request = Curam::MecCheck::MecCheckRequest.new({
+                                                         header: Curam::MecCheck::SoapAuthorizationHeader.new({
+                                                                                                                username: username,
+                                                                                                                password: password,
+                                                                                                                timestamp: timestamp,
+                                                                                                                nonce: nonce,
+                                                                                                                created: created
+                                                                                                              }),
+                                                         raw_body: payload
+                                                       })
+        Success(request)
+      rescue Dry::Struct::Error => e
+        Failure({ error: "Failed to create MecCheckRequest: #{e}" })
       end
       # rubocop:enable Metrics/ParameterLists
 
