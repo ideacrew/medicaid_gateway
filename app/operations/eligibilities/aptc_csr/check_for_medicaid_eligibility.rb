@@ -78,13 +78,35 @@ module Eligibilities
           eligibility_date = aptc_household[:eligibility_date]
           # We should not be determining member level eligibility for a Non-Applicant
           # or for an Applicant who is legitimately ineligible outside of gap filling rules
-          if applicant.is_applying_coverage && !absolutely_mm_ineligible?(applicant, eligibility_date)
-            check_and_update_magi_medicaid_eligibility(member, thhm,
-                                                       applicant)
-          end
+          next unless applicant.is_applying_coverage &&
+                      !absolutely_mm_ineligible?(applicant, eligibility_date) &&
+                      !medicaid_ineligible_due_to_immigration_or_recent_denial?(applicant, thhm)
+          check_and_update_magi_medicaid_eligibility(member, thhm, applicant)
         end
 
         Success(aptc_household)
+      end
+
+      def medicaid_ineligible_due_to_immigration_or_recent_denial?(applicant, thhm)
+        mitc_denied_because_of_immigration_status?(thhm.product_eligibility_determination) ||
+          medicaid_or_chip_denial_in_last_90_days?(applicant.medicaid_and_chip) ||
+          denial_due_to_immigration?(applicant.medicaid_and_chip)
+      end
+
+      def mitc_denied_because_of_immigration_status?(ped)
+        !ped.medicaid_cd_for_citizen_or_immigrant&.indicator_code ||
+          !ped.chip_cd_for_citizen_or_immigrant&.indicator_code
+      end
+
+      def medicaid_or_chip_denial_in_last_90_days?(medicaid_and_chip)
+        medicaid_and_chip.not_eligible_in_last_90_days &&
+          medicaid_and_chip.denied_on &&
+          (Date.today - 90.days) < medicaid_and_chip.denied_on
+      end
+
+      def denial_due_to_immigration?(medicaid_and_chip)
+        medicaid_and_chip.ineligible_due_to_immigration_in_last_5_years &&
+          !medicaid_and_chip.immigration_status_changed_since_ineligibility
       end
 
       def check_and_update_magi_medicaid_eligibility(member, thhm, applicant)
