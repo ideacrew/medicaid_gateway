@@ -79,6 +79,8 @@ describe Aces::InitiateMecChecks, dbclean: :after_each do
     end
 
     context '#get_applicant_checks' do
+      let(:mec_check_record) { double }
+
       before do
         payload_hash = JSON.parse(payload)
         local_mec_evidence = payload_hash['applicants'].first['local_mec_evidence']
@@ -91,7 +93,7 @@ describe Aces::InitiateMecChecks, dbclean: :after_each do
         end
 
         it 'should update the person evidence to :outstanding' do
-          result = operation.send(:get_applicant_checks, JSON.parse(payload)).value!
+          result = operation.send(:get_applicant_checks, JSON.parse(payload), mec_check_record).value!
           local_mec_evidence = result[0]['applicants'].first['local_mec_evidence']
           expect(local_mec_evidence['aasm_state']).to eq :outstanding
         end
@@ -99,7 +101,7 @@ describe Aces::InitiateMecChecks, dbclean: :after_each do
 
       context 'with applicant Medicaid eligibility NOT found in response' do
         it 'should update the person evidence to :attested' do
-          result = operation.send(:get_applicant_checks, JSON.parse(payload)).value!
+          result = operation.send(:get_applicant_checks, JSON.parse(payload), mec_check_record).value!
           local_mec_evidence = result[0]['applicants'].first['local_mec_evidence']
           expect(local_mec_evidence['aasm_state']).to eq :attested
         end
@@ -152,6 +154,8 @@ describe Aces::InitiateMecChecks, dbclean: :after_each do
       end
 
       context '#get_applicant_checks' do
+        let(:mec_check_record) { double }
+
         before do
           payload_hash = JSON.parse(payload)
           local_mec_evidence = payload_hash['applicants'].first['local_mec_evidence']
@@ -160,7 +164,7 @@ describe Aces::InitiateMecChecks, dbclean: :after_each do
 
         context 'with applicant Medicaid eligibility found in response' do
           it 'should update the person evidence to :outstanding' do
-            result = operation.send(:get_applicant_checks, JSON.parse(payload)).value!
+            result = operation.send(:get_applicant_checks, JSON.parse(payload), mec_check_record).value!
             local_mec_evidence = result[0]['applicants'].first['local_mec_evidence']
             expect(local_mec_evidence['aasm_state']).to eq :outstanding
           end
@@ -172,7 +176,7 @@ describe Aces::InitiateMecChecks, dbclean: :after_each do
           end
 
           it 'should update the person evidence to :attested' do
-            result = operation.send(:get_applicant_checks, JSON.parse(payload)).value!
+            result = operation.send(:get_applicant_checks, JSON.parse(payload), mec_check_record).value!
             local_mec_evidence = result[0]['applicants'].first['local_mec_evidence']
             expect(local_mec_evidence['aasm_state']).to eq :attested
           end
