@@ -19,7 +19,6 @@ module Curam
         created = yield generate_created
         request = yield build_request(username, password, timestamp, nonce, created, payload)
         Success(request)
-        # Success(build_request(username, password, timestamp, nonce, created, payload))
       end
 
       protected
