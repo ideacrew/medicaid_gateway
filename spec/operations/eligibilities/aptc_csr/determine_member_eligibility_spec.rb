@@ -53,14 +53,14 @@ describe Eligibilities::AptcCsr::DetermineMemberEligibility do
   end
 
   context 'with income' do
-    context 'with start date on first of current year and end date on first of following year' do
+    context 'with start date on first of current year and end date in future year' do
       let(:income) do
         { kind: "wages_and_salaries",
-          amount: "94000.0",
+          amount: "1000.0",
           amount_tax_exempt: "0.0",
           frequency_kind: "Monthly",
           start_on: "#{Date.today.year}-01-01",
-          end_on: "#{Date.today.next_year.year}-01-01",
+          end_on: "#{Date.today + 2.years.year}-01-01",
           is_projected: false,
           employer: {
             employer_name: "Test LLC"
@@ -82,28 +82,122 @@ describe Eligibilities::AptcCsr::DetermineMemberEligibility do
           magi_medicaid_application: input_application }
       end
 
-      context 'not a leap year' do
-        before do
-          allow(Date).to receive(:gregorian_leap?).with(Date.today.year).and_return(false)
-        end
 
-        it 'should calculate the annual tax household income correctly' do
-          result = subject.call(input_params)
-          annual_thh_income = result.success[:aptc_household].annual_tax_household_income.to_f.ceil
-          expect(annual_thh_income).to eq 1_131_091
-        end
+      it 'should calculate the annual tax household income correctly' do
+        result = subject.call(input_params)
+        annual_thh_income = result.success[:aptc_household].annual_tax_household_income.to_f.ceil
+        expect(annual_thh_income).to eq 12000
+      end
+    end
+
+    context 'with start date on first of current year and end date less than current year end on' do
+      let(:income) do
+        { kind: "wages_and_salaries",
+          amount: "1000.0",
+          amount_tax_exempt: "0.0",
+          frequency_kind: "Monthly",
+          start_on: "#{Date.today.year}-01-01",
+          end_on: Date.today.beginning_of_year + 8.months,
+          is_projected: false,
+          employer: {
+            employer_name: "Test LLC"
+          } }
       end
 
-      context 'leap year' do
-        before do
-          allow(Date).to receive(:gregorian_leap?).with(Date.today.year).and_return(true)
-        end
+      let(:input_application) do
+        app_params = mm_application_entity.to_h
+        app_params[:applicants].first[:incomes] = [income]
+        ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(app_params).success
+      end
 
-        it 'should calculate the annual tax household income correctly' do
-          result = subject.call(input_params)
-          annual_thh_income = result.success[:aptc_household].annual_tax_household_income.to_f.ceil
-          expect(annual_thh_income).to eq 1_134_181
-        end
+      let(:input_tax_household) do
+        input_application.tax_households.first
+      end
+
+      let(:input_params) do
+        { magi_medicaid_tax_household: input_tax_household,
+          magi_medicaid_application: input_application }
+      end
+
+
+      it 'should calculate the annual tax household income correctly' do
+        result = subject.call(input_params)
+        annual_thh_income = result.success[:aptc_household].annual_tax_household_income.to_f.ceil
+        expect(annual_thh_income).to eq 8022
+      end
+    end
+
+    context 'with start date on first of current year and end date on year end date' do
+      let(:income) do
+        { kind: "wages_and_salaries",
+          amount: "1000.0",
+          amount_tax_exempt: "0.0",
+          frequency_kind: "Monthly",
+          start_on: "#{Date.today.year}-01-01",
+          end_on: Date.today.end_of_year,
+          is_projected: false,
+          employer: {
+            employer_name: "Test LLC"
+          } }
+      end
+
+      let(:input_application) do
+        app_params = mm_application_entity.to_h
+        app_params[:applicants].first[:incomes] = [income]
+        ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(app_params).success
+      end
+
+      let(:input_tax_household) do
+        input_application.tax_households.first
+      end
+
+      let(:input_params) do
+        { magi_medicaid_tax_household: input_tax_household,
+          magi_medicaid_application: input_application }
+      end
+
+
+      it 'should calculate the annual tax household income correctly' do
+        result = subject.call(input_params)
+        annual_thh_income = result.success[:aptc_household].annual_tax_household_income.to_f.ceil
+        expect(annual_thh_income).to eq 12000
+      end
+    end
+
+    context 'with start date on first of current year and no end date' do
+      let(:income) do
+        { kind: "wages_and_salaries",
+          amount: "1000.0",
+          amount_tax_exempt: "0.0",
+          frequency_kind: "Monthly",
+          start_on: "#{Date.today.year}-01-01",
+          end_on: nil,
+          is_projected: false,
+          employer: {
+            employer_name: "Test LLC"
+          } }
+      end
+
+      let(:input_application) do
+        app_params = mm_application_entity.to_h
+        app_params[:applicants].first[:incomes] = [income]
+        ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(app_params).success
+      end
+
+      let(:input_tax_household) do
+        input_application.tax_households.first
+      end
+
+      let(:input_params) do
+        { magi_medicaid_tax_household: input_tax_household,
+          magi_medicaid_application: input_application }
+      end
+
+
+      it 'should calculate the annual tax household income correctly' do
+        result = subject.call(input_params)
+        annual_thh_income = result.success[:aptc_household].annual_tax_household_income.to_f.ceil
+        expect(annual_thh_income).to eq 12000
       end
     end
   end
