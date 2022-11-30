@@ -82,11 +82,10 @@ describe Eligibilities::AptcCsr::DetermineMemberEligibility do
           magi_medicaid_application: input_application }
       end
 
-
       it 'should calculate the annual tax household income correctly' do
         result = subject.call(input_params)
         annual_thh_income = result.success[:aptc_household].annual_tax_household_income.to_f.ceil
-        expect(annual_thh_income).to eq 12000
+        expect(annual_thh_income).to eq 12_000
       end
     end
 
@@ -118,7 +117,6 @@ describe Eligibilities::AptcCsr::DetermineMemberEligibility do
         { magi_medicaid_tax_household: input_tax_household,
           magi_medicaid_application: input_application }
       end
-
 
       it 'should calculate the annual tax household income correctly' do
         result = subject.call(input_params)
@@ -156,11 +154,10 @@ describe Eligibilities::AptcCsr::DetermineMemberEligibility do
           magi_medicaid_application: input_application }
       end
 
-
       it 'should calculate the annual tax household income correctly' do
         result = subject.call(input_params)
         annual_thh_income = result.success[:aptc_household].annual_tax_household_income.to_f.ceil
-        expect(annual_thh_income).to eq 12000
+        expect(annual_thh_income).to eq 12_000
       end
     end
 
@@ -193,11 +190,10 @@ describe Eligibilities::AptcCsr::DetermineMemberEligibility do
           magi_medicaid_application: input_application }
       end
 
-
       it 'should calculate the annual tax household income correctly' do
         result = subject.call(input_params)
         annual_thh_income = result.success[:aptc_household].annual_tax_household_income.to_f.ceil
-        expect(annual_thh_income).to eq 12000
+        expect(annual_thh_income).to eq 12_000
       end
     end
   end
