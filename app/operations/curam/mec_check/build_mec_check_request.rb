@@ -67,7 +67,7 @@ module Curam
       def generate_timestamp
         curr_time = Time.now.utc
         created = curr_time.strftime("%Y-%m-%dT%H:%M:%S.%L%Z")
-        expires = (curr_time + 5.minutes).strftime("%Y-%m-%dT%H:%M:%S.%L%Z")
+        expires = (curr_time + 1.minute).strftime("%Y-%m-%dT%H:%M:%S.%L%Z")
         Success({ created: created, expires: expires })
       end
 
