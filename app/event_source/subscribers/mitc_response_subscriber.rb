@@ -30,10 +30,10 @@ module Subscribers
                   result.failure
                 end
       # TODO: log message
-      logger.info "determination_request_subscriber_message: #{message.is_a?(Hash) ? message[:event] : message}"
+      logger.info "mitc_response_subscriber_message: #{message.is_a?(Hash) ? message[:event] : message}"
     rescue StandardError => e
       # TODO: log error message
-      logger.info "determination_request_subscriber_error: #{e} backtrace: #{e.backtrace}"
+      logger.error "mitc_response_subscriber_error: #{e} backtrace: #{e.backtrace}"
     end
   end
 end
