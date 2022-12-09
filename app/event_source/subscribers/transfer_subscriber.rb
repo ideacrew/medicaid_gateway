@@ -25,7 +25,7 @@ module Subscribers
 
       if result.success?
         ack(delivery_info.delivery_tag)
-        logger.debug "application_submitted_subscriber_message; acked"
+        logger.debug "transfer_subscriber_message; acked"
       else
         errors = result.failure
         error = result.failure[:failure]
@@ -35,15 +35,16 @@ module Subscribers
           outbound_transfer.update!(failure: error)
         end
         ack(delivery_info.delivery_tag)
-        logger.debug "application_submitted_subscriber_message; acked (nacked) due to:#{errors}"
+        logger.error "transfer_subscriber_message; acked (nacked) due to:#{errors}"
       end
     rescue StandardError => e
       # In the case of subscriber error, saving details for reporting purposes, repurposing existing fields.
+      logger.error "transfer_subscriber_message_error message: #{e} backtrace: #{e.backtrace}; acked (nacked)"
       if transfer
-        Aces::Transfer.new.call(
+        Aces::Transfer.create(
           {
-            application_identifier: response.to_s,
-            family_identifier: result.to_s,
+            application_identifier: response&.to_s,
+            family_identifier: result&.to_s,
             service: "subscriber failure",
             failure: "Exception: '#{e.class}' / message: #{e}"
           }
@@ -54,7 +55,6 @@ module Subscribers
         inbound_transfer&.update!(failure: true)
       end
       ack(delivery_info.delivery_tag)
-      logger.debug "application_submitted_subscriber_error: baacktrace: #{e.backtrace}; acked (nacked)"
     end
   end
 end
