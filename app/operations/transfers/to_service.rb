@@ -45,19 +45,21 @@ module Transfers
 
     def validate_applicants(params, transfer_id)
       payload = JSON.parse(params)
-      applicants = payload.dig("family", "magi_medicaid_applications", "applicants")
+      application = payload.dig("family", "magi_medicaid_applications")
+      error_result = { transfer_id: transfer_id }
+      error_result[:failure] = "No application found in payload." if application.blank?
+      return Failure(error_result) if error_result[:failure].present?
+
       failure_messages = []
+      applicants = application["applicants"] if application
       failure_messages << check_applicants_applying_for_coverage(applicants)
       failure_messages << check_applicants_vlp_document(applicants)
       failure_messages << check_applicants_deductions(applicants)
       failure_messages.compact!.flatten!
-      return Success("Valid applicants.") if failure_messages.blank?
+      error_result[:failure] = failure_messages.join("\n")
+      return Failure(error_result) if error_result[:failure].present?
 
-      error_result = {
-        transfer_id: transfer_id,
-        failure: failure_messages.join("\n")
-      }
-      Failure(error_result)
+      Success("Valid applicants.")
     end
 
     def check_applicants_applying_for_coverage(applicants)
@@ -91,7 +93,7 @@ module Transfers
 
         collect << failure_message.gsub(/[\["\]]/, '') if deduction_kinds.present?
       end
-      return failure_messages unless failure_messages.empty?
+      return failure_messages unless failure_messages&.empty?
     end
 
     def add_param_flags(params, transfer_id)
