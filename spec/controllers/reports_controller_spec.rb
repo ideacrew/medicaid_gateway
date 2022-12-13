@@ -40,7 +40,7 @@ RSpec.describe ReportsController, type: :controller, dbclean: :after_each do
 
       it "should flash alert message" do
         subject
-        expect(flash[:alert]).to match(/Application does not contain any applicants applying for coverage./)
+        expect(flash[:alert]).to match(/No application found in payload./)
       end
     end
   end

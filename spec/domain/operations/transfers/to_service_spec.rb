@@ -177,6 +177,20 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
   end
 
   context 'failure' do
+    context 'with no application present in payload' do
+      before do
+        payload = JSON.parse(aces_hash)
+        payload["family"]["magi_medicaid_applications"] = {}
+        params = payload.to_json
+        @result = transfer.call(params)
+      end
+
+      it 'should fail when no application is present in the payload' do
+        error_message = @result.failure[:failure]
+        expect(error_message).to eq "No application found in payload."
+      end
+    end
+
     context 'with no applicants applying for coverage' do
       before do
         payload = JSON.parse(aces_hash)
