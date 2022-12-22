@@ -55,7 +55,7 @@ module Eligibilities
         oe_start_on = @application.oe_start_on
         end_of_year = oe_start_on.end_of_year
         effective_date = if (oe_start_on..end_of_year).cover?(current_date)
-                           @application[:aptc_effective_date]
+                           @application.aptc_effective_date
                          else
                            current_date.next_month.beginning_of_month
                          end
