@@ -59,7 +59,7 @@ module Eligibilities
                          else
                            current_date.next_month.beginning_of_month
                          end
-        return [[effective_date, oe_start_on].max, oe_start_on.end_of_year].min if Date.today.year > @application.assistance_year
+        return [[effective_date, oe_start_on].max, oe_start_on.end_of_year].min if current_date.year > @application.assistance_year
         effective_date
       end
 
