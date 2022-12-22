@@ -242,16 +242,16 @@ describe Eligibilities::AptcCsr::DetermineMemberEligibility do
           magi_medicaid_application: input_application }
       end
 
-      let(:open_enrollment) {
-        input_application[:oe_start_on]..input_application[:oe_start_on].end_of_year
-      }
+      let(:open_enrollment) { input_application[:oe_start_on]..input_application[:oe_start_on].end_of_year }
+
+      let(:next_month_start_on) { Date.today.next_month.beginning_of_month }
 
       before do
         @result = subject.call(input_params)
       end
 
       it "should have eligibility determination start on date be first of next month" do
-        expect(@result.success[:aptc_household].eligibility_date).to eql(Date.today.next_month.beginning_of_month) unless open_enrollment.cover?(Date.today)
+        expect(@result.success[:aptc_household].eligibility_date).to eql(next_month_start_on) unless open_enrollment.cover?(Date.today)
       end
     end
 
