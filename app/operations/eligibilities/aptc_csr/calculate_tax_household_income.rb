@@ -59,7 +59,8 @@ module Eligibilities
                          else
                            current_date.next_month.beginning_of_month
                          end
-        [[effective_date, oe_start_on].max, oe_start_on.end_of_year].min
+        return [[effective_date, oe_start_on].max, oe_start_on.end_of_year].min if oe_start_on.year == @application.assistance_year
+        effective_date
       end
 
       def calculate_member_income(applicant, income_threshold)
