@@ -196,5 +196,90 @@ describe Eligibilities::AptcCsr::DetermineMemberEligibility do
         expect(annual_thh_income).to eq 12_000
       end
     end
+
+    context "application submitted during open enrollment with same assistance year" do
+      let(:input_application) do
+        app_params = mm_application_entity.to_h
+        app_params[:aptc_effective_date] = app_params[:oe_start_on]
+        app_params[:assistance_year] = app_params[:oe_start_on].year
+        ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(app_params).success
+      end
+
+      let(:input_tax_household) do
+        input_application.tax_households.first
+      end
+
+      let(:input_params) do
+        { magi_medicaid_tax_household: input_tax_household,
+          magi_medicaid_application: input_application }
+      end
+
+      before do
+        allow(Date).to receive(:today).and_return input_application[:oe_start_on]
+        @result = subject.call(input_params)
+      end
+
+      it "should have eligibility determination start on date match application effective date" do
+
+        expect(@result.success[:aptc_household].eligibility_date).to eql(input_application[:aptc_effective_date])
+      end
+    end
+
+    context "application submitted outside of open enrollment" do
+      let(:input_application) do
+        app_params = mm_application_entity.to_h
+        app_params[:aptc_effective_date] = app_params[:oe_start_on]
+        app_params[:assistance_year] = app_params[:oe_start_on].year
+        ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(app_params).success
+      end
+
+      let(:input_tax_household) do
+        input_application.tax_households.first
+      end
+
+      let(:input_params) do
+        { magi_medicaid_tax_household: input_tax_household,
+          magi_medicaid_application: input_application }
+      end
+
+      let(:open_enrollment) {
+        input_application[:oe_start_on]..input_application[:oe_start_on].end_of_year
+      }
+
+      before do
+        @result = subject.call(input_params)
+      end
+
+      it "should have eligibility determination start on date be first of next month" do
+        expect(@result.success[:aptc_household].eligibility_date).to eql(Date.today.next_month.beginning_of_month) unless open_enrollment.cover?(Date.today)
+      end
+    end
+
+    context "application submitted in following year for prior assistance year" do
+      let(:input_application) do
+        app_params = mm_application_entity.to_h
+        app_params[:aptc_effective_date] = app_params[:oe_start_on]
+        app_params[:assistance_year] = app_params[:oe_start_on].year
+        ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(app_params).success
+      end
+
+      let(:input_tax_household) do
+        input_application.tax_households.first
+      end
+
+      let(:input_params) do
+        { magi_medicaid_tax_household: input_tax_household,
+          magi_medicaid_application: input_application }
+      end
+
+      before do
+        allow(Date).to receive(:today).and_return input_application[:oe_start_on].next_year.beginning_of_year
+        @result = subject.call(input_params)
+      end
+
+      it "should have eligibility determination start on date be last day of application assistance year" do
+        expect(@result.success[:aptc_household].eligibility_date).to eql(input_application[:oe_start_on].end_of_year)
+      end
+    end
   end
 end
