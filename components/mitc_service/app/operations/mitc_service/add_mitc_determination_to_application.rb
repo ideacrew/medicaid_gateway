@@ -117,7 +117,7 @@ module MitcService
     def calculate_eligibility_date(mm_app_hash)
       current_date = Date.today
       return Date.new(mm_app_hash[:assistance_year]) if current_date.year < mm_app_hash[:assistance_year]
-      
+
       oe_start_on = mm_app_hash[:oe_start_on]
       end_of_year = oe_start_on.end_of_year
       effective_date = if (oe_start_on..end_of_year).cover?(current_date)
