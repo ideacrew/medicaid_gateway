@@ -54,11 +54,13 @@ module Eligibilities
 
         oe_start_on = @application.oe_start_on
         end_of_year = oe_start_on.end_of_year
-        if (oe_start_on..end_of_year).cover?(current_date)
-          end_of_year.next_day
-        else
-          current_date.next_month.beginning_of_month
-        end
+        effective_date = if (oe_start_on..end_of_year).cover?(current_date)
+                           @application.aptc_effective_date
+                         else
+                           current_date.next_month.beginning_of_month
+                         end
+        return [[effective_date, oe_start_on].max, oe_start_on.end_of_year].min if oe_start_on.year == @application.assistance_year
+        effective_date
       end
 
       def calculate_member_income(applicant, income_threshold)
