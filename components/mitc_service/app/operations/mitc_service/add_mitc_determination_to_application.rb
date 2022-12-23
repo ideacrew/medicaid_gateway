@@ -117,16 +117,14 @@ module MitcService
     def calculate_eligibility_date(mm_app_hash)
       current_date = Date.today
       return Date.new(mm_app_hash[:assistance_year]) if current_date.year < mm_app_hash[:assistance_year]
-
+      return mm_app_hash[:aptc_effective_date] if current_date.year > mm_app_hash[:assistance_year]
       oe_start_on = mm_app_hash[:oe_start_on]
-      end_of_year = oe_start_on.end_of_year
-      effective_date = if (oe_start_on..end_of_year).cover?(current_date)
-                         mm_app_hash[:aptc_effective_date]
-                       else
-                         current_date.next_month.beginning_of_month
-                       end
-      return [[effective_date, oe_start_on].max, oe_start_on.end_of_year].min if current_date.year > mm_app_hash[:assistance_year]
-      effective_date
+      end_of_assistance_year = Date.new(mm_app_hash[:assistance_year]).end_of_year
+      if (oe_start_on..end_of_assistance_year).cover?(current_date)
+        mm_app_hash[:aptc_effective_date]
+      else
+        current_date.next_month.beginning_of_month
+      end
     end
 
     def applicant_is_not_applying_coverage?(mm_app_hash, member_identifier)
