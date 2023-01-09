@@ -316,6 +316,7 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
         allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_income_end_on).and_return(true)
         allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_non_ssn_apply_reason).and_return(true)
         allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_vlp_document).and_return(false)
+        allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_temp_out_of_state).and_return(false)
         allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:invert_person_association).and_return(true)
         result_value = Transfers::ToService.new.send(:add_param_flags, aces_hash, transfer_record.id).value!
         @result_hash = JSON.parse(result_value)
