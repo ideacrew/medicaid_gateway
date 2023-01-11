@@ -21,18 +21,19 @@ registry:
         is_enabled: false
       - key: :fpl_overrides
         is_enabled: false
-        item: [
-                {
-                  medicaid_year: 2021,
-                  annual_poverty_guideline: BigDecimal(12_760.to_s),
-                  annual_per_person_amount: BigDecimal(4_480.to_s)
-                },
-                {
-                  medicaid_year: 2022,
-                  annual_poverty_guideline: BigDecimal(12_880.to_s),
-                  annual_per_person_amount: BigDecimal(4_540.to_s)
-                }
-              ]
+        item:
+          [
+            {
+              medicaid_year: 2021,
+              annual_poverty_guideline: BigDecimal(12_760.to_s),
+              annual_per_person_amount: BigDecimal(4_480.to_s),
+            },
+            {
+              medicaid_year: 2022,
+              annual_poverty_guideline: BigDecimal(12_880.to_s),
+              annual_per_person_amount: BigDecimal(4_540.to_s),
+            },
+          ]
       - key: :daily_determination_report
         is_enabled: true
       - key: :additional_ineligible_types
@@ -49,8 +50,9 @@ registry:
         is_enabled: <%= ENV["DROP_INCOME_END_ON_IS_ENABLED"] || false %>
       - key: :drop_vlp_document
         is_enabled: <%= ENV["DROP_VLP_DOCUMENT_IS_ENABLED"] || false %>
+      - key: :drop_temp_out_of_state
+        is_enabled: <%= ENV["DROP_TEMP_OUT_OF_STATE_IS_ENABLED"] || false %>
       - key: :invert_person_association
         is_enabled: <%= ENV["INVERT_PERSON_ASSOCIATION_IS_ENABLED"] || false %>
       - key: :block_atp_deductions
         is_enabled: <%= ENV["BLOCK_ATP_DEDUCTIONS_IS_ENABLED"] || false %>
-

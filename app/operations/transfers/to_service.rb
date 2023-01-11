@@ -110,6 +110,7 @@ module Transfers
       drop_param_flags << :drop_income_start_on if MedicaidGatewayRegistry.feature_enabled?(:drop_income_start_on)
       drop_param_flags << :drop_income_end_on if MedicaidGatewayRegistry.feature_enabled?(:drop_income_end_on)
       drop_param_flags << :drop_vlp_document if MedicaidGatewayRegistry.feature_enabled?(:drop_vlp_document)
+      drop_param_flags << :drop_temp_out_of_state if MedicaidGatewayRegistry.feature_enabled?(:drop_temp_out_of_state)
 
       Success(payload.merge(:drop_param_flags => drop_param_flags).to_json)
     rescue ResourceRegistry::Error::FeatureNotFoundError => e
