@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ideacrew/aca_entities.git
-  revision: ef5830c506278b4e57bd3c8f79c9ffe2875b1c9c
+  revision: 5db8f798f2b7f316079a620112496e1879637a75
   branch: trunk
   specs:
     aca_entities (0.10.0)
@@ -314,7 +314,7 @@ GEM
       kaminari-core (~> 1.0)
       mongoid
     kgio (2.11.4)
-    kostya-sigar (2.0.9)
+    kostya-sigar (2.0.10)
     listen (3.7.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -524,10 +524,10 @@ GEM
       rack
       rails (>= 5.2)
       redis
-    thor (1.1.0)
+    thor (1.2.1)
     thread-local (1.1.0)
     tilt (2.0.10)
-    timers (4.3.3)
+    timers (4.3.5)
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
