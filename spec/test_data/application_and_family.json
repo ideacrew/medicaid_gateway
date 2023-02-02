@@ -50,7 +50,7 @@
             "is_applying_coverage": true,
             "bookmark_url": null,
             "admin_bookmark_url": null,
-            "contact_method": "mobile",
+            "contact_method": "Only Paper communication",
             "is_state_resident": null,
             "identity_validation": null,
             "identity_update_reason": null,
@@ -414,7 +414,9 @@
           "demographic": {
             "gender": "Male",
             "dob": "1941-01-01",
-            "ethnicity": ["White"],
+            "ethnicity": [
+              "White"
+            ],
             "race": null,
             "is_veteran_or_active_military": false,
             "is_vets_spouse_or_child": false
@@ -1237,7 +1239,9 @@
             "currency_iso": "USD"
           },
           "is_insurance_assistance_eligible": null,
-          "annual_tax_household_income": {"cents":"72332.0"},
+          "annual_tax_household_income": {
+            "cents": "72332.0"
+          },
           "tax_household_members": [
             {
               "applicant_reference": {
