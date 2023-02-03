@@ -76,7 +76,7 @@ module Aces
                     is_applying_coverage: true,
                     bookmark_url: nil,
                     admin_bookmark_url: nil,
-                    contact_method: "mobile",
+                    contact_method: "Only Paper communication",
                     is_state_resident: nil,
                     identity_validation: nil,
                     identity_update_reason: nil,

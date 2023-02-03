@@ -79,7 +79,7 @@ RSpec.shared_context 'gap_filling test_2570928', :shared_context => :metadata do
         "job_coverage_ended_in_past_3_months" => false,
         "job_coverage_end_date" => nil,
         "medicaid_and_chip" => {
-          "not_eligible_in_last_90_days" => true, "denied_on" => "2022-11-01", "ended_as_change_in_eligibility" => false,
+          "not_eligible_in_last_90_days" => true, "denied_on" => Date.today - 1.day, "ended_as_change_in_eligibility" => false,
           "hh_income_or_size_changed" => false, "medicaid_or_chip_coverage_end_date" => nil,
           "ineligible_due_to_immigration_in_last_5_years" => false, "immigration_status_changed_since_ineligibility" => false
         },
