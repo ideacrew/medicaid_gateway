@@ -280,7 +280,7 @@ RSpec.shared_context 'cms ME me_test_scenarios test_14', :shared_context => :met
           "kind" => "net_self_employment",
           "wage_type" => nil,
           "hours_per_week" => nil,
-          "amount" => "23000.0",
+          "amount" => "26200.0",
           "amount_tax_exempt" => "0.0",
           "frequency_kind" => "Annually",
           "start_on" => start_of_year.to_s,
@@ -820,7 +820,7 @@ RSpec.shared_context 'cms ME me_test_scenarios test_14', :shared_context => :met
       "Determination Date" => start_of_year.to_s, "Applicants" => [{
         "Person ID" => 1_039_699,
         "Medicaid Household" => {
-          "People" => [1_039_699, 1_039_708, 1_039_721, 1_039_731], "MAGI" => 43_000, "MAGI as Percentage of FPL" => 154, "Size" => 4
+          "People" => [1_039_699, 1_039_708, 1_039_721, 1_039_731], "MAGI" => 46_200, "MAGI as Percentage of FPL" => 154, "Size" => 4
         },
         "Medicaid Eligible" => "N",
         "CHIP Eligible" => "N",
@@ -894,7 +894,7 @@ RSpec.shared_context 'cms ME me_test_scenarios test_14', :shared_context => :met
       }, {
         "Person ID" => 1_039_708,
         "Medicaid Household" => {
-          "People" => [1_039_699, 1_039_708, 1_039_721, 1_039_731], "MAGI" => 43_000, "MAGI as Percentage of FPL" => 154, "Size" => 4
+          "People" => [1_039_699, 1_039_708, 1_039_721, 1_039_731], "MAGI" => 46_200, "MAGI as Percentage of FPL" => 154, "Size" => 4
         },
         "Medicaid Eligible" => "N",
         "CHIP Eligible" => "N",
