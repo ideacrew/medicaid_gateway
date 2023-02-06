@@ -73,8 +73,8 @@ module Types
     },
     {
       medicaid_year: 2023,
-      annual_poverty_guideline: BigDecimal(13_590.to_s),
-      annual_per_person_amount: BigDecimal(4_720.to_s)
+      annual_poverty_guideline: BigDecimal(14_580.to_s),
+      annual_per_person_amount: BigDecimal(5_140.to_s)
     },
     # adding 2024 values as placeholders to placate specs. These values are not verified.
     {
@@ -136,6 +136,7 @@ module Types
                                           '94',
                                           '100',
                                           'limited')
+
   ELIGIBLE_INSURANCE_KINDS = %w[
     medicaid
     child_health_insurance_plan
