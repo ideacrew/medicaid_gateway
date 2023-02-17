@@ -7,7 +7,7 @@ registry:
         is_enabled: true
         item: "DC"
       - key: :transfer_to_enroll
-        is_enabled: false
+        is_enabled: <%= ENV['TRANSFER_TO_ENROLL_IS_ENABLED'] || false %>
       - key: :transfer_service
         is_enabled: true
         item: "curam"
