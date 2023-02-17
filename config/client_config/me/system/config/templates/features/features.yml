@@ -7,7 +7,7 @@ registry:
         is_enabled: true
         item: "ME"
       - key: :transfer_to_enroll
-        is_enabled: true
+        is_enabled: <%= ENV['TRANSFER_TO_ENROLL_IS_ENABLED'] || true %>
       - key: :transfer_service
         is_enabled: true
         item: "aces"
