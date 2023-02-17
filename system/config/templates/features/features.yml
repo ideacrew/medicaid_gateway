@@ -18,7 +18,7 @@ registry:
       - key: :resubmit_to_enroll
         is_enabled: false
       - key: :bulk_transfer_to_enroll
-        is_enabled: true
+        is_enabled: <%= ENV['BULK_TRANSFER_TO_ENROLL_IS_ENABLED'] || true %>
       - key: :fpl_overrides
         is_enabled: false
       - key: :daily_determination_report
