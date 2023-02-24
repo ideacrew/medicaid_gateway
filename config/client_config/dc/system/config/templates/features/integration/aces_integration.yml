@@ -1,0 +1,12 @@
+---
+registry:
+  - namespace:
+      - :aces_integration
+    features:
+      - key: :aces_connection
+        is_enabled: true
+        settings:
+          - key: :aces_atp_caller_username
+            item: <%= ENV['ACES_ATP_CALLER_USERNAME'] %>
+          - key: :aces_atp_caller_password
+            item: <%= ENV['ACES_ATP_CALLER_PASSWORD'] %>
