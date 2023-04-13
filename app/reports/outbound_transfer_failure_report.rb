@@ -6,13 +6,13 @@ require 'csv'
 # create report of all failing outbound atp transfers, if no start/end specified defaults to year to date
 class OutboundTransferFailureReport
   def self.run
-    start_on = ENV['start_on'].present? ? Date.strptime(ENV['start_on'].to_s, "%m/%d/%Y") :  Date.new #today.beginning_of_year
+    start_on = ENV['start_on'].present? ? Date.strptime(ENV['start_on'].to_s, "%m/%d/%Y") : Date.today.beginning_of_year
     end_on = ENV['end_on'].present? ? Date.strptime(ENV['end_on'].to_s, "%m/%d/%Y") : Date.today
     puts ":: Generating Outbound Transfer Failure Report for #{start_on} -- #{end_on} ::"
     self.run_report(start_on, end_on)
   end
 
-  def self.run_report(start_on, end_on)
+  def self.run_report(start_on, end_on) # rubocop:disable Metrics/MethodLength
     start_time = Time.now
     yesterday = Date.yesterday
     timestamp = if start_on == yesterday && end_on == yesterday
