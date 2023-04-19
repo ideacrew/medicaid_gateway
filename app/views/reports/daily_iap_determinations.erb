@@ -10,7 +10,10 @@
   <h2 class="text-muted mb-3"><%= @count %> determinations on this day</h2>
   <div class="mt-2 mb-3" data-controller="report">
     <label for="daily_iap_date">Report Date:</label>
-    <input type="date" id="daily_iap_date" name="daily_iap_date" value="<%= @start_on %>" data-action="report#change_date" data-session="daily_iap_date">
+    <input type="date" id="start_on" name="start_on" value="<%= @start_on %>" data-report-target="startDate">
+    <button class="btn btn-primary" data-action="report#change_date" data-session="daily_iap_date">
+      Change Date
+    </button>
 </div>
 <% end %>
 
@@ -21,7 +24,7 @@
             <th>Primary HBX ID</th>
             <th>Application Identifer</th>
             <th>Age</th>
-            <th>UQHP</th>  
+            <th>UQHP</th>
             <th>APTC/CSR</th>
             <th>Max APTC</th>
             <th>CSR value</th>
