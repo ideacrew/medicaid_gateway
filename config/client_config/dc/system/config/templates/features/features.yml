@@ -56,3 +56,12 @@ registry:
         is_enabled: <%= ENV["INVERT_PERSON_ASSOCIATION_IS_ENABLED"] || false %>
       - key: :block_atp_deductions
         is_enabled: <%= ENV["BLOCK_ATP_DEDUCTIONS_IS_ENABLED"] || false %>
+      - key: :eligibility_override
+        is_enabled: <%= ENV["ELIGIBILITY_OVERRIDE_IS_ENABLED"] || false %>
+        settings: 
+          - key: mitc_override_not_lawfully_present_pregnant
+            item: <%= ENV["MITC_OVERRIDE_NOT_LAWFULLY_PRESENT_PREGNANT_IS_ENABLED"] || false %>
+          - key: mitc_override_not_lawfully_present_chip_eligible
+            item: <%= ENV["MITC_OVERRIDE_NOT_LAWFULLY_PRESENT_CHIP_ELIGIBLE_IS_ENABLED"] || false %>
+          - key: mitc_override_not_lawfully_present_under_twenty_one
+            item: <%= ENV["MITC_OVERRIDE_NOT_LAWFULLY_PRESENT_UNDER_TWENTY_ONE_IS_ENABLED"] || false %>
