@@ -15,7 +15,7 @@ module Eligibilities
     def call(params)
       medicaid_application = yield find_medicaid_application(params)
       mm_application_entity = yield get_magi_medicaid_application(medicaid_application)
-      mm_app_with_medicaid_determination = yield add_medicaid_determination_to_mm_application(mm_application_entity)
+      mm_app_with_medicaid_determinations = yield add_medicaid_determination_to_mm_application(mm_application_entity)
       mm_app_with_eligibility_overrides = yield apply_eligibility_overrides(mm_app_with_medicaid_determinations)
       mm_app_with_member_determinations = yield determine_member_eligibilities(mm_app_with_eligibility_overrides)
       result = yield compute_aptcs_and_publish(mm_app_with_member_determinations)
@@ -49,6 +49,7 @@ module Eligibilities
     end
 
     def apply_eligibility_overrides(mm_application_entity)
+      return mm_application_entity unless MedicaidGatewayRegistry[:eligibility_override].enabled?
       ::Eligibilities::AptcCsr::ApplyEligibilityOverrides.new.call({ magi_medicaid_application: mm_application_entity })
     end
 
