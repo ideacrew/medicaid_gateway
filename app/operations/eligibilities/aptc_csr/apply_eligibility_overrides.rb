@@ -20,6 +20,7 @@ module Eligibilities
         mm_app_hash = @mm_application.to_h
         mm_app_hash[:tax_households].each do |mm_thh|
           mm_thh[:tax_household_members].each do |thhm|
+            binding.irb
             if only_medicaid_ineligible_due_to_immigration?(thhm) && (pregnancy_override?(thhm) || nineteen_to_twenty_one_override?(thhm))
               thhm[:product_eligibility_determination][:is_magi_medicaid] = true
             elsif only_chip_ineligible_due_to_immigration?(thhm) && under_eighteen_chip_override?(thhm)
@@ -31,7 +32,7 @@ module Eligibilities
       end
 
       def pregnancy_override?(thhm)
-        is_pregnant = applicant_by_reference(thhm.applicant_reference.person_hbx_id)&.pregnancy_information&.is_pregnant
+        is_pregnant = applicant_by_reference(thhm[:applicant_reference][:person_hbx_id])&.pregnancy_information&.is_pregnant
         is_pregnant && MedicaidGatewayRegistry[:eligibility_override].settings(:mitc_override_not_lawfully_present_pregnant).item
       end
 
@@ -42,11 +43,11 @@ module Eligibilities
       end
 
       def under_eighteen_chip_override?(thhm)
-        age(thhm) < 19 && MedicaidRegistry[:eligibility_override].settings(:mitc_override_not_lawfully_present_chip_eligible).item
+        age(thhm) < 19 && MedicaidGatewayRegistry[:eligibility_override].settings(:mitc_override_not_lawfully_present_chip_eligible).item
       end
 
       def age(thhm)
-        dob = thhm.applicant_reference.dob
+        dob = thhm[:applicant_reference][:dob]
         ((Time.zone.now - dob.to_time) / 1.year.seconds).floor
       end
 
