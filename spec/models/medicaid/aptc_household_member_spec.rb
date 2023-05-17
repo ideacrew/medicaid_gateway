@@ -1,0 +1,37 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+RSpec.describe ::Medicaid::AptcHouseholdMember, type: :model do
+  context 'embeds_many :member_determination' do
+    before do
+      @association = described_class.reflect_on_association(:member_determination)
+    end
+
+    it "should return association's class as EmbedsMany" do
+      expect(@association.class).to eq(Mongoid::Association::Embedded::EmbedsMany)
+    end
+
+    it "should return association's name as member_determination" do
+      expect(@association.name).to eq(:member_determination)
+    end
+  end
+
+  context 'valid params' do
+    let(:application) { FactoryBot.create(:application, :with_aptc_households) }
+
+    before do
+      @aptc_hh_member = application.aptc_households.first.aptc_household_members.first
+      ## when i save the application, the child aptc_household and aptc_household_members arent saving => i cant query for them in the 'find()'s below
+      application.save!
+    end
+
+    pending 'should be findable' do
+      expect(described_class.find(@aptc_hh_member.id)).to be_a(::Medicaid::AptcHouseholdMember)
+    end
+
+    pending 'should not return nil for determination_reasons attribute' do
+      expect(described_class.find(@aptc_hh_member.id).determination_reasons).to not_eq nil
+    end
+  end
+end

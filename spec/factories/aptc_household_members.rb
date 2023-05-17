@@ -2,9 +2,8 @@
 
 FactoryBot.define do
   factory :aptc_household_member, class: "::Medicaid::AptcHouseholdMember" do
-    aptc_household
 
-    sequence(:member_identifier) { |n| "20000#{n}" }
+    sequence(:member_identifier) { |n| "30000#{n}" }
     household_count { 1 }
     annual_household_income_contribution { 10_000.89 }
     tax_filer_status { 'tax_filer' }
@@ -15,5 +14,14 @@ FactoryBot.define do
     uqhp_eligible { false }
     csr_eligible { true }
     csr { '73' }
+
+    member_determination do
+      [{
+        kind: 'Insurance Assistance Determination',
+        is_eligible: true,
+        determination_reasons: [:income_above_threshold]
+      }]
+    end
+
   end
 end

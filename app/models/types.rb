@@ -11,12 +11,14 @@ module Types
 
   Money = Types.Constructor(BigDecimal) { |val| BigDecimal(val.to_s) }
 
-  TaxFilerKind = Types::Coercible::String.enum('tax_filer',
-                                               'single',
-                                               'joint',
-                                               'separate',
-                                               'dependent',
-                                               'non_filer')
+  TaxFilerKind = Types::Coercible::String.enum(
+    'tax_filer',
+    'single',
+    'joint',
+    'separate',
+    'dependent',
+    'non_filer'
+  )
 
   FplKind = Types::Coercible::Integer.enum(324, 221, 215)
 
@@ -130,12 +132,14 @@ module Types
     { 2024 => BigDecimal('9.12') }
   ].freeze
 
-  CsrKind = Types::Coercible::String.enum('0',
-                                          '73',
-                                          '87',
-                                          '94',
-                                          '100',
-                                          'limited')
+  CsrKind = Types::Coercible::String.enum(
+    '0',
+    '73',
+    '87',
+    '94',
+    '100',
+    'limited'
+  )
 
   ELIGIBLE_INSURANCE_KINDS = %w[
     medicaid
@@ -148,8 +152,25 @@ module Types
     peace_corps_health_benefits
   ].freeze
 
-  ENROLLED_INSURANCE_KINDS = ['medicaid', 'child_health_insurance_plan', 'medicare', 'medicare_advantage', 'tricare',
-                              'employer_sponsored_insurance', 'health_reimbursement_arrangement', 'cobra',
-                              'retiree_health_benefits', 'veterans_administration_health_benefits', 'peace_corps_health_benefits'].freeze
+  ENROLLED_INSURANCE_KINDS = [
+    'medicaid',
+    'child_health_insurance_plan',
+    'medicare',
+    'medicare_advantage',
+    'tricare',
+    'employer_sponsored_insurance',
+    'health_reimbursement_arrangement',
+    'cobra',
+    'retiree_health_benefits',
+    'veterans_administration_health_benefits',
+    'peace_corps_health_benefits'
+  ].freeze
+
+  MemberDeterminationKind = Types::Coercible::String.enum(
+    'Medicaid/CHIP Determination',
+    'Insurance Assistance Determination',
+    'Unassisted QHP Determination',
+    'Total Ineligibility Determination'
+  )
 
 end
