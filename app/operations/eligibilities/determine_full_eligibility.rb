@@ -49,7 +49,7 @@ module Eligibilities
     end
 
     def apply_eligibility_overrides(mm_application_entity)
-      return Success(mm_application_entity) unless MedicaidGatewayRegistry[:eligibility_override].enabled?
+      return Success(mm_application_entity) unless MedicaidGatewayRegistry.feature_enabled?(:eligibility_override)
       ::Eligibilities::AptcCsr::ApplyEligibilityOverrides.new.call({ magi_medicaid_application: mm_application_entity })
     end
 

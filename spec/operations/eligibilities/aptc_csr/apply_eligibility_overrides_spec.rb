@@ -10,7 +10,6 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
       is_lawful_presence_self_attested: false }
   end
   include_context "setup magi_medicaid application with two applicants"
-
   context "with applicant over 18 not lawfully present" do
     let(:product_eligibility_determination2) do
       { is_ia_eligible: false,
@@ -25,6 +24,42 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
         magi_as_percentage_of_fpl: 10.0,
         magi_medicaid_category: "parent_caretaker",
         magi_medicaid_ineligibility_reasons: ["Applicant did not meet citizenship/immigration requirements"] }
+    end
+
+    context "with applicant over 21" do
+      let(:demographic2) do
+        { gender: "Female",
+          dob: Date.new(current_date.year - 21, current_date.month, current_date.day),
+          is_veteran_or_active_military: false }
+      end
+
+      let(:input_application) do
+        app_params = mm_application_entity.to_h
+        app_params[:applicants].first[:demographic] = demographic2
+        app_params[:applicants].first[:citizenship_immigration_status_information] = citizenship_immigration_status_information2
+        app_params[:tax_households].first[:tax_household_members].first[:product_eligibility_determination] = product_eligibility_determination2
+        ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(app_params).success
+      end
+
+      let(:input_params) do
+        { magi_medicaid_application: input_application }
+      end
+
+      before do
+        @result = subject.call(input_params)
+      end
+
+      it "should return success" do
+        expect(@result).to be_success
+      end
+
+      it "should return a MagiMedicaidApplication entity" do
+        expect(@result.success).to be_a(::AcaEntities::MagiMedicaid::Application)
+      end
+
+      it "should not return medicaid eligible" do
+        expect(@result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.is_magi_medicaid).to eq(false)
+      end
     end
     context "with pregnant applicant over 21" do
       let(:demographic2) do
