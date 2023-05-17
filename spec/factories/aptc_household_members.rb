@@ -15,7 +15,7 @@ FactoryBot.define do
     csr_eligible { true }
     csr { '73' }
 
-    member_determination do
+    member_determinations do
       [{
         kind: 'Insurance Assistance Determination',
         is_eligible: true,

@@ -2,18 +2,18 @@
 
 require 'rails_helper'
 
-RSpec.describe ::Medicaid::AptcHouseholdMember, type: :model do
-  context 'embeds_many :member_determination' do
+RSpec.describe ::Medicaid::AptcHouseholdMember, type: :model, dbclean: :after_each do
+  context 'embeds_many :member_determinations' do
     before do
-      @association = described_class.reflect_on_association(:member_determination)
+      @association = described_class.reflect_on_association(:member_determinations)
     end
 
     it "should return association's class as EmbedsMany" do
       expect(@association.class).to eq(Mongoid::Association::Embedded::EmbedsMany)
     end
 
-    it "should return association's name as member_determination" do
-      expect(@association.name).to eq(:member_determination)
+    it "should return association's name as member_determinations" do
+      expect(@association.name).to eq(:member_determinations)
     end
   end
 

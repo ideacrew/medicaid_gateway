@@ -38,7 +38,7 @@ module AptcCsr
 
       optional(:csr).maybe(Types::CsrKind)
 
-      optional(:member_determination).array(MemberDeterminationContract.params)
+      optional(:member_determinations).array(MemberDeterminationContract.params)
     end
 
     rule do

@@ -53,7 +53,7 @@ RSpec.describe ::AptcCsr::AptcHouseholdContract, dbclean: :around_each do
         uqhp_eligible: false,
         csr_eligible: true,
         csr: '73',
-        member_determination: [{
+        member_determinations: [{
           kind: 'Insurance Assistance Determination',
           is_eligible: true,
           determination_reasons: [:income_above_threshold]
@@ -98,7 +98,7 @@ RSpec.describe ::AptcCsr::AptcHouseholdContract, dbclean: :around_each do
           uqhp_eligible: false,
           csr_eligible: true,
           csr: '73',
-          member_determination: [{
+          member_determinations: [{
             kind: 'Insurance Assistance Determination',
             is_eligible: true,
             determination_reasons: [:income_above_threshold]

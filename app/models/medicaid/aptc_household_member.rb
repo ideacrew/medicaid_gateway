@@ -37,8 +37,8 @@ module Medicaid
     field :csr_eligible, type: Boolean
     field :csr, type: String
 
-    embeds_many :member_determination, class_name: '::Medicaid::MemberDetermination'
-    accepts_nested_attributes_for :member_determination
+    embeds_many :member_determinations, class_name: '::Medicaid::MemberDetermination', cascade_callbacks: true
+    accepts_nested_attributes_for :member_determinations
 
     embedded_in :aptc_household, class_name: '::Medicaid::AptcHousehold'
   end
