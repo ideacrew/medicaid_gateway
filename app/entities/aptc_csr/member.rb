@@ -18,8 +18,8 @@ module AptcCsr
     attribute :magi_medicaid_eligible, Types::Bool.optional.meta(omittable: true)
     attribute :csr_eligible, Types::Bool.optional.meta(omittable: true)
 
-    attribute :member_determinations, Types::Array.of(MemberDetermination).optional.meta(omittable: true)
-
     attribute :csr, Types::CsrKind.optional.meta(omittable: true)
+
+    attribute :member_determinations, Types::Array.of(MemberDetermination).optional.meta(omittable: true)
   end
 end

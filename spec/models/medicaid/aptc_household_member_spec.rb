@@ -21,17 +21,18 @@ RSpec.describe ::Medicaid::AptcHouseholdMember, type: :model, dbclean: :after_ea
     let(:application) { FactoryBot.create(:application, :with_aptc_households) }
 
     before do
-      @aptc_hh_member = application.aptc_households.first.aptc_household_members.first
-      ## when i save the application, the child aptc_household and aptc_household_members arent saving => i cant query for them in the 'find()'s below
       application.save!
+      @app = application
     end
 
-    pending 'should be findable' do
-      expect(described_class.find(@aptc_hh_member.id)).to be_a(::Medicaid::AptcHouseholdMember)
+    it 'should be saved correctly' do
+      member = Medicaid::Application.find(@app.id).aptc_households.first.aptc_household_members.first
+      expect(member).to be_a(::Medicaid::AptcHouseholdMember)
     end
 
-    pending 'should not return nil for determination_reasons attribute' do
-      expect(described_class.find(@aptc_hh_member.id).determination_reasons).to not_eq nil
+    it 'should not return nil for determination_reasons attribute' do
+      member = Medicaid::Application.find(@app.id).aptc_households.first.aptc_household_members.first
+      expect(member.member_determinations).to_not eq nil
     end
   end
 end

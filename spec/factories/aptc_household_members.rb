@@ -8,6 +8,7 @@ FactoryBot.define do
     annual_household_income_contribution { 10_000.89 }
     tax_filer_status { 'tax_filer' }
     is_applicant { true }
+    age_of_applicant { 20 }
     benchmark_plan_monthly_premium_amount { 355.5 }
     aptc_eligible { true }
     totally_ineligible { false }
