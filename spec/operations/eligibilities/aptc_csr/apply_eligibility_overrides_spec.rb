@@ -26,16 +26,10 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
         magi_medicaid_ineligibility_reasons: ["Applicant did not meet citizenship/immigration requirements"] }
     end
 
-    context "with applicant over 21" do
-      let(:demographic2) do
-        { gender: "Female",
-          dob: Date.new(current_date.year - 21, current_date.month, current_date.day),
-          is_veteran_or_active_military: false }
-      end
-
+    context "with applicant 21 or over" do
       let(:input_application) do
         app_params = mm_application_entity.to_h
-        app_params[:applicants].first[:demographic] = demographic2
+        app_params[:applicants].first[:age_of_applicant] = 21
         app_params[:applicants].first[:citizenship_immigration_status_information] = citizenship_immigration_status_information2
         app_params[:tax_households].first[:tax_household_members].first[:product_eligibility_determination] = product_eligibility_determination2
         ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(app_params).success
@@ -61,13 +55,7 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
         expect(@result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.is_magi_medicaid).to eq(false)
       end
     end
-    context "with pregnant applicant over 21" do
-      let(:demographic2) do
-        { gender: "Female",
-          dob: Date.new(current_date.year - 21, current_date.month, current_date.day),
-          is_veteran_or_active_military: false }
-      end
-
+    context "with pregnant applicant 21 or over" do
       let(:pregnancy_information2) do
         { is_pregnant: true,
           is_post_partum_period: false,
@@ -77,7 +65,7 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
       let(:input_application) do
         app_params = mm_application_entity.to_h
         app_params[:applicants].first[:pregnancy_information] = pregnancy_information2
-        app_params[:applicants].first[:demographic] = demographic2
+        app_params[:applicants].first[:age_of_applicant] = 21
         app_params[:applicants].first[:citizenship_immigration_status_information] = citizenship_immigration_status_information2
         app_params[:tax_households].first[:tax_household_members].first[:product_eligibility_determination] = product_eligibility_determination2
         ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(app_params).success
@@ -106,14 +94,9 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
       end
     end
     context "with applicant 19-20 and not pregnant" do
-      let(:demographic3) do
-        { gender: "Female",
-          dob: Date.new(current_date.year - 20, current_date.month, current_date.day),
-          is_veteran_or_active_military: false }
-      end
       let(:input_application) do
         app_params = mm_application_entity.to_h
-        app_params[:applicants].first[:demographic] = demographic3
+        app_params[:applicants].first[:age_of_applicant] = 19
         app_params[:applicants].first[:citizenship_immigration_status_information] = citizenship_immigration_status_information2
         app_params[:tax_households].first[:tax_household_members].first[:product_eligibility_determination] = product_eligibility_determination2
         ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(app_params).success
@@ -134,7 +117,7 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
       end
     end
 
-    context "with applicant not lawfully present and under 18" do
+    context "with applicant not lawfully present and 18 or under" do
       let(:product_eligibility_determination3) do
         { is_ia_eligible: false,
           is_medicaid_chip_eligible: false,
@@ -149,16 +132,9 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
           magi_medicaid_category: "parent_caretaker",
           chip_ineligibility_reasons: ["Applicant did not meet citizenship/immigration requirements"] }
       end
-
-      let(:demographic4) do
-        { gender: "Female",
-          dob: Date.new(current_date.year - 18, current_date.month, current_date.day),
-          is_veteran_or_active_military: false }
-      end
-
       let(:input_application) do
         app_params = mm_application_entity.to_h
-        app_params[:applicants].first[:demographic] = demographic4
+        app_params[:applicants].first[:age_of_applicant] = 18
         app_params[:applicants].first[:citizenship_immigration_status_information] = citizenship_immigration_status_information2
         app_params[:tax_households].first[:tax_household_members].first[:product_eligibility_determination] = product_eligibility_determination3
         ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(app_params).success

@@ -36,18 +36,14 @@ module Eligibilities
       end
 
       def nineteen_to_twenty_one_override?(thhm)
-        age = age(thhm)
+        age = applicant_by_reference(thhm[:applicant_reference][:person_hbx_id])&.age_of_applicant
         nineteen_to_twenty_one = age > 18 && age < 21
         nineteen_to_twenty_one && MedicaidGatewayRegistry[:eligibility_override].settings(:mitc_override_not_lawfully_present_under_twenty_one).item
       end
 
       def under_eighteen_chip_override?(thhm)
-        age(thhm) < 19 && MedicaidGatewayRegistry[:eligibility_override].settings(:mitc_override_not_lawfully_present_chip_eligible).item
-      end
-
-      def age(thhm)
-        dob = applicant_by_reference(thhm[:applicant_reference][:person_hbx_id])&.demographic&.dob
-        ((Time.zone.now - dob.to_time) / 1.year.seconds).floor
+        age = applicant_by_reference(thhm[:applicant_reference][:person_hbx_id])&.age_of_applicant
+        age < 19 && MedicaidGatewayRegistry[:eligibility_override].settings(:mitc_override_not_lawfully_present_chip_eligible).item
       end
 
       def applicant_by_reference(person_hbx_id)
