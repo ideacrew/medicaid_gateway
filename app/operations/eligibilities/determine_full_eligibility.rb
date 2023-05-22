@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'dry/monads'
-require 'dry/monads/do'
+require "dry/monads"
+require "dry/monads/do"
 
 module Eligibilities
   # This class is for detemining the full eligibility for a MedicaidApplication
@@ -15,8 +15,9 @@ module Eligibilities
     def call(params)
       medicaid_application = yield find_medicaid_application(params)
       mm_application_entity = yield get_magi_medicaid_application(medicaid_application)
-      mm_app_with_medicaid_determination = yield add_medicaid_determination_to_mm_application(mm_application_entity)
-      mm_app_with_member_determinations = yield determine_member_eligibilities(mm_app_with_medicaid_determination)
+      mm_app_with_medicaid_determinations = yield add_medicaid_determination_to_mm_application(mm_application_entity)
+      mm_app_with_eligibility_overrides = yield apply_eligibility_overrides(mm_app_with_medicaid_determinations)
+      mm_app_with_member_determinations = yield determine_member_eligibilities(mm_app_with_eligibility_overrides)
       result = yield compute_aptcs_and_publish(mm_app_with_member_determinations)
 
       Success(result)
@@ -45,6 +46,11 @@ module Eligibilities
 
     def update_medicaid_application_with_medicaid_response
       @medicaid_application.update_attributes!(medicaid_response_payload: @medicaid_response_payload.to_json)
+    end
+
+    def apply_eligibility_overrides(mm_application_entity)
+      return Success(mm_application_entity) unless MedicaidGatewayRegistry.feature_enabled?(:eligibility_override)
+      ::Eligibilities::AptcCsr::ApplyEligibilityOverrides.new.call({ magi_medicaid_application: mm_application_entity })
     end
 
     # Eligibilities include MagiMedicaid, APTC, CSR, Totally Ineligible & UQHP Eligible

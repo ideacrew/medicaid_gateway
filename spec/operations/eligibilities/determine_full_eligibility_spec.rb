@@ -283,6 +283,26 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     end
   end
 
+  # Applicant is only medicaid ineligible due to not being lawfully present but they are in between 18-20
+  context "cms simle test_case_c_eligibility_override" do
+    include_context "cms ME simple_scenarios test_case_c_eligibility_override"
+
+    before do
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).and_call_original
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:eligibility_override).and_return(true)
+      under_twenty_one_override_flag = MedicaidGatewayRegistry[:eligibility_override].setting(:mitc_override_not_lawfully_present_under_twenty_one)
+      allow(under_twenty_one_override_flag).to receive(:item).and_return("true")
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @thh = @application.tax_households.first
+      @aisha_ped = @thh.tax_household_members.first.product_eligibility_determination
+    end
+
+    it "should apply override and return determination for is_magi_medicaid determination" do
+      expect(@aisha_ped.is_magi_medicaid).to eq(true)
+    end
+  end
+
   # Gerald is APTC and CSR eligible
   context 'cms simle test_case_d' do
     include_context 'cms ME simple_scenarios test_case_d'
