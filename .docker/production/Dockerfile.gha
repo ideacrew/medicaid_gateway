@@ -218,7 +218,11 @@ USER $USERNAME
 ###                    Reports image                         ###
 ################################################################
 
-FROM deploy as reports
+ARG COMMIT_SHA
+ARG CLIENT
+ARG BRANCH=trunk
+
+FROM public.ecr.aws/ideacrew/medicaid_gateway:${BRANCH}-${COMMIT_SHA}-${CLIENT}
 
 USER root
 
