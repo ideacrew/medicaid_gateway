@@ -88,8 +88,7 @@ jobs:
           context: .
           push: true
           builder: ${{ steps.buildx.outputs.name }}
-          file: .docker/production/Dockerfile.gha
-          target: reports
+          file: .docker/production/Dockerfile.gha-reports
           tags: public.ecr.aws/ideacrew/medicaid_gateway:${{ needs.prep.outputs.client }}-reports
           build-args: |
             CLIENT=${{ needs.prep.outputs.client }}
