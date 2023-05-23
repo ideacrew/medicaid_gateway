@@ -20,10 +20,32 @@ module Eligibilities
         mm_app_hash = @mm_application.to_h
         mm_app_hash[:tax_households].each do |mm_thh|
           mm_thh[:tax_household_members].each do |thhm|
-            if only_medicaid_ineligible_due_to_immigration?(thhm) && (pregnancy_override?(thhm) || nineteen_to_twenty_one_override?(thhm))
-              thhm[:product_eligibility_determination][:is_magi_medicaid] = true
+            if only_medicaid_ineligible_due_to_immigration?(thhm)
+              if pregnancy_override?(thhm)
+                thhm[:product_eligibility_determination][:is_magi_medicaid] = true
+                thhm[:product_eligibility_determination][:member_determinations] =
+                  [{
+                    kind: 'Medicaid/CHIP Determination',
+                    is_eligible: true,
+                    determination_reasons: [:mitc_override_not_lawfully_present_pregnant]
+                  }]
+              elsif nineteen_to_twenty_one_override?(thhm)
+                thhm[:product_eligibility_determination][:is_magi_medicaid] = true
+                thhm[:product_eligibility_determination][:member_determinations] =
+                  [{
+                    kind: 'Medicaid/CHIP Determination',
+                    is_eligible: true,
+                    determination_reasons: [:mitc_override_not_lawfully_present_under_twenty_one]
+                  }]
+              end
             elsif only_chip_ineligible_due_to_immigration?(thhm) && under_eighteen_chip_override?(thhm)
               thhm[:product_eligibility_determination][:is_medicaid_chip_eligible] = true
+              thhm[:product_eligibility_determination][:member_determinations] =
+                [{
+                  kind: 'Medicaid/CHIP Determination',
+                  is_eligible: true,
+                  determination_reasons: [:mitc_override_not_lawfully_present_chip_eligible]
+                }]
             end
           end
         end
