@@ -24,28 +24,16 @@ module Eligibilities
               if pregnancy_override?(thhm)
                 thhm[:product_eligibility_determination][:is_magi_medicaid] = true
                 thhm[:product_eligibility_determination][:member_determinations] =
-                  [{
-                    kind: 'Medicaid/CHIP Determination',
-                    is_eligible: true,
-                    determination_reasons: [:mitc_override_not_lawfully_present_pregnant]
-                  }]
+                  construct_member_determination_object(:mitc_override_not_lawfully_present_pregnant)
               elsif nineteen_to_twenty_one_override?(thhm)
                 thhm[:product_eligibility_determination][:is_magi_medicaid] = true
                 thhm[:product_eligibility_determination][:member_determinations] =
-                  [{
-                    kind: 'Medicaid/CHIP Determination',
-                    is_eligible: true,
-                    determination_reasons: [:mitc_override_not_lawfully_present_under_twenty_one]
-                  }]
+                  construct_member_determination_object(:mitc_override_not_lawfully_present_under_twenty_one)
               end
             elsif only_chip_ineligible_due_to_immigration?(thhm) && under_eighteen_chip_override?(thhm)
               thhm[:product_eligibility_determination][:is_medicaid_chip_eligible] = true
               thhm[:product_eligibility_determination][:member_determinations] =
-                [{
-                  kind: 'Medicaid/CHIP Determination',
-                  is_eligible: true,
-                  determination_reasons: [:mitc_override_not_lawfully_present_chip_eligible]
-                }]
+                construct_member_determination_object(:mitc_override_not_lawfully_present_chip_eligible)
             end
           end
         end
@@ -82,6 +70,14 @@ module Eligibilities
       def only_chip_ineligible_due_to_immigration?(thhm)
         ineligibility_reasons = thhm[:product_eligibility_determination][:chip_ineligibility_reasons]
         ineligibility_reasons&.include?("Applicant did not meet citizenship/immigration requirements") && ineligibility_reasons.count == 1
+      end
+
+      def construct_member_determination_object(determ_reason)
+        [{
+          kind: 'Medicaid/CHIP Determination',
+          is_eligible: true,
+          determination_reasons: [determ_reason]
+        }]
       end
     end
   end
