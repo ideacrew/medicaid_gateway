@@ -212,4 +212,5 @@ COPY --chown=$USERNAME:$USERNAME ./.docker/config/unicorn.rb $HOME/config
 COPY --chown=$USERNAME:$USERNAME ./.docker/config/credentials.yml.enc $HOME/config
 COPY --chown=$USERNAME:$USERNAME ./.docker/config/master.key $HOME/config
 
-USER $USERNAME 
+USER $USERNAME
+
