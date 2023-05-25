@@ -20,7 +20,7 @@ jobs:
       short_sha: ${{ steps.prep.outputs.short_sha}}
       branch: ${{ steps.prep.outputs.branch }}
       latest_prod_tag: ${{ steps.prep.outputs.latest_prod_tag }}
-   steps:
+    steps:
       - name: Git branch name
         id: git-branch-name
         uses: EthanSK/git-branch-name-action@v1
@@ -42,6 +42,9 @@ jobs:
     needs: [prep]
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ needs.prep.outputs.branch }}
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
         with:
