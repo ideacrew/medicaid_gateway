@@ -145,7 +145,8 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
         magi_medicaid_monthly_income_limit: 3760.67,
         magi_as_percentage_of_fpl: 10.0,
         magi_medicaid_category: "parent_caretaker",
-        chip_ineligibility_reasons: ["Applicant did not meet citizenship/immigration requirements"] }
+        chip_ineligibility_reasons: ["Applicant did not meet citizenship/immigration requirements"],
+        magi_medicaid_ineligibility_reasons: ["Applicant did not meet citizenship/immigration requirements"] }
     end
 
     let(:input_application) do

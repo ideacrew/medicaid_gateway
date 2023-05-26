@@ -15,7 +15,7 @@ module Eligibilities
         Success(result)
       end
 
-      def apply_eligibility_overrides(params) # rubocop:disable Metrics/MethodLength
+      def apply_eligibility_overrides(params)
         @mm_application = params[:magi_medicaid_application]
         mm_app_hash = @mm_application.to_h
         mm_app_hash[:tax_households].each do |mm_thh|
@@ -31,15 +31,10 @@ module Eligibilities
                 ped[:is_magi_medicaid] = true
                 ped[:member_determinations] << member_determ_for(thhm, :mitc_override_not_lawfully_present_under_twenty_one)
               end
-            elsif chip_ineligible_due_to_immigration_only?(thhm)
-              if pregnancy_override?(thhm)
-                ped[:is_magi_medicaid] = true
-                ped[:member_determinations] << member_determ_for(thhm, :mitc_override_not_lawfully_present_pregnant)
-              end
-              if under_eighteen_chip_override?(thhm)
-                ped[:is_medicaid_chip_eligible] = true
-                ped[:member_determinations] << member_determ_for(thhm, :mitc_override_not_lawfully_present_chip_eligible)
-              end
+            end
+            if chip_ineligible_due_to_immigration_only?(thhm) && under_eighteen_chip_override?(thhm)
+              ped[:is_medicaid_chip_eligible] = true
+              ped[:member_determinations] << member_determ_for(thhm, :mitc_override_not_lawfully_present_chip_eligible)
             end
           end
         end
