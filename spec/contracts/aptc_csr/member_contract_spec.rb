@@ -18,7 +18,12 @@ RSpec.describe ::AptcCsr::MemberContract, dbclean: :around_each do
       totally_ineligible: false,
       uqhp_eligible: false,
       csr_eligible: true,
-      csr: '73' }
+      csr: '73',
+      member_determinations: [{
+        kind: 'Insurance Assistance Determination',
+        is_eligible: true,
+        determination_reasons: [:income_above_threshold]
+      }] }
   end
 
   let(:all_params) do

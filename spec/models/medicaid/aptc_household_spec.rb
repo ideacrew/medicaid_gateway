@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ::Medicaid::AptcHousehold, type: :model do
+RSpec.describe ::Medicaid::AptcHousehold, type: :model, dbclean: :after_each do
   context 'associations' do
     context 'embeds_many :benchmark_calculation_members' do
       before do

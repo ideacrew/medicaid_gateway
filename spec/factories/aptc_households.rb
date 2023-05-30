@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :aptc_household, class: "::Medicaid::AptcHousehold" do
-    application
 
+  factory :aptc_household, class: "::Medicaid::AptcHousehold" do
+    sequence(:_id) { |n| "20000#{n}" }
     total_household_count { 1 }
     annual_tax_household_income { 10_000.89 }
     is_aptc_calculated { true }
@@ -24,15 +24,13 @@ FactoryBot.define do
         aptc_effective_end_on: Date.new(Date.today.year + 1, 10, 31) }
     end
 
+    aptc_household_members do
+      [FactoryBot.build(:aptc_household_member)]
+    end
+
     tax_household_identifier { '192837465' }
     fpl_percent { 256.00 }
     eligibility_date { Date.today.next_month.beginning_of_month }
-
-    trait :with_aptc_household_members do
-      aptc_household_members do
-        [FactoryBot.build(:aptc_household_member)]
-      end
-    end
 
     trait :with_benchmark_calculation_members do
       benchmark_calculation_members do

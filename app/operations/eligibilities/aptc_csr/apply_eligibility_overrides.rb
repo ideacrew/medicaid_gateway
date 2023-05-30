@@ -20,10 +20,21 @@ module Eligibilities
         mm_app_hash = @mm_application.to_h
         mm_app_hash[:tax_households].each do |mm_thh|
           mm_thh[:tax_household_members].each do |thhm|
-            if only_medicaid_ineligible_due_to_immigration?(thhm) && (pregnancy_override?(thhm) || nineteen_to_twenty_one_override?(thhm))
-              thhm[:product_eligibility_determination][:is_magi_medicaid] = true
-            elsif only_chip_ineligible_due_to_immigration?(thhm) && under_eighteen_chip_override?(thhm)
-              thhm[:product_eligibility_determination][:is_medicaid_chip_eligible] = true
+            ped = thhm[:product_eligibility_determination]
+            ped[:member_determinations] ||= []
+            if medicaid_ineligible_due_to_immigration_only?(thhm)
+              if pregnancy_override?(thhm)
+                ped[:is_magi_medicaid] = true
+                ped[:member_determinations] << member_determ_for(thhm, :mitc_override_not_lawfully_present_pregnant)
+              end
+              if nineteen_to_twenty_one_override?(thhm)
+                ped[:is_magi_medicaid] = true
+                ped[:member_determinations] << member_determ_for(thhm, :mitc_override_not_lawfully_present_under_twenty_one)
+              end
+            end
+            if chip_ineligible_due_to_immigration_only?(thhm) && under_eighteen_chip_override?(thhm)
+              ped[:is_medicaid_chip_eligible] = true
+              ped[:member_determinations] << member_determ_for(thhm, :mitc_override_not_lawfully_present_chip_eligible)
             end
           end
         end
@@ -52,14 +63,28 @@ module Eligibilities
         end
       end
 
-      def only_medicaid_ineligible_due_to_immigration?(thhm)
+      def medicaid_ineligible_due_to_immigration_only?(thhm)
         ineligibility_reasons = thhm[:product_eligibility_determination][:magi_medicaid_ineligibility_reasons]
         ineligibility_reasons&.include?("Applicant did not meet citizenship/immigration requirements") && ineligibility_reasons.count == 1
       end
 
-      def only_chip_ineligible_due_to_immigration?(thhm)
+      def chip_ineligible_due_to_immigration_only?(thhm)
         ineligibility_reasons = thhm[:product_eligibility_determination][:chip_ineligibility_reasons]
         ineligibility_reasons&.include?("Applicant did not meet citizenship/immigration requirements") && ineligibility_reasons.count == 1
+      end
+
+      def member_determ_for(thhm, determ_reason)
+        member_determs = thhm.dig(:product_eligibility_determination, :member_determinations)
+        mdc_chip_determ = member_determs&.detect {|md| md[:kind] == 'Medicaid/CHIP Determination' }
+        if mdc_chip_determ.present?
+          mdc_chip_determ[:determination_reasons] << determ_reason
+        else
+          {
+            kind: 'Medicaid/CHIP Determination',
+            is_eligible: true,
+            determination_reasons: [determ_reason]
+          }
+        end
       end
     end
   end
