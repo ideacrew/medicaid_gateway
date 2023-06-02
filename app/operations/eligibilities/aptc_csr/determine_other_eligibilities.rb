@@ -41,16 +41,26 @@ module Eligibilities
       end
 
       def find_and_add_other_determination(aptc_member, applicant)
-        if member_totally_ineligible?(applicant)
+        totally_ineligible_reasons = member_totally_ineligible_reasons(applicant)
+        if totally_ineligible_reasons.present?
           aptc_member[:totally_ineligible] = true
+          aptc_member[:member_determinations] ||= []
+          aptc_member[:member_determinations] << {
+            kind: 'Total Ineligibility Determination',
+            is_eligible: false,
+            determination_reasons: totally_ineligible_reasons
+          }
         else
           aptc_member[:uqhp_eligible] = true
         end
       end
 
-      def member_totally_ineligible?(applicant)
-        applicant.incarcerated? ||
-          applicant.non_citizen_and_no_lawful_presence_attestation || state_residency_requirement_not_met?(applicant)
+      def member_totally_ineligible_reasons(applicant)
+        reasons = []
+        reasons << :total_ineligibility_incarceration if applicant.incarcerated?
+        reasons << :total_ineligibility_no_lawful_presence if applicant.non_citizen_and_no_lawful_presence_attestation
+        reasons << :total_ineligibility_no_state_residency if state_residency_requirement_not_met?(applicant)
+        reasons
       end
 
       def state_residency_requirement_not_met?(applicant)

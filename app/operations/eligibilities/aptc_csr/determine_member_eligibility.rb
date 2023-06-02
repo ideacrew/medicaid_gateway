@@ -104,6 +104,7 @@ module Eligibilities
           ped[:is_ia_eligible] = aptc_hh_membr.aptc_eligible
           ped[:is_csr_eligible] = aptc_hh_membr.csr_eligible
           ped[:csr] = aptc_hh_membr.csr
+          ped[:member_determinations] = aptc_hh_membr.member_determinations&.map(&:to_h) || []
         end
       end
     end

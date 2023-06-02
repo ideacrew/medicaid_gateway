@@ -308,4 +308,44 @@ describe Eligibilities::AptcCsr::DetermineMemberEligibility do
       end
     end
   end
+
+  context 'with one applicant being totally ineligilible' do
+
+    let(:input_application) do
+      app_params = mm_application_entity.to_h
+      app_params[:applicants].second[:attestation][:is_incarcerated] = true
+      ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(app_params).success
+    end
+
+    let(:input_tax_household) do
+      input_application.tax_households.first
+    end
+
+    let(:input_params) do
+      { magi_medicaid_tax_household: input_tax_household,
+        magi_medicaid_application: input_application }
+    end
+
+    before do
+      @result = subject.call(input_params)
+    end
+
+    it 'should return success' do
+      expect(@result).to be_success
+    end
+
+    it 'should return ineligilible reasons on aptc_household member' do
+      member_determs = @result.success[:aptc_household][:members].second[:member_determinations]
+      expected_array = [:total_ineligibility_incarceration]
+      expect(member_determs.first.determination_reasons).to match_array(expected_array)
+    end
+
+    it 'should return ineligibility reason on tax household' do
+      thh = @result.success[:magi_medicaid_application][:tax_households]
+      member_determs = thh.first[:tax_household_members].second[:product_eligibility_determination][:member_determinations]
+      expected_array = [:total_ineligibility_incarceration]
+      expect(member_determs.first.determination_reasons).to match_array(expected_array)
+    end
+
+  end
 end
