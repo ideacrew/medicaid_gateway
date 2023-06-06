@@ -314,7 +314,7 @@ GEM
       kaminari-core (~> 1.0)
       mongoid
     kgio (2.11.4)
-    kostya-sigar (2.0.10)
+    kostya-sigar (2.0.9)
     listen (3.7.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -348,7 +348,7 @@ GEM
     multipart-post (2.1.1)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
-    nio4r (2.5.9)
+    nio4r (2.5.8)
     nokogiri (1.13.6)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
@@ -524,10 +524,10 @@ GEM
       rack
       rails (>= 5.2)
       redis
-    thor (1.2.2)
+    thor (1.1.0)
     thread-local (1.1.0)
     tilt (2.0.10)
-    timers (4.3.5)
+    timers (4.3.3)
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
