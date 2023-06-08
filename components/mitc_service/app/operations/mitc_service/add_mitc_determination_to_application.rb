@@ -76,23 +76,28 @@ module MitcService
           mitc_bypass_flag = bypass_mitc_determination?(mm_app_hash, member_identifier)
           mitc_applicant = mitc_applicant_by_person_id(mitc_applicants, member_identifier)
           next mm_thhm if mitc_applicant.blank?
-          ped_attrs = { magi_medicaid_monthly_household_income: mitc_applicant[:medicaid_household][:magi_income],
-                        medicaid_household_size: mitc_applicant[:medicaid_household][:size],
-                        magi_as_percentage_of_fpl: mitc_applicant[:medicaid_household][:magi_as_percentage_of_fpl],
-                        is_magi_medicaid: calculate_medicaid_eligibility(mitc_applicant[:is_medicaid_eligible], mitc_bypass_flag),
-                        is_medicaid_chip_eligible: calculate_medicaid_eligibility(mitc_applicant[:is_chip_eligible], mitc_bypass_flag),
-                        magi_medicaid_ineligibility_reasons: mitc_applicant[:medicaid_ineligibility_reasons] || [],
-                        is_eligible_for_non_magi_reasons: get_non_magi_reasons(mitc_applicant),
-                        chip_ineligibility_reasons: mitc_applicant[:chip_ineligibility_reasons] || [],
-                        magi_medicaid_category: medicaid_category(mitc_applicant[:medicaid_category]),
-                        magi_medicaid_category_threshold: mitc_applicant[:medicaid_category_threshold],
-                        medicaid_chip_category: mitc_applicant[:chip_category],
-                        medicaid_chip_category_threshold: mitc_applicant[:chip_category_threshold],
-                        category_determinations: category_determinations(mitc_applicant[:determinations]) }
+          ped_attrs = ped_attributes(mitc_applicant, mitc_bypass_flag)
 
           mm_thhm[:product_eligibility_determination].merge!(ped_attrs)
         end
       end
+    end
+
+    def ped_attributes(mitc_applicant, mitc_bypass_flag)
+      { magi_medicaid_monthly_household_income: mitc_applicant[:medicaid_household][:magi_income],
+        medicaid_household_size: mitc_applicant[:medicaid_household][:size],
+        magi_as_percentage_of_fpl: mitc_applicant[:medicaid_household][:magi_as_percentage_of_fpl],
+        is_magi_medicaid: calculate_medicaid_eligibility(mitc_applicant[:is_medicaid_eligible], mitc_bypass_flag),
+        is_medicaid_chip_eligible: calculate_medicaid_eligibility(mitc_applicant[:is_chip_eligible], mitc_bypass_flag),
+        magi_medicaid_ineligibility_reasons: mitc_applicant[:medicaid_ineligibility_reasons] || [],
+        is_eligible_for_non_magi_reasons: get_non_magi_reasons(mitc_applicant),
+        chip_ineligibility_reasons: mitc_applicant[:chip_ineligibility_reasons] || [],
+        magi_medicaid_category: medicaid_category(mitc_applicant[:medicaid_category]),
+        magi_medicaid_category_threshold: mitc_applicant[:medicaid_category_threshold],
+        medicaid_chip_category: mitc_applicant[:chip_category],
+        medicaid_chip_category_threshold: mitc_applicant[:chip_category_threshold],
+        category_determinations: category_determinations(mitc_applicant[:determinations]),
+        member_determinations: member_determinations }
     end
 
     # For a case, value for 'Non-MAGI Referral' is not sent but the cleanDets with
@@ -189,6 +194,34 @@ module MitcService
     def mitc_applicant_by_person_id(applicants, person_id)
       applicants.detect do |applicant|
         applicant[:person_id].to_s == person_id.to_s
+      end
+    end
+
+    def member_determinations
+      # Current implementation is only for medicaid_chip_member_determination
+      # Future implementation will include other member_determinations:
+      # 'Insurance Assistance Determination'
+      # 'Unassisted QHP Determination'
+      # 'Total Ineligibility Determination'
+      [medicaid_chip_member_determination]
+    end
+
+    def medicaid_chip_member_determination
+      {
+        kind: 'Medicaid/CHIP Determination',
+        criteria_met: false,
+        determination_reasons: [],
+        eligibility_overrides: medicaid_chip_eligibility_overrides
+      }
+    end
+
+    def medicaid_chip_eligibility_overrides
+      override_rules = ::AcaEntities::MagiMedicaid::Types::EligibilityOverrideRule.values
+      override_rules.map do |rule|
+        {
+          override_rule: rule,
+          override_applied: false
+        }
       end
     end
   end

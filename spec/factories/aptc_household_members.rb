@@ -19,8 +19,9 @@ FactoryBot.define do
     member_determinations do
       [{
         kind: 'Insurance Assistance Determination',
-        is_eligible: true,
-        determination_reasons: [:income_above_threshold]
+        criteria_met: true,
+        determination_reasons: [:income_above_threshold],
+        eligibility_overrides: []
       }]
     end
 

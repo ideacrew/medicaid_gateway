@@ -5,8 +5,9 @@ module AptcCsr
   class MemberDetermination < Dry::Struct
 
     attribute :kind, Types::MemberDeterminationKind
-    attribute :is_eligible, Types::Bool
-    attribute :determination_reasons, Types::Array.of(Types::Symbol).optional.meta(omittable: true)
+    attribute :criteria_met, Types::Bool
+    attribute :determination_reasons, Types::Array.of(Types::Symbol)
+    attribute :eligibility_overrides, Types::Array.of(AptcCsr::EligibilityOverride)
 
   end
 end
