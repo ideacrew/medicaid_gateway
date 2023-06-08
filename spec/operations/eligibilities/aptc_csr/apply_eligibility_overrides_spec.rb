@@ -10,6 +10,28 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
       is_lawful_presence_self_attested: false }
   end
   let(:override_rules) {::AcaEntities::MagiMedicaid::Types::EligibilityOverrideRule.values}
+  let(:member_determinations) do
+    [medicaid_and_chip_member_determination]
+  end
+
+  let(:medicaid_and_chip_member_determination) do
+    {
+      kind: 'Medicaid/CHIP Determination',
+      criteria_met: false,
+      determination_reasons: [],
+      eligibility_overrides: medicaid_chip_eligibility_overrides
+    }
+  end
+
+  let(:medicaid_chip_eligibility_overrides) do
+    override_rules = ::AcaEntities::MagiMedicaid::Types::EligibilityOverrideRule.values
+    override_rules.map do |rule|
+      {
+        override_rule: rule,
+        override_applied: false
+      }
+    end
+  end
 
   include_context "setup magi_medicaid application with two applicants"
 
@@ -26,7 +48,8 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
         magi_medicaid_monthly_income_limit: 3760.67,
         magi_as_percentage_of_fpl: 10.0,
         magi_medicaid_category: "parent_caretaker",
-        magi_medicaid_ineligibility_reasons: ["Applicant did not meet citizenship/immigration requirements"] }
+        magi_medicaid_ineligibility_reasons: ["Applicant did not meet citizenship/immigration requirements"],
+        member_determinations: member_determinations }
     end
 
     context "with applicant 21 or over" do
@@ -56,16 +79,6 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
 
       it "should not return medicaid eligible" do
         expect(@result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.is_magi_medicaid).to eq(false)
-      end
-
-      it "should create a member_determination object for medicaid/chip eligibility for each member" do
-        tax_household_members = @result.success.tax_households.first.tax_household_members
-        tax_household_members.each do |member|
-          member_determinations = member.product_eligibility_determination.member_determinations
-          expect(member_determinations.count).to eq(1)
-          expect(member_determinations.first.kind).to eq("Medicaid/CHIP Determination")
-          expect(member_determinations.first).to be_a(::AcaEntities::MagiMedicaid::MemberDetermination)
-        end
       end
     end
 
@@ -113,16 +126,6 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
       end
 
       context "eligibility_overrides" do
-        it "should create an override object for each override rule" do
-          member_determs = @result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.member_determinations
-          eligibility_overrides = member_determs.first.eligibility_overrides
-          expect(eligibility_overrides.count).to eq(override_rules.count)
-          override_rules.each do |rule|
-            eligibility_override = eligibility_overrides.detect { |override| override.override_rule == rule }
-            expect(eligibility_override.present?).to be_truthy
-          end
-        end
-
         it "should accurately record the override rules applied" do
           member_determs = @result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.member_determinations
           eligibility_overrides = member_determs.first.eligibility_overrides
@@ -180,7 +183,8 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
         magi_as_percentage_of_fpl: 10.0,
         magi_medicaid_category: "parent_caretaker",
         chip_ineligibility_reasons: ["Applicant did not meet citizenship/immigration requirements"],
-        magi_medicaid_ineligibility_reasons: ["Applicant did not meet citizenship/immigration requirements"] }
+        magi_medicaid_ineligibility_reasons: ["Applicant did not meet citizenship/immigration requirements"],
+        member_determinations: member_determinations }
     end
 
     let(:input_application) do
@@ -243,15 +247,6 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
 
       it "should return a MagiMedicaidApplication entity" do
         expect(@result.success).to be_a(::AcaEntities::MagiMedicaid::Application)
-      end
-
-      it "should create only one member determination object for medicaid/chip eligibility for each member" do
-        @result.success.tax_households.first.tax_household_members.each do |member|
-          member_determinations = member.product_eligibility_determination.member_determinations
-          expect(member_determinations.count).to eq(1)
-          expect(member_determinations.first.kind).to eq("Medicaid/CHIP Determination")
-          expect(member_determinations.first).to be_a(::AcaEntities::MagiMedicaid::MemberDetermination)
-        end
       end
 
       it "should return chip eligible" do

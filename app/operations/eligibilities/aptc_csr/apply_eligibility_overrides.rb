@@ -15,8 +15,7 @@ module Eligibilities
       def call(params)
         @override_rules = ::AcaEntities::MagiMedicaid::Types::EligibilityOverrideRule.values
         valid_params = yield validate_params(params)
-        app_with_member_determs = yield add_mdc_chip_member_determs(valid_params)
-        result = yield apply_eligibility_overrides(app_with_member_determs)
+        result = yield apply_eligibility_overrides(valid_params)
         Success(result)
       end
 
@@ -25,28 +24,18 @@ module Eligibilities
         Failure("Invalid params -- magi_medicaid_application is missing in: #{params}")
       end
 
-      def add_mdc_chip_member_determs(params)
-        @mm_application = params[:magi_medicaid_application]
+      def apply_eligibility_overrides(valid_params)
+        @mm_application = valid_params[:magi_medicaid_application]
         mm_app_hash = @mm_application.to_h
-        mm_app_hash[:tax_households].each do |mm_thh|
-          mm_thh[:tax_household_members].each do |thhm|
-            ped = thhm[:product_eligibility_determination]
-            ped[:member_determinations] = [medicaid_chip_member_determination]
-          end
-        end
-        Success(mm_app_hash)
-      end
-
-      def apply_eligibility_overrides(app_with_member_determs)
         # loop through each member and update the member_determination if override rule is applicable
-        app_with_member_determs[:tax_households].each do |mm_thh|
+        mm_app_hash[:tax_households].each do |mm_thh|
           mm_thh[:tax_household_members].each do |thhm|
             @override_rules.each do |rule|
               apply_override_rule(thhm, rule)
             end
           end
         end
-        ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(app_with_member_determs)
+        ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(mm_app_hash)
       end
 
       def apply_override_rule(thhm, rule)

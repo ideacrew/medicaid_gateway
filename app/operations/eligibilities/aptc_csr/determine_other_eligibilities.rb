@@ -47,8 +47,9 @@ module Eligibilities
           aptc_member[:member_determinations] ||= []
           aptc_member[:member_determinations] << {
             kind: 'Total Ineligibility Determination',
-            is_eligible: false,
-            determination_reasons: totally_ineligible_reasons
+            criteria_met: false,
+            determination_reasons: totally_ineligible_reasons,
+            eligibility_overrides: []
           }
         else
           aptc_member[:uqhp_eligible] = true
