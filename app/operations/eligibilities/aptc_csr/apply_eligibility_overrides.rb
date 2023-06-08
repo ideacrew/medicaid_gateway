@@ -38,19 +38,19 @@ module Eligibilities
       end
 
       def apply_eligibility_overrides(app_with_member_determs)
+        # loop through each member and update the member_determination if override rule is applicable
         app_with_member_determs[:tax_households].each do |mm_thh|
           mm_thh[:tax_household_members].each do |thhm|
-            ped = thhm[:product_eligibility_determination]
-            ped[:member_determinations] ||= [medicaid_chip_member_determination]
             @override_rules.each do |rule|
-              apply_override_rule(thhm, ped, rule)
+              apply_override_rule(thhm, rule)
             end
           end
         end
         ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(app_with_member_determs)
       end
 
-      def apply_override_rule(thhm, ped, rule)
+      def apply_override_rule(thhm, rule)
+        ped = thhm[:product_eligibility_determination]
         case rule
         when :not_lawfully_present_pregnant
           if medicaid_ineligible_due_to_immigration_only?(thhm) && pregnancy_override?(thhm)
@@ -126,7 +126,6 @@ module Eligibilities
         mdc_chip_determ[:criteria_met] = true
         mdc_chip_determ[:determination_reasons] << rule
         set_override_rule_applied(mdc_chip_determ[:eligibility_overrides], rule)
-        mdc_chip_determ
       end
 
       def set_override_rule_applied(overrides, rule)
