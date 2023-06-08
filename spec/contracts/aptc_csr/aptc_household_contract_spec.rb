@@ -55,8 +55,9 @@ RSpec.describe ::AptcCsr::AptcHouseholdContract, dbclean: :around_each do
         csr: '73',
         member_determinations: [{
           kind: 'Insurance Assistance Determination',
-          is_eligible: true,
-          determination_reasons: [:income_above_threshold]
+          criteria_met: true,
+          determination_reasons: [:income_above_threshold],
+          eligibility_overrides: []
         }] }
     end
 
@@ -100,8 +101,9 @@ RSpec.describe ::AptcCsr::AptcHouseholdContract, dbclean: :around_each do
           csr: '73',
           member_determinations: [{
             kind: 'Insurance Assistance Determination',
-            is_eligible: true,
-            determination_reasons: [:income_above_threshold]
+            criteria_met: true,
+            determination_reasons: [:income_above_threshold],
+            eligibility_overrides: []
           }] }
       end
 
@@ -130,8 +132,9 @@ RSpec.describe ::AptcCsr::AptcHouseholdContract, dbclean: :around_each do
           csr: nil,
           member_determination: [{
             kind: 'Insurance Assistance Determination',
-            is_eligible: true,
-            determination_reasons: [:income_above_threshold]
+            criteria_met: true,
+            determination_reasons: [:income_above_threshold],
+            eligibility_overrides: []
           }] }
       end
 
