@@ -21,10 +21,20 @@ FactoryBot.define do
         kind: 'Medicaid/CHIP Determination',
         criteria_met: false,
         determination_reasons: [],
-        eligibility_overrides: {
-          override_rule: rule,
-          override_applied: false
-        }
+        eligibility_overrides: [
+          {
+            override_rule: :not_lawfully_present_pregnant,
+            override_applied: false
+          },
+          {
+            override_rule: :not_lawfully_present_chip_eligible,
+            override_applied: false
+          },
+          {
+            override_rule: :not_lawfully_present_under_twenty_one,
+            override_applied: false
+          }
+        ]
       }, {
         kind: 'Total Ineligibility Determination',
         criteria_met: false,
