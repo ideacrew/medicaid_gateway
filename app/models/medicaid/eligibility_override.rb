@@ -18,8 +18,8 @@ module Medicaid
     validates_inclusion_of :override_rule, in: Types::EligibilityOverrideRule.values
 
     def symbolize_override_rule
-        return if override_rule.is_a?(Symbol)
-        self.override_rule = override_rule&.to_sym
+      return if override_rule.is_a?(Symbol)
+      self.override_rule = override_rule&.to_sym
     end
   end
 end
