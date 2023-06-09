@@ -14,5 +14,12 @@ module Medicaid
 
     embedded_in :member_determination, class_name: '::Medicaid::MemberDetermination'
 
+    before_validation :symbolize_override_rule
+    validates_inclusion_of :override_rule, in: Types::EligibilityOverrideRule.values
+
+    def symbolize_override_rule
+        return if override_rule.is_a?(Symbol)
+        self.override_rule = override_rule&.to_sym
+    end
   end
 end
