@@ -142,7 +142,7 @@ module MitcService
 
       mm_applicant = applicant_by_reference(mm_app_hash, member_identifier)
       # should not be eligible if the applicant is incarcerated
-      return true if mm_applicant[:attestation][:is_incarcerated]
+      return true if mm_applicant[:attestation][:is_incarcerated] && !MedicaidGatewayRegistry.feature_enabled?(:medicaid_eligible_incarcerated)
       medicaid_and_chip = mm_applicant[:medicaid_and_chip]
       return false if medicaid_and_chip.blank?
       date_for_comparision = Date.today - 90.days
