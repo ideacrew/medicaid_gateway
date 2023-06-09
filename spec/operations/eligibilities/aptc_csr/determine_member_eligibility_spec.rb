@@ -328,7 +328,7 @@ describe Eligibilities::AptcCsr::DetermineMemberEligibility do
 
     before do
       allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).and_call_original
-      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:medicaid_eligible_incarcerated).and_return(true)
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:medicaid_eligible_incarcerated).and_return(false)
       @result = subject.call(input_params)
     end
 

@@ -18,9 +18,17 @@ FactoryBot.define do
 
     member_determinations do
       [{
-        kind: 'Insurance Assistance Determination',
-        criteria_met: true,
-        determination_reasons: [:income_above_threshold],
+        kind: 'Medicaid/CHIP Determination',
+        criteria_met: false,
+        determination_reasons: [],
+        eligibility_overrides: {
+          override_rule: rule,
+          override_applied: false
+        }
+      }, {
+        kind: 'Total Ineligibility Determination',
+        criteria_met: false,
+        determination_reasons: [],
         eligibility_overrides: []
       }]
     end
