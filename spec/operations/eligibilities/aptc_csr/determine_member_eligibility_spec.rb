@@ -322,8 +322,10 @@ describe Eligibilities::AptcCsr::DetermineMemberEligibility do
     let(:input_application) do
       app_params = mm_application_entity.to_h
       app_params[:applicants].second[:attestation][:is_incarcerated] = true
-      app_params[:tax_households].first[:tax_household_members].first[:product_eligibility_determination][:member_determinations] = [total_ineligibility_determination]
-      app_params[:tax_households].first[:tax_household_members].second[:product_eligibility_determination][:member_determinations] = [total_ineligibility_determination]
+      app_params[:tax_households].first[:tax_household_members].first[:product_eligibility_determination][:member_determinations] =
+        [total_ineligibility_determination]
+      app_params[:tax_households].first[:tax_household_members].second[:product_eligibility_determination][:member_determinations] =
+        [total_ineligibility_determination]
       ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(app_params).success
     end
 
