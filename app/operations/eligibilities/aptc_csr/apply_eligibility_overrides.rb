@@ -41,17 +41,17 @@ module Eligibilities
       def apply_override_rule(thhm, rule)
         ped = thhm[:product_eligibility_determination]
         case rule
-        when :not_lawfully_present_pregnant
+        when 'not_lawfully_present_pregnant'
           if medicaid_ineligible_due_to_immigration_only?(thhm) && pregnancy_override?(thhm)
             ped[:is_magi_medicaid] = true
             update_member_determ_for(thhm, rule)
           end
-        when :not_lawfully_present_under_twenty_one
+        when 'not_lawfully_present_under_twenty_one'
           if medicaid_ineligible_due_to_immigration_only?(thhm) && nineteen_to_twenty_one_override?(thhm)
             ped[:is_magi_medicaid] = true
             update_member_determ_for(thhm, rule)
           end
-        when :not_lawfully_present_chip_eligible
+        when 'not_lawfully_present_chip_eligible'
           if medicaid_ineligible_due_to_immigration_only?(thhm) && under_eighteen_chip_override?(thhm)
             ped[:is_medicaid_chip_eligible] = true
             update_member_determ_for(thhm, rule)
@@ -113,7 +113,7 @@ module Eligibilities
         member_determs = thhm.dig(:product_eligibility_determination, :member_determinations)
         mdc_chip_determ = member_determs&.detect {|md| md[:kind] == 'Medicaid/CHIP Determination' }
         mdc_chip_determ[:criteria_met] = true
-        mdc_chip_determ[:determination_reasons] << rule
+        mdc_chip_determ[:determination_reasons] << rule.to_sym
         set_override_rule_applied(mdc_chip_determ[:eligibility_overrides], rule)
       end
 
