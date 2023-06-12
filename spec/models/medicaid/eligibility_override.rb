@@ -11,7 +11,7 @@ RSpec.describe ::Medicaid::EligibilityOverride, type: :model, dbclean: :after_ea
     }
   end
   context "validations" do
-    it { should validate_inclusion_of(:override_rule).in_array(Types::EligibilityOverrideRule.values) }
+    it { should validate_inclusion_of(:override_rule).in_array(AcaEntities::MagiMedicaid::Types::EligibilityOverrideRule.values) }
   end
 
   context "callbacks" do

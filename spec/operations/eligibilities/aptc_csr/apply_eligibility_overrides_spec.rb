@@ -129,9 +129,9 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
         it "should accurately record the override rules applied" do
           member_determs = @result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.member_determinations
           eligibility_overrides = member_determs.first.eligibility_overrides
-          pregnant_override = eligibility_overrides.detect { |override| override.override_rule == :not_lawfully_present_pregnant }
-          under_twenty_one_override = eligibility_overrides.detect { |override| override.override_rule == :not_lawfully_present_under_twenty_one }
-          chip_eligible_override = eligibility_overrides.detect { |override| override.override_rule == :not_lawfully_present_chip_eligible }
+          pregnant_override = eligibility_overrides.detect { |override| override.override_rule == 'not_lawfully_present_pregnant' }
+          under_twenty_one_override = eligibility_overrides.detect { |override| override.override_rule == 'not_lawfully_present_under_twenty_one' }
+          chip_eligible_override = eligibility_overrides.detect { |override| override.override_rule == 'not_lawfully_present_chip_eligible' }
           expect(pregnant_override.override_applied).to eq(true)
           expect(under_twenty_one_override.override_applied).to eq(false)
           expect(chip_eligible_override.override_applied).to eq(false)

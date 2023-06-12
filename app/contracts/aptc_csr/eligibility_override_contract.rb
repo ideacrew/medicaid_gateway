@@ -9,7 +9,7 @@ module AptcCsr
     # @param [Hash] opts the parameters to validate using this contract
     # @return [Dry::Monads::Result]
     params do
-      required(:override_rule).filled(Types::EligibilityOverrideRule)
+      required(:override_rule).filled(AcaEntities::MagiMedicaid::Types::EligibilityOverrideRule)
       required(:override_applied).filled(:bool)
     end
   end
