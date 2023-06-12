@@ -38,9 +38,18 @@ RSpec.describe ::MitcService::AddMitcDeterminationToApplication do
       it "should create only one member determination object for medicaid/chip eligibility for each member" do
         @result.success.tax_households.first.tax_household_members.each do |member|
           member_determinations = member.product_eligibility_determination.member_determinations
-          expect(member_determinations.count).to eq(1)
-          expect(member_determinations.first.kind).to eq("Medicaid/CHIP Determination")
-          expect(member_determinations.first).to be_a(::AcaEntities::MagiMedicaid::MemberDetermination)
+          mdcr_chip_determ = member_determinations.select {|md| md[:kind] == 'Medicaid/CHIP Determination' }
+          expect(mdcr_chip_determ.count).to eq(1)
+          expect(mdcr_chip_determ.first).to be_a(::AcaEntities::MagiMedicaid::MemberDetermination)
+        end
+      end
+
+      it "should create only one member determination object for total ineligibility for each member" do
+        @result.success.tax_households.first.tax_household_members.each do |member|
+          member_determinations = member.product_eligibility_determination.member_determinations
+          mdcr_chip_determ = member_determinations.select {|md| md[:kind] == 'Total Ineligibility Determination' }
+          expect(mdcr_chip_determ.count).to eq(1)
+          expect(mdcr_chip_determ.first).to be_a(::AcaEntities::MagiMedicaid::MemberDetermination)
         end
       end
 

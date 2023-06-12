@@ -184,10 +184,12 @@ module MitcService
 
     def category_determinations(determinations)
       determinations.inject([]) do |det_array, deter|
-        det_array << { category: deter[:category],
-                       indicator_code: mitc_value_to_boolean(deter[:indicator_code]),
-                       ineligibility_code: deter[:ineligibility_code],
-                       ineligibility_reason: deter[:ineligibility_reason] }
+        det_array << {
+          category: deter[:category],
+          indicator_code: mitc_value_to_boolean(deter[:indicator_code]),
+          ineligibility_code: deter[:ineligibility_code],
+          ineligibility_reason: deter[:ineligibility_reason]
+        }
       end
     end
 
@@ -202,8 +204,10 @@ module MitcService
       # Future implementation will include other member_determinations:
       # 'Insurance Assistance Determination'
       # 'Unassisted QHP Determination'
-      # 'Total Ineligibility Determination'
-      [medicaid_chip_member_determination]
+      [
+        medicaid_chip_member_determination,
+        total_ineligibility_determination
+      ]
     end
 
     def medicaid_chip_member_determination
@@ -212,6 +216,15 @@ module MitcService
         criteria_met: false,
         determination_reasons: [],
         eligibility_overrides: medicaid_chip_eligibility_overrides
+      }
+    end
+
+    def total_ineligibility_determination
+      {
+        kind: 'Total Ineligibility Determination',
+        criteria_met: false,
+        determination_reasons: [],
+        eligibility_overrides: []
       }
     end
 

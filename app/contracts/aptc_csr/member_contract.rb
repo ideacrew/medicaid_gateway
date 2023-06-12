@@ -38,7 +38,9 @@ module AptcCsr
 
       optional(:csr).maybe(Types::CsrKind)
 
-      optional(:member_determinations).array(MemberDeterminationContract.params)
+      optional(:member_determinations).maybe(:array) do
+        nil? | each(MemberDeterminationContract.params)
+      end
     end
 
     rule do

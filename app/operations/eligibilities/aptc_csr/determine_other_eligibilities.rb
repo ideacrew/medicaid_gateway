@@ -44,13 +44,9 @@ module Eligibilities
         totally_ineligible_reasons = member_totally_ineligible_reasons(applicant)
         if totally_ineligible_reasons.present?
           aptc_member[:totally_ineligible] = true
-          aptc_member[:member_determinations] ||= []
-          aptc_member[:member_determinations] << {
-            kind: 'Total Ineligibility Determination',
-            criteria_met: false,
-            determination_reasons: totally_ineligible_reasons,
-            eligibility_overrides: []
-          }
+          te_determ = aptc_member[:member_determinations].detect {|md| md[:kind] == 'Total Ineligibility Determination' }
+          te_determ[:criteria_met] = true
+          te_determ[:determination_reasons] = totally_ineligible_reasons
         else
           aptc_member[:uqhp_eligible] = true
         end
@@ -58,7 +54,9 @@ module Eligibilities
 
       def member_totally_ineligible_reasons(applicant)
         reasons = []
-        reasons << :total_ineligibility_incarceration if applicant.incarcerated?
+        if applicant.incarcerated? && !MedicaidGatewayRegistry.feature_enabled?(:medicaid_eligible_incarcerated)
+          reasons << :total_ineligibility_incarceration
+        end
         reasons << :total_ineligibility_no_lawful_presence if applicant.non_citizen_and_no_lawful_presence_attestation
         reasons << :total_ineligibility_no_state_residency if state_residency_requirement_not_met?(applicant)
         reasons

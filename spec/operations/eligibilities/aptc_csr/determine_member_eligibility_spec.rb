@@ -310,10 +310,22 @@ describe Eligibilities::AptcCsr::DetermineMemberEligibility do
   end
 
   context 'with one applicant being totally ineligilible' do
+    let(:total_ineligibility_determination) do
+      {
+        kind: 'Total Ineligibility Determination',
+        criteria_met: false,
+        determination_reasons: [],
+        eligibility_overrides: []
+      }
+    end
 
     let(:input_application) do
       app_params = mm_application_entity.to_h
       app_params[:applicants].second[:attestation][:is_incarcerated] = true
+      app_params[:tax_households].first[:tax_household_members].first[:product_eligibility_determination][:member_determinations] =
+        [total_ineligibility_determination]
+      app_params[:tax_households].first[:tax_household_members].second[:product_eligibility_determination][:member_determinations] =
+        [total_ineligibility_determination]
       ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(app_params).success
     end
 
@@ -327,6 +339,8 @@ describe Eligibilities::AptcCsr::DetermineMemberEligibility do
     end
 
     before do
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).and_call_original
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:medicaid_eligible_incarcerated).and_return(false)
       @result = subject.call(input_params)
     end
 
