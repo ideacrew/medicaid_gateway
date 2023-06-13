@@ -11,7 +11,7 @@ module AptcCsr
     params do
       required(:kind).filled(Types::MemberDeterminationKind)
       required(:criteria_met).filled(:bool)
-      required(:determination_reasons).array(::Types::Symbol)
+      required(:determination_reasons).array(Types::Coercible::String)
       required(:eligibility_overrides).array(AptcCsr::EligibilityOverrideContract.params)
     end
   end
