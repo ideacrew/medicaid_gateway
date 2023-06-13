@@ -6,7 +6,7 @@ module AptcCsr
 
     attribute :kind, Types::MemberDeterminationKind
     attribute :criteria_met, Types::Bool
-    attribute :determination_reasons, Types::Array.of(Types::Symbol)
+    attribute :determination_reasons, Types::Array.of(Types::Coercible::String)
     attribute :eligibility_overrides, Types::Array.of(AptcCsr::EligibilityOverride)
 
   end

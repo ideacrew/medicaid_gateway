@@ -113,7 +113,7 @@ module Eligibilities
         member_determs = thhm.dig(:product_eligibility_determination, :member_determinations)
         mdc_chip_determ = member_determs&.detect {|md| md[:kind] == 'Medicaid/CHIP Determination' }
         mdc_chip_determ[:criteria_met] = true
-        mdc_chip_determ[:determination_reasons] << rule.to_sym
+        mdc_chip_determ[:determination_reasons] << rule
         set_override_rule_applied(mdc_chip_determ[:eligibility_overrides], rule)
       end
 

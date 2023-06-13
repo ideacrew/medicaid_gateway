@@ -120,9 +120,9 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
         expect(@result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.is_magi_medicaid).to eq(true)
       end
 
-      it "should return member_determination determination_reasons :not_lawfully_present_pregnant" do
+      it "should return member_determination determination_reasons 'not_lawfully_present_pregnant'" do
         member_determs = @result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.member_determinations
-        expect(member_determs.first.determination_reasons.first).to eq(:not_lawfully_present_pregnant)
+        expect(member_determs.first.determination_reasons.first).to eq('not_lawfully_present_pregnant')
       end
 
       context "eligibility_overrides" do
@@ -162,9 +162,9 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
         expect(@result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.is_magi_medicaid).to eq(true)
       end
 
-      it "should return member_determination determination_reasons :not_lawfully_present_under_twenty_one" do
+      it "should return member_determination determination_reasons 'not_lawfully_present_under_twenty_one'" do
         member_determs = @result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.member_determinations
-        expect(member_determs.first.determination_reasons.first).to eq(:not_lawfully_present_under_twenty_one)
+        expect(member_determs.first.determination_reasons.first).to eq('not_lawfully_present_under_twenty_one')
       end
     end
   end
@@ -212,9 +212,9 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
       expect(chip_eligible).to eq(true)
     end
 
-    it "should return member_determination determination_reasons :not_lawfully_present_chip_eligible" do
+    it "should return member_determination determination_reasons 'not_lawfully_present_chip_eligible'" do
       member_determs = @result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.member_determinations
-      expect(member_determs.first.determination_reasons.first).to eq(:not_lawfully_present_chip_eligible)
+      expect(member_determs.first.determination_reasons.first).to eq('not_lawfully_present_chip_eligible')
     end
 
     context "and pregnant" do
@@ -256,7 +256,7 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
 
       it "should return member_determination with multiple determination_reasons" do
         member_determs = @result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.member_determinations
-        expected_array = [:not_lawfully_present_pregnant, :not_lawfully_present_chip_eligible]
+        expected_array = ['not_lawfully_present_pregnant', 'not_lawfully_present_chip_eligible']
         expect(member_determs.first.determination_reasons).to match_array(expected_array)
       end
     end
