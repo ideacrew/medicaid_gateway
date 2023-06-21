@@ -10,12 +10,12 @@ module Medicaid
     field :kind, type: String
 
     # Whether or not the member is eligible for the kind of determination.
-    field :is_eligible, type: Boolean
+    field :criteria_met, type: Boolean
 
     # the reasons the member qualifies for the determination.
     field :determination_reasons, type: Array
 
     embedded_in :aptc_household_member, class_name: '::Medicaid::AptcHouseholdMember'
-
+    embeds_many :eligibility_overrides, class_name: '::Medicaid::EligibilityOverride'
   end
 end

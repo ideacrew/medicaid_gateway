@@ -303,6 +303,25 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     end
   end
 
+  # applicant otherwise eligible for medicaid, but they are incarcerated
+  context "cms simle test_case_c incarcerated" do
+    include_context 'cms ME simple_scenarios test_case_c_incarcerated'
+
+    before do
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).and_call_original
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:medicaid_eligible_incarcerated).and_return(true)
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @thh = @application.tax_households.first
+      @aisha_ped = @thh.tax_household_members.first.product_eligibility_determination
+    end
+
+    it "should be magi medicaid eligible" do
+      expect(@aisha_ped.is_magi_medicaid).to eq(true)
+    end
+
+  end
+
   # Gerald is APTC and CSR eligible
   context 'cms simle test_case_d' do
     include_context 'cms ME simple_scenarios test_case_d'
