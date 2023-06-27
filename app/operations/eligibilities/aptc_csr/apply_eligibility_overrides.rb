@@ -42,17 +42,17 @@ module Eligibilities
         ped = thhm[:product_eligibility_determination]
         case rule
         when 'not_lawfully_present_pregnant'
-          if medicaid_ineligible_due_to_immigration_only?(thhm) && pregnancy_override?(thhm)
+          if ineligible_due_to_immigration_only?(thhm) && pregnancy_override?(thhm)
             ped[:is_magi_medicaid] = true
             update_member_determ_for(thhm, rule)
           end
         when 'not_lawfully_present_under_twenty_one'
-          if medicaid_ineligible_due_to_immigration_only?(thhm) && nineteen_to_twenty_one_override?(thhm)
+          if ineligible_due_to_immigration_only?(thhm) && nineteen_to_twenty_one_override?(thhm)
             ped[:is_magi_medicaid] = true
             update_member_determ_for(thhm, rule)
           end
         when 'not_lawfully_present_chip_eligible'
-          if medicaid_ineligible_due_to_immigration_only?(thhm) && under_eighteen_chip_override?(thhm)
+          if ineligible_due_to_immigration_only?(thhm) && under_eighteen_chip_override?(thhm)
             ped[:is_medicaid_chip_eligible] = true
             update_member_determ_for(thhm, rule)
           end
@@ -79,6 +79,10 @@ module Eligibilities
         @mm_application.applicants.detect do |applicant|
           applicant.person_hbx_id.to_s == person_hbx_id.to_s
         end
+      end
+
+      def ineligible_due_to_immigration_only?(thhm)
+        medicaid_ineligible_due_to_immigration_only?(thhm) || chip_ineligible_due_to_immigration_only?(thhm)
       end
 
       def medicaid_ineligible_due_to_immigration_only?(thhm)
