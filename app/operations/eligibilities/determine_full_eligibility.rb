@@ -57,8 +57,8 @@ module Eligibilities
     def determine_member_eligibilities(mm_application)
       @result_mm_application ||= mm_application
       mm_application.tax_households.each do |mm_thh|
-        # Do not determine APTC/CSR if all members are ineligible
-        next mm_thh if all_members_are_aptc_csr_ineligible?(mm_thh)
+        # Do not determine APTC/CSR if all members are eligible for magi_medicaid/medicaid_chip
+        next mm_thh if all_members_are_medicaid_eligible?(mm_thh)
 
         result = ::Eligibilities::AptcCsr::DetermineMemberEligibility.new.call({ magi_medicaid_application: @result_mm_application,
                                                                                  magi_medicaid_tax_household: mm_thh })
@@ -74,13 +74,10 @@ module Eligibilities
       ::Eligibilities::AptcCsr::ComputeAptcsAndPublish.new.call({ magi_medicaid_application: mm_application })
     end
 
-    def all_members_are_aptc_csr_ineligible?(mm_thh)
+    def all_members_are_medicaid_eligible?(mm_thh)
       mm_thh.tax_household_members.all? do |thhm|
-        # Applicant is APTC/CSR ineligible if:
-        # magi_medicaid/medicaid_chip eligible
-        # incarcerated
         ped = thhm.product_eligibility_determination
-        ped.is_medicaid_chip_eligible || ped.is_magi_medicaid || ped.chip_ineligibility_reasons&.include?("Applicant is incarcerated")
+        ped.is_medicaid_chip_eligible || ped.is_magi_medicaid
       end
     end
 
