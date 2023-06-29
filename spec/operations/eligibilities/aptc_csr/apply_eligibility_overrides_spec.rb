@@ -183,8 +183,12 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
         magi_as_percentage_of_fpl: 10.0,
         magi_medicaid_category: "parent_caretaker",
         chip_ineligibility_reasons: ["Applicant did not meet citizenship/immigration requirements"],
-        magi_medicaid_ineligibility_reasons: ["Applicant did not meet citizenship/immigration requirements"],
+        magi_medicaid_ineligibility_reasons: magi_medicaid_ineligibility_reasons,
         member_determinations: member_determinations }
+    end
+
+    let(:magi_medicaid_ineligibility_reasons) do
+      ["Applicant did not meet citizenship/immigration requirements"]
     end
 
     let(:input_application) do
@@ -215,6 +219,22 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
     it "should return member_determination determination_reasons 'not_lawfully_present_chip_eligible'" do
       member_determs = @result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.member_determinations
       expect(member_determs.first.determination_reasons.first).to eq('not_lawfully_present_chip_eligible')
+    end
+
+    context "where applicant MAGI is above Medicaid threshold but NOT above CHIP threshold" do
+      let(:magi_medicaid_ineligibility_reasons) do
+        ["Applicant did not meet citizenship/immigration requirements", "Applicant's MAGI above the threshold for category"]
+      end
+
+      it "should return chip eligible" do
+        chip_eligible = @result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.is_medicaid_chip_eligible
+        expect(chip_eligible).to eq(true)
+      end
+
+      it "should return member_determination determination_reasons 'not_lawfully_present_chip_eligible'" do
+        member_determs = @result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.member_determinations
+        expect(member_determs.first.determination_reasons.first).to eq('not_lawfully_present_chip_eligible')
+      end
     end
 
     context "and pregnant" do
