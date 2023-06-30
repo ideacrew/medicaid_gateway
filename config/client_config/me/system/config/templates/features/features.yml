@@ -52,3 +52,5 @@ registry:
             item: <%= ENV["MITC_OVERRIDE_NOT_LAWFULLY_PRESENT_CHIP_ELIGIBLE_IS_ENABLED"] || false %>
           - key: :mitc_override_not_lawfully_present_under_twenty_one
             item: <%= ENV["MITC_OVERRIDE_NOT_LAWFULLY_PRESENT_UNDER_TWENTY_ONE_IS_ENABLED"] || false %>
+      - key: :medicaid_eligible_incarcerated
+        is_enabled: <%= ENV["MEDICAID_ELIGIBLE_INCARCERATED_IS_ENABLED"] || false %>

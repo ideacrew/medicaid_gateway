@@ -8,6 +8,7 @@ Dir["#{Rails.root}/spec/shared_contexts/eligibilities/cms/me_test_scenarios/*.rb
 Dir["#{Rails.root}/spec/shared_contexts/eligibilities/dc_test_scenarios/*.rb"].sort.each { |file| require file }
 Dir["#{Rails.root}/spec/shared_contexts/eligibilities/esi_affordability/*.rb"].sort.each { |file| require file }
 Dir["#{Rails.root}/spec/shared_contexts/eligibilities/gap_filling/*.rb"].sort.each { |file| require file }
+Dir["#{Rails.root}/spec/shared_contexts/eligibilities/totally_ineligible/*.rb"].sort.each { |file| require file }
 require 'aca_entities/magi_medicaid/contracts/create_federal_poverty_level_contract'
 require 'aca_entities/magi_medicaid/contracts/federal_poverty_level_contract'
 require 'aca_entities/magi_medicaid/federal_poverty_level'
@@ -301,6 +302,25 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     it "should apply override and return determination for is_magi_medicaid determination" do
       expect(@aisha_ped.is_magi_medicaid).to eq(true)
     end
+  end
+
+  # applicant otherwise eligible for medicaid, but they are incarcerated
+  context "cms simle test_case_c incarcerated" do
+    include_context 'cms ME simple_scenarios test_case_c_incarcerated'
+
+    before do
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).and_call_original
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:medicaid_eligible_incarcerated).and_return(true)
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @thh = @application.tax_households.first
+      @aisha_ped = @thh.tax_household_members.first.product_eligibility_determination
+    end
+
+    it "should be magi medicaid eligible" do
+      expect(@aisha_ped.is_magi_medicaid).to eq(true)
+    end
+
   end
 
   # Gerald is APTC and CSR eligible
@@ -2298,10 +2318,13 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
   end
 
   # Someone who is incarcerated should not be found to be Medicaid Eligible
+  # note: this scenario only holds true when medicaid_eligible_incarcerated is disabled
   context 'dc_test_scenarios oc_10' do
     include_context 'dc_test_scenarios oc_10'
 
     before do
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).and_call_original
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:medicaid_eligible_incarcerated).and_return(false)
       @result = subject.call(input_params)
       @application = @result.success[:payload]
       @new_thhms = @application.tax_households.flat_map(&:tax_household_members)
@@ -2322,7 +2345,8 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
         expect(ped.is_ia_eligible).to eq(false)
         expect(ped.is_magi_medicaid).to eq(false)
         expect(ped.is_medicaid_chip_eligible).to eq(false)
-        expect(ped.is_csr_eligible).to eq(nil)
+        expect(ped.is_csr_eligible).to eq(false)
+        expect(ped.is_totally_ineligible).to eq(true)
       end
     end
 
@@ -3434,6 +3458,23 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       it 'should return member eligible for Insurance Assistance' do
         expect(@peds.map(&:is_ia_eligible)).to eq([true, true, true, true])
       end
+    end
+  end
+
+  # Incarcerated applicant who is NOT otherwise eligible for Medicaid should be totally ineligible
+  context 'incarcerated applicant not eligible for Medicaid' do
+    include_context 'totally_ineligible incarcerated_medicaid_ineligible'
+
+    before do
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).and_call_original
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:medicaid_eligible_incarcerated).and_return(true)
+      @result = subject.call(input_params)
+      @application = @result.success[:payload]
+      @ped = @application.tax_households.first.tax_household_members.first.product_eligibility_determination
+    end
+
+    it 'should return totally_ineligible as true' do
+      expect(@ped.is_totally_ineligible).to eq(true)
     end
   end
 end

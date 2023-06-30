@@ -9,6 +9,29 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
     { citizen_status: "not_lawfully_present_in_us",
       is_lawful_presence_self_attested: false }
   end
+  let(:override_rules) {::AcaEntities::MagiMedicaid::Types::EligibilityOverrideRule.values}
+  let(:member_determinations) do
+    [medicaid_and_chip_member_determination]
+  end
+
+  let(:medicaid_and_chip_member_determination) do
+    {
+      kind: 'Medicaid/CHIP Determination',
+      criteria_met: false,
+      determination_reasons: [],
+      eligibility_overrides: medicaid_chip_eligibility_overrides
+    }
+  end
+
+  let(:medicaid_chip_eligibility_overrides) do
+    override_rules = ::AcaEntities::MagiMedicaid::Types::EligibilityOverrideRule.values
+    override_rules.map do |rule|
+      {
+        override_rule: rule,
+        override_applied: false
+      }
+    end
+  end
 
   include_context "setup magi_medicaid application with two applicants"
 
@@ -25,7 +48,8 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
         magi_medicaid_monthly_income_limit: 3760.67,
         magi_as_percentage_of_fpl: 10.0,
         magi_medicaid_category: "parent_caretaker",
-        magi_medicaid_ineligibility_reasons: ["Applicant did not meet citizenship/immigration requirements"] }
+        magi_medicaid_ineligibility_reasons: ["Applicant did not meet citizenship/immigration requirements"],
+        member_determinations: member_determinations }
     end
 
     context "with applicant 21 or over" do
@@ -96,9 +120,22 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
         expect(@result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.is_magi_medicaid).to eq(true)
       end
 
-      it "should return member_determination determiation_reason :mitc_override_not_lawfully_present_pregnant" do
+      it "should return member_determination determination_reasons 'not_lawfully_present_pregnant'" do
         member_determs = @result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.member_determinations
-        expect(member_determs.first.determination_reasons.first).to eq(:mitc_override_not_lawfully_present_pregnant)
+        expect(member_determs.first.determination_reasons.first).to eq('not_lawfully_present_pregnant')
+      end
+
+      context "eligibility_overrides" do
+        it "should accurately record the override rules applied" do
+          member_determs = @result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.member_determinations
+          eligibility_overrides = member_determs.first.eligibility_overrides
+          pregnant_override = eligibility_overrides.detect { |override| override.override_rule == 'not_lawfully_present_pregnant' }
+          under_twenty_one_override = eligibility_overrides.detect { |override| override.override_rule == 'not_lawfully_present_under_twenty_one' }
+          chip_eligible_override = eligibility_overrides.detect { |override| override.override_rule == 'not_lawfully_present_chip_eligible' }
+          expect(pregnant_override.override_applied).to eq(true)
+          expect(under_twenty_one_override.override_applied).to eq(false)
+          expect(chip_eligible_override.override_applied).to eq(false)
+        end
       end
     end
 
@@ -125,9 +162,9 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
         expect(@result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.is_magi_medicaid).to eq(true)
       end
 
-      it "should return member_determination determiation_reason :mitc_override_not_lawfully_present_under_twenty_one" do
+      it "should return member_determination determination_reasons 'not_lawfully_present_under_twenty_one'" do
         member_determs = @result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.member_determinations
-        expect(member_determs.first.determination_reasons.first).to eq(:mitc_override_not_lawfully_present_under_twenty_one)
+        expect(member_determs.first.determination_reasons.first).to eq('not_lawfully_present_under_twenty_one')
       end
     end
   end
@@ -146,7 +183,12 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
         magi_as_percentage_of_fpl: 10.0,
         magi_medicaid_category: "parent_caretaker",
         chip_ineligibility_reasons: ["Applicant did not meet citizenship/immigration requirements"],
-        magi_medicaid_ineligibility_reasons: ["Applicant did not meet citizenship/immigration requirements"] }
+        magi_medicaid_ineligibility_reasons: magi_medicaid_ineligibility_reasons,
+        member_determinations: member_determinations }
+    end
+
+    let(:magi_medicaid_ineligibility_reasons) do
+      ["Applicant did not meet citizenship/immigration requirements"]
     end
 
     let(:input_application) do
@@ -174,9 +216,25 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
       expect(chip_eligible).to eq(true)
     end
 
-    it "should return member_determination determiation_reason :mitc_override_not_lawfully_present_chip_eligible" do
+    it "should return member_determination determination_reasons 'not_lawfully_present_chip_eligible'" do
       member_determs = @result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.member_determinations
-      expect(member_determs.first.determination_reasons.first).to eq(:mitc_override_not_lawfully_present_chip_eligible)
+      expect(member_determs.first.determination_reasons.first).to eq('not_lawfully_present_chip_eligible')
+    end
+
+    context "where applicant MAGI is above Medicaid threshold but NOT above CHIP threshold" do
+      let(:magi_medicaid_ineligibility_reasons) do
+        ["Applicant did not meet citizenship/immigration requirements", "Applicant's MAGI above the threshold for category"]
+      end
+
+      it "should return chip eligible" do
+        chip_eligible = @result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.is_medicaid_chip_eligible
+        expect(chip_eligible).to eq(true)
+      end
+
+      it "should return member_determination determination_reasons 'not_lawfully_present_chip_eligible'" do
+        member_determs = @result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.member_determinations
+        expect(member_determs.first.determination_reasons.first).to eq('not_lawfully_present_chip_eligible')
+      end
     end
 
     context "and pregnant" do
@@ -216,9 +274,9 @@ describe Eligibilities::AptcCsr::ApplyEligibilityOverrides do
         expect(member.product_eligibility_determination.is_medicaid_chip_eligible).to eq(true)
       end
 
-      it "should return member_determination with multiple determiation_reasons" do
+      it "should return member_determination with multiple determination_reasons" do
         member_determs = @result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.member_determinations
-        expected_array = [:mitc_override_not_lawfully_present_pregnant, :mitc_override_not_lawfully_present_chip_eligible]
+        expected_array = ['not_lawfully_present_pregnant', 'not_lawfully_present_chip_eligible']
         expect(member_determs.first.determination_reasons).to match_array(expected_array)
       end
     end
