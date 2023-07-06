@@ -33,12 +33,15 @@ module Eligibilities
 
         thhms = @tax_household.tax_household_members.inject([]) do |members, thhm|
           applicant = applicant_by_reference(thhm.applicant_reference.person_hbx_id)
-          members << { member_identifier: thhm.applicant_reference.person_hbx_id,
-                       household_count: BigDecimal('1'),
-                       tax_filer_status: applicant.tax_filer_kind,
-                       magi_medicaid_eligible: thhm.product_eligibility_determination.is_magi_medicaid,
-                       is_applicant: applicant.is_applying_coverage,
-                       age_of_applicant: applicant.age_of_applicant }
+          members << {
+            member_identifier: thhm.applicant_reference.person_hbx_id,
+            household_count: BigDecimal('1'),
+            tax_filer_status: applicant.tax_filer_kind,
+            magi_medicaid_eligible: thhm.product_eligibility_determination.is_magi_medicaid,
+            is_applicant: applicant.is_applying_coverage,
+            age_of_applicant: applicant.age_of_applicant,
+            member_determinations: thhm.product_eligibility_determination&.member_determinations&.map(&:to_h)
+          }
           members
         end
         aptc_household = {

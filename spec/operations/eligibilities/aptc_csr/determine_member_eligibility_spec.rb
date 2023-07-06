@@ -310,10 +310,22 @@ describe Eligibilities::AptcCsr::DetermineMemberEligibility do
   end
 
   context 'with one applicant being totally ineligilible' do
+    let(:total_ineligibility_determination) do
+      {
+        kind: 'Total Ineligibility Determination',
+        criteria_met: false,
+        determination_reasons: [],
+        eligibility_overrides: []
+      }
+    end
 
     let(:input_application) do
       app_params = mm_application_entity.to_h
       app_params[:applicants].second[:attestation][:is_incarcerated] = true
+      app_params[:tax_households].first[:tax_household_members].first[:product_eligibility_determination][:member_determinations] =
+        [total_ineligibility_determination]
+      app_params[:tax_households].first[:tax_household_members].second[:product_eligibility_determination][:member_determinations] =
+        [total_ineligibility_determination]
       ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(app_params).success
     end
 
@@ -327,6 +339,8 @@ describe Eligibilities::AptcCsr::DetermineMemberEligibility do
     end
 
     before do
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).and_call_original
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:medicaid_eligible_incarcerated).and_return(false)
       @result = subject.call(input_params)
     end
 
@@ -336,14 +350,14 @@ describe Eligibilities::AptcCsr::DetermineMemberEligibility do
 
     it 'should return ineligilible reasons on aptc_household member' do
       member_determs = @result.success[:aptc_household][:members].second[:member_determinations]
-      expected_array = [:total_ineligibility_incarceration]
+      expected_array = ['total_ineligibility_incarceration']
       expect(member_determs.first.determination_reasons).to match_array(expected_array)
     end
 
     it 'should return ineligibility reason on tax household' do
       thh = @result.success[:magi_medicaid_application][:tax_households]
       member_determs = thh.first[:tax_household_members].second[:product_eligibility_determination][:member_determinations]
-      expected_array = [:total_ineligibility_incarceration]
+      expected_array = ['total_ineligibility_incarceration']
       expect(member_determs.first.determination_reasons).to match_array(expected_array)
     end
 

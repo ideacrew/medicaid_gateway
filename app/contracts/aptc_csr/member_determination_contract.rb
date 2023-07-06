@@ -9,9 +9,10 @@ module AptcCsr
     # @param [Hash] opts the parameters to validate using this contract
     # @return [Dry::Monads::Result]
     params do
-      optional(:kind).maybe(Types::MemberDeterminationKind)
-      optional(:is_eligible).maybe(:bool)
-      optional(:determination_reasons).array(::Types::Symbol)
+      required(:kind).filled(Types::MemberDeterminationKind)
+      required(:criteria_met).filled(:bool)
+      required(:determination_reasons).array(Types::Coercible::String)
+      required(:eligibility_overrides).array(AptcCsr::EligibilityOverrideContract.params)
     end
   end
 end

@@ -14,6 +14,8 @@ RSpec.describe ::MitcService::AddMitcDeterminationToApplication do
     { magi_medicaid_application: mm_application, mitc_response: mitc_response }
   end
 
+  let(:override_rules) { ::AcaEntities::MagiMedicaid::Types::EligibilityOverrideRule.values }
+
   it 'should be a container-ready operation' do
     expect(subject.respond_to?(:call)).to be_truthy
   end
@@ -29,6 +31,37 @@ RSpec.describe ::MitcService::AddMitcDeterminationToApplication do
 
     it 'should return the MagiMedicaidApplication entity' do
       expect(@result.success).to be_a(::AcaEntities::MagiMedicaid::Application)
+    end
+
+    context "member determinations" do
+
+      it "should create only one member determination object for medicaid/chip eligibility for each member" do
+        @result.success.tax_households.first.tax_household_members.each do |member|
+          member_determinations = member.product_eligibility_determination.member_determinations
+          mdcr_chip_determ = member_determinations.select {|md| md[:kind] == 'Medicaid/CHIP Determination' }
+          expect(mdcr_chip_determ.count).to eq(1)
+          expect(mdcr_chip_determ.first).to be_a(::AcaEntities::MagiMedicaid::MemberDetermination)
+        end
+      end
+
+      it "should create only one member determination object for total ineligibility for each member" do
+        @result.success.tax_households.first.tax_household_members.each do |member|
+          member_determinations = member.product_eligibility_determination.member_determinations
+          mdcr_chip_determ = member_determinations.select {|md| md[:kind] == 'Total Ineligibility Determination' }
+          expect(mdcr_chip_determ.count).to eq(1)
+          expect(mdcr_chip_determ.first).to be_a(::AcaEntities::MagiMedicaid::MemberDetermination)
+        end
+      end
+
+      it "should create an override object for each override rule" do
+        member_determs = @result.success.tax_households.first.tax_household_members.first.product_eligibility_determination.member_determinations
+        eligibility_overrides = member_determs.first.eligibility_overrides
+        expect(eligibility_overrides.count).to eq(override_rules.count)
+        override_rules.each do |rule|
+          eligibility_override = eligibility_overrides.detect { |override| override.override_rule == rule }
+          expect(eligibility_override.present?).to be_truthy
+        end
+      end
     end
   end
 
