@@ -54,3 +54,5 @@ registry:
             item: <%= ENV["MITC_OVERRIDE_NOT_LAWFULLY_PRESENT_UNDER_TWENTY_ONE_IS_ENABLED"] || false %>
       - key: :medicaid_eligible_incarcerated
         is_enabled: <%= ENV["MEDICAID_ELIGIBLE_INCARCERATED_IS_ENABLED"] || false %>
+      - key: :infer_post_partum_period
+        is_enabled: <%= ENV["INFER_POST_PARTUM_PERIOD_IS_ENABLED"] || false %>
