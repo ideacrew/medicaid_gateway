@@ -26,6 +26,7 @@ describe Transfers::ToEnrollBatch, "given a soap envelope with an valid xml payl
 
   context 'single matching payload' do
     before :each do
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:infer_post_partum_period).and_return(true)
       transfer1.external_id
       @result = process.call(transfer_id)
       @transfers = @result.value![0]
@@ -45,11 +46,16 @@ describe Transfers::ToEnrollBatch, "given a soap envelope with an valid xml payl
       it 'should should each have one applicant' do
         expect(@applicants.count).to eq 1
       end
+
+      it "should update the post partum period to false" do
+        expect(@applicants.first[:pregnancy_information][:is_post_partum_period]).to eq(false)
+      end
     end
   end
 
   context 'multiple matching payload' do
     before :each do
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:infer_post_partum_period).and_return(true)
       create :inbound_transfer, external_id: transfer_id, payload: p2, to_enroll: true, result: "Waiting to Transfer"
       create :inbound_transfer, external_id: transfer_id, payload: p3, to_enroll: true, result: "Waiting to Transfer"
       @result = process.call(transfer_id)
@@ -69,6 +75,11 @@ describe Transfers::ToEnrollBatch, "given a soap envelope with an valid xml payl
 
       it 'should should each multiple applicants' do
         expect(@applicants.count).to eq 3
+      end
+
+      it "should update the post partum period to false for all applicants with false pregnancy indicator" do
+        expect(@applicants.first[:pregnancy_information][:is_post_partum_period]).to eq(false)
+        expect(@applicants.second[:pregnancy_information][:is_post_partum_period]).to eq(false)
       end
     end
   end

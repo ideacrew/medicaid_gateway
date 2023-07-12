@@ -14,7 +14,8 @@ module Transfers
       transfers = yield get_transfers(transfer_id, itransfers)
       payload = yield get_payload(transfers)
       transformed_params = yield transform_params(payload, transfers)
-      initiate_transfer(transformed_params, transfers)
+      updated_transformed_params = yield update_inferred_defaults(transformed_params)
+      initiate_transfer(updated_transformed_params, transfers)
       Success([transfers, transformed_params])
     end
 
@@ -78,6 +79,14 @@ module Transfers
       Success(transformed)
     rescue StandardError => e
       Failure("transform_params error #{e}")
+    end
+
+    def update_inferred_defaults(transformed_params)
+      return Success(transformed_params) unless MedicaidGatewayRegistry.feature_enabled?(:infer_post_partum_period)
+      transformed_params[:family][:magi_medicaid_applications][0][:applicants].each do |applicant|
+        applicant[:pregnancy_information][:is_post_partum_period] = false if applicant[:pregnancy_information][:is_post_partum_period].nil?
+      end
+      Success(transformed_params)
     end
 
     def initiate_transfer(payload, transfers)
