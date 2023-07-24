@@ -11,6 +11,7 @@ GIT
       dry-types (~> 1.0)
       dry-validation (~> 1.2)
       iso_country_codes
+      json-schema
       nokogiri-happymapper
       oj (~> 3.11)
       rbnacl (~> 7.1)
@@ -306,6 +307,8 @@ GEM
     iso_country_codes (0.7.8)
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
+    json-schema (4.0.0)
+      addressable (>= 2.8)
     kaminari-actionview (1.2.1)
       actionview
       kaminari-core (= 1.2.1)
