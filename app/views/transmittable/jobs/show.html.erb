@@ -1,5 +1,5 @@
 <h1>Job Detail</h1>
-<p><b>Job ID:</b> <%= @job.job_id %></h2>
+<b>Job ID:</b> <%= @job.job_id %></h2>
 <table>
   <thead>
     <tr>
@@ -39,6 +39,7 @@
         <% @job.process_status.attributes.each do |attr_name, attr_value| %>
           <li><b><%= attr_name %>:</b> <%= attr_value %></li>
         <% end %>
+      </ul>
     <% end %>
   </div>
 </div>
@@ -86,6 +87,7 @@
         <% transmission.process_status.attributes.each do |attr_name, attr_value| %>
           <li><b><%= attr_name %>:</b> <%= attr_value %></li>
         <% end %>
+      </ul>
     <% end %>
   </div>
 </div>
@@ -141,6 +143,7 @@
         <% transaction.process_status.attributes.each do |attr_name, attr_value| %>
           <li><b><%= attr_name %>:</b> <%= attr_value %></li>
         <% end %>
+      </ul>
     <% end %>
       </div>
     </div>
