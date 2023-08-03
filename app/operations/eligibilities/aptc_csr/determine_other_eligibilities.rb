@@ -55,7 +55,7 @@ module Eligibilities
       def member_totally_ineligible_reasons(applicant)
         reasons = []
         reasons << 'total_ineligibility_incarceration' if applicant.incarcerated?
-        reasons << 'total_ineligibility_no_lawful_presence' if applicant.non_citizen_and_no_lawful_presence_attestation
+        reasons << 'total_ineligibility_no_lawful_presence' if applicant.valid_citizen_eligibility_check
         reasons << 'total_ineligibility_no_state_residency' if state_residency_requirement_not_met?(applicant)
         reasons
       end
