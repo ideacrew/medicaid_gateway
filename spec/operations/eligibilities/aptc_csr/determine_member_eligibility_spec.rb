@@ -404,4 +404,46 @@ describe Eligibilities::AptcCsr::DetermineMemberEligibility do
       expect(member_determs.first.determination_reasons).to match_array(expected_array)
     end
   end
+
+  context "with eligible applicant returns zero eligible reasons" do
+    let(:total_ineligibility_determination) do
+      {
+        kind: 'Total Ineligibility Determination',
+        criteria_met: false,
+        determination_reasons: [],
+        eligibility_overrides: []
+      }
+    end
+
+    let(:input_tax_household) do
+      input_application.tax_households.first
+    end
+
+    let(:input_params) do
+      { magi_medicaid_tax_household: input_tax_household,
+        magi_medicaid_application: input_application }
+    end
+
+    let(:input_application) do
+      app_params = mm_application_entity.to_h
+      app_params[:applicants].first[:citizenship_immigration_status_information][:citizen_status] = 'naturalized_citizen'
+      app_params[:applicants].second[:citizenship_immigration_status_information][:citizen_status] = 'naturalized_citizen'
+      app_params[:tax_households].first[:tax_household_members].first[:product_eligibility_determination][:member_determinations] =
+        [total_ineligibility_determination]
+      app_params[:tax_households].first[:tax_household_members].second[:product_eligibility_determination][:member_determinations] =
+        [total_ineligibility_determination]
+      ::AcaEntities::MagiMedicaid::Operations::InitializeApplication.new.call(app_params).success
+    end
+
+    before do
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).and_call_original
+      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:medicaid_eligible_incarcerated).and_return(false)
+      @result = subject.call(input_params)
+    end
+
+    it 'should return no ineligilible reasons on aptc_household member' do
+      member_determs = @result.success[:aptc_household][:members].second[:member_determinations]
+      expect(member_determs.first.determination_reasons).to match_array([])
+    end
+  end
 end
