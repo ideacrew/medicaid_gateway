@@ -443,10 +443,7 @@ describe Eligibilities::AptcCsr::DetermineMemberEligibility do
 
     it 'should return no ineligilible reasons on aptc_household member' do
       member_determs = @result.success[:aptc_household][:members].second[:member_determinations]
-      expected_array = []
-      expect(member_determs.first.determination_reasons).to match_array(expected_array)
-
-      expect(member_determs.first.determination_reasons).to match_array(expected_array)
+      expect(member_determs.first.determination_reasons).to be_empty
     end
   end
 end
