@@ -1,9 +1,3 @@
-<%= content_for :current_page do %>
-  <span>Transmittable</span>
-  <span><a href="/transmittable/transactions">Transactions</a></span>
-  <span>Transaction <%= @transaction.subject_hbx_id %></span>
-<% end %>
-
 <h1>Transaction Details</h1>
 <% if @transaction.description %>
   <p><%= @transaction.description %></p>

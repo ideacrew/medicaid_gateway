@@ -1,9 +1,3 @@
-<%= content_for :current_page do %>
-  <span>Transmittable</span>
-  <span><a href="/transmittable/jobs">Jobs</a></span>
-  <span>Job <%= @job.job_id %></span>
-<% end %>
-
 <h1>Job Detail</h1>
 <p><b>Job ID:</b> <%= @job.job_id %></h2>
 <table>
@@ -134,7 +128,7 @@
       <label for="transactionInfo<%= i %>-<%= ii %>">All Transaction Attributes +</label>
       <div class="accordion_panel-content" style="width: 100%">
         <% transaction.attributes.each do |attr_name, attr_value| %>
-      <b><%= attr_name %>:</b> 
+      <b><%= attr_name %>:</b>
       <% if attr_name == "json_payload" && transaction.json_payload %>
         <pre><%= raw(ap(attr_value, index: false)) %></pre>
       <% else %>
