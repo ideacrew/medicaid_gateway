@@ -1,0 +1,107 @@
+<%= content_for :current_page do %>
+  <span>Transmittable</span>
+  <span><a href="/transmittable/transactions">Transactions</a></span>
+  <span>Transaction <%= @transaction.subject_hbx_id %></span>
+<% end %>
+
+<h1>Transaction Details</h1>
+<% if @transaction.description %>
+  <p><%= @transaction.description %></p>
+<% end %>
+<table>
+  <thead>
+    <tr>
+    <th>Key</th>
+    <th>Title</th>
+    <th>Started At</th>
+    <th>Ended At</th>
+    <th>Status</th>
+    <th>Errors</th>
+    <th>Subject Type</th>
+    <th>Subject HBX Id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><%= @transaction&.key %></td>
+      <td><%= @transaction&.title %></td>
+      <td><%= @transaction&.started_at %></td>
+      <td><%= @transaction&.ended_at %></td>
+      <td><%= @transaction.process_status ? @transaction.process_status&.latest_state : @transaction.status %></td>
+      <td><%= @transaction.error_messages %></td>
+      <td><%= @transaction.transactable_type&.humanize&.split('::')&.last %></td>
+      <td><%= @transaction.subject_hbx_id %></td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<% if @transaction.json_payload %>
+  <h3>JSON Payload</h3>
+  <pre><%= raw(ap(@transaction.json_payload, index: false)) %></pre>
+<% end %>
+<div class="accordion" style="margin-top: 1em">
+  <input type="checkbox" id="transactionInfo">
+  <label for="transactionInfo">All Transaction Attributes +</label>
+  <div class="accordion_panel-content" style="width: 100%">
+    <% @transaction.attributes.each do |attr_name, attr_value| %>
+      <b><%= attr_name %>:</b> <%= attr_value %><br>
+    <% end %>
+    <% if @transaction.process_status? %>
+      <b>Process Status:</b>
+      <ul>
+        <% @transaction.process_status.attributes.each do |attr_name, attr_value| %>
+          <li><b><%= attr_name %>:</b> <%= attr_value %></li>
+        <% end %>
+    <% end %>
+  </div>
+</div>
+<br><br>
+<h2>Subject (<%= @transaction.transactable_type&.humanize&.split('::')&.last.titlecase %>)</h2>
+<% @transaction.transactable.attributes.each do |attr_name, attr_value| %>
+  <b><%= attr_name %>:</b> <%= attr_value %><br>
+<% end %>
+<% if @transaction.transactable.transactions.count > 1 %>
+<div class="accordion" style="margin-top: 1em">
+  <input type="checkbox" id="subjectInfo">
+  <label for="subjectInfo">Subject Transactions +</label>
+  <div class="accordion_panel-content" style="width: 100%">
+    <ul>
+      <% @transaction.transactable.transactions.each do |tr| %>
+        <li><%= link_to "#{tr.key} - #{tr.started_at}", tr %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+<% end %>
+<br><br>
+<h2>Transmissions</h2>
+<% @transaction.transactions_transmissions.map{|tt| tt.transmission}.each do |transmission| %>
+  <h3><b></b> <%= transmission&.title || transmission.key %></h3>
+<% if transmission.description %>
+  <p><%= transmission.description %></p>
+<% end %>
+<table>
+  <thead>
+    <tr>
+    <th>Key</th>
+    <th>Started At</th>
+    <th>Ended At</th>
+    <th>Process Status</th>
+    <th>Errors</th>
+    <th>Transaction Count</th>
+    <th>Job</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><%= transmission&.key %></td>
+      <td><%= transmission&.started_at %></td>
+      <td><%= transmission&.ended_at %></td>
+      <td><%= transmission.status ? transmission.status : transmission.process_status&.latest_state %></td>
+      <td><%= transmission.error_messages %></td>
+      <td><%= transmission.transactions_transmissions&.count %></td>
+      <td><% if transmission.job %><%= link_to "Job Details", transmission.job %><% end %></td>
+    </tr>
+  </tbody>
+</table>
+<% end %>

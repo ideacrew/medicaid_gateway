@@ -1,0 +1,33 @@
+<%= content_for :current_page do %>
+  <span>Transmittable</span>
+  <span>Transactions</span>
+<% end %>
+
+<h1>Transactions</h1>
+<table>
+<thead>
+<tr>
+  <th>Key</th>
+  <th>Status</th>
+  <th>Started At</th>
+  <th>Created At</th>
+  <th>Ended At</th>
+  <th>Subject Type</th>
+  <th>Subject HBX ID</th>
+  <th>Link</th>
+  </tr>
+</thead>
+<% @transactions.each do |transaction| %>
+<tr>
+  <td><%= transaction.key ? transaction.key : transaction.transmit_action %></td>
+  <td><%= transaction.status ? transaction.status : transaction.process_status[:initial_state_key] %></td>
+  <td><%= transaction.started_at %></td>
+  <td><%= transaction.created_at %></td>
+  <td><%= transaction.ended_at %></td>
+  <td><%= transaction.transactable_type&.humanize&.split('::')&.last %></td>
+  <td><%= transaction.subject_hbx_id %></td>
+  <td><%= link_to 'Show', transaction %></td>
+</tr>
+<% end %>
+</table>
+<%= paginate @transactions %>

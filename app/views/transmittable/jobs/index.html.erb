@@ -1,0 +1,31 @@
+<%= content_for :current_page do %>
+  <span>Transmittable</span>
+  <span>Jobs</span>
+<% end %>
+
+<h1>Jobs</h1>
+<table>
+<thead>
+<tr>
+  <th>Job ID</th>
+  <th>Key</th>
+  <th>Status</th>
+  <th>Started At</th>
+  <th>Created At</th>
+  <th>Ended At</th>
+  <th>Link</th>
+  </tr>
+</thead>
+<% @jobs.each do |job| %>
+<tr>
+  <td><%= job.job_id %></td>
+  <td><%= job.key %></td>
+  <td><%= job.process_status&.latest_state %></td>
+  <td><%= job.started_at %></td>
+  <td><%= job.created_at %></td>
+  <td><%= job.ended_at %></td>
+  <td><%= link_to 'Show', job %></td>
+</tr>
+<% end %>
+</table>
+<%= paginate @jobs %>
