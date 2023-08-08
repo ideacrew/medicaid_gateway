@@ -118,7 +118,7 @@ module Types
         earned_income: BigDecimal('12_950'),
         unearned_income: BigDecimal('1_150')
       }
-    }
+    },
     # adding 2025 values as placeholders to placate specs. These values are not verified.
     {
       2025 => {
