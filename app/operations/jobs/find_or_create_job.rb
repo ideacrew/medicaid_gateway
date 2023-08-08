@@ -26,12 +26,12 @@ module Jobs
       if values[:job_id]
         job = Transmittable::Job.where(job_id: values[:job_id]).last
 
-        job ? Success(job) : Failure("No job exists with the given job_id")
+        job ? Success(job) : create_job(values)
 
       elsif values[:message_id]
         job = Transmittable::Job.where(message_id: values[:message_id]).last
 
-        job ? Success(job) : Failure("No job exists with the given message_id")
+        job ? Success(job) : create_job(values)
       else
         create_job(values)
       end

@@ -35,6 +35,7 @@ module Jobs
                 started_at: values[:started_at],
                 ended_at: values[:ended_at],
                 time_to_live: values[:time_to_live],
+                message_id: values[:message_id],
                 process_status: create_process_status,
                 transmittable_errors: [],
                 allow_list: [],

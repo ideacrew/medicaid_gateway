@@ -26,6 +26,8 @@ module Transmittable
     field :deny_list, type: Array
     field :message_id, type: String
 
+    validates :message_id, uniqueness: true
+
     scope :latest, -> { order(created_at: :desc) }
 
     def generate_message_id
