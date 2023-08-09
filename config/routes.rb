@@ -20,6 +20,11 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :transmittable do
+    resources :jobs, only: [:index, :show]
+    resources :transactions, only: [:index, :show]
+  end
+
   namespace :medicaid do
     resources :applications, only: [:show]
   end
