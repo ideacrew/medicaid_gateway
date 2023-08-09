@@ -12,15 +12,22 @@ module MecCheck
     # @param [String] payload received from Enroll
     # @param [String] message_id received from enroll and optional
     # @return [Dry::Result]
-    def call(payload, message_id = nil)
-      return Failure({ error: "MEC Check feature not enabled." }) unless MedicaidGatewayRegistry[:mec_check].enabled?
-      application_payload = JSON.parse(payload)
-      job = yield find_or_create_job(message_id)
+    def call(params)
+      validated_params = yield validate_params(params)
+      application_payload = JSON.parse(validated_params[:payload])
+      job = yield find_or_create_job(validated_params[:message_id])
       application_response = yield get_applicant_checks(application_payload, job)
       publish_to_enroll(application_response)
     end
 
     protected
+
+    def validate_params(params)
+      return Failure({ error: "MEC Check feature not enabled." }) unless MedicaidGatewayRegistry[:mec_check].enabled?
+      return Failure({ error: "Payload cannot be empty" }) if params[:payload].blank?
+
+      Success(params)
+    end
 
     def find_or_create_job(message_id)
       result = Transmittable::FindOrCreateJob.new.call(message_id: message_id,

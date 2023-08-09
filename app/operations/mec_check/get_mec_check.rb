@@ -96,17 +96,19 @@ module MecCheck
     def run_mec_check(person)
       if person["local_mec_evidence"]
         result = call_mec_check(person)
-        return result if result.success?
-        if result.failure?
+        if result.success?
+          status_result = update_status({ transmission: @request_transmission, transaction: @request_transaction }, :succeeded, "Mec check completed")
+        else
           add_errors({ transmission: @request_transmission, transaction: @request_transaction }, "Mec check call failed", :run_mec_check)
           status_result = update_status({ transmission: @request_transmission, transaction: @request_transaction }, :failed, result.failure)
-          return status_result if status_result.failure?
-          result
         end
+        return status_result if status_result.failure?
+        result
       else
         add_errors({ transmission: @request_transmission, transaction: @request_transaction }, "No evidence present", :run_mec_check)
         status_result = update_status({ transmission: @request_transmission, transaction: @request_transaction }, :failed, "Person has no evidence")
         return status_result if status_result.failure?
+        Failure("No evidence present")
       end
     end
 

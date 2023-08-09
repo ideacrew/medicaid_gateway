@@ -67,7 +67,7 @@ module Aces
 
       if result.empty?
         if transmittable_transaction
-          transmittable_transaction.xml_paylod = seralized_xml
+          transmittable_transaction.xml_payload = seralized_xml
           Failure("Failed to save transaction") unless transmittable_transaction.save
         end
         Success(true)
