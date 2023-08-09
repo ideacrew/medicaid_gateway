@@ -18,9 +18,9 @@ RSpec.shared_context 'ssa transmittable job transmission transaction', shared_co
     transmission.save
     transmission
   end
-  let!(:application) { FactoryBot.create(:aces_application) }
+  let!(:person) { FactoryBot.create(:person) }
   let!(:transaction) do
-    transaction = application.transactions.create(key: :ssa_verification, started_at: DateTime.now, xml_payload: payload)
+    transaction = person.transactions.create(key: :ssa_verification, started_at: DateTime.now, xml_payload: payload)
     transaction.process_status = FactoryBot.create(:transmittable_process_status, statusable: transaction)
     transaction.process_status.process_states << FactoryBot.create(:transmittable_process_state, process_status: transaction.process_status)
     transaction.save
