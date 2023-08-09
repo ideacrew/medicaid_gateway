@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Jobs
+module Transmittable
   # create Transaction that takes params of key (required), started_at(required), and transmission (required)
   class CreateTransaction
     include Dry::Monads[:result, :do, :try]
@@ -41,8 +41,8 @@ module Jobs
     end
 
     def create_process_status(event, state_key)
-      ::Jobs::CreateProcessStatusHash.new.call({ event: event, state_key: state_key, started_at: DateTime.now,
-                                                 message: 'created transaction' }).value!
+      ::Transmittable::CreateProcessStatusHash.new.call({ event: event, state_key: state_key, started_at: DateTime.now,
+                                                          message: 'created transaction' }).value!
     end
 
     def create_transaction_entity(transaction_hash)

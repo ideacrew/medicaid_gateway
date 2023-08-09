@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Jobs
+module Transmittable
   # Update the process status of a transmittable object
   class UpdateProcessStatus
     include Dry::Monads[:result, :do, :try]
@@ -40,8 +40,8 @@ module Jobs
       end
       Success("Process status updated successfully")
     rescue StandardError => e
-      ::Jobs::AddError.new.call({ transmittable_objects: values[:transmittable_objects], key: :update_process_status,
-                                  message: "Error updating process status: #{e.message}" })
+      ::Transmittable::AddError.new.call({ transmittable_objects: values[:transmittable_objects], key: :update_process_status,
+                                           message: "Error updating process status: #{e.message}" })
       Failure("Error updating process status: #{e.message}")
     end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Jobs
+module Transmittable
   # create job operation that takes params of key (required), started_at(required),
   # publish_on(required), message_id (optional) and job_id (optional)
   class FindOrCreateJob
@@ -38,7 +38,7 @@ module Jobs
     end
 
     def create_job(values)
-      result = ::Jobs::CreateJob.new.call(values)
+      result = ::Transmittable::CreateJob.new.call(values)
 
       result.success? ? Success(result.value!) : result
     end

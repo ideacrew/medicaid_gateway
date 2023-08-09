@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Jobs
+module Transmittable
   # create job operation that takes params of key (required), started_at(required), publish_on(required)
   class CreateJob
     include Dry::Monads[:result, :do, :try]
@@ -54,8 +54,8 @@ module Jobs
     end
 
     def create_process_status
-      ::Jobs::CreateProcessStatusHash.new.call({ event: 'initial', state_key: :initial, started_at: DateTime.now,
-                                                 message: 'created job' }).value!
+      ::Transmittable::CreateProcessStatusHash.new.call({ event: 'initial', state_key: :initial, started_at: DateTime.now,
+                                                          message: 'created job' }).value!
     end
 
     def create_job(job_entity)

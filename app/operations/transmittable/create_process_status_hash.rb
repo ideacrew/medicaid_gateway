@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Jobs
+module Transmittable
   # create process status takes event(:string), state_key(:symbol) and started_at(DateTime) as inputs
   class CreateProcessStatusHash
     include Dry::Monads[:result, :do, :try]

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Jobs::CreateTransaction, dbclean: :after_each do
+RSpec.describe Transmittable::CreateTransaction, dbclean: :after_each do
   subject { described_class.new }
   let(:key) { :ssa_verification_request}
   let(:title) { 'SSA Verification Request'}
