@@ -12,11 +12,11 @@ module Aces
 
     # @param [String] hbxid of application
     # @return [Dry::Result]
-    def call(person_payload, transaction)
+    def call(person_payload, transmittable_transaction = nil)
       ssn = yield decrypt_ssn(person_payload)
       person_hash = yield map_to_person(person_payload, ssn)
       xml = yield generate_xml(person_hash)
-      _validate_xml = yield validate_xml(xml, transaction)
+      _validate_xml = yield validate_xml(xml, transmittable_transaction)
       built_check = yield build_check_request(xml)
       encoded_check = yield encode_check(built_check)
       submit_check(encoded_check)
@@ -52,7 +52,7 @@ module Aces
       transfer_request.success? ? transfer_request : Failure("Generate XML failure: #{transfer_request.failure}")
     end
 
-    def validate_xml(seralized_xml, transaction)
+    def validate_xml(seralized_xml, transmittable_transaction)
       document = Nokogiri::XML(seralized_xml)
       xsd_path = if MedicaidGatewayRegistry[:transfer_service].item == "aces"
                    File.open(Rails.root.join("artifacts", "aces", "nonesi_mec.xsd"))
@@ -66,9 +66,9 @@ module Aces
       end
 
       if result.empty?
-        if transaction
-          transaction.xml_paylod = seralized_xml
-          Failure("Failed to save transaction") unless trasaction.save
+        if transmittable_transaction
+          transmittable_transaction.xml_paylod = seralized_xml
+          Failure("Failed to save transaction") unless transmittable_transaction.save
         end
         Success(true)
       else

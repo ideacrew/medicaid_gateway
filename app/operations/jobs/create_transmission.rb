@@ -7,10 +7,10 @@ module Jobs
 
     def call(params)
       values = yield validate_params(params)
-      transmission_hash = yield build_tranmission_hash(values)
+      transmission_hash = yield build_transmission_hash(values)
       transmission_entity = yield transmission_entity(transmission_hash)
-      tranmission = yield create_transmission(params[:job], transmission_entity)
-      Success(tranmission)
+      transmission = yield create_transmission(params[:job], transmission_entity)
+      Success(transmission)
     end
 
     private
@@ -26,7 +26,7 @@ module Jobs
       Success(params)
     end
 
-    def build_tranmission_hash(values)
+    def build_transmission_hash(values)
       Success({
                 key: values[:key],
                 title: values[:title],
