@@ -19,14 +19,14 @@ module MecCheck
       @request_transaction = yield create_request_transaction(validated_params[:person])
       @response_payload = yield run_mec_check(validated_params[:person])
       @response_transmission = yield create_response_transmission(validated_params)
-      @response_transaction = yield create_response_transaction
+      @response_transaction = yield create_response_transaction(validated_params[:person])
       transform_response_payload
     end
 
     protected
 
     def validate_params(params)
-      return Failure('Cannot get mec check with job') if params[:job] && !params[:job].is_a?(Transmittable::Job)
+      return Failure('Cannot get mec check with job') unless params[:job].is_a?(Transmittable::Job)
       @job = params[:job]
       return Failure('Cannot get mec check without person') unless params[:person]
       return Failure('Cannot get mec check without correlation_id') unless params[:correlation_id]
@@ -132,7 +132,7 @@ module MecCheck
       Failure("Unable to create response Transmission")
     end
 
-    def create_response_transaction
+    def create_response_transaction(person)
       result = Transmittable::CreateTransaction.new.call({ transmission: @response_transmission,
                                                            subject: @subject,
                                                            key: :application_mec_check_response,
@@ -155,12 +155,14 @@ module MecCheck
       if result.success?
         @response_transaction.json_payload = result.value!
         @response_transaction.save
+        status_result = update_status({ transmission: @response_transmission, transaction: @response_transaction }, :succeeded,
+                                      "Mec check completed saved payload on transaction")
       else
         add_errors({ transmission: @response_transmission, transaction: @response_transaction },
                    "Failed to create response transaction due to #{result.failure}", :transform_response_payload)
         status_result = update_status({ transmission: @response_transmission, transaction: @response_transaction }, :failed, result.failure)
-        return status_result if status_result.failure?
       end
+      return status_result if status_result.failure?
       result
     end
 

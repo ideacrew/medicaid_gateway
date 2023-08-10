@@ -18,6 +18,7 @@ module Transmittable
     field :description, type: String
     field :started_at, type: DateTime
     field :ended_at, type: DateTime
+    field :transaction_id, type: String
     field :json_payload, type: Hash
     field :xml_payload, type: String
 

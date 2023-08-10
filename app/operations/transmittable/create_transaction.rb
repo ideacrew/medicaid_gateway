@@ -34,6 +34,7 @@ module Transmittable
                 description: values[:description],
                 process_status: create_process_status(values[:event], values[:state_key]),
                 started_at: values[:started_at],
+                transaction_id: values[:correlation_id],
                 ended_at: values[:ended_at],
                 transmittable_errors: [],
                 json_payload: nil
