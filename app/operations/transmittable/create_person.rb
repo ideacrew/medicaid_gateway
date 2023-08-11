@@ -5,7 +5,7 @@ require 'dry/monads/do'
 require 'aca_entities/operations/create_person'
 
 module Transmittable
-  # create Transmission that takes params of key (required), job (required), started_at(required)
+  # create Person with person params
   class CreatePerson
     include Dry::Monads[:result, :do, :try]
 
