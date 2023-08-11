@@ -151,6 +151,9 @@ describe MecCheck::GetMecCheck, dbclean: :after_each do
       end
 
       it 'should have request and response transaction' do
+        expect(@transactions.first.transactable).to_not eq nil
+        expect(@transactions.first.transactable.class).to eq Transmittable::Person
+        expect(@transactions.first.transactable).to eq @transactions.last.transactable
         expect(@transactions.first.xml_payload).not_to eq nil
         expect(@transactions.last.xml_payload).not_to eq nil
         expect(@transactions.last.json_payload).not_to eq nil

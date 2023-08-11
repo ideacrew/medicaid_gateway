@@ -8,6 +8,8 @@ module Subscribers
     subscribe(:on_enroll_iap_mec_check) do |delivery_info, metadata, response|
       payload_type = metadata[:headers]["payload_type"]
       transmittable_data = metadata[:headers]["transmittable_data"]
+      # In future all the incoming calls would be processed through Transmittable.
+      # At that point we could get rid of explicit naming 'transmittable_data' in headers
       result = if transmittable_data.present? && payload_type == "application"
                  params = { payload: response, message_id: transmittable_data["message_id"] }
                  MecCheck::InitiateApplicationMecChecks.new.call(params)

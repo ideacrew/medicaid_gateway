@@ -55,25 +55,13 @@ module MecCheck
       if existing_person
         Success(existing_person)
       else
-        # TODO: validate with aca_entities before creating the subject
-        person = Transmittable::Person.new(first_name: person["name"]["first_name"],
-                                           last_name: person["name"]["last_name"],
-                                           middle_name: person["name"]["middle_name"],
-                                           name_sfx: person["name"]["name_sfx"],
-                                           name_pfx: person["name"]["name_pfx"],
-                                           encrypted_ssn: person["identifying_information"]["encrypted_ssn"],
-                                           dob: person["demographic"]["dob"],
-                                           gender: person["demographic"]["gender"],
-                                           hbx_id: person["person_hbx_id"])
-        if person.save
-          Success(person)
-        else
-          add_errors({ transmission: @request_transmission }, "Unable to save person subject due to #{person.errors&.full_messages}",
-                     :create_person_subject)
-          status_result = update_status({ transmission: @request_transmission }, :failed, "Unable to save person subject")
-          return status_result if status_result.failure?
-          Failure("Unable to save person subject")
-        end
+        result = Transmittable::CreatePerson.new.call(person)
+        return result if result.success?
+        add_errors({ transmission: @request_transmission },
+                   "Failed to create person subject with HBX ID #{person['person_hbx_id']} due to #{result.failure}", :create_person_subject)
+        status_result = update_status({ transmission: @request_transmission }, :failed, result.failure)
+        return status_result if status_result.failure?
+        Failure("Unable to create person subject")
       end
     end
 
