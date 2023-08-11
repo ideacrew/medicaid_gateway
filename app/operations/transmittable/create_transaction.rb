@@ -37,7 +37,8 @@ module Transmittable
                 transaction_id: values[:correlation_id],
                 ended_at: values[:ended_at],
                 transmittable_errors: [],
-                json_payload: nil
+                json_payload: nil,
+                xml_payload: nil
               })
     end
 

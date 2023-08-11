@@ -9,8 +9,7 @@ module MecCheck
   class InitiateApplicationMecChecks
     send(:include, Dry::Monads[:result, :do])
 
-    # @param [String] payload received from Enroll
-    # @param [String] message_id received from enroll and optional
+    # @param [Hash] params
     # @return [Dry::Result]
     def call(params)
       validated_params = yield validate_params(params)

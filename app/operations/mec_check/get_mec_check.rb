@@ -150,10 +150,11 @@ module MecCheck
     end
 
     def transform_response_payload
-      response = JSON.parse(@response_payload.to_json)
-      result = serialize_response(response["body"])
+      response_json = JSON.parse(@response_payload.to_json)
+      result = serialize_response(response_json["body"])
       if result.success?
-        @response_transaction.json_payload = result.value!
+        @response_transaction.xml_payload = @response_payload[:body] # xml response received from mec service
+        @response_transaction.json_payload = result.value! # payload that will be sent to enroll, good to store but do we need this?
         @response_transaction.save
         status_result = update_status({ transmission: @response_transmission, transaction: @response_transaction }, :succeeded,
                                       "Mec check completed saved payload on transaction")

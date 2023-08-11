@@ -152,6 +152,7 @@ describe MecCheck::GetMecCheck, dbclean: :after_each do
 
       it 'should have request and response transaction' do
         expect(@transactions.first.xml_payload).not_to eq nil
+        expect(@transactions.last.xml_payload).not_to eq nil
         expect(@transactions.last.json_payload).not_to eq nil
       end
     end
