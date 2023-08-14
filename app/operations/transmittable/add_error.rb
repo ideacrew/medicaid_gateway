@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Jobs
+module Transmittable
   # add an error to a transmittable object.
   class AddError
     include Dry::Monads[:result, :do, :try]

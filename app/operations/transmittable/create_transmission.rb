@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-module Jobs
+module Transmittable
   # create Transmission that takes params of key (required), job (required), started_at(required)
   class CreateTransmission
     include Dry::Monads[:result, :do, :try]
 
     def call(params)
       values = yield validate_params(params)
-      transmission_hash = yield build_tranmission_hash(values)
+      transmission_hash = yield build_transmission_hash(values)
       transmission_entity = yield transmission_entity(transmission_hash)
-      tranmission = yield create_transmission(params[:job], transmission_entity)
-      Success(tranmission)
+      transmission = yield create_transmission(params[:job], transmission_entity)
+      Success(transmission)
     end
 
     private
@@ -26,7 +26,7 @@ module Jobs
       Success(params)
     end
 
-    def build_tranmission_hash(values)
+    def build_transmission_hash(values)
       Success({
                 key: values[:key],
                 title: values[:title],
@@ -40,8 +40,8 @@ module Jobs
     end
 
     def create_process_status(event, state_key)
-      ::Jobs::CreateProcessStatusHash.new.call({ event: event, state_key: state_key, started_at: DateTime.now,
-                                                 message: 'created transmission' }).value!
+      ::Transmittable::CreateProcessStatusHash.new.call({ event: event, state_key: state_key, started_at: DateTime.now,
+                                                          message: 'created transmission' }).value!
     end
 
     def transmission_entity(transmission_hash)

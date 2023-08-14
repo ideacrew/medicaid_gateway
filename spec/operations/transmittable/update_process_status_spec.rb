@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'shared_examples/ssa_transmittable'
 
-RSpec.describe ::Jobs::UpdateProcessStatus, dbclean: :after_each do
+RSpec.describe ::Transmittable::UpdateProcessStatus, dbclean: :after_each do
   include_context "ssa transmittable job transmission transaction"
   subject { described_class.new }
 

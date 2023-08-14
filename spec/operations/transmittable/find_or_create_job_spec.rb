@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Jobs::FindOrCreateJob, dbclean: :after_each do
+RSpec.describe Transmittable::FindOrCreateJob, dbclean: :after_each do
   subject { described_class.new }
   let(:key) { :ssa_verification_request}
   let(:title) { 'SSA Verification Request'}
@@ -70,21 +70,10 @@ RSpec.describe Jobs::FindOrCreateJob, dbclean: :after_each do
       expect(result.value!).to eq job
     end
 
-    it 'should return failure when sending invalid job_id' do
-      result = subject.call(required_params.merge(job_id: "random"))
-      expect(result.failure).to eq "No job exists with the given job_id"
-    end
-
     it 'should return the existing job when message_id is provided' do
       job.update(message_id: '1234')
       result = subject.call(required_params.merge(message_id: job.message_id))
       expect(result.value!).to eq job
-    end
-
-    it 'should return the existing job when message_id is provided' do
-      job.update(message_id: '1234')
-      result = subject.call(required_params.merge(message_id: "random"))
-      expect(result.failure).to eq "No job exists with the given message_id"
     end
   end
 

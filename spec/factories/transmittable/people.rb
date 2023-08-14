@@ -2,7 +2,8 @@
 
 FactoryBot.define do
   factory :person, class: "::Transmittable::Person" do
-    person_name {"hbx_id"}
+    first_name {"first_name"}
+    last_name {"last_name"}
     encrypted_ssn {"hbx_id"}
     dob {Date.today.to_s}
     gender {"Male"}
