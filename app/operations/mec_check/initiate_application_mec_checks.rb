@@ -53,7 +53,7 @@ module MecCheck
       end
       Success(application_payload)
     rescue StandardError => e
-      add_errors({ job: job }, "Rescued while processing applicants error: #{e}", :get_applicant_checks)
+      add_errors({ job: job }, "Rescued application: #{application_payload['hbx_id']} while processing applicants error: #{e}", :get_applicant_checks)
       Failure({ job_id: job.id, hbx_id: application_payload["hbx_id"], error: "Mec check failure => #{e}" })
     end
 
