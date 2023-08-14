@@ -53,7 +53,12 @@ module MecCheck
       end
       Success(application_payload)
     rescue StandardError => e
+      add_errors({ job: job }, "Rescued while processing applicants error: #{e}", :get_applicant_checks)
       Failure({ job_id: job.id, hbx_id: application_payload["hbx_id"], error: "Mec check failure => #{e}" })
+    end
+
+    def add_errors(transmittable_objects, message, error_key)
+      Transmittable::AddError.new.call({ transmittable_objects: transmittable_objects, key: error_key, message: message })
     end
 
     def get_person_mec_check(person, job, application_hbx_id)

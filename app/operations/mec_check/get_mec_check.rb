@@ -26,7 +26,7 @@ module MecCheck
     protected
 
     def validate_params(params)
-      return Failure('Cannot get mec check with job') unless params[:job].is_a?(Transmittable::Job)
+      return Failure('Cannot get mec check without job') unless params[:job].is_a?(Transmittable::Job)
       @job = params[:job]
       return Failure('Cannot get mec check without person') unless params[:person]
       return Failure('Cannot get mec check without correlation_id') unless params[:correlation_id]

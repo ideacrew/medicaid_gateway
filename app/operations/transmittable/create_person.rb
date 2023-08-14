@@ -28,7 +28,7 @@ module Transmittable
     def build_person_hash(person)
       person_demographics = {
         encrypted_ssn: person["identifying_information"]["encrypted_ssn"],
-        gender: person["identifying_information"]["encrypted_ssn"],
+        gender: person["demographic"]["gender"],
         dob: person["demographic"]["dob"]
       }
       person_name = { first_name: person["name"]["first_name"], last_name: person["name"]["last_name"] }

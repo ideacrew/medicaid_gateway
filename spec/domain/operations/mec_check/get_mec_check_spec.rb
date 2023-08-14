@@ -78,7 +78,7 @@ describe MecCheck::GetMecCheck, dbclean: :after_each do
       it 'Without person id' do
         result = operation.call(person: valid_applicant, correlation_id: valid_applicant["person_hbx_id"])
         expect(result.failure?).to be_truthy
-        expect(result.failure).to eq("Cannot get mec check with job")
+        expect(result.failure).to eq("Cannot get mec check without job")
       end
 
       context 'With a person without local mec check evedence' do
