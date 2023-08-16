@@ -64,6 +64,22 @@ class ReportsController < ApplicationController
     @fail_count = checks.count - @success_count
   end
 
+  def period_data_match_mec
+    authorize :user
+    @start_on = session_date(session[:pdm_sent_start]) || Date.today
+    @end_on = session_date(session[:pdm_sent_end]) || Date.today
+    @pdm_checks = if params.key?(:app) && params[:app].present?
+                    transmission_ids = ::Transmittable::Transmission.where(transmission_id: params[:app]).pluck(:id)
+                    transaction_ids = Transmittable::TransactionsTransmissions.where(:transmission_id.in => transmission_ids).pluck(:transaction_id)
+                    Transmittable::Transaction.where(:_id.in => transaction_ids).page params[:page]
+                  else
+                    pdm_checks.order(updated_at: :desc).page params[:page]
+                  end
+    @pdm_checks = @pdm_checks.where(key: params[:key].to_sym) if params.key?(:key) && params[:key].present?
+    @success_count = @pdm_checks.succeeded.count
+    @fail_count = @pdm_checks.not_succeeded.count
+  end
+
   def transfer_summary
     authorize :user
     @start_on = session_date(session[:ts_start]) || Date.today
@@ -183,6 +199,10 @@ class ReportsController < ApplicationController
 
   def checks
     Aces::MecCheck.where(created_at: range).or(updated_at: range)
+  end
+
+  def pdm_checks
+    Transmittable::Transaction.application_mec_check.where(created_at: range).or(updated_at: range)
   end
 
   def session_date(date)

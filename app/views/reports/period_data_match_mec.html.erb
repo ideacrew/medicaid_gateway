@@ -1,0 +1,54 @@
+<h1>Periodic Data Match Mec Checks</h1>
+<h2 class="text-muted mb-1"><%= @pdm_checks.count %> checks during this range</h2>
+<ul class="list-inline h4 mb-3 text-muted">
+  <li class="list-inline-item text-success"><%= @success_count %> Successful</li>
+  <li class="list-inline-item text-danger"><%= @fail_count %> Failures</li>
+</ul>
+<div class="col">
+  <%= form_tag(period_data_match_mec_reports_path, method: :get) do %>
+  <div class="input-group input-group-sm pb-3">
+    <%= text_field_tag :app, params[:app], value: params[:app] %>
+    <%= submit_tag("Application Search", name: nil, class: 'btn btn-primary') %> 
+  </div>
+  <% end %>
+</div>
+<div class="col">
+  <%= form_tag(period_data_match_mec_reports_path, method: :get) do %>
+  <div class="input-group input-group-sm pb-3">
+    <%= select_tag "key", raw("<option value='application_mec_check_request'>Request</option><option value='application_mec_check_response'>Response</option>"), include_blank: true %>
+    <%= submit_tag("key Search", name: nil, class: 'btn btn-primary') %> 
+  </div>
+  <% end %>
+</div>
+<%= render partial: "date_range", locals: {start_on: @start_on, end_on: @end_on, session_name: "pdm_sent_"} %>
+<table class="table table-striped table-overrides">
+	<thead>
+		<th>Status</th>
+    <th>Key</th>
+		<th>Application ID</th>
+		<th>Person HBX ID</th>
+		<th>Result Details</th>
+		<th>Checked On</th>
+	</thead>
+	<tbody>
+		<% @pdm_checks.each do |check| %>
+			<tr >
+				<td class="<%= check.succeeded? ? 'table-success' : 'table-danger' %>"><%= check.process_status.latest_state %></td>
+				<td><%= check.key.to_s.split('_').last.capitalize %></td>
+				<td><%= check.transactions_transmissions.last.transmission.transmission_id %></td>
+				<td><%= check.transaction_id %></td>
+				<td style="max-width: 800px">
+					<% unless check.transmittable_errors.nil? %>
+						<%= check.error_messages %>
+					<% end %>
+					<% unless check.xml_payload.nil? %>
+						<%= check.mec_response_ui %>
+					<% end %>
+				</td>
+				<td><%= check.created_at %></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
+
+<%= paginate @pdm_checks %>
