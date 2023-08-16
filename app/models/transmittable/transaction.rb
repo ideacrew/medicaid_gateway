@@ -25,7 +25,7 @@ module Transmittable
     index({ key: 1 })
     index({ created_at: 1 })
 
-    scope :succeeded, -> { where(:_id.in => ::Transmittable::ProcessStatus.where(latest_state => :succeeded).distinct(:statusable_id)) }
+    scope :succeeded, -> { where(:_id.in => ::Transmittable::ProcessStatus.where(:latest_state => :succeeded).distinct(:statusable_id)) }
     scope :not_succeeded, -> { where(:_id.in => ::Transmittable::ProcessStatus.where(:latest_state.nin => [:succeeded]).distinct(:statusable_id)) }
 
     scope :application_mec_check, -> { where(:key.in => [:application_mec_check_response, :application_mec_check_request]) }
@@ -44,7 +44,6 @@ module Transmittable
       return if xml_payload.blank? || key != :application_mec_check_response
       parsed_xml = Nokogiri::XML(xml_payload)
       if MedicaidGatewayRegistry[:transfer_service].item == "aces"
-        # binding.pry if transaction_id == "1624289008997663"
         parsed_xml.xpath("//xmlns:ResponseDescription")&.text
       else
         parsed_xml.xpath("//xmlns:GetEligibilityResponse", "xmlns" => "http://xmlns.dhcf.dc.gov/dcas/Medicaid/Eligibility/xsd/v1")&.text

@@ -48,7 +48,7 @@ module MecCheck
         person_mec_check = get_person_mec_check(person, job, application_payload["hbx_id"])
         next unless person_mec_check.success?
         evidence = person["local_mec_evidence"]
-        evidence["request_results"] = [person_mec_check.value!.merge!(action: "Bulk Call")] # action is bulk since we only do bulk calls as of now
+        evidence["request_results"] = [person_mec_check.value!]
         evidence["aasm_state"] = generate_aasm_state(person_mec_check.value!)
       end
       Success(application_payload)
