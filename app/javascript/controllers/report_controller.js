@@ -79,4 +79,8 @@ export default class extends Controller {
   toggle_determinations_menu(event) {
     document.getElementById("determinations_menu").classList.toggle("show");
   }
+
+  toggle_mec_menu(event) {
+    document.getElementById("mec_menu").classList.toggle("show");
+  }
 }

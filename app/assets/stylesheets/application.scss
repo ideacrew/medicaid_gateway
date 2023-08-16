@@ -103,3 +103,7 @@ ul li.list-inline-item:last-child:after {
 .dropdown-toggle {
   cursor: pointer;
 }
+
+.search-form {
+  input + label, select + label {margin-left: 1em;} 
+}

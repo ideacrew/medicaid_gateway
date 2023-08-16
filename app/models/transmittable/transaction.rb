@@ -49,5 +49,14 @@ module Transmittable
         parsed_xml.xpath("//xmlns:GetEligibilityResponse", "xmlns" => "http://xmlns.dhcf.dc.gov/dcas/Medicaid/Eligibility/xsd/v1")&.text
       end
     end
+
+    def to_event
+      {
+        type: key.to_s.titleize,
+        created_at: self.updated_at,
+        success: self.succeeded?,
+        app_id: self.transaction_id
+      }
+    end
   end
 end
