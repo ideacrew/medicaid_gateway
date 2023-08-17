@@ -18,7 +18,8 @@ module Transmittable
       return Failure('key required') unless params[:key].is_a?(Symbol)
       return Failure('started_at required') unless params[:started_at].is_a?(DateTime)
       return Failure('publish_on required') unless params[:publish_on].is_a?(DateTime)
-      return Failure('message_id cannot be blank') if params.key?(:message_id) && !params[:message_id].nil?
+      # message_id is optional, so can be nil but not an empty string.
+      return Failure('message_id cannot be empty string') if params.key?(:message_id) && !params[:message_id].nil? && params[:message_id].blank?
       return Failure('message_id should be a string') if params[:message_id].present? && !params[:message_id].is_a?(String)
       Success(params)
     end
