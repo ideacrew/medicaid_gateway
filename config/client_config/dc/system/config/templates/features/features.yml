@@ -15,6 +15,8 @@ registry:
         is_enabled: true
       - key: :mec_check
         is_enabled: <%= ENV['MEC_CHECK_IS_ENABLED'] || false %>
+      - key: :pdm_mec_check
+        is_enabled: <%= ENV['PDM_MEC_CHECK_IS_ENABLED'] || false %>
       - key: :resubmit_to_enroll
         is_enabled: false
       - key: :bulk_transfer_to_enroll
@@ -58,7 +60,7 @@ registry:
         is_enabled: <%= ENV["BLOCK_ATP_DEDUCTIONS_IS_ENABLED"] || false %>
       - key: :eligibility_override
         is_enabled: <%= ENV["ELIGIBILITY_OVERRIDE_IS_ENABLED"] || false %>
-        settings: 
+        settings:
           - key: :mitc_override_not_lawfully_present_pregnant
             item: <%= ENV["MITC_OVERRIDE_NOT_LAWFULLY_PRESENT_PREGNANT_IS_ENABLED"] || false %>
           - key: :mitc_override_not_lawfully_present_chip_eligible
