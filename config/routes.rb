@@ -43,7 +43,7 @@ Rails.application.routes.draw do
       put 'resubmit_to_enroll'
       get 'daily_iap_determinations'
       put 'change_dates'
-      get 'period_data_match_mec'
+      get 'periodic_data_match_mec'
     end
   end
 end
