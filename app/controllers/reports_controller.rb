@@ -65,9 +65,9 @@ class ReportsController < ApplicationController
     @fail_count = checks.count - @success_count
   end
 
-  def period_data_match_mec
+  def periodic_data_match_mec
     raise "Periodic MEC Check feature not enabled." unless MedicaidGatewayRegistry[:pdm_mec_check].enabled?
-    authorize :user
+    authorize :user, :mec_checks?
     @start_on = params[:start_on].present? ? params[:start_on] : Date.today
     @end_on = params[:end_on].present? ? params[:end_on] : Date.today
     @search_key = params[:key]
