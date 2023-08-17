@@ -44,8 +44,12 @@
                 <% end %>
               <% end %>
               <% if MedicaidGatewayRegistry.feature_enabled?(:mec_check) %>
-                <li class="nav-item">
-                  <a class="nav-link" href="/reports/mec_checks">MEC Checks</a>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" data-controller="report" data-action="report#toggle_mec_menu">MEC Checks</a>
+                  <div class="dropdown-menu" id="mec_menu">
+                      <a class="dropdown-item" href="/reports/mec_checks">MEC Checks</a>
+                      <a class="dropdown-item" href="/reports/period_data_match_mec">Periodic Data Match MEC Checks</a>
+                  </div>
                 </li>
               <% end %>
             <% end %>         

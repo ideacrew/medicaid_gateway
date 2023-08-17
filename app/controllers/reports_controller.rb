@@ -14,6 +14,7 @@ class ReportsController < ApplicationController
     @inbound_transfers_total = inbound_transfers.count
     @determinations_total = applications.count
     @mec_checks_total = checks.count
+    @pdm_checks = pdm_checks.count
   end
 
   def medicaid_applications
@@ -62,6 +63,18 @@ class ReportsController < ApplicationController
     @checks = checks.order(updated_at: :desc).page params[:page]
     @success_count = checks.select(&:successful?).count
     @fail_count = checks.count - @success_count
+  end
+
+  def period_data_match_mec
+    authorize :user
+    @start_on = params[:start_on].present? ? params[:start_on] : Date.today
+    @end_on = params[:end_on].present? ? params[:end_on] : Date.today
+    @search_key = params[:key]
+    @app = params[:app]
+    @person = params[:person]
+    @pdm_checks = pdm_checks.page params[:page]
+    @success_count = @pdm_checks.succeeded.count
+    @fail_count = @pdm_checks.not_succeeded.count
   end
 
   def transfer_summary
@@ -183,6 +196,20 @@ class ReportsController < ApplicationController
 
   def checks
     Aces::MecCheck.where(created_at: range).or(updated_at: range)
+  end
+
+  def pdm_checks
+    transactions = if @app.present?
+                     transmission_ids = ::Transmittable::Transmission.where(transmission_id: @app).pluck(:id)
+                     transaction_ids = Transmittable::TransactionsTransmissions.where(:transmission_id.in => transmission_ids).pluck(:transaction_id)
+                     Transmittable::Transaction.where(:_id.in => transaction_ids)
+                   else
+                     Transmittable::Transaction.application_mec_check
+                   end
+    transactions = transactions.where(key: @search_key.to_sym) if @search_key.present?
+    transactions = transactions.where(transaction_id: @person) if @person.present?
+    range = @start_on.to_date.beginning_of_day..@end_on.to_date.end_of_day
+    transactions.where(updated_at: range)
   end
 
   def session_date(date)

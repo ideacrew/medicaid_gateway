@@ -22,10 +22,41 @@ module Transmittable
     field :json_payload, type: Hash
     field :xml_payload, type: String
 
+    index({ key: 1 })
+    index({ created_at: 1 })
+
+    scope :succeeded, -> { where(:_id.in => ::Transmittable::ProcessStatus.where(:latest_state => :succeeded).distinct(:statusable_id)) }
+    scope :not_succeeded, -> { where(:_id.in => ::Transmittable::ProcessStatus.where(:latest_state.nin => [:succeeded]).distinct(:statusable_id)) }
+
+    scope :application_mec_check, -> { where(:key.in => [:application_mec_check_response, :application_mec_check_request]) }
+
+    def succeeded?
+      process_status&.latest_state == :succeeded
+    end
+
     def error_messages
       return [] unless errors
 
       transmittable_errors&.map {|error| "#{error.key}: #{error.message}"}&.join(";")
+    end
+
+    def mec_response_ui
+      return if xml_payload.blank? || key != :application_mec_check_response
+      parsed_xml = Nokogiri::XML(xml_payload)
+      if MedicaidGatewayRegistry[:transfer_service].item == "aces"
+        parsed_xml.xpath("//xmlns:ResponseDescription")&.text
+      else
+        parsed_xml.xpath("//xmlns:GetEligibilityResponse", "xmlns" => "http://xmlns.dhcf.dc.gov/dcas/Medicaid/Eligibility/xsd/v1")&.text
+      end
+    end
+
+    def to_event
+      {
+        type: key.to_s.titleize,
+        created_at: self.updated_at,
+        success: self.succeeded?,
+        app_id: self.transaction_id
+      }
     end
   end
 end

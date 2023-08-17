@@ -5,6 +5,7 @@
   <li class="list-inline-item">Transfers In: <%= @inbound_transfers_total %></li>
   <li class="list-inline-item">Determinations: <%= @determinations_total %></li>
   <li class="list-inline-item">MEC Checks: <%= @mec_checks_total %></li>
+  <li class="list-inline-item">PDM MEC Checks: <%= @pdm_checks %></li>
 </ul>
 <%= render partial: "date_range", locals: {start_on: @start_on, end_on: @end_on, session_name: ""} %>
 

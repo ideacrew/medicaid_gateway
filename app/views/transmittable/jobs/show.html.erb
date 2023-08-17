@@ -119,7 +119,7 @@
           <td><%= transaction&.process_status&.latest_state %></td>
           <td><%= transaction.error_messages %></td>
           <td><%= transaction.transactable_type&.humanize&.split('::')&.last %></td>
-          <td><%= transaction.subject_hbx_id %></td>
+          <td><%= transaction.transactable.hbx_id %></td>
           <td><%= link_to "Link", transaction %></td>
         </tr>
       </tbody>
