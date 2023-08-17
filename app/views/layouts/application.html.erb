@@ -15,7 +15,7 @@
       <div class="container">
         <a class="navbar-brand" aria-current="page" href="/">Medicaid Gateway</a>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">              
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
               <a class="nav-link" href="/reports/transfer_summary">Transfer Summary</a>
             </li>
@@ -29,7 +29,7 @@
                 </li>
               <% end %>
               <% if MedicaidGatewayRegistry.feature_enabled?(:mitc_determination) %>
-                <% if MedicaidGatewayRegistry.feature_enabled?(:daily_determination_report) %>                
+                <% if MedicaidGatewayRegistry.feature_enabled?(:daily_determination_report) %>
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-controller="report" data-action="report#toggle_determinations_menu">Determinations</a>
                     <div class="dropdown-menu" id="determinations_menu">
@@ -48,11 +48,13 @@
                   <a class="nav-link dropdown-toggle" data-controller="report" data-action="report#toggle_mec_menu">MEC Checks</a>
                   <div class="dropdown-menu" id="mec_menu">
                       <a class="dropdown-item" href="/reports/mec_checks">MEC Checks</a>
+                    <% if MedicaidGatewayRegistry.feature_enabled?(:pdm_mec_check) %>
                       <a class="dropdown-item" href="/reports/period_data_match_mec">Periodic Data Match MEC Checks</a>
+                    <% end %>
                   </div>
                 </li>
               <% end %>
-            <% end %>         
+            <% end %>
           </ul>
           <% if !@stimulus_reflex && user_signed_in? %>
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -74,6 +76,6 @@
         </div>
       <% end %>
       <%= yield %>
-    </main>    
+    </main>
   </body>
 </html>
