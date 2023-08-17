@@ -66,6 +66,7 @@ class ReportsController < ApplicationController
   end
 
   def period_data_match_mec
+    raise "Periodic MEC Check feature not enabled." unless MedicaidGatewayRegistry[:pdm_mec_check].enabled?
     authorize :user
     @start_on = params[:start_on].present? ? params[:start_on] : Date.today
     @end_on = params[:end_on].present? ? params[:end_on] : Date.today
