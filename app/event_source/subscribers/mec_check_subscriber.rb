@@ -34,14 +34,16 @@ module Subscribers
     rescue StandardError, SystemStackError => e
       # In the case of subscriber error, saving details for reporting purposes, repurposing existing fields.
       logger.error "mec_check_subscriber_message message: #{e} backtrace: #{e.backtrace}; acked (nacked)"
-      Aces::CreateMecCheck.new.call(
-        {
-          application_identifier: response.to_s,
-          family_identifier: result,
-          type: "subscriber failure",
-          failure: "Exception: '#{e.class}' / message: #{e}"
-        }
-      )
+      unless transmittable_data.present?
+        Aces::CreateMecCheck.new.call(
+          {
+            application_identifier: response.to_s,
+            family_identifier: result,
+            type: "subscriber failure",
+            failure: "Exception: '#{e.class}' / message: #{e}"
+          }
+        )
+      end
       ack(delivery_info.delivery_tag)
     end
   end

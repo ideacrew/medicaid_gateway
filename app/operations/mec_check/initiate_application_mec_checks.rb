@@ -13,7 +13,7 @@ module MecCheck
     # @return [Dry::Result]
     def call(params)
       validated_params = yield validate_params(params)
-      application_payload = JSON.parse(validated_params[:payload])
+      application_payload = yield parse_payload(validated_params[:payload])
       job = yield find_or_create_job(validated_params[:message_id])
       application_response = yield get_applicant_checks(application_payload, job)
       publish_to_enroll(application_response)
@@ -28,6 +28,12 @@ module MecCheck
       Success(params)
     end
 
+    def parse_payload(payload)
+      Success(JSON.parse(payload))
+    rescue StandardError => e
+      Failure({ error: "failed in parse_payload with error - #{e}" })
+    end
+
     def find_or_create_job(message_id)
       result = Transmittable::FindOrCreateJob.new.call(message_id: message_id,
                                                        key: :application_mec_check_request,
@@ -38,7 +44,7 @@ module MecCheck
         @job = result.value!
         Success(@job)
       else
-        Failure('Unable to create job')
+        Failure({ error: "Unable to create job" })
       end
     end
 
@@ -54,7 +60,7 @@ module MecCheck
       Success(application_payload)
     rescue StandardError => e
       add_errors({ job: job }, "Rescued application: #{application_payload['hbx_id']} while processing applicants error: #{e}", :get_applicant_checks)
-      Failure({ job_id: job.id, hbx_id: application_payload["hbx_id"], error: "Mec check failure => #{e}" })
+      Failure({ error: "job_id: #{job.id}, hbx_id: #{application_payload['hbx_id']}, get_applicant_checks failure: #{e}" })
     end
 
     def add_errors(transmittable_objects, message, error_key)
@@ -84,7 +90,7 @@ module MecCheck
       if transfer.success?
         Success("Transferred MEC Check to Enroll")
       else
-        Failure({})
+        Failure({ error: "unable to publish_to_enroll, with failure - #{transfer.failure}" })
       end
     end
   end
