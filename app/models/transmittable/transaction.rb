@@ -41,13 +41,11 @@ module Transmittable
     end
 
     def mec_response_ui
-      return if xml_payload.blank? || key != :application_mec_check_response
-      parsed_xml = Nokogiri::XML(xml_payload)
-      if MedicaidGatewayRegistry[:transfer_service].item == "aces"
-        parsed_xml.xpath("//xmlns:ResponseDescription")&.text
-      else
-        parsed_xml.xpath("//xmlns:GetEligibilityResponse", "xmlns" => "http://xmlns.dhcf.dc.gov/dcas/Medicaid/Eligibility/xsd/v1")&.text
+      if transmittable_errors.present?
+        errors = transmittable_errors.map(&:message).join(",")
+        return errors if errors.present?
       end
+      json_payload["code_description"] if json_payload.present?
     end
 
     def to_event
