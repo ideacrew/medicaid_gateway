@@ -37,12 +37,7 @@
 				<td><%= check.transactions_transmissions.last.transmission.transmission_id %></td>
 				<td><%= check.transaction_id %></td>
 				<td style="max-width: 800px">
-					<% unless check.transmittable_errors.nil? %>
-						<%= check.error_messages %>
-					<% end %>
-					<% unless check.xml_payload.nil? %>
-						<%= check.mec_response_ui %>
-					<% end %>
+          <%= check.mec_response_ui %>
 				</td>
 				<td><%= check.created_at %></td>
 			</tr>
