@@ -5,7 +5,7 @@
   <li class="list-inline-item text-danger"><%= @fail_count %> Failures</li>
 </ul>
 <div class="col mb-2 search-form">
-  <%= form_tag(period_data_match_mec_reports_path, method: :get) do %>
+  <%= form_tag(periodic_data_match_mec_reports_path, method: :get) do %>
     <label for="app">Application Id:</label>
     <%= text_field_tag :app, params[:app], value: params[:app] %>
     <label for="person">Person Id:</label>
@@ -17,7 +17,7 @@
     <label for="end_on">End On:</label>
     <%= date_field_tag :end_on, params[:end_on], value: @end_on %>
     <%= submit_tag("Search", name: nil, class: 'btn btn-primary') %>
-    <%= link_to "Clear Search", period_data_match_mec_reports_path, class: 'btn btn-secondary' %>
+    <%= link_to "Clear Search", periodic_data_match_mec_reports_path, class: 'btn btn-secondary' %>
   <% end %>
 </div>
 <table class="table table-striped table-overrides">
