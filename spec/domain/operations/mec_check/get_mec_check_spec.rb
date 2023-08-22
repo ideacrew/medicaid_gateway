@@ -89,7 +89,7 @@ describe MecCheck::GetMecCheck, dbclean: :after_each do
 
         it 'Should raise a failure' do
           expect(@result.failure?).to be_truthy
-          expect(@result.failure).to eq "No evidence present"
+          expect(@result.failure).to eq "Not MEC checked. No evidence present"
         end
 
         it 'Should have one transmission' do
@@ -105,13 +105,13 @@ describe MecCheck::GetMecCheck, dbclean: :after_each do
         it 'Should have transmittable error on transmission' do
           expect(job.transmissions.first.process_status.latest_state).to eq(:failed)
           expect(job.transmissions.first.transmittable_errors.first.key).to eq(:run_mec_check)
-          expect(job.transmissions.first.transmittable_errors.first.message).to eq "No evidence present"
+          expect(job.transmissions.first.transmittable_errors.first.message).to eq "Not MEC checked. No evidence present"
         end
 
         it 'Should have transmittable error on transaction' do
           expect(@transactions.first.process_status.latest_state).to eq(:failed)
           expect(@transactions.first.transmittable_errors.first.key).to eq(:run_mec_check)
-          expect(@transactions.first.transmittable_errors.first.message).to eq "No evidence present"
+          expect(@transactions.first.transmittable_errors.first.message).to eq "Not MEC checked. No evidence present"
         end
       end
     end
