@@ -93,10 +93,10 @@ module MecCheck
         return status_result if status_result.failure?
         result
       else
-        add_errors({ transmission: @request_transmission, transaction: @request_transaction }, "No evidence present", :run_mec_check)
+        add_errors({ transmission: @request_transmission, transaction: @request_transaction }, "Not MEC checked. No evidence present", :run_mec_check)
         status_result = update_status({ transmission: @request_transmission, transaction: @request_transaction }, :failed, "Person has no evidence")
         return status_result if status_result.failure?
-        Failure("No evidence present")
+        Failure("Not MEC checked. No evidence present")
       end
     end
 
