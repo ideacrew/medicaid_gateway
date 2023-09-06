@@ -2,6 +2,8 @@
 
 require 'dry/monads'
 require 'dry/monads/do'
+require 'faraday'
+require 'faraday_middleware'
 
 module Aces
   # Submits the MecCheck Request
@@ -30,15 +32,40 @@ module Aces
     end
 
     def submit_request(service_uri, payload)
+      # Validate the service_uri
+      return Failure("MEC Check - Invalid URI: #{service_uri}") unless valid_uri?(service_uri)
+
       clean_payload = payload.to_s.gsub("<?xml version=\"1.0\"?>", "").gsub("<?xml version=\"1.0\"??>", "")
+      connection = get_faraday_connection(service_uri)
+      # Send the POST request with retries
       result = Try do
-        Faraday.post(
-          service_uri,
-          clean_payload,
-          "Content-Type" => "application/soap+xml;charset=UTF-8"
-        )
+        connection.post service_uri do |req|
+          req.headers['Content-Type'] = 'application/soap+xml;charset=UTF-8'
+          req.body = clean_payload
+        end
       end
       result.or(Failure("MEC check submit request failed with: #{result.exception}"))
+    end
+
+    def valid_uri?(uri)
+      URI.parse(uri).is_a?(URI::HTTP)
+    rescue StandardError
+      false
+    end
+
+    def get_faraday_connection(service_uri)
+      # Define the number of retries and interval between retries
+      max_retries = 3
+      retry_interval = 2 # in seconds
+
+      Faraday.new(url: service_uri) do |faraday|
+        faraday.request :retry, max: max_retries, interval: retry_interval do |_, response|
+          # Retry only if the response status code is not in the 2xx range
+          response.status >= 300 || response.status < 200
+        end
+        faraday.headers["Content-Type"] = "application/soap+xml;charset=UTF-8"
+        faraday.adapter Faraday.default_adapter
+      end
     end
   end
 end
