@@ -41,5 +41,6 @@ describe Aces::SubmitMecCheckPayload, "given an encoded payload, and complete se
 
   it "fails when the request fails" do
     expect(result.success?).not_to be_truthy
+    expect(result.failure).to eq("MEC Check - Invalid URI: SOME URI")
   end
 end
