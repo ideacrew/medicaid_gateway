@@ -54,11 +54,11 @@ module Transmittable
       }
     end
 
-    def self.succeeded_transactions(transaction_ids)
+    def self.succeeded(transaction_ids)
       ::Transmittable::ProcessStatus.where(:latest_state => :succeeded, :statusable_id.in => transaction_ids)
     end
 
-    def self.failed_transactions(transaction_ids)
+    def self.not_succeeded(transaction_ids)
       ::Transmittable::ProcessStatus.where(:latest_state.nin => [:succeeded], :statusable_id.in => transaction_ids)
     end
   end
