@@ -131,8 +131,9 @@ module Types
     { 2021 => BigDecimal('9.83') },
     { 2022 => BigDecimal('9.61') },
     { 2023 => BigDecimal('9.12') },
-    # adding 2024 values as placeholders to placate specs. These values are not verified.
-    { 2024 => BigDecimal('9.12') }
+    { 2024 => BigDecimal('8.39') },
+    # adding 2025 values as placeholders to placate specs. These values are not verified.
+    { 2025 => BigDecimal('8.39') }
   ].freeze
 
   CsrKind = Types::Coercible::String.enum('0',
