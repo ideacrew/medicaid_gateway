@@ -187,6 +187,36 @@ RSpec.describe ReportsController, type: :controller, dbclean: :after_each do
     end
   end
 
+  describe 'GET Periodic mec_checks' do
+    before :each do
+      sign_in user
+      allow(MedicaidGatewayRegistry[:pdm_mec_check]).to receive(:enabled?).and_return(true)
+      get :periodic_data_match_mec
+    end
+
+    context 'user without permission' do
+      let(:user) { FactoryBot.create(:user) }
+
+      it 'should flash no permissions message' do
+        expect(flash[:notice]).to match(/Access not allowed/)
+      end
+
+      it 'should redirect to root' do
+        expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context 'user with permission' do
+      let(:user) { FactoryBot.create(:user, :with_hbx_staff_role) }
+
+      it 'should return success' do
+        expect(response.status).to be(200)
+        expect(controller.instance_variable_get(:@success_count)).to eq 0
+        expect(controller.instance_variable_get(:@fail_count)).to eq 0
+      end
+    end
+  end
+
   describe 'GET transfer_summary' do
     before :each do
       sign_in user
