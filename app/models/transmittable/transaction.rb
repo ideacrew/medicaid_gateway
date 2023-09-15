@@ -26,10 +26,6 @@ module Transmittable
     index({ created_at: 1 })
 
     scope :application_mec_check, -> { where(:key.in => [:application_mec_check_response, :application_mec_check_request]) }
-    scope :succeeded, ->(transaction_ids) { ::Transmittable::ProcessStatus.where(:latest_state => :succeeded, :statusable_id.in => transaction_ids) }
-    scope :not_succeeded, lambda { |transaction_ids|
-                            ::Transmittable::ProcessStatus.where(:latest_state.nin => [:succeeded], :statusable_id.in => transaction_ids)
-                          }
 
     def succeeded?
       process_status&.latest_state == :succeeded
