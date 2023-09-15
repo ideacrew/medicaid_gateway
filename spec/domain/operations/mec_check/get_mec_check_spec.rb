@@ -158,6 +158,11 @@ describe MecCheck::GetMecCheck, dbclean: :after_each do
         expect(@transactions.last.xml_payload).not_to eq nil
         expect(@transactions.last.json_payload).not_to eq nil
       end
+
+      it 'should have records populated in process_status model for each transaction' do
+        transaction_ids = Transmittable::Transaction.all.map { |tid| BSON::ObjectId.from_string(tid._id) }
+        expect(Transmittable::ProcessStatus.succeeded(transaction_ids).count).to eq(transaction_ids.count)
+      end
     end
   end
 end

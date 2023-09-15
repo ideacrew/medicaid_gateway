@@ -74,9 +74,9 @@ class ReportsController < ApplicationController
     @app = params[:app]
     @person = params[:person]
     @pdm_checks = pdm_checks.page params[:page]
-    transaction_ids = @pdm_checks.pluck(:_id)
-    @success_count = transaction_ids.present? ? Transmittable::Transaction.succeeded(transaction_ids).count : 0
-    @fail_count = transaction_ids.present? ? Transmittable::Transaction.not_succeeded(transaction_ids).count : 0
+    transaction_ids = @pdm_checks.pluck(:_id).map { |tid| BSON::ObjectId.from_string(tid) }
+    @success_count = transaction_ids.present? ? Transmittable::ProcessStatus.succeeded(transaction_ids).count : 0
+    @fail_count = transaction_ids.present? ? Transmittable::ProcessStatus.not_succeeded(transaction_ids).count : 0
   end
 
   def transfer_summary

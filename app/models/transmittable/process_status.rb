@@ -13,5 +13,8 @@ module Transmittable
     field :initial_state_key, type: Symbol
     field :latest_state, type: Symbol
     field :elapsed_time, type: Integer
+
+    scope :succeeded, ->(transaction_ids) { where(:latest_state => :succeeded, :statusable_id.in => transaction_ids) }
+    scope :not_succeeded, ->(transaction_ids) { where(:latest_state.nin => [:succeeded], :statusable_id.in => transaction_ids) }
   end
 end
