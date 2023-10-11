@@ -211,7 +211,7 @@ class ReportsController < ApplicationController
     transactions = transactions.where(key: @search_key.to_sym) if @search_key.present?
     transactions = transactions.where(transaction_id: @person) if @person.present?
     range = @start_on.to_date.beginning_of_day..@end_on.to_date.end_of_day
-    transactions.where(updated_at: range)
+    transactions.where(created_at: range).or(updated_at: range)
   end
 
   def session_date(date)
