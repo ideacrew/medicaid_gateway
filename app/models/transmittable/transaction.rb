@@ -23,7 +23,8 @@ module Transmittable
     field :xml_payload, type: String
 
     index({ key: 1 })
-    index({ created_at: 1 })
+    index({ created_at: 1, updated_at: 1 })
+    index({ updated_at: 1 })
 
     scope :application_mec_check, -> { where(:key.in => [:application_mec_check_response, :application_mec_check_request]) }
 
