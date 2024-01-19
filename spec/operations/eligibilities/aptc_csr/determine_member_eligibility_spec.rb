@@ -119,9 +119,10 @@ describe Eligibilities::AptcCsr::DetermineMemberEligibility do
       end
 
       it 'should calculate the annual tax household income correctly' do
+        expected_income = Date.today.leap? ? 8033 : 8022
         result = subject.call(input_params)
         annual_thh_income = result.success[:aptc_household].annual_tax_household_income.to_f.ceil
-        expect(annual_thh_income).to eq 8022
+        expect(annual_thh_income).to eq expected_income
       end
     end
 
