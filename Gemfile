@@ -86,6 +86,5 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 group :production do
-  gem 'eye',     '0.10.0'
   gem 'unicorn', '~> 4.8'
 end
