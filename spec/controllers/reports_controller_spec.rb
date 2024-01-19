@@ -268,6 +268,11 @@ RSpec.describe ReportsController, type: :controller, dbclean: :after_each do
       it 'should return success' do
         expect(response.status).to be(200)
       end
+
+      it 'updates the last_activity_at date' do
+        user.reload
+        expect(user.last_activity_at).not_to be_nil
+      end
     end
   end
 

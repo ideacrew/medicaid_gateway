@@ -35,8 +35,10 @@ gem 'bootstrap', '~> 5.1.0'
 gem 'awesome_print'
 # For interactive pieces
 gem "stimulus_reflex", "~> 3.4"
-# for use accounts
+# for user accounts
 gem 'devise'
+# for account locking
+gem 'devise-security'
 # Pagination
 gem 'kaminari-mongoid'
 gem 'kaminari-actionview'
