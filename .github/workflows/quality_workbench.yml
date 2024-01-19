@@ -1,5 +1,7 @@
 name: Quality Workbench
-on: push
+on:
+  push:
+  workflow_dispatch:
 
 concurrency:
   group: qb-${{ github.ref }}
