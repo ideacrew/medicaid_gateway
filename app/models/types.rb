@@ -78,11 +78,16 @@ module Types
       annual_poverty_guideline: BigDecimal(14_580.to_s),
       annual_per_person_amount: BigDecimal(5_140.to_s)
     },
-    # adding 2024 values as placeholders to placate specs. These values are not verified.
     {
       medicaid_year: 2024,
-      annual_poverty_guideline: BigDecimal(13_590.to_s),
-      annual_per_person_amount: BigDecimal(4_720.to_s)
+      annual_poverty_guideline: BigDecimal(15_060.to_s),
+      annual_per_person_amount: BigDecimal(5_380.to_s)
+    },
+    # adding 2025 values as placeholders to placate specs. These values are not verified.
+    {
+      medicaid_year: 2025,
+      annual_poverty_guideline: BigDecimal(15_060.to_s),
+      annual_per_person_amount: BigDecimal(5_380.to_s)
     }
   ].freeze
 
