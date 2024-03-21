@@ -27,8 +27,8 @@ module Transfers
       # if the proxy does not throw an error, we can assume it was successful
       Success(result)
     rescue StandardError => _e
-      # try to reconnect the proxy if initial attempt crashed
-      reconnect_proxy
+      # try to reconnect the proxy and run validation again if initial attempt crashed
+      AtpBusinessRulesValidationProxy.reconnect!
       attempt = Try do
         AtpBusinessRulesValidationProxy.run_validation(payload)
       end
