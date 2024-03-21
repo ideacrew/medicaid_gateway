@@ -152,7 +152,7 @@ module Aces
       end
     end
 
-    def transfer_account(payload, transfer_id, _serialized)
+    def transfer_account(payload, transfer_id)
       if @to_enroll
         return Success(payload) if MedicaidGatewayRegistry.feature_enabled?(:bulk_transfer_to_enroll)
         return Success(payload) unless MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll)
