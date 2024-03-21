@@ -33,7 +33,7 @@ module Aces
       body_node = yield extract_top_body_node(parsed_payload)
       string_payload = yield convert_to_document_string(body_node)
       serialized = yield run_validations_and_serialize(string_payload)
-      _transfer = yield transfer_account(string_payload, transfer_id, serialized)
+      _transfer = yield transfer_account(string_payload, transfer_id)
       Success(serialized)
     end
 
