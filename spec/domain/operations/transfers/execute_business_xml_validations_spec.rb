@@ -42,7 +42,6 @@ describe Transfers::ExecuteBusinessXmlValidations, dbclean: :after_each do
 
     before do
       allow(AtpBusinessRulesValidationProxy).to receive(:run_validation).with(payload).and_raise("Validator Crashed")
-      # allow(Transfers::ExecuteBusinessXmlValidations).to receive(:reconnect_proxy).and_return(AtpBusinessRulesValidationProxy.reconnect!)
     end
 
     context "second attempt" do
