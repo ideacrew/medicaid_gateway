@@ -47,7 +47,7 @@ module Aces
         serialize_response_body(run_business_validations(string_payload))
       else
         payload = serialize_response_body(Success("not validated"))
-        @transfer.update!(payload: payload.value!)
+        @transfer.update!(payload: payload)
         payload
       end
     end
