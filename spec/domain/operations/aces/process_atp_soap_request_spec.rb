@@ -3,6 +3,8 @@
 require "rails_helper"
 
 describe Aces::ProcessAtpSoapRequest, "given a soap envelope with an valid xml payload", dbclean: :after_each do
+  include Dry::Monads[:result]
+
   before :all do
     DatabaseCleaner.clean
   end
@@ -54,6 +56,51 @@ describe Aces::ProcessAtpSoapRequest, "given a soap envelope with an valid xml p
 
     it "transfer to_enroll should be false" do
       expect(@transfer.reload.to_enroll).to eq false
+    end
+  end
+
+  context '#run_validations_and_serialize' do
+    context 'when @to_enroll is true' do
+      before do
+        operation.instance_variable_set(:@to_enroll, true)
+      end
+      context 'schema validation' do
+        context 'failure' do
+          before do
+            allow(operation).to receive(:validate_document).and_return(Failure(["schema validation failed"]))
+          end
+
+          it 'should return a failure object' do
+            expect(operation.send(:run_validations_and_serialize, "string_payload").failure?).to be_truthy
+          end
+        end
+      end
+
+      context 'business validation' do
+        context 'success' do
+          before do
+            allow(operation).to receive(:validate_document).and_return(Success(:ok))
+            allow(operation).to receive(:run_business_validations).and_return(Success(:ok))
+          end
+
+          it 'should return a success object' do
+            expect(operation.send(:run_validations_and_serialize, "string_payload").success?).to be_truthy
+          end
+        end
+
+        context 'failure' do
+          let(:failed_assertion) { Aces::AtpFailedBusinessAssertion.new({ location: "location", text: "failure message" }) }
+          let(:rule_failure) { Aces::AtpBusinessRuleFailure.new({ failed_assertions: [failed_assertion] }) }
+          before do
+            allow(operation).to receive(:validate_document).and_return(Success(:ok))
+            allow(operation).to receive(:run_business_validations).and_return(Failure(rule_failure))
+          end
+
+          it 'should return a failure object' do
+            expect(operation.send(:run_validations_and_serialize, "string_payload").failure?).to be_truthy
+          end
+        end
+      end
     end
   end
 end
