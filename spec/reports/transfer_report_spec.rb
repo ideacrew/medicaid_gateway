@@ -10,6 +10,7 @@ RSpec.describe TransferReport, dbclean: :after_each do
   describe "#run" do
     context 'summary of all transfers' do
       before do
+        allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:transfer_to_enroll).and_return(true)
         Dir[Rails.root.join("transfer_report_*.csv")].each { |filename| FileUtils.rm_rf(filename) }
         create_date = DateTime.now.utc - 1.day
         create :transfer, created_at: create_date

@@ -32,9 +32,9 @@ module Aces
       _validation_result = yield validate_soap_header(parsed_payload)
       body_node = yield extract_top_body_node(parsed_payload)
       string_payload = yield convert_to_document_string(body_node)
-      serialized = run_validations_and_serialize(string_payload)
-      _transfer = yield transfer_account(string_payload, transfer_id, serialized)
-      serialized
+      serialized = yield run_validations_and_serialize(string_payload)
+      _transfer = yield transfer_account(string_payload, transfer_id)
+      Success(serialized)
     end
 
     protected
@@ -43,6 +43,7 @@ module Aces
       if @to_enroll
         schema_result = validate_document(string_payload)
         return serialize_response_body(schema_result) unless schema_result.success?
+
         serialize_response_body(run_business_validations(string_payload))
       else
         payload = serialize_response_body(Success("not validated"))
@@ -151,9 +152,8 @@ module Aces
       end
     end
 
-    def transfer_account(payload, transfer_id, serialized)
+    def transfer_account(payload, transfer_id)
       if @to_enroll
-        return serialized if serialized.failure?
         return Success(payload) if MedicaidGatewayRegistry.feature_enabled?(:bulk_transfer_to_enroll)
         return Success(payload) unless MedicaidGatewayRegistry.feature_enabled?(:transfer_to_enroll)
         Transfers::ToEnroll.new.call(payload, transfer_id)
