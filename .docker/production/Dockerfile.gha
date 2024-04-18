@@ -212,5 +212,6 @@ COPY --chown=$USERNAME:$USERNAME ./.docker/config/unicorn.rb $HOME/config
 COPY --chown=$USERNAME:$USERNAME ./.docker/config/credentials.yml.enc $HOME/config
 COPY --chown=$USERNAME:$USERNAME ./.docker/config/master.key $HOME/config
 
-USER $USERNAME
+RUN echo '[ ! -z "$TERM" -a -r /etc/scripts/motd/motd ] && cat /etc/scripts/motd/motd' >> /etc/bash.bashrc
 
+USER $USERNAME
