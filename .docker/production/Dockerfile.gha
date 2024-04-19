@@ -56,6 +56,8 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && truncate -s 0 /var/log/*log
 
+RUN mkdir /etc/infra
+
 # Configure bundler and PATH, install bundler version
 ENV GEM_HOME=/usr/local/bundle
 ENV BUNDLE_PATH=$GEM_HOME
@@ -212,6 +214,6 @@ COPY --chown=$USERNAME:$USERNAME ./.docker/config/unicorn.rb $HOME/config
 COPY --chown=$USERNAME:$USERNAME ./.docker/config/credentials.yml.enc $HOME/config
 COPY --chown=$USERNAME:$USERNAME ./.docker/config/master.key $HOME/config
 
-RUN echo '[ ! -z "$TERM" -a -r /etc/scripts/motd/motd ] && cat /etc/scripts/motd/motd' >> /etc/bash.bashrc
+RUN echo '[ ! -z "$TERM" -a -r /etc/infra/motd ] && cat /etc/infra/motd' >> /etc/bash.bashrc
 
 USER $USERNAME
