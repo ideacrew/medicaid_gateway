@@ -55,6 +55,8 @@ gem 'mime-types'
 gem 'httparty',            '~> 0.16'
 gem 'nokogiri', '>= 1.10.8', platforms: [:ruby, :mri]
 gem 'pundit', '~> 2.2.0'
+gem 'pond'
+gem 'rex_port', path: './project_gems/rex_port'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

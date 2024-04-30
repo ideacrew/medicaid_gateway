@@ -50,15 +50,9 @@ describe Transfers::ExecuteBusinessXmlValidations, dbclean: :after_each do
 
     before do
       allow(AtpBusinessRulesValidationProxy).to receive(:run_validation).with(payload).exactly(:twice) { stubbed_validation_responses.shift.call }
-      allow(AtpBusinessRulesValidationProxy).to receive(:reconnect!).and_return(true)
     end
 
     context "second attempt" do
-      it "should reconnect the proxy" do
-        result
-        expect(AtpBusinessRulesValidationProxy).to have_received(:reconnect!)
-      end
-
       context 'second attempt succeeds' do
         it "should return a success" do
           expect(result.success?).to be_truthy
