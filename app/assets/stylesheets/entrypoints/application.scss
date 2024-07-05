@@ -1,6 +1,7 @@
 $primary: #215d91;
 $secondary: lighten( $primary, 40% );
-@import "bootstrap";
+@import 'bootstrap/scss/bootstrap';
+@import 'bootstrap-icons/font/bootstrap-icons';
 
 kbd {
   -moz-background-clip: border;

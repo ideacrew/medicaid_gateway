@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.7.6'
+ruby '3.0.6'
 
 # Mount the Engines
 gem 'mitc_service', path: 'components/mitc_service'
@@ -12,13 +12,17 @@ gem 'aca_entities',  git:  'https://github.com/ideacrew/aca_entities.git', branc
 gem 'event_source',  git:  'https://github.com/ideacrew/event_source.git', branch: 'trunk'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
-gem 'rails', '~> 6.1.3'
+gem 'rails', '~> 7.0', '>= 7.0.8.4'
+# gem 'rails', '~> 6.1.3'
 # Use Puma as the app server
 gem 'puma', '~> 5.0'
 # Use SCSS for stylesheets
-gem 'sass-rails', '>= 6'
-# Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
-gem 'webpacker', '~> 5.0'
+gem 'jsbundling-rails', '~> 1.3'
+gem 'cssbundling-rails', '~> 1.4'
+gem 'propshaft', '~> 0.9.0'
+
+# # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
+# gem 'webpacker', '~> 5.0'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -26,7 +30,7 @@ gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 4.0' # , :require => ["redis", "redis/connection/hiredis"]
 # gem "hiredis"
-gem 'redis-session-store'
+gem 'redis-session-store', '~> 0.11.5'
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 # Bootstrap for styling
@@ -34,7 +38,7 @@ gem 'bootstrap', '~> 5.1.0'
 # To prettify json payloads
 gem 'awesome_print'
 # For interactive pieces
-gem "stimulus_reflex", "~> 3.4"
+gem 'stimulus_reflex', '~> 3.4', '>= 3.4.2'
 # for user accounts
 gem 'devise'
 # for account locking
@@ -48,7 +52,7 @@ gem 'bootsnap', '>= 1.4.4', require: false
 
 gem 'resource_registry',  git:  'https://github.com/ideacrew/resource_registry.git', branch: 'trunk'
 
-gem 'mongoid',             '~> 7.2.1'
+gem 'mongoid',             '~> 7.5.4'
 gem "faraday", "~> 1.4.1"
 gem 'typhoeus'
 gem 'mime-types'
@@ -78,7 +82,7 @@ group :development do
   gem 'rack-mini-profiler', '~> 2.0', require: false
   gem 'listen', '~> 3.3'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring', '~> 1.7.2'
+  gem 'spring', '~> 4.2', '>= 4.2.1'
 end
 
 group :test do
