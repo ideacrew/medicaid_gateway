@@ -129,11 +129,11 @@ jobs:
         if: steps.npm-cache.outputs.cache-hit != 'true'
         run: |
           yarn install
-      - name: run webpack
-        run: |
-          echo bundle config
-          bundle config path vendor/bundle
-          NODE_ENV=test RAILS_ENV=test ./bin/webpack
+      # - name: run webpack
+      #   run: |
+      #     echo bundle config
+      #     bundle config path vendor/bundle
+      #     NODE_ENV=test RAILS_ENV=test ./bin/webpack
       # Need this step in order to access the mongodb server
       - name: set etc host
         run: sudo bash -c "echo '127.0.0.1 rabbitmq mongodb' >> /etc/hosts"
