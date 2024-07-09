@@ -33,8 +33,6 @@ gem 'redis', '~> 4.0' # , :require => ["redis", "redis/connection/hiredis"]
 gem 'redis-session-store', '~> 0.11.5'
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
-# Bootstrap for styling
-gem 'bootstrap', '~> 5.3', '>= 5.3.3'
 # To prettify json payloads
 gem 'awesome_print'
 # For interactive pieces
