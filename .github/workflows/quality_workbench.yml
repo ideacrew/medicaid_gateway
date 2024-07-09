@@ -129,8 +129,9 @@ jobs:
         if: steps.npm-cache.outputs.cache-hit != 'true'
         run: |
           yarn install
-      - name: build css
+      - name: build js and css
         run: |
+          yarn build
           yarn build:css
       # Need this step in order to access the mongodb server
       - name: set etc host
