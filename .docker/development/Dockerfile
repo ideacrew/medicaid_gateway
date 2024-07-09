@@ -1,4 +1,4 @@
-FROM ruby:2.7.2 AS medicaid_gateway
+FROM ruby:3.0.6 AS medicaid_gateway
 
 LABEL author="IdeaCrew"
 
@@ -8,7 +8,7 @@ RUN mkdir -p $HOME
 
 WORKDIR $HOME
 
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
 
 # Configure bundler and PATH
 ENV LANG=C.UTF-8 \

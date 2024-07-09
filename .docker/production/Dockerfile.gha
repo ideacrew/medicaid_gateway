@@ -3,7 +3,7 @@
 ############################################
 
 # Taken from .ruby-version
-ARG RUBY_VERSION=2.7.6
+ARG RUBY_VERSION=3.0.6
 FROM ruby:$RUBY_VERSION-slim-buster as base
 LABEL author="IdeaCrew"
 
@@ -28,7 +28,7 @@ RUN apt-get update -qq && \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && truncate -s 0 /var/log/*log
 
-ARG NODE_MAJOR=14
+ARG NODE_MAJOR=20
 
 # Add NodeJS to sources list
 RUN curl -sL https://deb.nodesource.com/setup_$NODE_MAJOR.x | bash -
