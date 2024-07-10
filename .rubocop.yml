@@ -1,6 +1,6 @@
 # This yaml describes our current checks.
 AllCops:
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 3.0.6
   SuggestExtensions: false
   NewCops: enable
   Exclude:
