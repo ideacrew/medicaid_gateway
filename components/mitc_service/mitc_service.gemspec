@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'dry-validation', '~> 1.6'
   spec.add_dependency 'httparty', '~> 0.16'
   spec.add_dependency 'mime-types'
-  spec.add_dependency 'mongoid', '~> 7.5.4'
+  spec.add_dependency 'mongoid', '~> 8.1'
 
   spec.add_dependency 'rails', '~> 7.0.8.4'
 
