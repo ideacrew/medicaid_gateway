@@ -3,8 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - "trunk"
-      - 'fixes_yard_doc'
+      - 'trunk'
 
 jobs:
   docsite:
