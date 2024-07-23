@@ -2,9 +2,12 @@ name: Quality Workbench
 on:
   push:
   workflow_dispatch:
+  schedule:
+    - cron: "0 5 * * *"
+
 
 concurrency:
-  group: qb-${{ github.ref }}
+  group: qb-${{ github.ref }}-automated-test
   cancel-in-progress: true
 
 jobs:
