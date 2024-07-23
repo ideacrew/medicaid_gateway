@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "trunk"
+      - 'fixes_yard_doc'
 
 jobs:
   docsite:
