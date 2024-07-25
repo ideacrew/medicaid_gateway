@@ -18,8 +18,8 @@ module Transfers
       flagged_params = yield add_param_flags(params, transfer_id)
       xml = yield generate_xml(flagged_params, transfer_id)
       validated = yield schema_validation(xml, transfer_id)
-      # validated  = yield business_validation(validated)
-      transfer_response = yield initiate_transfer(validated, transfer_id)
+      business_validated = yield business_validation(validated)
+      transfer_response = yield initiate_transfer(business_validated, transfer_id)
       update_transfer(transfer_response)
     end
 

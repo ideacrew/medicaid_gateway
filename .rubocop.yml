@@ -10,6 +10,9 @@ AllCops:
     - "config/deploy.rb"
     - "config/unicorn.rb"
     - "config/deploy/**/*"
+    # This gem is included from an external repository.  Style failures should
+    # be fixed upstream.
+    - "project_gems/rex_port/**/*"
 
 Layout/EmptyLineAfterGuardClause:
   Enabled: false
