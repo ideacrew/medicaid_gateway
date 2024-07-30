@@ -53,7 +53,6 @@ module Transfers
       failure_messages = []
       applicants = application["applicants"] if application
       failure_messages << check_applicants_applying_for_coverage(applicants)
-      failure_messages << check_applicants_vlp_document(applicants)
       failure_messages << check_applicants_deductions(applicants)
       failure_messages.compact!.flatten!
       error_result[:failure] = failure_messages.join("\n")
@@ -66,20 +65,6 @@ module Transfers
       failure_message = "Application does not contain any applicants applying for coverage."
       applicant_checks = applicants&.map {|applicant| applicant["is_applying_coverage"]}
       return failure_message if applicant_checks.nil? || applicant_checks&.all?(false)
-    end
-
-    def check_applicants_vlp_document(applicants)
-      # undefined mapping for VLP doc type of Other is not an issue when VLP documents are dropped
-      return if MedicaidGatewayRegistry.feature_enabled?(:drop_vlp_document)
-
-      unaccepted_types = ["Other (With Alien Number)", "Other (With I-94 Number)"]
-      failure_messages = applicants&.each_with_object([]) do |applicant, collect|
-        doc_type = applicant.dig('vlp_document', 'subject')
-        person_hbx_id = applicant['person_hbx_id']
-        failure_message = "Applicant #{person_hbx_id} has unaccepted VLP document type #{doc_type}."
-        collect << failure_message if unaccepted_types.include?(doc_type)
-      end
-      return failure_messages unless failure_messages&.empty?
     end
 
     def check_applicants_deductions(applicants)

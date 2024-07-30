@@ -215,6 +215,7 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
           alien_number: "987654321",
           passport_number: "12345678",
           sevis_id: "1234567891",
+          i94_number: "123456789012",
           country_of_citizenship: "Albania",
           expiration_date: "2030-01-01T00:00:00.000+00:00"
         }
@@ -233,9 +234,8 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
         @person_hbx_id = applicant['person_hbx_id']
       end
 
-      context 'when drop_vlp_document feature is disabled' do
+      context 'when vlp_document is of Other types' do
         before do
-          allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_vlp_document).and_return(false)
           allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_income_start_on).and_return(false)
           allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_income_end_on).and_return(false)
           allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:drop_non_ssn_apply_reason).and_return(false)
@@ -245,18 +245,16 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
         context 'with vlp document type of Other (With Alien Number)' do
           let(:vlp_subject) { "Other (With Alien Number)" }
 
-          it 'should fail to transfer and log as error' do
-            error_message = @result.failure[:failure]
-            expect(error_message).to eq "Applicant #{@person_hbx_id} has unaccepted VLP document type #{vlp_doc[:subject]}."
+          it 'should be success' do
+            expect(@result.success?).to eq true
           end
         end
 
         context 'with vlp document type of Other (With I-94 Number)' do
           let(:vlp_subject) { "Other (With I-94 Number)" }
 
-          it 'should fail to transfer and log as error' do
-            error_message = @result.failure[:failure]
-            expect(error_message).to eq "Applicant #{@person_hbx_id} has unaccepted VLP document type #{vlp_doc[:subject]}."
+          it 'should be success' do
+            expect(@result.success?).to eq true
           end
         end
       end
