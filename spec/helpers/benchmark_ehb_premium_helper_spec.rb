@@ -4,15 +4,27 @@ require 'rails_helper'
 
 RSpec.describe BenchmarkEhbPremiumHelper, type: :helper do
   let(:effective_year) { Date.today.year }
+  let(:at_least_one_silver_feature) do
+    double
+  end
+  let(:year_level_config_setting) do
+    double(
+      item: year_level_config
+    )
+  end
+
+  before do
+    allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(
+      :atleast_one_silver_plan_donot_cover_pediatric_dental_cost
+    ).and_return(top_level_config)
+    allow(MedicaidGatewayRegistry).to receive(:[]).with(:atleast_one_silver_plan_donot_cover_pediatric_dental_cost).and_return(
+      at_least_one_silver_feature
+    )
+    allow(at_least_one_silver_feature).to receive(:settings).with(any_args).and_return(nil)
+    allow(at_least_one_silver_feature).to receive(:settings).with(effective_year.to_s.to_sym).and_return(year_level_config_setting)
+  end
 
   describe '#slcsapd_enabled?' do
-    before do
-      MedicaidGatewayRegistry[:atleast_one_silver_plan_donot_cover_pediatric_dental_cost].feature.stub(:is_enabled).and_return(top_level_config)
-      MedicaidGatewayRegistry[:atleast_one_silver_plan_donot_cover_pediatric_dental_cost].settings(
-        effective_year.to_s.to_sym
-      ).stub(:item).and_return(year_level_config)
-    end
-
     context 'top level feature is turned off' do
       let(:top_level_config) { false }
       let(:year_level_config) { false }
@@ -51,13 +63,6 @@ RSpec.describe BenchmarkEhbPremiumHelper, type: :helper do
   end
 
   describe '#use_non_dynamic_slcsp?' do
-    before do
-      MedicaidGatewayRegistry[:atleast_one_silver_plan_donot_cover_pediatric_dental_cost].feature.stub(:is_enabled).and_return(top_level_config)
-      MedicaidGatewayRegistry[:atleast_one_silver_plan_donot_cover_pediatric_dental_cost].settings(
-        effective_year.to_s.to_sym
-      ).stub(:item).and_return(year_level_config)
-    end
-
     let(:mm_application) { OpenStruct.new(tax_households: [tax_household], aptc_effective_date: Date.today, assistance_year: effective_year) }
     let(:tax_household) { OpenStruct.new(aptc_csr_eligible_members: [OpenStruct.new(applicant_reference: OpenStruct.new(dob: dob))]) }
 

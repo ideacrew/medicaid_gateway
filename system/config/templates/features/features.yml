@@ -58,3 +58,5 @@ registry:
         is_enabled: <%= ENV["MEDICAID_ELIGIBLE_INCARCERATED_IS_ENABLED"] || false %>
       - key: :infer_post_partum_period
         is_enabled: <%= ENV["INFER_POST_PARTUM_PERIOD_IS_ENABLED"] || false %>
+      - key: :execute_outbound_atp_business_rules
+        is_enabled: <%= ENV["EXECUTE_OUTBOUND_ATP_BUSINESS_RULES_IS_ENABLED"] || false %>

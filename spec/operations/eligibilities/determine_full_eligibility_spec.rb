@@ -16,7 +16,8 @@ require 'aca_entities/operations/magi_medicaid/create_federal_poverty_level'
 
 RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each do
   before do
-    MedicaidGatewayRegistry[:atleast_one_silver_plan_donot_cover_pediatric_dental_cost].feature.stub(:is_enabled).and_return(false)
+    allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).and_call_original
+    allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:atleast_one_silver_plan_donot_cover_pediatric_dental_cost).and_return(false)
   end
 
   it 'should be a container-ready operation' do
@@ -289,7 +290,6 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
     include_context "cms ME simple_scenarios test_case_c_eligibility_override"
 
     before do
-      allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).and_call_original
       allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(:eligibility_override).and_return(true)
       under_twenty_one_override_flag = MedicaidGatewayRegistry[:eligibility_override].setting(:mitc_override_not_lawfully_present_under_twenty_one)
       allow(under_twenty_one_override_flag).to receive(:item).and_return("true")
