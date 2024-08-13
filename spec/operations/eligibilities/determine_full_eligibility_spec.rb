@@ -861,6 +861,10 @@ RSpec.describe ::Eligibilities::DetermineFullEligibility, dbclean: :after_each d
       it 'should return magi medicaid result for aisha' do
         expect(aisha_ped.is_magi_medicaid).to eq(true)
       end
+
+      it 'should return gap filling result for aisha' do
+        expect(aisha_ped.is_gap_filling).to eq(true)
+      end
     end
 
     context 'for persistence' do

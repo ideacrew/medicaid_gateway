@@ -34,6 +34,7 @@ module AptcCsr
       optional(:totally_ineligible).maybe(:bool)
       optional(:uqhp_eligible).maybe(:bool)
       optional(:magi_medicaid_eligible).maybe(:bool)
+      optional(:is_gap_filling).maybe(:bool)
       optional(:csr_eligible).maybe(:bool)
 
       optional(:csr).maybe(Types::CsrKind)

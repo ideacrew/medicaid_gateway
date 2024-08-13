@@ -99,6 +99,7 @@ module Eligibilities
             aptc_mem.member_identifier.to_s == thhm[:applicant_reference][:person_hbx_id].to_s
           end
           ped[:is_magi_medicaid] = aptc_hh_membr.magi_medicaid_eligible if ped[:is_magi_medicaid].blank?
+          ped[:is_gap_filling] = aptc_hh_membr.is_gap_filling
           ped[:is_totally_ineligible] = aptc_hh_membr.totally_ineligible
           ped[:is_uqhp_eligible] = aptc_hh_membr.uqhp_eligible
           ped[:is_ia_eligible] = aptc_hh_membr.aptc_eligible

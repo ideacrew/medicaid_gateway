@@ -16,6 +16,7 @@ RSpec.describe ::AptcCsr::MemberContract, dbclean: :around_each do
       benchmark_plan_monthly_premium_amount: 234.23,
       aptc_eligible: true,
       totally_ineligible: false,
+      is_gap_filling: false,
       uqhp_eligible: false,
       csr_eligible: true,
       csr: '73',
