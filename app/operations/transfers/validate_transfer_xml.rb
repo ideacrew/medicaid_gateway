@@ -2,6 +2,7 @@
 
 require 'dry/monads'
 require 'dry/monads/do'
+require 'aca_entities/atp/xml'
 
 module Transfers
   # Validate the AccountTransferRequest against the applicable schemas.
@@ -11,19 +12,11 @@ module Transfers
     # @param [String] request the AccountTransferRequest document
     # @return [Dry::Result]
     def call(request)
-      schema = yield read_schema
       document = yield parse_document(request)
-      validate_document(schema, document)
+      validate_document(document)
     end
 
     protected
-
-    def read_schema
-      result = Try do
-        Nokogiri::XML::Schema(File.open(Rails.root.join("artifacts", "aces", "atp_service.xsd")))
-      end
-      result.or(Failure(:xml_schema_not_found))
-    end
 
     def parse_document(document_string)
       result = Try do
@@ -32,8 +25,9 @@ module Transfers
       result.or(Failure(:xml_parse_failure))
     end
 
-    def validate_document(schema, doc)
-      validation_result = schema.validate(doc)
+    def validate_document(doc)
+      validator = AcaEntities::Atp::Xml::Validator.new
+      validation_result = validator.validate(doc)
       return Success(:ok) if validation_result.empty?
       Failure(validation_result)
     end

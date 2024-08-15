@@ -37,6 +37,15 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
 
   let(:event) { Success(response) }
 
+  before do
+    allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).and_call_original
+    allow(MedicaidGatewayRegistry).to receive(:feature_enabled?).with(
+      :execute_outbound_atp_business_rules
+    ).and_return(outbound_business_validation_enabled)
+  end
+
+  let(:outbound_business_validation_enabled) { false }
+
   context 'success' do
     context 'with valid application transfer to curam' do
       before do
@@ -147,6 +156,16 @@ describe Transfers::ToService, "given an ATP valid payload, transfer it to the s
 
       it "transfer should have a callback status of Success" do
         expect(@transfer.callback_status).to eq "Success"
+      end
+
+      context ":execute_outbound_atp_business_rules is enabled, and an invalid payload is provided" do
+        let(:outbound_business_validation_enabled) { true }
+        let(:aces_hash) {File.read("./spec/test_data/application_and_family_failing_business_rules.json")}
+
+        it "fails" do
+          expect(@result.success?).to be_falsey
+          expect(@result.failure.is_a?(Aces::AtpBusinessRuleFailure)).to be_truthy
+        end
       end
     end
 

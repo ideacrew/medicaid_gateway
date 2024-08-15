@@ -117,12 +117,14 @@ module Eligibilities
           member[:aptc_eligible] = false
           member[:magi_medicaid_eligible] = true
           member[:csr_eligible] = false
+          member[:is_gap_filling] = true
         elsif not_denied_due_to_income?(thhm) &&
               recent_medicaid_denial_or_termination?(applicant) &&
               not_denied_due_to_immigration?(applicant.medicaid_and_chip)
           member[:aptc_eligible] = false
           member[:magi_medicaid_eligible] = false
           member[:csr_eligible] = false
+          member[:is_gap_filling] = false
         end
       end
 

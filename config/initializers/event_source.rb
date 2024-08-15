@@ -1,5 +1,22 @@
 # frozen_string_literal: true
 
+if Rails.env.test?
+  es_logger_instance = ::Logging.logger['EventSource']
+  if es_logger_instance.appenders.empty?
+    Dir.mkdir('log') unless File.directory?('log')
+    # send all log events to the development log (including debug) as JSON
+    ::Logging.appenders.rolling_file(
+      'log/event_source.log',
+      age: 'daily',
+      level: "info",
+      keep: 7,
+      layout: ::Logging.layouts.json
+    )
+
+    es_logger_instance.add_appenders 'log/event_source.log'
+  end
+end
+
 EventSource.configure do |config|
   config.protocols = %w[amqp http]
   config.pub_sub_root = Pathname.pwd.join('app', 'event_source')

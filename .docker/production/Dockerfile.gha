@@ -142,6 +142,7 @@ COPY --chown=$USERNAME:$USERNAME ./components/mitc_service/lib/mitc_service/vers
 
 COPY --chown=$USERNAME:$USERNAME ./Gemfile $HOME/Gemfile
 COPY --chown=$USERNAME:$USERNAME ./Gemfile.lock $HOME/Gemfile.lock
+COPY --chown=$USERNAME:$USERNAME ./project_gems $HOME/project_gems
 
 RUN apt-get update -qq \
   && apt-get install -yq --no-install-recommends \

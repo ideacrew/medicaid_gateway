@@ -18,8 +18,8 @@ module Transfers
       flagged_params = yield add_param_flags(params, transfer_id)
       xml = yield generate_xml(flagged_params, transfer_id)
       validated = yield schema_validation(xml, transfer_id)
-      # validated  = yield business_validation(validated)
-      transfer_response = yield initiate_transfer(validated, transfer_id)
+      business_rule_validated = yield business_validation(validated)
+      transfer_response = yield initiate_transfer(business_rule_validated, transfer_id)
       update_transfer(transfer_response)
     end
 
@@ -112,7 +112,7 @@ module Transfers
       if transfer_request.success?
         xml = transfer_request.value!
         @transfer.update!(xml_payload: xml)
-        Success(transfer_request)
+        Success(xml)
       else
         error_result = {
           transfer_id: transfer_id,
@@ -123,7 +123,7 @@ module Transfers
     end
 
     def schema_validation(xml, transfer_id)
-      result = Transfers::ValidateTransferXml.new.call(xml.value!)
+      result = Transfers::ValidateTransferXml.new.call(xml)
       if result.success?
         Success(xml)
       else
@@ -136,14 +136,14 @@ module Transfers
     end
 
     def business_validation(xml)
-      # currently bypassing as it has been flakey
-      result = Transfers::ExecuteBusinessXmlValidations.new.call(xml.value!)
-      result.success? ? Success(xml) : Failure(result)
+      return Success(xml) unless MedicaidGatewayRegistry.feature_enabled?(:execute_outbound_atp_business_rules)
+      result = Transfers::ExecuteBusinessXmlValidations.new.call(xml)
+      result.success? ? Success(xml) : result
     end
 
     def initiate_transfer(payload, transfer_id)
       result = if @service == "aces"
-                 Aces::PublishRawPayload.new.call(payload.value!)
+                 Aces::PublishRawPayload.new.call(payload)
                else
                  Curam::PublishRawPayload.new.call(payload)
                end

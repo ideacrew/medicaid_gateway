@@ -34,6 +34,7 @@ module Medicaid
     field :totally_ineligible, type: Boolean
     field :uqhp_eligible, type: Boolean
     field :magi_medicaid_eligible, type: Boolean
+    field :is_gap_filling, type: Boolean
     field :csr_eligible, type: Boolean
     field :csr, type: String
 

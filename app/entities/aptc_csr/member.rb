@@ -13,6 +13,7 @@ module AptcCsr
     attribute :age_of_applicant, Types::Integer
 
     attribute :aptc_eligible, Types::Bool.optional.meta(omittable: true)
+    attribute :is_gap_filling, Types::Bool.optional.meta(omittable: true)
     attribute :totally_ineligible, Types::Bool.optional.meta(omittable: true)
     attribute :uqhp_eligible, Types::Bool.optional.meta(omittable: true)
     attribute :magi_medicaid_eligible, Types::Bool.optional.meta(omittable: true)
