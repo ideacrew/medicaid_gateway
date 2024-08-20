@@ -39,7 +39,7 @@ module MedicaidGateway
     config.generators.system_tests = nil
 
     config.after_initialize do
-      AtpBusinessRulesValidationProxy.boot!
+      AtpBusinessRulesValidationProxy.boot! unless ENV['RUNNING_UNICORN'] == 'true'
     end
 
     config.assets.compile = false
