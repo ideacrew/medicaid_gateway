@@ -52,7 +52,8 @@ ENV RABBITMQ_VHOST=$RABBITMQ_VHOST
 COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
 
-RUN bundle install --jobs 20 --retry 5 --without development test 
+RUN bundle install --jobs 20 --retry 5 --without development test
+RUN yarn build:css 
 RUN bundle exec rake assets:precompile
 #RUN rm -f /medicaid_gateway/config/master.key && rm -f /medicaid_gateway/config/credentials.yml.enc
 

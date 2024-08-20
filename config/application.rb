@@ -15,7 +15,6 @@ require "action_mailer/railtie"
 # require "action_text/engine"
 require "action_view/railtie"
 require "action_cable/engine"
-require "sprockets/railtie"
 
 # require "rails/test_unit/railtie"
 
@@ -42,5 +41,7 @@ module MedicaidGateway
     config.after_initialize do
       AtpBusinessRulesValidationProxy.boot! unless ENV['RUNNING_UNICORN'] == 'true'
     end
+
+    config.assets.compile = false
   end
 end

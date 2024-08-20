@@ -64,3 +64,5 @@ event_source.*
 *.xlsx
 *.doc
 *.docx
+/app/assets/builds/*
+!/app/assets/builds/.keep

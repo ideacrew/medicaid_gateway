@@ -2,20 +2,32 @@
   "name": "medicaid-gateway",
   "private": true,
   "dependencies": {
+    "@hotwired/stimulus": "^3.2.2",
+    "@popperjs/core": "^2.11.8",
     "@rails/actioncable": "^6.0.0",
     "@rails/ujs": "^6.0.0",
-    "@rails/webpacker": "5.4.3",
+    "autoprefixer": "^10.4.19",
+    "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
+    "esbuild": "^0.23.0",
+    "nodemon": "^3.1.4",
+    "postcss": "^8.4.39",
+    "postcss-cli": "^11.0.0",
+    "sass": "^1.77.6",
     "stimulus": "^3.0.1",
-    "stimulus_reflex": "3.4.1",
+    "stimulus_reflex": "^3.5.2",
     "turbolinks": "^5.2.0",
-    "webpack": "^4.46.0",
-    "webpack-cli": "^3.3.12"
+    "webpack": "^5.92.1",
+    "webpack-cli": "^5.1.4"
   },
   "version": "0.1.0",
-  "devDependencies": {
-    "webpack-dev-server": "^3"
-  },
+  "devDependencies": {},
   "scripts": {
-    "build:docker": "docker build -f .docker/production/Dockerfile.gha -t mg-test --build-arg CLIENT=me --network=\"host\" ."
+    "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
+    "build:css": "yarn build:css:compile && yarn build:css:prefix",
+    "build:docker": "docker build -f .docker/production/Dockerfile.gha -t mg-test --build-arg CLIENT=me --network=\"host\" .",
+    "build:css:compile": "sass ./app/assets/stylesheets/entrypoints:./app/assets/builds --no-source-map --load-path=node_modules",
+    "build:css:prefix": "postcss ./app/assets/builds/application.css --use=autoprefixer --output=./app/assets/builds/application.css",
+    "watch:css": "nodemon --watch ./app/assets/stylesheets/entrypoints/ --ext scss --exec \"yarn build:css\""
   }
 }

@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary = 'MitcService integrates with MAGI in the Cloud Application'
   spec.description = 'MitcService integrates with MAGI in the Cloud Application'
   spec.license = 'MIT'
-  spec.required_ruby_version = '>= 2.7.6'
+  spec.required_ruby_version = '>= 3.0.6'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
@@ -34,9 +34,9 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'dry-validation', '~> 1.6'
   spec.add_dependency 'httparty', '~> 0.16'
   spec.add_dependency 'mime-types'
-  spec.add_dependency 'mongoid', '~> 7.2.1'
+  spec.add_dependency 'mongoid', '~> 8.1'
 
-  spec.add_dependency 'rails', '~> 6.1.3'
+  spec.add_dependency 'rails', '~> 7.0.8.4'
 
   spec.add_development_dependency 'database_cleaner'
   spec.add_development_dependency 'yard'
