@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ideacrew/aca_entities.git
-  revision: 1ef5e6aba036c5a83959b9a05151c19e71ad6b22
+  revision: 592545411831019729c0cf4a5fbadc7485a11ef7
   branch: trunk
   specs:
     aca_entities (0.10.0)
@@ -287,8 +287,8 @@ GEM
     iso_country_codes (0.7.8)
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
-    json-schema (4.3.1)
-      addressable (>= 2.8)
+    json-schema (5.0.0)
+      addressable (~> 2.8)
     kaminari-actionview (1.2.1)
       actionview
       kaminari-core (= 1.2.1)
