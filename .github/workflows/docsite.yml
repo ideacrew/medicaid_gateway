@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 'trunk'
+      - '188179451_fix_hugo_doc_error'
 
 jobs:
   docsite:
