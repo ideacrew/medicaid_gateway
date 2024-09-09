@@ -65,4 +65,4 @@ EventSource.configure do |config|
     end
 end
 
-EventSource.initialize!
+# EventSource.initialize!
