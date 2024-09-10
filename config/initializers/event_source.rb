@@ -65,4 +65,6 @@ EventSource.configure do |config|
     end
 end
 
-EventSource.initialize!
+Rails.application.config.after_initialize do
+  EventSource.initialize!
+end
