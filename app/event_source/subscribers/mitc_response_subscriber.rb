@@ -22,8 +22,6 @@ module Subscribers
       logger.info "MitcResponseSubscriber#on_determinations_eval body: #{body}, status: #{status}, headers: #{headers}"
       correlation_id = headers["CorrelationID"]
       persist(body, correlation_id)
-
-
     end
 
     def self.persist(response, correlation_id)
