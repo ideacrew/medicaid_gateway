@@ -29,7 +29,7 @@ module Subscribers
           end
         rescue StandardError, SystemStackError => e
           ack(delivery_info.delivery_tag)
-           subscriber_logger.info "renewal_subscriber_message; for app_hbx_id: #{payload[:hbx_id]} | backtrace: #{e.backtrace}; acked (nacked)"
+          subscriber_logger.info "renewal_subscriber_message | backtrace: #{e.backtrace}; acked (nacked)"
           logger.debug "renewal_subscriber_error: baacktrace: #{e.backtrace}; acked (nacked)"
         end
       end
