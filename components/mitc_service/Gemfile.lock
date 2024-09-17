@@ -17,7 +17,7 @@ GIT
 
 GIT
   remote: https://github.com/ideacrew/event_source.git
-  revision: 1a876c5badb31ed05b7160e0d2a15343b96e9ba0
+  revision: f5c47281b92bb5d1e5fbc270a2ebfee6c7eb1c69
   branch: wait_for_rails_start
   specs:
     event_source (0.5.8)
