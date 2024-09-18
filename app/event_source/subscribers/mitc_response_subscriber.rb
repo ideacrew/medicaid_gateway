@@ -13,6 +13,12 @@ module Subscribers
     #
     # @return [success/failure message]
     subscribe(:on_determinations_eval) do |body, status, headers|
+      @subscriber_logger = Logger.new(
+        File.join(Rails.root, 'log', "mitc_response_subscriber_#{Date.today.strftime('%Y_%m_%d')}.log")
+      )
+      @subscriber_logger.info '-' * 100
+      @subscriber_logger.info "MitcResponseSubscriber#on_determinations_eval body: #{body}, status: #{status}, headers: #{headers}"
+
       logger.info "MitcResponseSubscriber#on_determinations_eval body: #{body}, status: #{status}, headers: #{headers}"
       correlation_id = headers["CorrelationID"]
       persist(body, correlation_id)
@@ -22,7 +28,11 @@ module Subscribers
       logger.info "MitcResponseSubscriber response: #{response}, response_class: #{response.class}"
       params = { medicaid_application_id: correlation_id, medicaid_response_payload: response }
 
+      @subscriber_logger.info "MitcResponseSubscriber#persist params: #{params}"
+
       result = Eligibilities::DetermineFullEligibility.new.call(params.deep_symbolize_keys!)
+
+      @subscriber_logger.info "MitcResponseSubscriber#persist result: #{result.inspect}"
 
       message = if result.success?
                   result.success
