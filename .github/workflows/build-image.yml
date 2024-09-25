@@ -16,6 +16,7 @@ concurrency:
 env:
   RABBITMQ_DEFAULT_USER: "guest"
   RABBITMQ_DEFAULT_PASS: "guest"
+  SYSDIG_SECURE_ENDPOINT: "https://us2.app.sysdig.com"
   SHOULD_DEPLOY: ${{ github.event_name != 'pull_request' }}
 
 jobs:
