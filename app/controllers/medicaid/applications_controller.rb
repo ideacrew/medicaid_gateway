@@ -9,6 +9,9 @@ module Medicaid
       @application_response_payload = parse_json(@application.application_response_payload)
       @medicaid_request_payload = parse_json(@application.medicaid_request_payload)
       @medicaid_response_payload = parse_json(@application.medicaid_response_payload)
+      @dynamic_slcsp_request_payload = parse_json(@application.dynamic_slcsp_request_payload)
+      @dynamic_slcsp_response_payload = parse_json(@application.dynamic_slcsp_response_payload)
+
       render layout: "application"
     end
 
